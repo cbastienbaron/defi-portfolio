@@ -1,7 +1,6 @@
 import java.io.IOException;
-import java.io.FileWriter;   // Import the FileWriter class
+import java.io.FileWriter;
 import java.io.*;
-import java.sql.Timestamp;
 import java.util.*;
 
 import com.google.gson.Gson;
@@ -37,10 +36,11 @@ public class test {
 
 			/////////  functions on transactions   /////////////
 			List<Transaction> transactionList = Arrays.asList(transactions);
-			List transactionsInTime = TransactionMethods.getTransactionsInTime(transactionList, 1610750820, 1610750913);
+			List transactionsInTime = TransactionMethods.getTransactionsInTime(transactionList, 1610050820, 1610750913);
 			List transactionsOfTypeRewards = TransactionMethods.getTransactionsOfType(transactionList,"Rewards");
 			List transactionsOfTypeCommision = TransactionMethods.getTransactionsOfType(transactionList,"Commission");
 			List transactionsBetweenBlocks = TransactionMethods.getTransactionsBetweenBlocks(transactionList,575620, 575693);
+			TransactionMethods.exportToExcel(transactionsInTime, strPathAppData);
 			//createExcelFile(filteredTansactions,strPathAppData);
 			////////////////////////
 
@@ -106,40 +106,4 @@ public class test {
 			e.printStackTrace();
 		}
 	}
-
-	public static void createExcelFile(ArrayList transactions, String path) {
-
-		String excelFileName = "C:/Test.xlsx";//name of excel file
-
-		String sheetName = "Sheet1";//name of sheet
-
-//		XSSFWorkbook wb = new XSSFWorkbook();
-//		XSSFSheet sheet = wb.createSheet(sheetName) ;
-//
-//		//iterating r number of rows
-//		for (int r=0;r < 5; r++ )
-//		{
-//			XSSFRow row = sheet.createRow(r);
-//
-//			//iterating c number of columns
-//			for (int c=0;c < 5; c++ )
-//			{
-//				XSSFCell cell = row.createCell(c);
-//
-//				cell.setCellValue("Cell "+r+" "+c);
-//			}
-//		}
-//
-//		FileOutputStream fileOut = new FileOutputStream(excelFileName);
-//
-//		//write this workbook to an Outputstream.
-//		wb.write(fileOut);
-//		fileOut.flush();
-//		fileOut.close();
-
-	}
-
-
-
-
 }
