@@ -1,6 +1,6 @@
-import com.litesoftwares.coingecko.CoinGeckoApiClient;
-import com.litesoftwares.coingecko.domain.Coins.CoinHistoryById;
-import com.litesoftwares.coingecko.impl.CoinGeckoApiClientImpl;
+//import com.litesoftwares.coingecko.CoinGeckoApiClient;
+//import com.litesoftwares.coingecko.domain.Coins.CoinHistoryById;
+//import com.litesoftwares.coingecko.impl.CoinGeckoApiClientImpl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -82,23 +82,23 @@ public class TransactionMethods {
 
                     sb.append(String.format( "%.8f", Double.parseDouble(CoinsAndAmounts[0]))+ ";");
                     sb.append(CoinsAndAmounts[1]+ ";");
-                    CoinGeckoApiClient client = new CoinGeckoApiClientImpl();
+                    //   CoinGeckoApiClient client = new CoinGeckoApiClientImpl();
 
                     switch (CoinsAndAmounts[1]) {
                         case "DFI":
-                            sb.append(String.format( "%.8f", Double.parseDouble(CoinsAndAmounts[0])*  client.getCoinHistoryById("defichain",TransactionMethods.convertTimeStampToString(transactions.get(iTransaction).blockTime)).getMarketData().getCurrentPrice().get(fiatCurreny)) + ";");
+                            //           sb.append(String.format( "%.8f", Double.parseDouble(CoinsAndAmounts[0])*  client.getCoinHistoryById("defichain",TransactionMethods.convertTimeStampToString(transactions.get(iTransaction).blockTime)).getMarketData().getCurrentPrice().get(fiatCurreny)) + ";");
                             sb.append("Euro;");
                             break;
                         case "BTC":
-                            sb.append(String.format( "%.8f", Double.parseDouble(CoinsAndAmounts[0])*  client.getCoinHistoryById("bitcoin",TransactionMethods.convertTimeStampToString(transactions.get(iTransaction).blockTime)).getMarketData().getCurrentPrice().get(fiatCurreny)) + ";");
+                            //            sb.append(String.format( "%.8f", Double.parseDouble(CoinsAndAmounts[0])*  client.getCoinHistoryById("bitcoin",TransactionMethods.convertTimeStampToString(transactions.get(iTransaction).blockTime)).getMarketData().getCurrentPrice().get(fiatCurreny)) + ";");
                             sb.append("Euro;");
                             break;
                         case "ETH":
-                            sb.append(String.format( "%.8f", Double.parseDouble(CoinsAndAmounts[0])*  client.getCoinHistoryById("ethereum",TransactionMethods.convertTimeStampToString(transactions.get(iTransaction).blockTime)).getMarketData().getCurrentPrice().get(fiatCurreny)) + ";");
+                            //           sb.append(String.format( "%.8f", Double.parseDouble(CoinsAndAmounts[0])*  client.getCoinHistoryById("ethereum",TransactionMethods.convertTimeStampToString(transactions.get(iTransaction).blockTime)).getMarketData().getCurrentPrice().get(fiatCurreny)) + ";");
                             sb.append("Euro;");
                             break;
                         case "USDT":
-                            sb.append(String.format( "%.8f", Double.parseDouble(CoinsAndAmounts[0])*  client.getCoinHistoryById("tether",TransactionMethods.convertTimeStampToString(transactions.get(iTransaction).blockTime)).getMarketData().getCurrentPrice().get(fiatCurreny)) + ";");
+                            //           sb.append(String.format( "%.8f", Double.parseDouble(CoinsAndAmounts[0])*  client.getCoinHistoryById("tether",TransactionMethods.convertTimeStampToString(transactions.get(iTransaction).blockTime)).getMarketData().getCurrentPrice().get(fiatCurreny)) + ";");
                             sb.append("Euro;");
                             break;
                         default:
