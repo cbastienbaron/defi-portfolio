@@ -2,9 +2,14 @@ package sample;//import com.litesoftwares.coingecko.CoinGeckoApiClient;
 //import com.litesoftwares.coingecko.domain.Coins.CoinHistoryById;
 //import com.litesoftwares.coingecko.impl.CoinGeckoApiClientImpl;
 
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,10 +70,28 @@ public class TransactionMethods {
         return strDate;
     }
 
-    public static void exportToExcel(List<Transaction> transactions, String exportPath){
+//    public static Timestamp getTimeStampFromDateTime(Date date){
+//        Timestamp ts = new Timestamp(date.get());
+//        return ts;
+//    }
+
+    public static boolean exportToExcel(List<Transaction> transactions, String exportPath){
+        FileChooser fileChooser = new FileChooser();
+        Stage stage = new Stage();
+
+        //Set extension filter for text files
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        //Show save file dialog
+        File file = fileChooser.showSaveDialog(stage);
+        exportPath = file.getPath();
+
+
+
         try{
             String fiatCurreny = "eur";
-            PrintWriter writer = new PrintWriter(new File(exportPath + "\\transactionExport.csv"));
+            PrintWriter writer = new PrintWriter(new File(exportPath));
             StringBuilder sb = new StringBuilder();
             sb.append("Date;Operation;Amount;Cryptocurrency;FIAT value;FIAT currency \n");
 
@@ -112,7 +135,9 @@ public class TransactionMethods {
             }
             writer.write(sb.toString());
             writer.close();
+            return true;
         }catch (FileNotFoundException e){
+            return false;
         }
 
     }
@@ -121,6 +146,7 @@ public class TransactionMethods {
         String[] splittedamountAndCoin = amountAndCoin.split("@");
         return splittedamountAndCoin;
     }
+
 
 
 }
