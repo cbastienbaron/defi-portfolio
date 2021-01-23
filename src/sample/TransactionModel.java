@@ -1,6 +1,6 @@
 package sample;
 
-public class Transaction implements java.io.Serializable{
+public class TransactionModel implements java.io.Serializable{
     public String owner;
     public int blockHeight;
     public String blockHash;
@@ -9,7 +9,7 @@ public class Transaction implements java.io.Serializable{
     public String poolID;
     public String amounts[];
 
-    public Transaction() {
+    public TransactionModel() {
 
     }
 }

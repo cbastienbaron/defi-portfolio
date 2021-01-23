@@ -1,5 +1,4 @@
-import sample.CoinPrice;
-import sample.Update;
+package sample;
 
 import java.io.*;
 import java.util.*;
@@ -9,11 +8,11 @@ public class test {
 	public static void main(String[] args)  {
 
 		String strPathAppData = System.getenv("APPDATA")+ "\\defi-portfolio\\";
-
+String strTransactions = strPathAppData + "data.portfolio";
 		List transactionList = null;
-		CoinPrice coinPriceHistory;
+		CoinPriceModel coinPriceHistory = null;
 
-		String fiatCurrency = "EUR";
+		String fiatCurrency = FiatCurrency.EUR.name();
 		String decimalLetter = ","; // , or . for decimal and . or , for thousands
 		String exportSplitter = ",";
 		Locale localeDecimal = Locale.GERMAN;
@@ -28,12 +27,13 @@ public class test {
 		if (! directory.exists())
 			directory.mkdir();
 
-		coinPriceHistory = Update.updateCoinHistory(strPathAppData);
-		transactionList = Update.updatePortfolioData(strPathAppData);
+		
+var upt= new TransactionController();
 
-		int a =2;
+		var test2 = upt.updateTransactionData(strPathAppData,1000);
+
 		//Export to Excel call
-		//Export.exportToExcel(transactionList, strPathAppData+ "\\transactionExport.csv",coinPriceHistory,fiatCurrency,localeDecimal,exportSplitter);
+		ExportService.exportTransactionToExcel(transactionList, strPathAppData+ "\\transactionExport.csv",coinPriceHistory,fiatCurrency,localeDecimal,exportSplitter);
 
 	}
 }

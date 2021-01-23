@@ -1,13 +1,11 @@
 package sample;
 
-import com.google.gson.annotations.Expose;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class CoinPrice implements java.io.Serializable {
+public class CoinPriceModel implements java.io.Serializable {
 
-    public String lastTimeSpamp;
+    public String lastTimeStamp;
 
     public List<List<String>> dfiEurList;
     public List<List<String>> btcEurList;
@@ -36,7 +34,7 @@ public class CoinPrice implements java.io.Serializable {
     public List<List<String>> ltcBtcList;
     public List<List<String>> bchBtcList;
 
-    public CoinPrice() {
+    public CoinPriceModel() {
 
         this.dfiEurList = new ArrayList<>();
         this.btcEurList = new ArrayList<>();
@@ -65,7 +63,7 @@ public class CoinPrice implements java.io.Serializable {
         this.ltcBtcList = new ArrayList<>();
         this.bchBtcList = new ArrayList<>();
 
-        lastTimeSpamp = "1589179630";
+        lastTimeStamp = "1589179630";
 
         dfiEurList.add(new ArrayList<>() {
             {
