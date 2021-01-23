@@ -8,12 +8,17 @@ import java.sql.Timestamp;
 
 public class CoinPriceController {
 
-    public CoinPriceModel updateCoinHistory(String strPathAppData) {
+    public CoinPriceModel coinPriceModel= new CoinPriceModel();
+    String strCoinPriceData;
+    public CoinPriceController(String strCoinPriceData){
+        this.strCoinPriceData = strCoinPriceData;
+        coinPriceModel = getCoinPriceLocal(this.strCoinPriceData);
 
-        CoinPriceModel coinPrice;
+    }
 
-        coinPrice = getCoinPriceLocal(strPathAppData);
+    public boolean updateCoinPriceData() {
 
+        CoinPriceModel coinPrice = getCoinPriceLocal(this.strCoinPriceData);
         CoinGeckoApiClient client = new CoinGeckoApiClientImpl();
 
         var currentTimeStamp = new Timestamp(System.currentTimeMillis()).getTime() / 1000L;
@@ -61,18 +66,21 @@ public class CoinPriceController {
             // Serialization
             try {
                 //Saving of object in a file
-                FileOutputStream file = new FileOutputStream(strPathAppData);
+                FileOutputStream file = new FileOutputStream(this.strCoinPriceData);
                 ObjectOutputStream out = new ObjectOutputStream(file);
 
                 // Method for serialization of object
                 out.writeObject(coinPrice);
                 out.close();
                 file.close();
+                return true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }else{
+            return true;
         }
-        return coinPrice;
+        return false;
     }
 
     public String getLastTimeStamp(String strCoinPricePath){

@@ -25,7 +25,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
    <children>
       <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0" style="-fx-background-color: #F0F7FF;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
          <children>
@@ -91,47 +91,6 @@
             </Label>
          </children>
       </AnchorPane>
-      <AnchorPane id="anchorPanelExport" fx:id="anchorPanelExport" layoutX="200.0" layoutY="27.0" prefHeight="438.0" prefWidth="550.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
-         <children>
-            <DatePicker fx:id="dateExpStart" layoutX="91.0" layoutY="62.0" prefHeight="7.0" prefWidth="150.0" />
-            <DatePicker fx:id="dateExpEnd" layoutX="91.0" layoutY="103.0" prefHeight="17.0" prefWidth="150.0" />
-            <ComboBox fx:id="cmbCoins" layoutX="268.0" layoutY="103.0" prefHeight="29.0" prefWidth="94.0" />
-            <Button id="btnExportExcel" fx:id="btnExportExcel" layoutX="383.0" layoutY="103.0" mnemonicParsing="false" onAction="#btnExportExcelPressed" prefHeight="25.0" prefWidth="78.0" text="Export">
-               <font>
-                  <Font size="13.0" />
-               </font>
-            </Button>
-            <Label layoutX="28.0" layoutY="106.0" text="End date">
-               <font>
-                  <Font size="13.0" />
-               </font>
-            </Label>
-            <Label layoutX="23.0" layoutY="65.0" prefHeight="19.0" prefWidth="62.0" text="Start date">
-               <font>
-                  <Font size="13.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
-      <AnchorPane id="AnchorPanelUpdateDatabase" fx:id="AnchorPanelUpdateDatabase" layoutX="200.0" layoutY="27.0" prefHeight="432.0" prefWidth="550.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="41.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
-         <children>
-            <Label id="strCurrentBlockOnChain" fx:id="strCurrentBlockOnChain" layoutX="69.0" layoutY="101.0" text="Current block on Blockchain: 5700" AnchorPane.leftAnchor="69.0" AnchorPane.topAnchor="101.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Label id="strCurrentBlockLocally" fx:id="strCurrentBlockLocally" layoutX="120.0" layoutY="72.0" text="Current Block locally: 5600" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="72.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Button fx:id="btnUpdateDatabse" layoutX="343.0" layoutY="97.0" mnemonicParsing="false" onAction="#btnUpdateDatabasePressed" text="Update Database">
-               <font>
-                  <Font size="13.0" />
-               </font>
-            </Button>
-         </children>
-      </AnchorPane>
       <AnchorPane layoutY="2.0" prefHeight="0.0" prefWidth="700.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <MenuBar id="menuBar" layoutY="2.0" prefHeight="30.0" prefWidth="700.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -155,6 +114,47 @@
             </MenuBar>
          </children>
       </AnchorPane>
+      <AnchorPane id="AnchorPanelUpdateDatabase" fx:id="AnchorPanelUpdateDatabase" layoutX="200.0" layoutY="27.0" prefHeight="432.0" prefWidth="550.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="41.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+         <children>
+            <Label id="strCurrentBlockOnChain" fx:id="strCurrentBlockOnBlockchain" layoutX="69.0" layoutY="101.0" text="Current block on Blockchain: 5700" AnchorPane.leftAnchor="69.0" AnchorPane.topAnchor="101.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label id="strCurrentBlockLocally" fx:id="strCurrentBlockLocally" layoutX="120.0" layoutY="72.0" text="Current Block locally: 5600" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="72.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Button fx:id="btnUpdateDatabse" layoutX="343.0" layoutY="97.0" mnemonicParsing="false" onAction="#btnUpdateDatabasePressed" text="Update Database">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+      <AnchorPane id="anchorPanelExport" fx:id="anchorPanelExport" layoutX="200.0" layoutY="27.0" prefHeight="438.0" prefWidth="550.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+         <children>
+            <DatePicker fx:id="dateExpStart" layoutX="91.0" layoutY="62.0" prefHeight="7.0" prefWidth="150.0" />
+            <DatePicker fx:id="dateExpEnd" layoutX="91.0" layoutY="103.0" prefHeight="17.0" prefWidth="150.0" />
+            <ComboBox fx:id="cmbCoins" layoutX="268.0" layoutY="103.0" prefHeight="29.0" prefWidth="94.0" />
+            <Button id="btnExportExcel" fx:id="btnExportExcel" layoutX="383.0" layoutY="103.0" mnemonicParsing="false" onAction="#btnExportExcelPressed" prefHeight="25.0" prefWidth="78.0" text="Export">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+            <Label layoutX="28.0" layoutY="106.0" text="End date">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="23.0" layoutY="65.0" prefHeight="19.0" prefWidth="62.0" text="Start date">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
       <AnchorPane id="AnchorPanelAnalyse" fx:id="anchorPanelAnalyse" layoutX="200.0" layoutY="27.0" prefHeight="438.0" prefWidth="550.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
          <children>
             <TabPane layoutX="-6.0" prefHeight="438.0" prefWidth="556.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-6.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -167,14 +167,14 @@
                               <Label layoutX="21.0" layoutY="42.0" text="Start date" />
                               <DatePicker fx:id="dateAnalyseEnd" layoutX="82.0" layoutY="38.0" />
                               <DatePicker fx:id="dateAnalyseStart" layoutX="82.0" layoutY="86.0" />
-                              <StackPane fx:id="stackPane" prefHeight="237.0" prefWidth="501.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="156.0">
+                              <StackPane fx:id="stackPane" layoutX="8.0" layoutY="118.0" prefHeight="275.0" prefWidth="543.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="118.0">
                                  <children>
-                                    <LineChart fx:id="hPlot" prefHeight="246.0" prefWidth="444.0">
+                                    <LineChart fx:id="hPlot" prefHeight="291.0" prefWidth="543.0">
                                       <xAxis>
-                                        <CategoryAxis side="BOTTOM" fx:id="xAxis" />
+                                        <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM" fx:id="xAxis" />
                                       </xAxis>
                                       <yAxis>
-                                        <NumberAxis side="LEFT" />
+                                        <NumberAxis animated="false" side="LEFT" />
                                       </yAxis>
                                     </LineChart>
                                  </children>

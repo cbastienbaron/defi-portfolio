@@ -21,6 +21,12 @@ public class TransactionController {
     URLConnection conn;
     String strCookieOath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
     String strCliPath = System.getProperty("user.dir") + "\\defichain-1.3.17-x86_64-w64-mingw32\\defichain-1.3.17\\bin\\defi-cli.exe";
+    public List<TransactionModel> transactionList = new ArrayList<>();
+    String strTransactionData;
+    public TransactionController(String transactionData){
+        this.strTransactionData = transactionData;
+        this.transactionList = getLocalTransactionList();
+    }
 
     public void initCrpConnection() {
         try {
@@ -111,31 +117,6 @@ public class TransactionController {
         return 0;
     }
 
-    public int getAccountHistoryCountCli() {
-        try {
-            Process p = null;
-            StringBuilder processOutput = new StringBuilder();
-            p = Runtime.getRuntime().exec(strCliPath + " accounthistorycount mine");
-
-
-            try (BufferedReader processOutputReader = new BufferedReader(
-                    new InputStreamReader(p.getInputStream()));) {
-                String readLine;
-
-                while ((readLine = processOutputReader.readLine()) != null) {
-                    processOutput.append(readLine + System.lineSeparator());
-                }
-                p.waitFor();
-
-                return Integer.parseInt(processOutput.toString().trim());
-
-            }
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
     public int getAccountHistoryCountRpc() {
         try {
             initCrpConnection();
@@ -164,6 +145,45 @@ public class TransactionController {
             e.printStackTrace();
         }
         return 0;
+    }
+
+
+    public int getAccountHistoryCountCli() {
+        try {
+            Process p = null;
+            StringBuilder processOutput = new StringBuilder();
+            p = Runtime.getRuntime().exec(strCliPath + " accounthistorycount mine");
+
+
+            try (BufferedReader processOutputReader = new BufferedReader(
+                    new InputStreamReader(p.getInputStream()));) {
+                String readLine;
+
+                while ((readLine = processOutputReader.readLine()) != null) {
+                    processOutput.append(readLine + System.lineSeparator());
+                }
+                p.waitFor();
+
+                return Integer.parseInt(processOutput.toString().trim());
+
+            }
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
+
+
+    public List<TransactionModel> getListAccountHistoryRpc(int depth) {
+
+        Gson gson = new Gson();
+        JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"depth\":" + depth + ",\"no_rewards\":" + false + ",\"limit\":" + depth * 2000 + "}]}");
+        TransactionModel[] transactions = gson.fromJson(jsonObject.get("result").toString(), TransactionModel[].class);
+        List<TransactionModel> transactionList = Arrays.asList(transactions);
+        return new ArrayList<>(transactionList);
+
     }
 
     public List<TransactionModel> getListAccountHistoryCli(int depth) {
@@ -199,16 +219,6 @@ public class TransactionController {
         return null;
     }
 
-    public List<TransactionModel> getListAccountHistoryRpc(int depth) {
-
-        Gson gson = new Gson();
-        JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"depth\":" + depth + ",\"no_rewards\":" + false + ",\"limit\":" + depth * 2000 + "}]}");
-        TransactionModel[] transactions = gson.fromJson(jsonObject.get("result").toString(), TransactionModel[].class);
-        List<TransactionModel> transactionList = Arrays.asList(transactions);
-        return new ArrayList<>(transactionList);
-
-    }
-
     private JSONObject getRpcResponse(String requestJson) {
         try {
             initCrpConnection();
@@ -239,10 +249,9 @@ public class TransactionController {
         return new JSONObject();
     }
 
-    public List<TransactionModel> getLocalTransactionList(String strPath) {
+    public List<TransactionModel> getLocalTransactionList() {
 
-
-        File strPortfolioData = new File(strPath + "transactions.portfolio");
+        File strPortfolioData = new File(this.strTransactionData);
         List<TransactionModel> transactionList = new ArrayList<>();
 
         if (strPortfolioData.exists()) {
@@ -267,6 +276,7 @@ public class TransactionController {
                     transactionList.add(transAction);
                     line = reader.readLine();
                 }
+                reader.close();
                 return transactionList;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -276,8 +286,14 @@ public class TransactionController {
         return transactionList;
     }
 
-    public int getLocalBlockCount(String strPathAppData) {
-        return getLocalTransactionList(strPathAppData).get(0).blockHeight;
+    public int getLocalBlockCount() {
+
+        if(getLocalTransactionList().size()>0){
+            return getLocalTransactionList().get(getLocalTransactionList().size()-1).blockHeight;
+        }else{
+            return 0;
+        }
+
     }
 
     public boolean startDefidExe() {
@@ -286,9 +302,9 @@ public class TransactionController {
         return true;
     }
 
-    public List<TransactionModel> updateTransactionData(String strFileTransactions, int depth) {
+    public boolean updateTransactionData(int depth) {
 
-        List<TransactionModel> transactionList = getLocalTransactionList(strFileTransactions);
+        List<TransactionModel> transactionList = getLocalTransactionList();
         var transactionListNew = getListAccountHistoryRpc(depth);
         int blockCountLocal = 0;
 
@@ -297,6 +313,7 @@ public class TransactionController {
         }
 
         List<TransactionModel> updateTransactionList = new ArrayList<TransactionModel>();
+
         for (int i = transactionListNew.size() - 1; i >= 0; i--) {
             if (transactionListNew.get(i).blockHeight > blockCountLocal) {
                 transactionList.add(0, transactionListNew.get(i));
@@ -307,17 +324,13 @@ public class TransactionController {
 
         if (updateTransactionList.size() > 0) {
             try {
-                PrintWriter writer = new PrintWriter(new FileWriter(strFileTransactions + "transactions.portfolio", true));
+                PrintWriter writer = new PrintWriter(new FileWriter(this.strTransactionData , true));
                 StringBuilder sb = new StringBuilder();
                 String exportSplitter = ";";
-                var localeDecimal = Locale.GERMAN;
-
-                //sb.append("Date,Owner,Operation,Amount,Cryptocurrency,Block Hash,Block Height,Pool ID".replace(",", exportSplitter) + "\n");
 
                 for (int iTransaction =updateTransactionList.size()-1; iTransaction >= 0; iTransaction--) {
 
                     for (int i = 0; i < updateTransactionList.get(iTransaction).amounts.length; i++) {
-
                         sb.append(updateTransactionList.get(iTransaction).blockTime + exportSplitter);
                         sb.append(updateTransactionList.get(iTransaction).owner + exportSplitter);
                         sb.append(updateTransactionList.get(iTransaction).type + exportSplitter);
@@ -330,13 +343,17 @@ public class TransactionController {
                 }
                 writer.write(sb.toString());
                 writer.close();
+
+                this.transactionList = transactionList;
+
+                return true;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return transactionList;
+        return false;
     }
 
     public static List getTransactionsInTime(List<TransactionModel> transactions, long startTime, long endTime) {
