@@ -186,9 +186,9 @@
                                     </LineChart>
                                  </children>
                               </StackPane>
-                              <Button fx:id="btnPlot" layoutX="446.0" layoutY="78.0" mnemonicParsing="false" onAction="#btnPlotPressed" prefHeight="25.0" prefWidth="87.0" text="Plot" />
+                              <Button fx:id="btnPlot" layoutX="454.0" layoutY="78.0" mnemonicParsing="false" onAction="#btnPlotPressed" prefHeight="25.0" prefWidth="87.0" text="Plot" />
                               <ComboBox fx:id="cmbCoinsAnalyse" layoutX="238.0" layoutY="76.0" prefHeight="29.0" prefWidth="84.0" />
-                              <ComboBox fx:id="cmbIntervall" layoutX="344.0" layoutY="76.0" prefHeight="29.0" prefWidth="85.0" />
+                              <ComboBox fx:id="cmbIntervall" layoutX="344.0" layoutY="76.0" prefHeight="29.0" prefWidth="94.0" />
                            </children>
                         </AnchorPane>
                   </content>

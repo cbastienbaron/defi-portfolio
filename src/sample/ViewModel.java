@@ -16,9 +16,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class ViewModel {
 
@@ -31,6 +29,7 @@ public class ViewModel {
     public StringProperty selectedCoin = new SimpleStringProperty("BTC");
     public StringProperty selectedCoinAnalyse = new SimpleStringProperty("DFI");
     public StringProperty selectedFiatCurrency = new SimpleStringProperty("EUR");
+    public StringProperty cmbIntervall = new SimpleStringProperty("Daily");
     public StringProperty selectedDecimal = new SimpleStringProperty(",");
     public StringProperty selectedSeperator = new SimpleStringProperty(",");
     public ObjectProperty<java.time.LocalDate> dateExpStart = new SimpleObjectProperty();
@@ -120,26 +119,19 @@ public class ViewModel {
 
     public void plotPressed() {
         XYChart.Series<Number, Number> series = new XYChart.Series();
-        series.setName("My portfolio");
+        series.setName("Rewards");
 
         LocalDate startTime = this.dateAnalyseStart.getValue();
         long TimeStampStart = Timestamp.valueOf(String.valueOf(startTime) + " 00:00:00").getTime()/1000L;
         LocalDate endTime = this.dateAnalyseEnd.getValue();
         long TimeStampEnd = Timestamp.valueOf(String.valueOf(endTime) + " 23:59:59").getTime()/1000L;
 
-        List transactions = TransactionController.getTransactionsOfType(this.transactionList, selectedCoinAnalyse.getValue());
-        transactions = TransactionController.getTransactionsInTime(transactions,TimeStampStart,TimeStampEnd);
-        transactions = TransactionController.getRewardsJoined(transactions, 'daily');
+        List<TransactionModel> transactionsInTime = TransactionController.getTransactionsInTime(this.transactionList,TimeStampStart,TimeStampEnd);
+        TreeMap<String,Double> joinedTransactions = TransactionController.getRewardsJoined(transactionsInTime, this.cmbIntervall.getValue(),this.selectedCoinAnalyse.getValue());
 
 
-        for(TransactionModel entry : this.transactionList){
-            if(entry.blockTime > TimeStampStart && entry.blockTime < TimeStampEnd) {
-                String time = TransactionController.convertTimeStampToString(entry.blockTime);
-                String[] AmountCoin = entry.amounts[0].split("@");
-
-
-                series.getData().add(new XYChart.Data(time, Double.parseDouble(AmountCoin[0])));
-            }
+        for (HashMap.Entry<String, Double> entry : joinedTransactions.entrySet()) {
+                series.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
         }
         if (this.hPlot.getData().size() == 1) {
             this.hPlot.getData().remove(0);
@@ -167,7 +159,7 @@ public class ViewModel {
         amount.setCellValueFactory(new PropertyValueFactory<>("Amount"));
         TableColumn<String,String> cryptocurrency = new TableColumn<>("Cryptocurrency");
         cryptocurrency.setCellValueFactory(new PropertyValueFactory<>("Cryptocurrency"));
-        TableColumn<String,String> fiatValue = new TableColumn<>("FiatValue");
+        TableColumn<Double,Double> fiatValue = new TableColumn<>("FiatValue");
         fiatValue.setCellValueFactory(new PropertyValueFactory<>("FiatValue"));
         TableColumn<String,String> fiatCurrency = new TableColumn<>("FiatCurrency");
         fiatCurrency.setCellValueFactory(new PropertyValueFactory<>("FiatCurrency"));
@@ -186,6 +178,11 @@ public class ViewModel {
     }
 
     public ObservableList<tableModel> getTableModel(){
+        Locale localeDecimal = Locale.GERMAN;
+        if(selectedDecimal.equals(".")){
+            localeDecimal = Locale.US;
+        }
+
         LocalDate startTime = this.dateAnalyseStart.getValue();
         long TimeStampStart = Timestamp.valueOf(String.valueOf(startTime) + " 00:00:00").getTime()/1000L;
         LocalDate endTime = this.dateAnalyseEnd.getValue();
@@ -199,7 +196,10 @@ public class ViewModel {
                 String[] AmountCoin = entry.amounts[0].split("@");
                 String blockHeight = Integer.toString(entry.blockHeight);
 
-                tableModels.add(new tableModel(time, entry.type, AmountCoin[0], AmountCoin[1], "0.000001", "EUR", entry.blockHash, blockHeight, entry.poolID,entry.owner));
+                Double price = this.coinPriceController.getPriceFromTimeStamp(coinPriceHistory.GetDfiList("EUR") ,entry.blockTime*1000L);
+
+                tableModels.add(new tableModel(time, entry.type, AmountCoin[0], AmountCoin[1],Math.round(Double.parseDouble(AmountCoin[0]) * price.doubleValue() *100000000.0)/100000000.0 , "EUR", entry.blockHash, blockHeight, entry.poolID,entry.owner));
+
             }
         }
         return  tableModels;

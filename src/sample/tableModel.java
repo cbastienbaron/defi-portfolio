@@ -6,7 +6,7 @@ public class tableModel {
     private String Operation;
     private String Amount;
     private String Cryptocurrency;
-    private String FiatValue;
+    private Double FiatValue;
     private String FiatCurrency;
     private String BlockHash;
     private String BlockHeight;
@@ -14,7 +14,7 @@ public class tableModel {
 
     private String Owner;
 
-    public tableModel(String date, String operation, String amount, String cryptocurrency, String fiatValue, String fiatCurrency, String blockHash, String blockHeight, String poolID,String owner) {
+    public tableModel(String date, String operation, String amount, String cryptocurrency, Double fiatValue, String fiatCurrency, String blockHash, String blockHeight, String poolID,String owner) {
         Date = date;
         Operation = operation;
         Amount = amount;
@@ -59,11 +59,11 @@ public class tableModel {
         Cryptocurrency = cryptocurrency;
     }
 
-    public String getFiatValue() {
+    public Double getFiatValue() {
         return FiatValue;
     }
 
-    public void setFiatValue(String fiatValue) {
+    public void setFiatValue(Double fiatValue) {
         FiatValue = fiatValue;
     }
 
