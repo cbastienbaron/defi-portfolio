@@ -4,13 +4,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.util.StringConverter;
+import javafx.util.converter.DefaultStringConverter;
+
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 
 public class View implements Initializable{
+
+    private final StringConverter<String> S_CONVERTER = new DefaultStringConverter();
 
     @FXML private Pane AnchorPanelUpdateDatabase, anchorPanelAnalyse , anchorPanelExport;
     @FXML private ProgressBar progressBar;
@@ -23,7 +29,17 @@ public class View implements Initializable{
     @FXML private DatePicker dateAnalyseEnd = new DatePicker();
     @FXML private ProgressIndicator spinner = new ProgressIndicator();
     @FXML private LineChart<Number,Number> hPlot;
-    @FXML private TableView hTable;
+    @FXML private TableView<TransactionModel> hTable;
+    @FXML private TableColumn<TransactionModel,Long> blockTimeColumn;
+    @FXML private TableColumn<TransactionModel,String> typeColumn;
+    @FXML private TableColumn<TransactionModel,Double> cryptoValueColumn;
+    @FXML private TableColumn<TransactionModel,String> cryptoCurrencyColumn;
+    @FXML private TableColumn<TransactionModel,String> blockHashColumn;
+    @FXML private TableColumn<TransactionModel,Integer> blockHeightColumn;
+    @FXML private TableColumn<TransactionModel,String> poolIDColumn;
+    @FXML private TableColumn<TransactionModel,String> ownerColumn;
+    @FXML private TableColumn<TransactionModel,Double> fiatValueColumn;
+    @FXML private TableColumn<TransactionModel,String> fiatCurrencyColumn;
 
     ViewModel viewModel = new ViewModel();
 
@@ -109,14 +125,16 @@ public class View implements Initializable{
             }
         });
 
-
-
-      //  this.coinPriceHistory = Update.updateCoinHistory(strPathAppData+"coinHistory.portfolio");
-      //  this.transactionList = Update.updatePortfolioData(strPathAppData+"data.portfolio");
-
-//        double DFI_Amount = 0;
-//        if(!decimalLetter.equals(",")) {
-//            localeDecimal = Locale.US;
-//        }
+        hTable.itemsProperty().set(viewModel.getTransactionTable());
+        ownerColumn.setCellValueFactory(param -> param.getValue().ownerProperty);
+        blockTimeColumn.setCellValueFactory(new PropertyValueFactory("blockTimeProperty"));
+        typeColumn.setCellValueFactory(new PropertyValueFactory("typeProperty"));
+        cryptoCurrencyColumn.setCellValueFactory(new PropertyValueFactory("cryptoCurrencyProperty"));
+        cryptoValueColumn.setCellValueFactory(new PropertyValueFactory("cryptoValueProperty"));
+        blockHashColumn.setCellValueFactory(new PropertyValueFactory("blockHashProperty"));
+        blockHeightColumn.setCellValueFactory(new PropertyValueFactory("blockHeightProperty"));
+        poolIDColumn.setCellValueFactory(new PropertyValueFactory("poolIDProperty"));
+        fiatValueColumn.setCellValueFactory(new PropertyValueFactory("fiatCurrencyProperty"));
+        fiatCurrencyColumn.setCellValueFactory(new PropertyValueFactory("fiatCurrencyProperty"));
     }
 }

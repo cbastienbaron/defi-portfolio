@@ -1,6 +1,7 @@
 package sample;
 
 import com.google.gson.Gson;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -23,9 +24,13 @@ public class TransactionController {
     String strCliPath = System.getProperty("user.dir") + "\\src\\sample\\defichain-1.3.17-x86_64-w64-mingw32\\defichain-1.3.17\\bin\\defi-cli.exe";
     public List<TransactionModel> transactionList = new ArrayList<>();
     String strTransactionData;
+    int localBlockCount = 0;
+    OutputStreamWriter wr;
     public TransactionController(String transactionData){
         this.strTransactionData = transactionData;
+        this.localBlockCount = getLocalBlockCount();
         this.transactionList = getLocalTransactionList();
+
     }
 
     public void initCrpConnection() {
@@ -52,7 +57,7 @@ public class TransactionController {
             conn.setRequestProperty("Authorization", basicAuth);
             conn.setRequestProperty("Content-Type", "application/json-rpc");
             conn.setDoOutput(true);
-
+            wr = new OutputStreamWriter(conn.getOutputStream());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,32 +65,9 @@ public class TransactionController {
     }
 
     public int getBlockCountRpc() {
-        try {
-            initCrpConnection();
-            if (conn != null) {
 
-                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                wr.write("{\"method\": \"getblockcount\"}");
-                wr.flush();
-                wr.close();
-
-                BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String line;
-                String jsonText = "";
-                while ((line = rd.readLine()) != null) {
-                    jsonText += line;
-                }
-                rd.close();
-
-                Object obj = JSONValue.parse(jsonText);
-                JSONObject jsonObject = (JSONObject) obj;
-
+                JSONObject jsonObject =getRpcResponse("{\"method\": \"getblockcount\"}");
                 return Integer.parseInt(jsonObject.get("result").toString());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     public int getBlockCountCli() {
@@ -118,33 +100,10 @@ public class TransactionController {
     }
 
     public int getAccountHistoryCountRpc() {
-        try {
-            initCrpConnection();
-            if (conn != null) {
 
-                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                wr.write("{\"method\": \"accounthistorycount\",\"params\":[\"mine\"]}");
-                //wr.write("{\"method\":\"getbalance\",\"params\":[],\"id\":1}");
-                wr.flush();
-                wr.close();
+        JSONObject jsonObject = getRpcResponse("{\"method\": \"accounthistorycount\",\"params\":[\"mine\"]}");
+        return Integer.parseInt(jsonObject.get("result").toString());
 
-                BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String line;
-                String jsonText = "";
-                while ((line = rd.readLine()) != null) {
-                    jsonText += line;
-                }
-                rd.close();
-
-                Object obj = JSONValue.parse(jsonText);
-                JSONObject jsonObject = (JSONObject) obj;
-
-                return Integer.parseInt(jsonObject.get("result").toString());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
 
@@ -178,12 +137,18 @@ public class TransactionController {
 
     public List<TransactionModel> getListAccountHistoryRpc(int depth) {
 
-        Gson gson = new Gson();
-        JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"depth\":" + depth + ",\"no_rewards\":" + false + ",\"limit\":" + depth * 2000 + "}]}");
-        TransactionModel[] transactions = gson.fromJson(jsonObject.get("result").toString(), TransactionModel[].class);
-        List<TransactionModel> transactionList = Arrays.asList(transactions);
-        return new ArrayList<>(transactionList);
+        List<TransactionModel> transactionList = new ArrayList<>();
+                JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"depth\":" + depth + ",\"no_rewards\":" + false + ",\"limit\":" + depth * 2000 + "}]}");
 
+        JSONArray transactionJson = (JSONArray) jsonObject.get("result");
+
+        for (Object transaction:transactionJson
+             ) {
+            var transactionJ = (JSONObject) transaction;
+            transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()),transactionJ.get("owner").toString(),transactionJ.get("type").toString(),new String[]{transactionJ.get("amounts").toString().replace("[","").replace("]","").replace("\"","")},transactionJ.get("blockHash").toString(),Integer.parseInt(transactionJ.get("blockHeight").toString()),transactionJ.get("poolID").toString(),this));
+        }
+
+        return new ArrayList<>(transactionList);
     }
 
     public List<TransactionModel> getListAccountHistoryCli(int depth) {
@@ -225,8 +190,6 @@ public class TransactionController {
 
             if (conn != null) {
 
-                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-
                 wr.write(requestJson);
                 wr.flush();
                 wr.close();
@@ -265,14 +228,7 @@ public class TransactionController {
 
                 while (line != null) {
                     String[] transactionSplit = line.split(";");
-                    TransactionModel transAction = new TransactionModel();
-                    transAction.blockTime = Long.parseLong(transactionSplit[0]);
-                    transAction.owner = transactionSplit[1];
-                    transAction.type = transactionSplit[2];
-                    transAction.amounts = new String[]{transactionSplit[3]};
-                    transAction.blockHash = transactionSplit[4];
-                    transAction.blockHeight = Integer.parseInt(transactionSplit[5]);
-                    transAction.poolID = transactionSplit[6];
+                    TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]),transactionSplit[1],transactionSplit[2],new String[]{transactionSplit[3]},transactionSplit[4],Integer.parseInt(transactionSplit[5]),transactionSplit[6],this);
                     transactionList.add(transAction);
                     line = reader.readLine();
                 }
@@ -287,13 +243,12 @@ public class TransactionController {
     }
 
     public int getLocalBlockCount() {
+        if(transactionList.size() > 0){
 
-        if(getLocalTransactionList().size()>0){
-            return getLocalTransactionList().get(getLocalTransactionList().size()-1).blockHeight;
+            return this.transactionList.get(transactionList.size()-1).getBlockHeightProperty();
         }else{
             return 0;
         }
-
     }
 
     public boolean startDefidExe() {
@@ -306,18 +261,13 @@ public class TransactionController {
 
         List<TransactionModel> transactionList = getLocalTransactionList();
         var transactionListNew = getListAccountHistoryRpc(depth);
-        int blockCountLocal = 0;
-
-        if (transactionList.size() > 0) {
-            blockCountLocal = transactionList.get(transactionList.size()-1).blockHeight;
-        }
 
         List<TransactionModel> updateTransactionList = new ArrayList<TransactionModel>();
 
         for (int i = transactionListNew.size() - 1; i >= 0; i--) {
-            if (transactionListNew.get(i).blockHeight > blockCountLocal) {
-                transactionList.add(0, transactionListNew.get(i));
-                updateTransactionList.add(0, transactionListNew.get(i))
+            if (transactionListNew.get(i).getBlockHeightProperty() > this.localBlockCount) {
+                this.transactionList.add( transactionListNew.get(i));
+                updateTransactionList.add( transactionListNew.get(i))
                 ;
             }
         }
@@ -328,24 +278,23 @@ public class TransactionController {
                 StringBuilder sb = new StringBuilder();
                 String exportSplitter = ";";
 
-                for (int iTransaction =updateTransactionList.size()-1; iTransaction >= 0; iTransaction--) {
+                for (int iTransaction =0; iTransaction < updateTransactionList.size(); iTransaction++) {
 
-                    for (int i = 0; i < updateTransactionList.get(iTransaction).amounts.length; i++) {
-                        sb.append(updateTransactionList.get(iTransaction).blockTime + exportSplitter);
-                        sb.append(updateTransactionList.get(iTransaction).owner + exportSplitter);
-                        sb.append(updateTransactionList.get(iTransaction).type + exportSplitter);
-                        sb.append(updateTransactionList.get(iTransaction).amounts[i] + exportSplitter);
-                        sb.append(updateTransactionList.get(iTransaction).blockHash + exportSplitter);
-                        sb.append(updateTransactionList.get(iTransaction).blockHeight + exportSplitter);
-                        sb.append(updateTransactionList.get(iTransaction).poolID);
+                    for (int i = 0; i < updateTransactionList.get(iTransaction).getAmountProperty().length; i++) {
+                        sb.append(updateTransactionList.get(iTransaction).getBlockTimeProperty() + exportSplitter);
+                        sb.append(updateTransactionList.get(iTransaction).getOwnerProperty() + exportSplitter);
+                        sb.append(updateTransactionList.get(iTransaction).getTypeProperty() + exportSplitter);
+                        sb.append(updateTransactionList.get(iTransaction).getAmountProperty()[i] + exportSplitter);
+                        sb.append(updateTransactionList.get(iTransaction).getBlockHashProperty() + exportSplitter);
+                        sb.append(updateTransactionList.get(iTransaction).getBlockHeightProperty() + exportSplitter);
+                        sb.append(updateTransactionList.get(iTransaction).getPoolIDProperty());
                         sb.append("\n");
                     }
                 }
                 writer.write(sb.toString());
                 writer.close();
 
-                this.transactionList = transactionList;
-
+                this.localBlockCount = this.transactionList.get(this.transactionList.size()-1).getBlockHeightProperty();
                 return true;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -359,7 +308,7 @@ public class TransactionController {
     public static List getTransactionsInTime(List<TransactionModel> transactions, long startTime, long endTime) {
         List<TransactionModel> filteredTransactions = new ArrayList<>();
         for (int ilist = 1; ilist < transactions.size(); ilist++) {
-            if (transactions.get(ilist).blockTime >= startTime && transactions.get(ilist).blockTime <= endTime) {
+            if (transactions.get(ilist).getBlockTimeProperty() >= startTime && transactions.get(ilist).getBlockTimeProperty() <= endTime) {
                 filteredTransactions.add(transactions.get(ilist));
             }
         }
@@ -369,7 +318,7 @@ public class TransactionController {
     public static List getTransactionsOfType(List<TransactionModel> transactions, String type) {
         List<TransactionModel> filteredTransactions = new ArrayList<>();
         for (int ilist = 1; ilist < transactions.size(); ilist++) {
-            if (transactions.get(ilist).type.equals(type)) {
+            if (transactions.get(ilist).getTypeProperty().equals(type)) {
                 filteredTransactions.add(transactions.get(ilist));
             }
         }
@@ -379,7 +328,7 @@ public class TransactionController {
     public static List getTransactionsOfOwner(List<TransactionModel> transactions, String owner) {
         List<TransactionModel> filteredTransactions = new ArrayList<>();
         for (int ilist = 1; ilist < transactions.size(); ilist++) {
-            if (transactions.get(ilist).type.equals(owner)) {
+            if (transactions.get(ilist).getTypeProperty().equals(owner)) {
                 filteredTransactions.add(transactions.get(ilist));
             }
         }
@@ -389,7 +338,7 @@ public class TransactionController {
     public static List getTransactionsBetweenBlocks(List<TransactionModel> transactions, long startBlock, long endBlock) {
         List<TransactionModel> filteredTransactions = new ArrayList<>();
         for (int ilist = 1; ilist < transactions.size(); ilist++) {
-            if (transactions.get(ilist).blockHeight >= startBlock && transactions.get(ilist).blockHeight <= endBlock) {
+            if (transactions.get(ilist).getBlockHeightProperty() >= startBlock && transactions.get(ilist).getBlockHeightProperty() <= endBlock) {
                 filteredTransactions.add(transactions.get(ilist));
             }
         }
@@ -436,9 +385,9 @@ public class TransactionController {
 
         for (int iTransaction = 0; iTransaction < transactions.size(); iTransaction++) {
 
-            for (int i = 0; i < transactions.get(iTransaction).amounts.length; i++) {
+            for (int i = 0; i < transactions.get(iTransaction).getAmountProperty().length; i++) {
 
-                String[] CoinsAndAmounts = splitCoinsAndAmounts(transactions.get(iTransaction).amounts[i].toString());
+                String[] CoinsAndAmounts = splitCoinsAndAmounts(transactions.get(iTransaction).getAmountProperty()[i].toString());
 
                 if (coinName.equals(CoinsAndAmounts[1])) {
                     amountCoin += Double.parseDouble(CoinsAndAmounts[0]);

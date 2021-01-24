@@ -14,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -41,6 +42,8 @@ public class ViewModel {
     public BooleanProperty spinner = new SimpleBooleanProperty();
     public LineChart<Number, Number> hPlot;
     public TableView hTable;
+    public List<TransactionModel> transactionModelList;
+    public ObservableList<TransactionModel> transactionList;
 
     public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
     public String strPathDefid = System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
@@ -49,7 +52,6 @@ public class ViewModel {
     public String strCoinPriceData = "coinPriceData.portfolio";
 
     public TransactionController transactionController = new TransactionController(this.strPathAppData + this.strTransactionData);
-    public List<TransactionModel> transactionList;
     public CoinPriceController coinPriceController = new CoinPriceController(this.strPathAppData + strCoinPriceData);
     public CoinPriceModel coinPriceHistory;
     public ExportService expService;
@@ -61,12 +63,22 @@ public class ViewModel {
             directory.mkdir();
         }
 
-        this.transactionList = this.transactionController.transactionList;
+        /*Process p;
+        StringBuilder processOutput = new StringBuilder();
+        try {
+            p = Runtime.getRuntime().exec(strPathDefid);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
+        this.transactionList =FXCollections.observableArrayList(this.transactionController.transactionList);
+        this.transactionModelList = this.transactionController.transactionList;
         this.coinPriceHistory = this.coinPriceController.coinPriceModel;
         this.expService = new ExportService(this.coinPriceController);
 
-        this.strCurrentBlockLocally.set("Current Block locally: " + transactionController.getLocalBlockCount());
         this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + transactionController.getBlockCountRpc());
+        this.strCurrentBlockLocally.set("Current Block locally: " + transactionController.getLocalBlockCount());
 
         // Init gui elements
         File file = new File(System.getProperty("user.dir") + "\\src\\icons\\warning.png");
@@ -86,7 +98,6 @@ public class ViewModel {
         } else {
             return this.transactionController.updateTransactionData(this.transactionController.getAccountHistoryCountRpc());
         }
-
     }
 
     public void btnUpdateDatabasePressed() throws InterruptedException {
@@ -94,9 +105,6 @@ public class ViewModel {
         File file = new File(System.getProperty("user.dir") + "\\src\\icons\\accept.png");
         Image image = new Image(file.toURI().toString());
         this.imgStatus.setValue(image);
-
-        this.strCurrentBlockLocally.set("Current Block locally: " + this.transactionController.getLocalBlockCount());
-        this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + this.transactionController.getBlockCountRpc());
 
         if (updateTransactionData()) {
 
@@ -106,8 +114,9 @@ public class ViewModel {
             this.strCurrentBlockLocally.set("Current Block locally: " + this.transactionController.getLocalBlockCount());
             this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + this.transactionController.getBlockCountRpc());
 
-            this.transactionList = this.transactionController.transactionList;
-
+            transactionList.removeAll(transactionList);
+            transactionList.addAll(this.transactionController.transactionList);
+            this.transactionModelList = this.transactionController.transactionList;
         } else {
 
         }
@@ -122,22 +131,18 @@ public class ViewModel {
         XYChart.Series<Number, Number> series = new XYChart.Series();
         series.setName("My portfolio");
 
-        LocalDate startTime = this.dateAnalyseStart.getValue();
-        long TimeStampStart = Timestamp.valueOf(String.valueOf(startTime) + " 00:00:00").getTime()/1000L;
-        LocalDate endTime = this.dateAnalyseEnd.getValue();
-        long TimeStampEnd = Timestamp.valueOf(String.valueOf(endTime) + " 23:59:59").getTime()/1000L;
+        long TimeStampStart = Timestamp.valueOf(String.valueOf(this.dateAnalyseStart.getValue()) + " 00:00:00").getTime()/1000L;
+        long TimeStampEnd = Timestamp.valueOf(String.valueOf(this.dateAnalyseEnd.getValue()) + " 23:59:59").getTime()/1000L;
 
-        List transactions = TransactionController.getTransactionsOfType(this.transactionList, selectedCoinAnalyse.getValue());
+        List transactions = TransactionController.getTransactionsOfType(this.transactionModelList, selectedCoinAnalyse.getValue());
         transactions = TransactionController.getTransactionsInTime(transactions,TimeStampStart,TimeStampEnd);
-        transactions = TransactionController.getRewardsJoined(transactions, 'daily');
+        transactions = TransactionController.getRewardsJoined(transactions, "daily");
 
 
-        for(TransactionModel entry : this.transactionList){
-            if(entry.blockTime > TimeStampStart && entry.blockTime < TimeStampEnd) {
-                String time = TransactionController.convertTimeStampToString(entry.blockTime);
-                String[] AmountCoin = entry.amounts[0].split("@");
-
-
+        for(TransactionModel entry : this.transactionModelList){
+            if(entry.getBlockTimeProperty() > TimeStampStart && entry.getBlockTimeProperty() < TimeStampEnd) {
+                String time = TransactionController.convertTimeStampToString(entry.getBlockTimeProperty());
+                String[] AmountCoin = entry.getAmountProperty()[0].split("@");
                 series.getData().add(new XYChart.Data(time, Double.parseDouble(AmountCoin[0])));
             }
         }
@@ -155,54 +160,11 @@ public class ViewModel {
                 d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
             }
         }
-//        List<XYChart.Series> v = new ArrayList<XYChart.Series>();
-//        Collections.addAll( v, series);
-        //  new ZoomManager(this.stackPane, this.hPlot, v);
-
-        TableColumn<String,String> date = new TableColumn<>("Date");
-        date.setCellValueFactory(new PropertyValueFactory<>("Date"));
-        TableColumn<String,String> operation = new TableColumn<>("Operation");
-        operation.setCellValueFactory(new PropertyValueFactory<>("Operation"));
-        TableColumn<String,String> amount = new TableColumn<>("Amount");
-        amount.setCellValueFactory(new PropertyValueFactory<>("Amount"));
-        TableColumn<String,String> cryptocurrency = new TableColumn<>("Cryptocurrency");
-        cryptocurrency.setCellValueFactory(new PropertyValueFactory<>("Cryptocurrency"));
-        TableColumn<String,String> fiatValue = new TableColumn<>("FiatValue");
-        fiatValue.setCellValueFactory(new PropertyValueFactory<>("FiatValue"));
-        TableColumn<String,String> fiatCurrency = new TableColumn<>("FiatCurrency");
-        fiatCurrency.setCellValueFactory(new PropertyValueFactory<>("FiatCurrency"));
-        TableColumn<String,String> blockHash = new TableColumn<>("BlockHash");
-        blockHash.setCellValueFactory(new PropertyValueFactory<>("BlockHash"));
-        TableColumn<String,String> blockHeight = new TableColumn<>("BlockHeight");
-        blockHeight.setCellValueFactory(new PropertyValueFactory<>("BlockHeight"));
-        TableColumn<String,String> poolID = new TableColumn<>("PoolID");
-        poolID.setCellValueFactory(new PropertyValueFactory<>("PoolID"));
-        TableColumn<String,String> owner = new TableColumn<>("Owner");
-        owner.setCellValueFactory(new PropertyValueFactory<>("Owner"));
-
-        this.hTable.getColumns().clear();
-        this.hTable.getColumns().addAll(date,operation,amount,cryptocurrency,fiatValue,fiatCurrency,blockHash,blockHeight,poolID,owner);
-        this.hTable.setItems(this.getTableModel());
+//
     }
 
-    public ObservableList<tableModel> getTableModel(){
-        LocalDate startTime = this.dateAnalyseStart.getValue();
-        long TimeStampStart = Timestamp.valueOf(String.valueOf(startTime) + " 00:00:00").getTime()/1000L;
-        LocalDate endTime = this.dateAnalyseEnd.getValue();
-        long TimeStampEnd = Timestamp.valueOf(String.valueOf(endTime) + " 23:59:59").getTime()/1000L;
-
-        ObservableList<tableModel> tableModels = FXCollections.observableArrayList();
-
-        for(TransactionModel entry : this.transactionList){
-            if(entry.blockTime > TimeStampStart && entry.blockTime < TimeStampEnd) {
-                String time = TransactionController.convertTimeStampToString(entry.blockTime);
-                String[] AmountCoin = entry.amounts[0].split("@");
-                String blockHeight = Integer.toString(entry.blockHeight);
-
-                tableModels.add(new tableModel(time, entry.type, AmountCoin[0], AmountCoin[1], "0.000001", "EUR", entry.blockHash, blockHeight, entry.poolID,entry.owner));
-            }
-        }
-        return  tableModels;
+    public ObservableList<TransactionModel> getTransactionTable(){
+        return transactionList;
     }
 
     public void exportToExcel() {
@@ -217,8 +179,8 @@ public class ViewModel {
         LocalDate startTime = this.dateExpStart.getValue();
         long TimeStampStart = Timestamp.valueOf(String.valueOf(startTime) + " 00:00:00").getTime()/1000L;
         LocalDate endTime = this.dateExpEnd.getValue();
-        long TimeStampEnd = Timestamp.valueOf(String.valueOf(endTime) + " 00:00:00").getTime()/1000L;
-        boolean success = this.expService.exportTransactionToExcel(this.transactionList, strPathAppData+"//test.csv",this.coinPriceHistory,this.selectedFiatCurrency.getValue(),localeDecimal,this.selectedSeperator.getValue(),TimeStampStart,TimeStampEnd);
+        long TimeStampEnd = Timestamp.valueOf(String.valueOf(endTime) + " 23:59:59").getTime()/1000L;
+        boolean success = this.expService.exportTransactionToExcel(this.transactionModelList, strPathAppData+"//test.csv",this.coinPriceHistory,this.selectedFiatCurrency.getValue(),localeDecimal,this.selectedSeperator.getValue(),TimeStampStart,TimeStampEnd);
 
         if (success) {
             this.strProgressbar.setValue("Excel successfully exported!");

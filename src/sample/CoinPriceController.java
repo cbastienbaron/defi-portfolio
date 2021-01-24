@@ -9,12 +9,12 @@ import java.util.List;
 
 public class CoinPriceController {
 
-    public CoinPriceModel coinPriceModel= new CoinPriceModel();
+    public CoinPriceModel coinPriceModel = new CoinPriceModel();
     String strCoinPriceData;
-    public CoinPriceController(String strCoinPriceData){
+
+    public CoinPriceController(String strCoinPriceData) {
         this.strCoinPriceData = strCoinPriceData;
         coinPriceModel = getCoinPriceLocal(this.strCoinPriceData);
-
     }
 
     public boolean updateCoinPriceData() {
@@ -78,17 +78,17 @@ public class CoinPriceController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             return true;
         }
         return false;
     }
 
-    public String getLastTimeStamp(String strCoinPricePath){
+    public String getLastTimeStamp(String strCoinPricePath) {
         return getCoinPriceLocal(strCoinPricePath).lastTimeStamp;
     }
 
-    public CoinPriceModel getCoinPriceLocal(String strCoinPricePath){
+    public CoinPriceModel getCoinPriceLocal(String strCoinPricePath) {
         CoinPriceModel coinPrice = new CoinPriceModel();
         if (new File(strCoinPricePath).exists()) {
             try {
