@@ -103,6 +103,8 @@ public class View implements Initializable{
         });
         this.cmbCoinsAnalyse.getItems().addAll("BTC","DFI","ETH","USTD");
         this.cmbCoinsAnalyse.valueProperty().bindBidirectional(this.viewModel.selectedCoinAnalyse);
+        this.cmbIntervall.getItems().addAll("Daily","Weekly","Monthly","Yearly");
+        this.cmbIntervall.valueProperty().bindBidirectional(this.viewModel.cmbIntervall);
 
 
         // Export Rewards Frame

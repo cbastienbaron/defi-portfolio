@@ -17,9 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class ViewModel {
 
@@ -32,6 +30,7 @@ public class ViewModel {
     public StringProperty selectedCoin = new SimpleStringProperty("BTC");
     public StringProperty selectedCoinAnalyse = new SimpleStringProperty("DFI");
     public StringProperty selectedFiatCurrency = new SimpleStringProperty("EUR");
+    public StringProperty cmbIntervall = new SimpleStringProperty("Daily");
     public StringProperty selectedDecimal = new SimpleStringProperty(",");
     public StringProperty selectedSeperator = new SimpleStringProperty(",");
     public ObjectProperty<java.time.LocalDate> dateExpStart = new SimpleObjectProperty();
@@ -129,22 +128,17 @@ public class ViewModel {
 
     public void plotPressed() {
         XYChart.Series<Number, Number> series = new XYChart.Series();
-        series.setName("My portfolio");
+        series.setName("Rewards");
 
         long TimeStampStart = Timestamp.valueOf(String.valueOf(this.dateAnalyseStart.getValue()) + " 00:00:00").getTime()/1000L;
         long TimeStampEnd = Timestamp.valueOf(String.valueOf(this.dateAnalyseEnd.getValue()) + " 23:59:59").getTime()/1000L;
 
-        List transactions = TransactionController.getTransactionsOfType(this.transactionModelList, selectedCoinAnalyse.getValue());
-        transactions = TransactionController.getTransactionsInTime(transactions,TimeStampStart,TimeStampEnd);
-        transactions = TransactionController.getRewardsJoined(transactions, "daily");
+        List<TransactionModel> transactionsInTime = TransactionController.getTransactionsInTime(this.transactionList,TimeStampStart,TimeStampEnd);
+        TreeMap<String,Double> joinedTransactions = TransactionController.getRewardsJoined(transactionsInTime, this.cmbIntervall.getValue(),this.selectedCoinAnalyse.getValue());
 
 
-        for(TransactionModel entry : this.transactionModelList){
-            if(entry.getBlockTimeProperty() > TimeStampStart && entry.getBlockTimeProperty() < TimeStampEnd) {
-                String time = TransactionController.convertTimeStampToString(entry.getBlockTimeProperty());
-                String[] AmountCoin = entry.getAmountProperty()[0].split("@");
-                series.getData().add(new XYChart.Data(time, Double.parseDouble(AmountCoin[0])));
-            }
+        for (HashMap.Entry<String, Double> entry : joinedTransactions.entrySet()) {
+                series.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
         }
         if (this.hPlot.getData().size() == 1) {
             this.hPlot.getData().remove(0);

@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.*;
 import java.io.*;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -344,25 +345,98 @@ public class TransactionController {
         }
         return filteredTransactions;
     }
-    public static List getRewardsJoined(List<TransactionModel> transactions, String inervall){
-        List<TransactionModel> filteredTransactions = new ArrayList<>();
-
+    public static TreeMap getRewardsJoined(List<TransactionModel> transactions, String inervall , String Coin){
+        TreeMap<String, Double> map = new TreeMap<>();
+        TreeMap<String, Double> sorted = new TreeMap<>();
         switch (inervall){
-            case "daily":
+            case "Daily":
+                for(TransactionModel item : transactions){
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(item.blockTime*1000L);
+                    int year = cal.get(Calendar.YEAR);
+                    int month = cal.get(Calendar.MONTH)+1;
+                    int day = cal.get(Calendar.DAY_OF_MONTH);
+                    String[] AmountCoin = item.amounts[0].split("@");
 
-                return filteredTransactions;
-            case "weekly":
+                    String date = year + "-" + month + "-" + day;
+                    if(item.type.equals("Rewards")) {
+                        if (map.keySet().contains(date)) {
+                            Double oldValue = map.get(date);
+                            Double newValue = oldValue + Double.parseDouble(AmountCoin[0]);
+                            map.put(date, newValue);
+                        } else {
+                            map.put(date, Double.parseDouble(AmountCoin[0]));
+                        }
+                    }
+                }
+                sorted.putAll(map);
+                return sorted;
 
-                return filteredTransactions;
-            case "monthly":
+            case "Weekly":
+                for(TransactionModel item : transactions){
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(item.blockTime*1000L);
+                    int year = cal.get(Calendar.YEAR);
+                    int week = cal.get(Calendar.WEEK_OF_YEAR);
+                    String[] AmountCoin = item.amounts[0].split("@");
 
-                return filteredTransactions;
-            case "yearly":
+                    String date = year + "-" + week;
+                    if(item.type.equals("Rewards")) {
+                        if (map.keySet().contains(date)) {
+                            Double oldValue = map.get(date);
+                            Double newValue = oldValue + Double.parseDouble(AmountCoin[0]);
+                            map.put(date, newValue);
+                        } else {
+                            map.put(date, Double.parseDouble(AmountCoin[0]));
+                        }
+                    }
+                }
+                sorted.putAll(map);
+                return map;
+            case "Monthly":
+                for(TransactionModel item : transactions){
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(item.blockTime*1000L);
+                    int year = cal.get(Calendar.YEAR);
+                    int month = cal.get(Calendar.MONTH)+1;
+                    String[] AmountCoin = item.amounts[0].split("@");
 
-                return filteredTransactions;
+                    String date = year + "-" + month;
+                    if(item.type.equals("Rewards")) {
+                        if (map.keySet().contains(date)) {
+                            Double oldValue = map.get(date);
+                            Double newValue = oldValue + Double.parseDouble(AmountCoin[0]);
+                            map.put(date, newValue);
+                        } else {
+                            map.put(date, Double.parseDouble(AmountCoin[0]));
+                        }
+                    }
+                }
+                sorted.putAll(map);
+                return map;
+            case "Yearly":
+                for(TransactionModel item : transactions){
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(item.blockTime*1000L);
+                    int year = cal.get(Calendar.YEAR);
+                    String[] AmountCoin = item.amounts[0].split("@");
+
+                    String date = year+ "";
+                    if(item.type.equals("Rewards")) {
+                        if (map.keySet().contains(date)) {
+                            Double oldValue = map.get(date);
+                            Double newValue = oldValue + Double.parseDouble(AmountCoin[0]);
+                            map.put(date, newValue);
+                        } else {
+                            map.put(date, Double.parseDouble(AmountCoin[0]));
+                        }
+                    }
+                }
+                sorted.putAll(map);
+                return map;
         }
 
-        return filteredTransactions;
+        return map;
     }
 
     public static String convertTimeStampToString(long timeStamp) {
