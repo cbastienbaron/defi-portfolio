@@ -8,7 +8,12 @@ import java.util.Locale;
 
 public class ExportService {
 
-    public static boolean exportTransactionToExcel(List<TransactionModel> transactions, String exportPath, CoinPriceModel coinPrices, String fiatCurrency, Locale localeDecimal, String exportSplitter) {
+    CoinPriceController coinPriceController;
+    public ExportService(CoinPriceController coinPriceController) {
+        this.coinPriceController = coinPriceController;
+    }
+
+    public boolean exportTransactionToExcel(List<TransactionModel> transactions, String exportPath, CoinPriceModel coinPrices, String fiatCurrency, Locale localeDecimal, String exportSplitter,Long TimeStampStart,Long TimeStampEnd) {
         try {
             PrintWriter writer = new PrintWriter(new File(exportPath));
             StringBuilder sb = new StringBuilder();
@@ -53,7 +58,7 @@ public class ExportService {
                     }
 
                     if(coinPriceList!= null) {
-                        var price = getPrice(coinPriceList, transactions.get(iTransaction).blockTime * 1000L);
+                        var price = this.coinPriceController.getPriceFromTimeStamp(coinPriceList, transactions.get(iTransaction).blockTime * 1000L);
                         sb.append(String.format(localeDecimal, "%.18f", Double.parseDouble(CoinsAndAmounts[0]) * price) + exportSplitter);
 
                     }else{
@@ -78,16 +83,6 @@ public class ExportService {
         }
     }
 
-    private static double getPrice(List<List<String>> coinPrices, Long timeStamp) {
-        double price=0;
 
-        for (int i = coinPrices.size() - 1; i >= 0; i--)
-                        if(timeStamp>Long.parseLong(coinPrices.get(i).get(0))){
-                            price = Double.parseDouble(coinPrices.get(i).get(1));
-                            break;
-                        }
-
-        return price;
-    }
 
 }

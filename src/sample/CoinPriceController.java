@@ -5,6 +5,7 @@ import com.litesoftwares.coingecko.impl.CoinGeckoApiClientImpl;
 
 import java.io.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 public class CoinPriceController {
 
@@ -106,5 +107,17 @@ public class CoinPriceController {
             }
         }
         return coinPrice;
+    }
+
+    public double getPriceFromTimeStamp(List<List<String>> coinPrices, Long timeStamp) {
+        double price=0;
+
+        for (int i = coinPrices.size() - 1; i >= 0; i--)
+            if(timeStamp>Long.parseLong(coinPrices.get(i).get(0))){
+                price = Double.parseDouble(coinPrices.get(i).get(1));
+                break;
+            }
+
+        return price;
     }
 }

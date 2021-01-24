@@ -14,14 +14,16 @@ public class View implements Initializable{
 
     @FXML private Pane AnchorPanelUpdateDatabase, anchorPanelAnalyse , anchorPanelExport;
     @FXML private ProgressBar progressBar;
-    @FXML private Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, strUpToDate, lblProgressBar;
-    @FXML private ComboBox cmbCoins;
+    @FXML private Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, strUpToDate, lblProgressBar, strUpdatingDatabase;
+    @FXML private ComboBox cmbCoins,cmbCoinsAnalyse, cmbIntervall;
     @FXML private ImageView imgViewObj;
     @FXML private DatePicker dateExpStart = new DatePicker();
     @FXML private DatePicker dateExpEnd = new DatePicker();
     @FXML private DatePicker dateAnalyseStart = new DatePicker();
     @FXML private DatePicker dateAnalyseEnd = new DatePicker();
+    @FXML private ProgressIndicator spinner = new ProgressIndicator();
     @FXML private LineChart<Number,Number> hPlot;
+    @FXML private TableView hTable;
 
     ViewModel viewModel = new ViewModel();
 
@@ -31,6 +33,7 @@ public class View implements Initializable{
     public void btnAnalysePressed(){
         this.anchorPanelAnalyse.toFront();
         this.viewModel.hPlot = this.hPlot;
+        this.viewModel.hTable = this.hTable;
     }
     public void btnExportPressed(){
         this.anchorPanelExport.toFront();
@@ -54,6 +57,8 @@ public class View implements Initializable{
         // Update Database Frame
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.viewModel.strCurrentBlockLocally);
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.viewModel.strCurrentBlockOnBlockchain);
+        this.strUpdatingDatabase.textProperty().bindBidirectional(this.viewModel.strUpdatingDatabase);
+        Bindings.bindBidirectional(this.spinner.visibleProperty(),this.viewModel.spinner);
 
         // Status image and text
         Bindings.bindBidirectional(this.imgViewObj.imageProperty(), this.viewModel.imgStatus);
@@ -80,6 +85,9 @@ public class View implements Initializable{
                 setDisable(empty || date.compareTo(today) > 0 );
             }
         });
+        this.cmbCoinsAnalyse.getItems().addAll("BTC","DFI","ETH","USTD");
+        this.cmbCoinsAnalyse.valueProperty().bindBidirectional(this.viewModel.selectedCoinAnalyse);
+
 
         // Export Rewards Frame
         this.cmbCoins.getItems().addAll("BTC","DFI","ETH","USTD");
@@ -100,6 +108,8 @@ public class View implements Initializable{
                 setDisable(empty || date.compareTo(today) > 0 );
             }
         });
+
+
 
       //  this.coinPriceHistory = Update.updateCoinHistory(strPathAppData+"coinHistory.portfolio");
       //  this.transactionList = Update.updatePortfolioData(strPathAppData+"data.portfolio");

@@ -20,7 +20,7 @@ public class TransactionController {
     URL url;
     URLConnection conn;
     String strCookieOath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
-    String strCliPath = System.getProperty("user.dir") + "\\defichain-1.3.17-x86_64-w64-mingw32\\defichain-1.3.17\\bin\\defi-cli.exe";
+    String strCliPath = System.getProperty("user.dir") + "\\src\\sample\\defichain-1.3.17-x86_64-w64-mingw32\\defichain-1.3.17\\bin\\defi-cli.exe";
     public List<TransactionModel> transactionList = new ArrayList<>();
     String strTransactionData;
     public TransactionController(String transactionData){
@@ -393,6 +393,26 @@ public class TransactionController {
                 filteredTransactions.add(transactions.get(ilist));
             }
         }
+        return filteredTransactions;
+    }
+    public static List getRewardsJoined(List<TransactionModel> transactions, String inervall){
+        List<TransactionModel> filteredTransactions = new ArrayList<>();
+
+        switch (inervall){
+            case "daily":
+
+                return filteredTransactions;
+            case "weekly":
+
+                return filteredTransactions;
+            case "monthly":
+
+                return filteredTransactions;
+            case "yearly":
+
+                return filteredTransactions;
+        }
+
         return filteredTransactions;
     }
 
