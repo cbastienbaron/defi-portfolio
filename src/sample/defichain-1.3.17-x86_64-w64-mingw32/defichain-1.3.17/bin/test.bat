@@ -1,1 +1,0 @@
-C:\\Users\\User\\Desktop\\defichain-1.3.17-x86_64-w64-mingw32\\defichain-1.3.17\\bin\\defi-cli.exe listaccounthistory > peter.txt

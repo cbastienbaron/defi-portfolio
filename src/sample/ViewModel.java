@@ -6,15 +6,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
-
 import java.io.File;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.*;
@@ -22,36 +18,29 @@ import java.util.*;
 public class ViewModel {
 
     public StringProperty strCurrentBlockLocally = new SimpleStringProperty("Current Block locally: 0");
-    public StringProperty strCurrentBlockOnBlockchain = new SimpleStringProperty("Current Block on Blockchain: 1000");
+    public StringProperty strCurrentBlockOnBlockchain = new SimpleStringProperty("Current Block on Blockchain: No connection");
     public ObjectProperty<javafx.scene.image.Image> imgStatus = new SimpleObjectProperty<>();
     public StringProperty strUpToDate = new SimpleStringProperty("Database not up to date");
     public SimpleDoubleProperty progress = new SimpleDoubleProperty(.0);
     public StringProperty strProgressbar = new SimpleStringProperty("");
-    public StringProperty selectedCoin = new SimpleStringProperty("BTC");
-    public StringProperty selectedCoinAnalyse = new SimpleStringProperty("DFI");
-    public StringProperty selectedFiatCurrency = new SimpleStringProperty("EUR");
-    public StringProperty cmbIntervall = new SimpleStringProperty("Daily");
-    public StringProperty selectedDecimal = new SimpleStringProperty(",");
-    public StringProperty selectedSeperator = new SimpleStringProperty(",");
-    public ObjectProperty<java.time.LocalDate> dateExpStart = new SimpleObjectProperty();
-    public ObjectProperty<java.time.LocalDate> dateExpEnd = new SimpleObjectProperty();
-    public ObjectProperty<java.time.LocalDate> dateAnalyseStart = new SimpleObjectProperty();
-    public ObjectProperty<java.time.LocalDate> dateAnalyseEnd = new SimpleObjectProperty();
     public StringProperty strUpdatingDatabase = new SimpleStringProperty("");
     public BooleanProperty spinner = new SimpleBooleanProperty();
     public LineChart<Number, Number> hPlot, hPlotKumuliert;
     public TableView hTable;
     public List<TransactionModel> transactionModelList;
     public ObservableList<TransactionModel> transactionList;
-
+    public String[] cryptoCurrencies = new String[]{"BTC", "DFI", "ETH", "USDT","LTC","BCH"};
     public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
     public String strPathDefid = System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
     public String strPathDefiCli = System.getProperty("user.dir") + "\\src\\sample\\defichain-1.3.17-x86_64-w64-mingw32\\defichain-1.3.17\\bin\\defi-cli.exe";
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
+    public String strSettingsData = "settings.portfolio";
 
     public TransactionController transactionController = new TransactionController(this.strPathAppData + this.strTransactionData);
     public CoinPriceController coinPriceController = new CoinPriceController(this.strPathAppData + strCoinPriceData);
+    public SettingsController settingsController = new SettingsController(this.strPathAppData + strSettingsData);
+
     public CoinPriceModel coinPriceHistory;
     public ExportService expService;
 
@@ -74,9 +63,9 @@ public class ViewModel {
         this.transactionList =FXCollections.observableArrayList(this.transactionController.transactionList);
         this.transactionModelList = this.transactionController.transactionList;
         this.coinPriceHistory = this.coinPriceController.coinPriceModel;
-        this.expService = new ExportService(this.coinPriceController);
+        this.expService = new ExportService(this.coinPriceController,this.transactionController);
 
-        this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + transactionController.getBlockCountRpc());
+        //this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + transactionController.getBlockCountRpc());
         this.strCurrentBlockLocally.set("Current Block locally: " + transactionController.getLocalBlockCount());
 
         // Init gui elements
@@ -130,11 +119,11 @@ public class ViewModel {
         XYChart.Series<Number, Number> series = new XYChart.Series();
         series.setName("Rewards");
 
-        long TimeStampStart = Timestamp.valueOf(String.valueOf(this.dateAnalyseStart.getValue()) + " 00:00:00").getTime()/1000L;
-        long TimeStampEnd = Timestamp.valueOf(String.valueOf(this.dateAnalyseEnd.getValue()) + " 23:59:59").getTime()/1000L;
+        long TimeStampStart = Timestamp.valueOf(this.settingsController.dateFrom.getValue() + " 00:00:00").getTime()/1000L;
+        long TimeStampEnd = Timestamp.valueOf(this.settingsController.dateTo.getValue() + " 23:59:59").getTime()/1000L;
 
-        List<TransactionModel> transactionsInTime = TransactionController.getTransactionsInTime(this.transactionList,TimeStampStart,TimeStampEnd);
-        TreeMap<String,Double> joinedTransactions = TransactionController.getRewardsJoined(transactionsInTime, this.cmbIntervall.getValue(),this.selectedCoinAnalyse.getValue());
+        List<TransactionModel> transactionsInTime = this.transactionController.getTransactionsInTime(this.transactionList,TimeStampStart,TimeStampEnd);
+        TreeMap<String,Double> joinedTransactions =  this.transactionController.getRewardsJoined(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue());
 
         // Plot timeSeries
         for (HashMap.Entry<String, Double> entry : joinedTransactions.entrySet()) {
@@ -201,17 +190,17 @@ public class ViewModel {
     public void exportToExcel() {
 
         Locale localeDecimal = Locale.GERMAN;
-        if(selectedDecimal.equals(".")){
+        if(settingsController.selectedDecimal.equals(".")){
             localeDecimal = Locale.US;
         }
 
         //TODO brows dialog export --> strPathAppData
 
-        LocalDate startTime = this.dateExpStart.getValue();
+        LocalDate startTime = this.settingsController.dateFrom.getValue();
         long TimeStampStart = Timestamp.valueOf(String.valueOf(startTime) + " 00:00:00").getTime()/1000L;
-        LocalDate endTime = this.dateExpEnd.getValue();
+        LocalDate endTime = this.settingsController.dateTo.getValue();
         long TimeStampEnd = Timestamp.valueOf(String.valueOf(endTime) + " 23:59:59").getTime()/1000L;
-        boolean success = this.expService.exportTransactionToExcel(this.transactionModelList, strPathAppData+"//test.csv",this.coinPriceHistory,this.selectedFiatCurrency.getValue(),localeDecimal,this.selectedSeperator.getValue(),TimeStampStart,TimeStampEnd);
+        boolean success = this.expService.exportTransactionToExcel(this.transactionModelList, strPathAppData+"//test.csv",this.coinPriceHistory,this.settingsController.selectedFiatCurrency.getValue(),localeDecimal,this.settingsController.selectedSeperator.getValue(),TimeStampStart,TimeStampEnd);
 
         if (success) {
             this.strProgressbar.setValue("Excel successfully exported!");

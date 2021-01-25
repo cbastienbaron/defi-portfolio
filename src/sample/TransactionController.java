@@ -11,7 +11,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.*;
 import java.io.*;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -23,20 +22,21 @@ public class TransactionController {
     URLConnection conn;
     String strCookieOath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
     String strCliPath = System.getProperty("user.dir") + "\\src\\sample\\defichain-1.3.17-x86_64-w64-mingw32\\defichain-1.3.17\\bin\\defi-cli.exe";
-    public List<TransactionModel> transactionList = new ArrayList<>();
+    public List<TransactionModel> transactionList;
     String strTransactionData;
-    int localBlockCount = 0;
+    int localBlockCount;
     OutputStreamWriter wr;
-    public TransactionController(String transactionData){
+
+    public TransactionController(String transactionData) {
         this.strTransactionData = transactionData;
-        this.localBlockCount = getLocalBlockCount();
         this.transactionList = getLocalTransactionList();
+        this.localBlockCount = getLocalBlockCount();
 
     }
 
     public void initCrpConnection() {
         try {
-            String userpass = "";
+            String strCookieData = "";
             try {
                 this.url = new URL("http://127.0.0.1:8554");
             } catch (MalformedURLException e) {
@@ -50,11 +50,11 @@ public class TransactionController {
             String line = reader.readLine();
             String[] kvpSplit = line.split(":");
             if (Arrays.stream(kvpSplit).count() == 2) {
-                userpass = kvpSplit[0] + ":" + kvpSplit[1];
+                strCookieData = kvpSplit[0] + ":" + kvpSplit[1];
             }
             reader.close();
 
-            String basicAuth = "Basic " + new String(Base64.getEncoder().encode((userpass.getBytes())));
+            String basicAuth = "Basic " + new String(Base64.getEncoder().encode((strCookieData.getBytes())));
             conn.setRequestProperty("Authorization", basicAuth);
             conn.setRequestProperty("Content-Type", "application/json-rpc");
             conn.setDoOutput(true);
@@ -67,8 +67,16 @@ public class TransactionController {
 
     public int getBlockCountRpc() {
 
-                JSONObject jsonObject =getRpcResponse("{\"method\": \"getblockcount\"}");
-                return Integer.parseInt(jsonObject.get("result").toString());
+        JSONObject jsonObject = getRpcResponse("{\"method\": \"getblockcount\"}");
+
+        if (jsonObject.get("result") != null) {
+
+            return Integer.parseInt(jsonObject.get("result").toString());
+
+        } else {
+
+            return 0;
+        }
     }
 
     public int getBlockCountCli() {
@@ -83,7 +91,7 @@ public class TransactionController {
                 String readLine;
 
                 while ((readLine = processOutputReader.readLine()) != null) {
-                    processOutput.append(readLine + System.lineSeparator());
+                    processOutput.append(readLine).append(System.lineSeparator());
                 }
 
                 p.waitFor();
@@ -110,17 +118,17 @@ public class TransactionController {
 
     public int getAccountHistoryCountCli() {
         try {
-            Process p = null;
+            Process p;
             StringBuilder processOutput = new StringBuilder();
             p = Runtime.getRuntime().exec(strCliPath + " accounthistorycount mine");
 
 
             try (BufferedReader processOutputReader = new BufferedReader(
-                    new InputStreamReader(p.getInputStream()));) {
+                    new InputStreamReader(p.getInputStream()))) {
                 String readLine;
 
                 while ((readLine = processOutputReader.readLine()) != null) {
-                    processOutput.append(readLine + System.lineSeparator());
+                    processOutput.append(readLine).append(System.lineSeparator());
                 }
                 p.waitFor();
 
@@ -134,22 +142,24 @@ public class TransactionController {
     }
 
 
-
-
     public List<TransactionModel> getListAccountHistoryRpc(int depth) {
 
         List<TransactionModel> transactionList = new ArrayList<>();
-                JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"depth\":" + depth + ",\"no_rewards\":" + false + ",\"limit\":" + depth * 2000 + "}]}");
+        JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"depth\":" + depth + ",\"no_rewards\":" + false + ",\"limit\":" + depth * 2000 + "}]}");
 
         JSONArray transactionJson = (JSONArray) jsonObject.get("result");
 
-        for (Object transaction:transactionJson
-             ) {
+        for (Object transaction : transactionJson
+        ) {
             var transactionJ = (JSONObject) transaction;
-            transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()),transactionJ.get("owner").toString(),transactionJ.get("type").toString(),new String[]{transactionJ.get("amounts").toString().replace("[","").replace("]","").replace("\"","")},transactionJ.get("blockHash").toString(),Integer.parseInt(transactionJ.get("blockHeight").toString()),transactionJ.get("poolID").toString(),this));
+            if (transactionJ.get("poolID") != null) {
+                transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), new String[]{transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")}, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", this));
+            } else {
+                transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), new String[]{transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")}, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), this));
+            }
         }
 
-        return new ArrayList<>(transactionList);
+        return transactionList;
     }
 
     public List<TransactionModel> getListAccountHistoryCli(int depth) {
@@ -162,11 +172,11 @@ public class TransactionController {
             processOutput = new StringBuilder();
 
             try (BufferedReader processOutputReader = new BufferedReader(
-                    new InputStreamReader(p.getInputStream()));) {
+                    new InputStreamReader(p.getInputStream()))) {
                 String readLine;
 
                 while ((readLine = processOutputReader.readLine()) != null) {
-                    processOutput.append(readLine + System.lineSeparator());
+                    processOutput.append(readLine).append(System.lineSeparator());
                 }
                 p.waitFor();
 
@@ -189,7 +199,7 @@ public class TransactionController {
         try {
             initCrpConnection();
 
-            if (conn != null) {
+            if (conn != null & wr != null) {
 
                 wr.write(requestJson);
                 wr.flush();
@@ -197,13 +207,13 @@ public class TransactionController {
 
                 BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String line;
-                String jsonText = "";
+                StringBuilder jsonText = new StringBuilder();
                 while ((line = rd.readLine()) != null) {
-                    jsonText += line;
+                    jsonText.append(line);
                 }
                 rd.close();
 
-                Object obj = JSONValue.parse(jsonText);
+                Object obj = JSONValue.parse(jsonText.toString());
                 return (JSONObject) obj;
             }
         } catch (IOException e) {
@@ -229,7 +239,7 @@ public class TransactionController {
 
                 while (line != null) {
                     String[] transactionSplit = line.split(";");
-                    TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]),transactionSplit[1],transactionSplit[2],new String[]{transactionSplit[3]},transactionSplit[4],Integer.parseInt(transactionSplit[5]),transactionSplit[6],this);
+                    TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], new String[]{transactionSplit[3]}, transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], this);
                     transactionList.add(transAction);
                     line = reader.readLine();
                 }
@@ -244,10 +254,10 @@ public class TransactionController {
     }
 
     public int getLocalBlockCount() {
-        if(transactionList.size() > 0){
+        if (transactionList.size() > 0) {
 
-            return this.transactionList.get(transactionList.size()-1).getBlockHeightProperty();
-        }else{
+            return this.transactionList.get(transactionList.size() - 1).getBlockHeightProperty();
+        } else {
             return 0;
         }
     }
@@ -260,45 +270,46 @@ public class TransactionController {
 
     public boolean updateTransactionData(int depth) {
 
-        List<TransactionModel> transactionList = getLocalTransactionList();
         var transactionListNew = getListAccountHistoryRpc(depth);
-
-        List<TransactionModel> updateTransactionList = new ArrayList<TransactionModel>();
+        List<TransactionModel> updateTransactionList = new ArrayList<>();
 
         for (int i = transactionListNew.size() - 1; i >= 0; i--) {
             if (transactionListNew.get(i).getBlockHeightProperty() > this.localBlockCount) {
-                this.transactionList.add( transactionListNew.get(i));
-                updateTransactionList.add( transactionListNew.get(i))
+                this.transactionList.add(transactionListNew.get(i));
+                updateTransactionList.add(transactionListNew.get(i))
                 ;
             }
         }
 
         if (updateTransactionList.size() > 0) {
             try {
-                PrintWriter writer = new PrintWriter(new FileWriter(this.strTransactionData , true));
+                PrintWriter writer = new PrintWriter(new FileWriter(this.strTransactionData, true));
                 StringBuilder sb = new StringBuilder();
                 String exportSplitter = ";";
 
-                for (int iTransaction =0; iTransaction < updateTransactionList.size(); iTransaction++) {
+                for (TransactionModel transactionModel : updateTransactionList) {
 
-                    for (int i = 0; i < updateTransactionList.get(iTransaction).getAmountProperty().length; i++) {
-                        sb.append(updateTransactionList.get(iTransaction).getBlockTimeProperty() + exportSplitter);
-                        sb.append(updateTransactionList.get(iTransaction).getOwnerProperty() + exportSplitter);
-                        sb.append(updateTransactionList.get(iTransaction).getTypeProperty() + exportSplitter);
-                        sb.append(updateTransactionList.get(iTransaction).getAmountProperty()[i] + exportSplitter);
-                        sb.append(updateTransactionList.get(iTransaction).getBlockHashProperty() + exportSplitter);
-                        sb.append(updateTransactionList.get(iTransaction).getBlockHeightProperty() + exportSplitter);
-                        sb.append(updateTransactionList.get(iTransaction).getPoolIDProperty());
+                    for (int i = 0; i < transactionModel.getAmountProperty().length; i++) {
+                        sb.append(transactionModel.getBlockTimeProperty()).append(exportSplitter);
+                        sb.append(transactionModel.getOwnerProperty()).append(exportSplitter);
+                        sb.append(transactionModel.getTypeProperty()).append(exportSplitter);
+                        sb.append(transactionModel.getAmountProperty()[i]).append(exportSplitter);
+                        sb.append(transactionModel.getBlockHashProperty()).append(exportSplitter);
+                        sb.append(transactionModel.getBlockHeightProperty()).append(exportSplitter);
+                        sb.append(transactionModel.getPoolIDProperty()).append(exportSplitter);
+                        if (transactionModel.getTxIDProperty().equals(""))
+                            sb.append("\"\"");
+                        else
+                            sb.append(transactionModel.getTxIDProperty());
+
                         sb.append("\n");
                     }
                 }
                 writer.write(sb.toString());
                 writer.close();
 
-                this.localBlockCount = this.transactionList.get(this.transactionList.size()-1).getBlockHeightProperty();
+                this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).getBlockHeightProperty();
                 return true;
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -306,7 +317,7 @@ public class TransactionController {
         return false;
     }
 
-    public static List getTransactionsInTime(List<TransactionModel> transactions, long startTime, long endTime) {
+    public List<TransactionModel> getTransactionsInTime(List<TransactionModel> transactions, long startTime, long endTime) {
         List<TransactionModel> filteredTransactions = new ArrayList<>();
         for (int ilist = 1; ilist < transactions.size(); ilist++) {
             if (transactions.get(ilist).getBlockTimeProperty() >= startTime && transactions.get(ilist).getBlockTimeProperty() <= endTime) {
@@ -316,7 +327,7 @@ public class TransactionController {
         return filteredTransactions;
     }
 
-    public static List getTransactionsOfType(List<TransactionModel> transactions, String type) {
+    public List<TransactionModel> getTransactionsOfType(List<TransactionModel> transactions, String type) {
         List<TransactionModel> filteredTransactions = new ArrayList<>();
         for (int ilist = 1; ilist < transactions.size(); ilist++) {
             if (transactions.get(ilist).getTypeProperty().equals(type)) {
@@ -326,7 +337,7 @@ public class TransactionController {
         return filteredTransactions;
     }
 
-    public static List getTransactionsOfOwner(List<TransactionModel> transactions, String owner) {
+    public List<TransactionModel> getTransactionsOfOwner(List<TransactionModel> transactions, String owner) {
         List<TransactionModel> filteredTransactions = new ArrayList<>();
         for (int ilist = 1; ilist < transactions.size(); ilist++) {
             if (transactions.get(ilist).getTypeProperty().equals(owner)) {
@@ -336,7 +347,7 @@ public class TransactionController {
         return filteredTransactions;
     }
 
-    public static List getTransactionsBetweenBlocks(List<TransactionModel> transactions, long startBlock, long endBlock) {
+    public List<TransactionModel> getTransactionsBetweenBlocks(List<TransactionModel> transactions, long startBlock, long endBlock) {
         List<TransactionModel> filteredTransactions = new ArrayList<>();
         for (int ilist = 1; ilist < transactions.size(); ilist++) {
             if (transactions.get(ilist).getBlockHeightProperty() >= startBlock && transactions.get(ilist).getBlockHeightProperty() <= endBlock) {
@@ -349,71 +360,70 @@ public class TransactionController {
     public static TreeMap getRewardsJoined(List<TransactionModel> transactions, String intervall , String Coin){
         TreeMap<String, Double> map = new TreeMap<>();
         TreeMap<String, Double> sorted = new TreeMap<>();
-                for(TransactionModel item : transactions){
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(item.getBlockTimeProperty()*1000L);
-                    int year = cal.get(Calendar.YEAR);
-                    int month = cal.get(Calendar.MONTH)+1;
-                    int week = cal.get(Calendar.WEEK_OF_YEAR);
-                    int day = cal.get(Calendar.DAY_OF_MONTH);
-                    String[] AmountCoin = item.getAmountProperty();
+        for(TransactionModel item : transactions){
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(item.getBlockTimeProperty()*1000L);
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH)+1;
+            int week = cal.get(Calendar.WEEK_OF_YEAR);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+            String[] AmountCoin = item.getAmountProperty();
 
-                    for(int iAmount = 0 ;iAmount<AmountCoin.length;iAmount++) {
-                        String[] coinValue = AmountCoin[iAmount].split("@");
-                        if (coinValue[1].equals(Coin)) {
-                            String date = "";
-                            if(intervall.equals("Daily")) {
-                                date = year + "-" + month + "-" + day;
-                            }
-                            else if(intervall.equals("Monthly")) {
-                                 date = year + "-" + month;
-                            }
-                            else if(intervall.equals("Weekly")) {
-                                date = year + "-" + week;
-                            }
-                            else if(intervall.equals("Yearly")) {
-                                date = year + "-";
-                            }
+            for(int iAmount = 0 ;iAmount<AmountCoin.length;iAmount++) {
+                String[] coinValue = AmountCoin[iAmount].split("@");
+                if (coinValue[1].equals(Coin)) {
+                    String date = "";
+                    if(intervall.equals("Daily")) {
+                        date = year + "-" + month + "-" + day;
+                    }
+                    else if(intervall.equals("Monthly")) {
+                        date = year + "-" + month;
+                    }
+                    else if(intervall.equals("Weekly")) {
+                        date = year + "-" + week;
+                    }
+                    else if(intervall.equals("Yearly")) {
+                        date = year + "-";
+                    }
 
-                            if (item.getTypeProperty().equals("Rewards")) {
-                                if (map.keySet().contains(date)) {
-                                    Double oldValue = map.get(date);
-                                    Double newValue = oldValue + Double.parseDouble(coinValue[0]);
-                                    map.put(date, newValue);
-                                } else {
-                                    map.put(date, Double.parseDouble(coinValue[0]));
-                                }
-                            }
+                    if (item.getTypeProperty().equals("Rewards")) {
+                        if (map.keySet().contains(date)) {
+                            Double oldValue = map.get(date);
+                            Double newValue = oldValue + Double.parseDouble(coinValue[0]);
+                            map.put(date, newValue);
+                        } else {
+                            map.put(date, Double.parseDouble(coinValue[0]));
                         }
                     }
                 }
-                sorted.putAll(map);
-                return sorted;
+            }
         }
+        sorted.putAll(map);
+        return sorted;
+    }
 
-    public static String convertTimeStampToString(long timeStamp) {
+
+    public String convertTimeStampToString(long timeStamp) {
         Date date = new Date(timeStamp * 1000L);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        String strDate = dateFormat.format(date);
-        return strDate;
+        return dateFormat.format(date);
     }
 
-    public static String convertTimeStampWithoutTimeToString(long timeStamp) {
+    public String convertTimeStampWithoutTimeToString(long timeStamp) {
         Date date = new Date(timeStamp * 1000L);
-        DateFormat dateFormat = new SimpleDateFormat("DD-MM-YYYY");
-        String strDate = dateFormat.format(date);
-        return strDate;
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        return dateFormat.format(date);
     }
 
-    public static double getTotalCoinAmount(List<TransactionModel> transactions, String coinName) {
+    public double getTotalCoinAmount(List<TransactionModel> transactions, String coinName) {
 
         double amountCoin = 0;
 
-        for (int iTransaction = 0; iTransaction < transactions.size(); iTransaction++) {
+        for (TransactionModel transaction : transactions) {
 
-            for (int i = 0; i < transactions.get(iTransaction).getAmountProperty().length; i++) {
+            for (int i = 0; i < transaction.getAmountProperty().length; i++) {
 
-                String[] CoinsAndAmounts = splitCoinsAndAmounts(transactions.get(iTransaction).getAmountProperty()[i].toString());
+                String[] CoinsAndAmounts = splitCoinsAndAmounts(transaction.getAmountProperty()[i]);
 
                 if (coinName.equals(CoinsAndAmounts[1])) {
                     amountCoin += Double.parseDouble(CoinsAndAmounts[0]);
@@ -425,8 +435,7 @@ public class TransactionController {
         return amountCoin;
     }
 
-    public static String[] splitCoinsAndAmounts(String amountAndCoin) {
-        String[] splittedamountAndCoin = amountAndCoin.split("@");
-        return splittedamountAndCoin;
+    public String[] splitCoinsAndAmounts(String amountAndCoin) {
+        return amountAndCoin.split("@");
     }
 }

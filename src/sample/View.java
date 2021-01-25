@@ -8,19 +8,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.util.StringConverter;
-import javafx.util.converter.DefaultStringConverter;
 
 import java.net.URL;
 import java.text.*;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 public class View implements Initializable {
-
-    private final StringConverter<String> S_CONVERTER = new DefaultStringConverter();
 
     @FXML
     private Pane AnchorPanelUpdateDatabase, anchorPanelAnalyse, anchorPanelExport;
@@ -29,19 +23,15 @@ public class View implements Initializable {
     @FXML
     private Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, strUpToDate, lblProgressBar, strUpdatingDatabase;
     @FXML
-    private ComboBox cmbCoins, cmbCoinsAnalyse, cmbIntervall;
+    private ComboBox<String> cmbCoins, cmbIntervall;
     @FXML
     private ImageView imgViewObj;
     @FXML
-    private DatePicker dateExpStart = new DatePicker();
+    private DatePicker dateFrom = new DatePicker();
     @FXML
-    private DatePicker dateExpEnd = new DatePicker();
+    private DatePicker dateTo = new DatePicker();
     @FXML
-    private DatePicker dateAnalyseStart = new DatePicker();
-    @FXML
-    private DatePicker dateAnalyseEnd = new DatePicker();
-    @FXML
-    private ProgressIndicator spinner = new ProgressIndicator();
+    private final ProgressIndicator spinner = new ProgressIndicator();
     @FXML
     private LineChart<Number, Number> hPlot, hPlotKumuliert;
     @FXML
@@ -117,46 +107,25 @@ public class View implements Initializable {
         this.progressBar.progressProperty().bind(this.viewModel.progress);
         this.lblProgressBar.textProperty().bindBidirectional(this.viewModel.strProgressbar);
 
-        // Analyse Rewards Frame
-        this.dateAnalyseStart.valueProperty().bindBidirectional(this.viewModel.dateAnalyseStart);
-        this.dateAnalyseStart.setValue(LocalDate.now());
-        this.dateAnalyseStart.setDayCellFactory(picker -> new DateCell() {
-            public void updateItem(LocalDate date, boolean empty) {
-                super.updateItem(date, empty);
-                LocalDate today = LocalDate.now();
-                setDisable(empty || date.compareTo(today) > 0);
-            }
-        });
-        this.dateAnalyseEnd.valueProperty().bindBidirectional(this.viewModel.dateAnalyseEnd);
-        this.dateAnalyseEnd.setValue(LocalDate.now());
-        this.dateAnalyseEnd.setDayCellFactory(picker -> new DateCell() {
-            public void updateItem(LocalDate date, boolean empty) {
-                super.updateItem(date, empty);
-                LocalDate today = LocalDate.now();
-                setDisable(empty || date.compareTo(today) > 0);
-            }
-        });
-        this.cmbCoinsAnalyse.getItems().addAll("BTC", "DFI", "ETH", "USTD");
-        this.cmbCoinsAnalyse.valueProperty().bindBidirectional(this.viewModel.selectedCoinAnalyse);
         this.cmbIntervall.getItems().addAll("Daily", "Weekly", "Monthly", "Yearly");
-        this.cmbIntervall.valueProperty().bindBidirectional(this.viewModel.cmbIntervall);
+        this.cmbIntervall.valueProperty().bindBidirectional(this.viewModel.settingsController.cmbIntervall);
 
+        this.cmbCoins.getItems().addAll(this.viewModel.cryptoCurrencies);
+        this.cmbCoins.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedCoin);
 
-        // Export Rewards Frame
-        this.cmbCoins.getItems().addAll("BTC", "DFI", "ETH", "USTD");
-        this.cmbCoins.valueProperty().bindBidirectional(this.viewModel.selectedCoin);
-        this.dateExpStart.valueProperty().bindBidirectional(this.viewModel.dateExpStart);
-        this.dateExpStart.setValue(LocalDate.now());
-        this.dateExpStart.setDayCellFactory(picker -> new DateCell() {
+        this.dateFrom.valueProperty().bindBidirectional(this.viewModel.settingsController.dateFrom);
+        this.dateFrom.setValue(LocalDate.now());
+        this.dateFrom.setDayCellFactory(picker -> new DateCell() {
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
                 LocalDate today = LocalDate.now();
                 setDisable(empty || date.compareTo(today) > 0);
             }
         });
-        this.dateExpEnd.valueProperty().bindBidirectional(this.viewModel.dateExpEnd);
-        this.dateExpEnd.setValue(LocalDate.now());
-        this.dateExpEnd.setDayCellFactory(picker -> new DateCell() {
+        this.dateTo.valueProperty().bindBidirectional(this.viewModel.settingsController.dateTo);
+        this.dateTo.setValue(LocalDate.now());
+        this.dateTo.setDayCellFactory(picker -> new DateCell() {
+
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
                 LocalDate today = LocalDate.now();
@@ -164,19 +133,19 @@ public class View implements Initializable {
             }
         });
 
-        hTable.itemsProperty().set(viewModel.getTransactionTable());
+        hTable.itemsProperty().set(this.viewModel.getTransactionTable());
         ownerColumn.setCellValueFactory(param -> param.getValue().ownerProperty);
         blockTimeColumn.setCellValueFactory(new PropertyValueFactory("blockTimeProperty"));
-        typeColumn.setCellValueFactory(new PropertyValueFactory("typeProperty"));
-        cryptoCurrencyColumn.setCellValueFactory(new PropertyValueFactory("cryptoCurrencyProperty"));
+        typeColumn.setCellValueFactory(param -> param.getValue().typeProperty);
+        cryptoCurrencyColumn.setCellValueFactory(param -> param.getValue().cryptoCurrencyProperty);
         cryptoValueColumn.setCellValueFactory(new PropertyValueFactory("cryptoValueProperty"));
-        blockHashColumn.setCellValueFactory(new PropertyValueFactory("blockHashProperty"));
+        blockHashColumn.setCellValueFactory(param -> param.getValue().blockHashProperty);
         blockHeightColumn.setCellValueFactory(new PropertyValueFactory("blockHeightProperty"));
-        poolIDColumn.setCellValueFactory(new PropertyValueFactory("poolIDProperty"));
-        fiatValueColumn.setCellValueFactory(new PropertyValueFactory("fiatCurrencyProperty"));
-        fiatCurrencyColumn.setCellValueFactory(new PropertyValueFactory("fiatCurrencyProperty"));
+        poolIDColumn.setCellValueFactory(param -> param.getValue().poolIDProperty);
+        fiatValueColumn.setCellValueFactory(new PropertyValueFactory("fiatValueProperty"));
+        fiatCurrencyColumn.setCellValueFactory(param -> param.getValue().fiatCurrencyProperty);
 
-        poolIDColumn.setCellFactory(tc -> new TableCell<TransactionModel, String>() {
+        poolIDColumn.setCellFactory(tc -> new TableCell<>() {
             @Override
             protected void updateItem(String poolID, boolean empty) {
                 super.updateItem(poolID, empty);
@@ -184,7 +153,7 @@ public class View implements Initializable {
                     setText(null);
                 } else {
 
-                    String pool = "5";
+                    String pool = "-";
 
                     switch (poolID) {
                         case "4":
@@ -205,7 +174,7 @@ public class View implements Initializable {
             }
         });
 
-        cryptoValueColumn.setCellFactory(tc -> new TableCell<TransactionModel, Double>() {
+        cryptoValueColumn.setCellFactory(tc -> new TableCell<>() {
             @Override
             protected void updateItem(Double cryptoValue, boolean empty) {
                 super.updateItem(cryptoValue, empty);
@@ -219,7 +188,7 @@ public class View implements Initializable {
             }
         });
 
-        blockTimeColumn.setCellFactory(tc -> new TableCell<TransactionModel, Long>() {
+        blockTimeColumn.setCellFactory(tc -> new TableCell<>() {
             @Override
             protected void updateItem(Long blockTime, boolean empty) {
                 super.updateItem(blockTime, empty);
@@ -227,10 +196,7 @@ public class View implements Initializable {
                     setText(null);
                 } else {
                     Date date = new Date(blockTime * 1000L);
-
-
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
                     setText(dateFormat.format(date));
                 }
             }

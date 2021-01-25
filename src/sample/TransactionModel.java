@@ -15,9 +15,9 @@ public class TransactionModel {
     public final DoubleProperty cryptoValueProperty = new SimpleDoubleProperty(0.0);
     public final DoubleProperty fiatValueProperty = new SimpleDoubleProperty(0.0);
     public final StringProperty fiatCurrencyProperty = new SimpleStringProperty("");
+    public final StringProperty txIDProperty = new SimpleStringProperty("");
 
-
-    public TransactionModel(Long blockTime, String owner, String type, String[] amounts, String blockHash, int blockHeight, String poolID,TransactionController transactionController) {
+    public TransactionModel(Long blockTime, String owner, String type, String[] amounts, String blockHash, int blockHeight, String poolID,String txid,TransactionController transactionController) {
         this.blockTimeProperty.set(blockTime);
         this.ownerProperty.set(owner);
         this.typeProperty.set(type);
@@ -27,7 +27,7 @@ public class TransactionModel {
         this.poolIDProperty.set(poolID);
         this.cryptoValueProperty.set(Double.parseDouble(transactionController.splitCoinsAndAmounts(amounts[0])[0]));
         this.cryptoCurrencyProperty.set(transactionController.splitCoinsAndAmounts(amounts[0])[1]);
-
+        this.txIDProperty.set(txid);
     }
 
     public void setOwnerProperty(String owner) {
@@ -98,6 +98,12 @@ public class TransactionModel {
     }
     public void setFiatCurrencyProperty(String currency) {
         this.fiatCurrencyProperty.set(currency);
+    }
+    public String getTxIDProperty() {
+        return txIDProperty.get();
+    }
+    public void setTxIDProperty(String currency) {
+        this.txIDProperty.set(currency);
     }
 
     public Double getCryptoValueProperty() {

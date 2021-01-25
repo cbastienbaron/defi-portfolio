@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CoinPriceController {
 
-    public CoinPriceModel coinPriceModel = new CoinPriceModel();
+    public CoinPriceModel coinPriceModel;
     String strCoinPriceData;
 
     public CoinPriceController(String strCoinPriceData) {
