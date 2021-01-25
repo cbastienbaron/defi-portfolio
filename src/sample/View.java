@@ -43,7 +43,7 @@ public class View implements Initializable {
     @FXML
     private ProgressIndicator spinner = new ProgressIndicator();
     @FXML
-    private LineChart<Number, Number> hPlot;
+    private LineChart<Number, Number> hPlot, hPlotKumuliert;
     @FXML
     private TableView<TransactionModel> hTable;
     @FXML
@@ -76,6 +76,7 @@ public class View implements Initializable {
     public void btnAnalysePressed() {
         this.anchorPanelAnalyse.toFront();
         this.viewModel.hPlot = this.hPlot;
+        this.viewModel.hPlotKumuliert = this.hPlotKumuliert;
         this.viewModel.hTable = this.hTable;
     }
 
@@ -84,7 +85,10 @@ public class View implements Initializable {
     }
 
     public void btnUpdateDatabasePressed() throws InterruptedException {
+        this.spinner.setVisible(true);
+
         this.viewModel.btnUpdateDatabasePressed();
+        this.spinner.setVisible(false);
     }
 
     public void btnPlotPressed() {
@@ -115,6 +119,7 @@ public class View implements Initializable {
 
         // Analyse Rewards Frame
         this.dateAnalyseStart.valueProperty().bindBidirectional(this.viewModel.dateAnalyseStart);
+        this.dateAnalyseStart.setValue(LocalDate.now());
         this.dateAnalyseStart.setDayCellFactory(picker -> new DateCell() {
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
@@ -123,6 +128,7 @@ public class View implements Initializable {
             }
         });
         this.dateAnalyseEnd.valueProperty().bindBidirectional(this.viewModel.dateAnalyseEnd);
+        this.dateAnalyseEnd.setValue(LocalDate.now());
         this.dateAnalyseEnd.setDayCellFactory(picker -> new DateCell() {
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
@@ -140,6 +146,7 @@ public class View implements Initializable {
         this.cmbCoins.getItems().addAll("BTC", "DFI", "ETH", "USTD");
         this.cmbCoins.valueProperty().bindBidirectional(this.viewModel.selectedCoin);
         this.dateExpStart.valueProperty().bindBidirectional(this.viewModel.dateExpStart);
+        this.dateExpStart.setValue(LocalDate.now());
         this.dateExpStart.setDayCellFactory(picker -> new DateCell() {
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
@@ -148,6 +155,7 @@ public class View implements Initializable {
             }
         });
         this.dateExpEnd.valueProperty().bindBidirectional(this.viewModel.dateExpEnd);
+        this.dateExpEnd.setValue(LocalDate.now());
         this.dateExpEnd.setDayCellFactory(picker -> new DateCell() {
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);

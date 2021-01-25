@@ -345,99 +345,51 @@ public class TransactionController {
         }
         return filteredTransactions;
     }
-    public static TreeMap getRewardsJoined(List<TransactionModel> transactions, String inervall , String Coin){
+
+    public static TreeMap getRewardsJoined(List<TransactionModel> transactions, String intervall , String Coin){
         TreeMap<String, Double> map = new TreeMap<>();
         TreeMap<String, Double> sorted = new TreeMap<>();
-        switch (inervall){
-            case "Daily":
                 for(TransactionModel item : transactions){
                     Calendar cal = Calendar.getInstance();
                     cal.setTimeInMillis(item.getBlockTimeProperty()*1000L);
                     int year = cal.get(Calendar.YEAR);
                     int month = cal.get(Calendar.MONTH)+1;
+                    int week = cal.get(Calendar.WEEK_OF_YEAR);
                     int day = cal.get(Calendar.DAY_OF_MONTH);
-                    String[] AmountCoin = item.getAmountProperty()[0].split("@");
+                    String[] AmountCoin = item.getAmountProperty();
 
-                    String date = year + "-" + month + "-" + day;
-                    if(item.getTypeProperty().equals("Rewards")) {
-                        if (map.keySet().contains(date)) {
-                            Double oldValue = map.get(date);
-                            Double newValue = oldValue + Double.parseDouble(AmountCoin[0]);
-                            map.put(date, newValue);
-                        } else {
-                            map.put(date, Double.parseDouble(AmountCoin[0]));
+                    for(int iAmount = 0 ;iAmount<AmountCoin.length;iAmount++) {
+                        String[] coinValue = AmountCoin[iAmount].split("@");
+                        if (coinValue[1].equals(Coin)) {
+                            String date = "";
+                            if(intervall.equals("Daily")) {
+                                date = year + "-" + month + "-" + day;
+                            }
+                            else if(intervall.equals("Monthly")) {
+                                 date = year + "-" + month;
+                            }
+                            else if(intervall.equals("Weekly")) {
+                                date = year + "-" + week;
+                            }
+                            else if(intervall.equals("Yearly")) {
+                                date = year + "-";
+                            }
+
+                            if (item.getTypeProperty().equals("Rewards")) {
+                                if (map.keySet().contains(date)) {
+                                    Double oldValue = map.get(date);
+                                    Double newValue = oldValue + Double.parseDouble(coinValue[0]);
+                                    map.put(date, newValue);
+                                } else {
+                                    map.put(date, Double.parseDouble(coinValue[0]));
+                                }
+                            }
                         }
                     }
                 }
                 sorted.putAll(map);
                 return sorted;
-
-            case "Weekly":
-                for(TransactionModel item : transactions){
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(item.getBlockTimeProperty()*1000L);
-                    int year = cal.get(Calendar.YEAR);
-                    int week = cal.get(Calendar.WEEK_OF_YEAR);
-                    String[] AmountCoin = item.getAmountProperty()[0].split("@");
-
-                    String date = year + "-" + week;
-                    if(item.getTypeProperty().equals("Rewards")) {
-                        if (map.keySet().contains(date)) {
-                            Double oldValue = map.get(date);
-                            Double newValue = oldValue + Double.parseDouble(AmountCoin[0]);
-                            map.put(date, newValue);
-                        } else {
-                            map.put(date, Double.parseDouble(AmountCoin[0]));
-                        }
-                    }
-                }
-                sorted.putAll(map);
-                return map;
-            case "Monthly":
-                for(TransactionModel item : transactions){
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(item.getBlockTimeProperty()*1000L);
-                    int year = cal.get(Calendar.YEAR);
-                    int month = cal.get(Calendar.MONTH)+1;
-                    String[] AmountCoin = item.getAmountProperty()[0].split("@");
-
-                    String date = year + "-" + month;
-                    if(item.getTypeProperty().equals("Rewards")) {
-                        if (map.keySet().contains(date)) {
-                            Double oldValue = map.get(date);
-                            Double newValue = oldValue + Double.parseDouble(AmountCoin[0]);
-                            map.put(date, newValue);
-                        } else {
-                            map.put(date, Double.parseDouble(AmountCoin[0]));
-                        }
-                    }
-                }
-                sorted.putAll(map);
-                return map;
-            case "Yearly":
-                for(TransactionModel item : transactions){
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(item.getBlockTimeProperty()*1000L);
-                    int year = cal.get(Calendar.YEAR);
-                    String[] AmountCoin = item.getAmountProperty()[0].split("@");
-
-                    String date = year+ "";
-                    if(item.getTypeProperty().equals("Rewards")) {
-                        if (map.keySet().contains(date)) {
-                            Double oldValue = map.get(date);
-                            Double newValue = oldValue + Double.parseDouble(AmountCoin[0]);
-                            map.put(date, newValue);
-                        } else {
-                            map.put(date, Double.parseDouble(AmountCoin[0]));
-                        }
-                    }
-                }
-                sorted.putAll(map);
-                return map;
         }
-
-        return map;
-    }
 
     public static String convertTimeStampToString(long timeStamp) {
         Date date = new Date(timeStamp * 1000L);

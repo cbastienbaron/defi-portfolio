@@ -39,7 +39,7 @@ public class ViewModel {
     public ObjectProperty<java.time.LocalDate> dateAnalyseEnd = new SimpleObjectProperty();
     public StringProperty strUpdatingDatabase = new SimpleStringProperty("");
     public BooleanProperty spinner = new SimpleBooleanProperty();
-    public LineChart<Number, Number> hPlot;
+    public LineChart<Number, Number> hPlot, hPlotKumuliert;
     public TableView hTable;
     public List<TransactionModel> transactionModelList;
     public ObservableList<TransactionModel> transactionList;
@@ -136,7 +136,7 @@ public class ViewModel {
         List<TransactionModel> transactionsInTime = TransactionController.getTransactionsInTime(this.transactionList,TimeStampStart,TimeStampEnd);
         TreeMap<String,Double> joinedTransactions = TransactionController.getRewardsJoined(transactionsInTime, this.cmbIntervall.getValue(),this.selectedCoinAnalyse.getValue());
 
-
+        // Plot timeSeries
         for (HashMap.Entry<String, Double> entry : joinedTransactions.entrySet()) {
                 series.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
         }
@@ -154,7 +154,44 @@ public class ViewModel {
                 d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
             }
         }
-//
+
+        // Plot Kumuliert
+        Collection<Double> values = joinedTransactions.values();
+        ArrayList<Double> valueList = new ArrayList<>(values);
+        XYChart.Series<Number, Number> series2 = new XYChart.Series();
+
+        for (int i = 0 ;i<valueList.size()-1;i++){
+            valueList.set(i+1, valueList.get(i)+valueList.get(i+1));
+            System.out.println(valueList.get(i));
+        }
+
+        int iterator = 0;
+        for (HashMap.Entry<String, Double> entry : joinedTransactions.entrySet()) {
+              entry.setValue(valueList.get(iterator));
+              iterator++;
+        }
+        series2.setName("Rewards kumuliert");
+
+        for (HashMap.Entry<String, Double> entry : joinedTransactions.entrySet()) {
+            System.out.println(entry.getValue());
+            series2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
+        }
+        if (this.hPlotKumuliert.getData().size() == 1) {
+            this.hPlotKumuliert.getData().remove(0);
+        }
+
+        this.hPlotKumuliert.getData().add(series2);
+        for (XYChart.Series<Number, Number> s : this.hPlotKumuliert.getData()) {
+            for (XYChart.Data d : s.getData()) {
+                Tooltip t = new Tooltip(d.getYValue().toString());
+                t.setShowDelay(Duration.seconds(0));
+                Tooltip.install(d.getNode(), t);
+                d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
+                d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+            }
+        }
+
+
     }
 
     public ObservableList<TransactionModel> getTransactionTable(){
