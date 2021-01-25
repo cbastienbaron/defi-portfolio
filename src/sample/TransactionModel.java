@@ -26,7 +26,7 @@ public class TransactionModel {
         this.blockHeightProperty.set(blockHeight);
         this.poolIDProperty.set(poolID);
         this.cryptoValueProperty.set(Double.parseDouble(transactionController.splitCoinsAndAmounts(amounts[0])[0]));
-        this.cryptoCurrencyProperty.set(transactionController.splitCoinsAndAmounts(amounts[0])[0]);
+        this.cryptoCurrencyProperty.set(transactionController.splitCoinsAndAmounts(amounts[0])[1]);
 
     }
 

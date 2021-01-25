@@ -352,14 +352,14 @@ public class TransactionController {
             case "Daily":
                 for(TransactionModel item : transactions){
                     Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(item.blockTime*1000L);
+                    cal.setTimeInMillis(item.getBlockTimeProperty()*1000L);
                     int year = cal.get(Calendar.YEAR);
                     int month = cal.get(Calendar.MONTH)+1;
                     int day = cal.get(Calendar.DAY_OF_MONTH);
-                    String[] AmountCoin = item.amounts[0].split("@");
+                    String[] AmountCoin = item.getAmountProperty()[0].split("@");
 
                     String date = year + "-" + month + "-" + day;
-                    if(item.type.equals("Rewards")) {
+                    if(item.getTypeProperty().equals("Rewards")) {
                         if (map.keySet().contains(date)) {
                             Double oldValue = map.get(date);
                             Double newValue = oldValue + Double.parseDouble(AmountCoin[0]);
@@ -375,13 +375,13 @@ public class TransactionController {
             case "Weekly":
                 for(TransactionModel item : transactions){
                     Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(item.blockTime*1000L);
+                    cal.setTimeInMillis(item.getBlockTimeProperty()*1000L);
                     int year = cal.get(Calendar.YEAR);
                     int week = cal.get(Calendar.WEEK_OF_YEAR);
-                    String[] AmountCoin = item.amounts[0].split("@");
+                    String[] AmountCoin = item.getAmountProperty()[0].split("@");
 
                     String date = year + "-" + week;
-                    if(item.type.equals("Rewards")) {
+                    if(item.getTypeProperty().equals("Rewards")) {
                         if (map.keySet().contains(date)) {
                             Double oldValue = map.get(date);
                             Double newValue = oldValue + Double.parseDouble(AmountCoin[0]);
@@ -396,13 +396,13 @@ public class TransactionController {
             case "Monthly":
                 for(TransactionModel item : transactions){
                     Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(item.blockTime*1000L);
+                    cal.setTimeInMillis(item.getBlockTimeProperty()*1000L);
                     int year = cal.get(Calendar.YEAR);
                     int month = cal.get(Calendar.MONTH)+1;
-                    String[] AmountCoin = item.amounts[0].split("@");
+                    String[] AmountCoin = item.getAmountProperty()[0].split("@");
 
                     String date = year + "-" + month;
-                    if(item.type.equals("Rewards")) {
+                    if(item.getTypeProperty().equals("Rewards")) {
                         if (map.keySet().contains(date)) {
                             Double oldValue = map.get(date);
                             Double newValue = oldValue + Double.parseDouble(AmountCoin[0]);
@@ -417,12 +417,12 @@ public class TransactionController {
             case "Yearly":
                 for(TransactionModel item : transactions){
                     Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(item.blockTime*1000L);
+                    cal.setTimeInMillis(item.getBlockTimeProperty()*1000L);
                     int year = cal.get(Calendar.YEAR);
-                    String[] AmountCoin = item.amounts[0].split("@");
+                    String[] AmountCoin = item.getAmountProperty()[0].split("@");
 
                     String date = year+ "";
-                    if(item.type.equals("Rewards")) {
+                    if(item.getTypeProperty().equals("Rewards")) {
                         if (map.keySet().contains(date)) {
                             Double oldValue = map.get(date);
                             Double newValue = oldValue + Double.parseDouble(AmountCoin[0]);
