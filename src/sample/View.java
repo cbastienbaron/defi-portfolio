@@ -1,6 +1,8 @@
 package sample;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
@@ -68,10 +70,7 @@ public class View implements Initializable {
         this.viewModel.hPlot = this.hPlot;
         this.viewModel.hPlotKumuliert = this.hPlotKumuliert;
         this.viewModel.hTable = this.hTable;
-    }
-
-    public void btnExportPressed() {
-        this.anchorPanelExport.toFront();
+        this.viewModel.plotUpdate();
     }
 
     public void btnUpdateDatabasePressed() throws InterruptedException {
@@ -79,14 +78,6 @@ public class View implements Initializable {
 
         this.viewModel.btnUpdateDatabasePressed();
         this.spinner.setVisible(false);
-    }
-
-    public void btnPlotPressed() {
-        this.viewModel.plotPressed();
-    }
-
-    public void btnExportExcelPressed() {
-        this.viewModel.exportToExcel();
     }
 
     @Override
@@ -109,11 +100,20 @@ public class View implements Initializable {
 
         this.cmbIntervall.getItems().addAll("Daily", "Weekly", "Monthly", "Yearly");
         this.cmbIntervall.valueProperty().bindBidirectional(this.viewModel.settingsController.cmbIntervall);
+        this.cmbIntervall.valueProperty().addListener((ov, oldValue, newValue) -> {
+            if(viewModel.hPlot!=null)  viewModel.plotUpdate();
+        });
 
         this.cmbCoins.getItems().addAll(this.viewModel.cryptoCurrencies);
         this.cmbCoins.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedCoin);
+        this.cmbCoins.valueProperty().addListener((ov, oldValue, newValue) -> {
+            if(viewModel.hPlot!=null) viewModel.plotUpdate();
+        });
 
         this.dateFrom.valueProperty().bindBidirectional(this.viewModel.settingsController.dateFrom);
+        this.dateFrom.valueProperty().addListener((ov, oldValue, newValue) -> {
+            if(viewModel.hPlot!=null) viewModel.plotUpdate();
+        });
         this.dateFrom.setValue(LocalDate.now());
         this.dateFrom.setDayCellFactory(picker -> new DateCell() {
             public void updateItem(LocalDate date, boolean empty) {
@@ -122,7 +122,11 @@ public class View implements Initializable {
                 setDisable(empty || date.compareTo(today) > 0);
             }
         });
+
         this.dateTo.valueProperty().bindBidirectional(this.viewModel.settingsController.dateTo);
+        this.dateTo.valueProperty().addListener((ov, oldValue, newValue) -> {
+            if(viewModel.hPlot!=null) viewModel.plotUpdate();
+        });
         this.dateTo.setValue(LocalDate.now());
         this.dateTo.setDayCellFactory(picker -> new DateCell() {
 
@@ -134,16 +138,16 @@ public class View implements Initializable {
         });
 
         hTable.itemsProperty().set(this.viewModel.getTransactionTable());
-        ownerColumn.setCellValueFactory(param -> param.getValue().ownerProperty);
-        blockTimeColumn.setCellValueFactory(new PropertyValueFactory("blockTimeProperty"));
-        typeColumn.setCellValueFactory(param -> param.getValue().typeProperty);
-        cryptoCurrencyColumn.setCellValueFactory(param -> param.getValue().cryptoCurrencyProperty);
-        cryptoValueColumn.setCellValueFactory(new PropertyValueFactory("cryptoValueProperty"));
-        blockHashColumn.setCellValueFactory(param -> param.getValue().blockHashProperty);
-        blockHeightColumn.setCellValueFactory(new PropertyValueFactory("blockHeightProperty"));
-        poolIDColumn.setCellValueFactory(param -> param.getValue().poolIDProperty);
-        fiatValueColumn.setCellValueFactory(new PropertyValueFactory("fiatValueProperty"));
-        fiatCurrencyColumn.setCellValueFactory(param -> param.getValue().fiatCurrencyProperty);
+        ownerColumn.setCellValueFactory(param -> param.getValue().getOwner());
+        blockTimeColumn.setCellValueFactory(param -> param.getValue().getBlockTime().asObject());
+        typeColumn.setCellValueFactory(param -> param.getValue().getType());
+        cryptoCurrencyColumn.setCellValueFactory(param -> param.getValue().getCrypto());
+        cryptoValueColumn.setCellValueFactory(param -> param.getValue().getCryptoValue().asObject());
+        blockHashColumn.setCellValueFactory(param -> param.getValue().getBlockHash());
+        blockHeightColumn.setCellValueFactory(param -> param.getValue().getBlockHeight().asObject());
+        poolIDColumn.setCellValueFactory(param -> param.getValue().getPoolID());
+        fiatValueColumn.setCellValueFactory(param -> param.getValue().getFiat().asObject());
+        fiatCurrencyColumn.setCellValueFactory(param -> param.getValue().getFiatCurrency());
 
         poolIDColumn.setCellFactory(tc -> new TableCell<>() {
             @Override
@@ -174,6 +178,36 @@ public class View implements Initializable {
             }
         });
 
+        fiatCurrencyColumn.setCellFactory(tc -> new TableCell<>() {
+            @Override
+            protected void updateItem(String fiatCurrency, boolean empty) {
+                super.updateItem(fiatCurrency, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+
+                    setText(viewModel.settingsController.selectedFiatCurrency.getValue());
+                }
+            }
+        });
+
+
+        fiatValueColumn.setCellFactory(tc -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double fiatValue, boolean empty) {
+                super.updateItem(fiatValue, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+
+                    Locale localeDecimal = Locale.GERMAN;
+                    if (viewModel.settingsController.selectedDecimal.getValue().equals(".")) {
+                        localeDecimal = Locale.US;
+                    }
+                    setText(String.format(localeDecimal, "%.8f", fiatValue));
+                }
+            }
+        });
         cryptoValueColumn.setCellFactory(tc -> new TableCell<>() {
             @Override
             protected void updateItem(Double cryptoValue, boolean empty) {
@@ -183,7 +217,11 @@ public class View implements Initializable {
                 } else {
                     String pattern = "#######.########";
                     DecimalFormat decimalFormat = new DecimalFormat(pattern);
-                    setText(decimalFormat.format(cryptoValue));
+                    Locale localeDecimal = Locale.GERMAN;
+                    if (viewModel.settingsController.selectedDecimal.getValue().equals(".")) {
+                        localeDecimal = Locale.US;
+                    }
+                    setText(String.format(localeDecimal, "%.8f", cryptoValue));
                 }
             }
         });

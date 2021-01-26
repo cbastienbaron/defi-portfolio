@@ -2,22 +2,25 @@ package sample;
 
 import javafx.beans.property.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TransactionModel {
 
-    public final StringProperty ownerProperty = new SimpleStringProperty("");
-    public final IntegerProperty blockHeightProperty = new SimpleIntegerProperty(0);
-    public final StringProperty blockHashProperty = new SimpleStringProperty("");
-    public final LongProperty blockTimeProperty = new SimpleLongProperty(0L);
-    public final StringProperty typeProperty = new SimpleStringProperty("");
-    public final StringProperty poolIDProperty = new SimpleStringProperty("");
-    public final ObjectProperty<String[]> amountProperty = new SimpleObjectProperty<>();
-    public final StringProperty cryptoCurrencyProperty = new SimpleStringProperty("");
-    public final DoubleProperty cryptoValueProperty = new SimpleDoubleProperty(0.0);
-    public final DoubleProperty fiatValueProperty = new SimpleDoubleProperty(0.0);
-    public final StringProperty fiatCurrencyProperty = new SimpleStringProperty("");
-    public final StringProperty txIDProperty = new SimpleStringProperty("");
+    private final StringProperty ownerProperty = new SimpleStringProperty("");
+    private final IntegerProperty blockHeightProperty = new SimpleIntegerProperty(0);
+    private final StringProperty blockHashProperty = new SimpleStringProperty("");
+    private final LongProperty blockTimeProperty = new SimpleLongProperty(0L);
+    private final StringProperty typeProperty = new SimpleStringProperty("");
+    private final StringProperty poolIDProperty = new SimpleStringProperty("");
+    private final ObjectProperty<String[]> amountProperty = new SimpleObjectProperty<>();
+    private final StringProperty cryptoCurrencyProperty = new SimpleStringProperty("");
+    private final DoubleProperty cryptoValueProperty = new SimpleDoubleProperty(0.0);
+    private final DoubleProperty fiatValueProperty = new SimpleDoubleProperty(0.0);
+    private final StringProperty fiatCurrencyProperty = new SimpleStringProperty("");
+    private final StringProperty txIDProperty = new SimpleStringProperty("");
 
-    public TransactionModel(Long blockTime, String owner, String type, String[] amounts, String blockHash, int blockHeight, String poolID,String txid,TransactionController transactionController) {
+    public TransactionModel(Long blockTime, String owner, String type, String[] amounts, String blockHash, int blockHeight, String poolID, String txid, TransactionController transactionController) {
         this.blockTimeProperty.set(blockTime);
         this.ownerProperty.set(owner);
         this.typeProperty.set(type);
@@ -28,95 +31,180 @@ public class TransactionModel {
         this.cryptoValueProperty.set(Double.parseDouble(transactionController.splitCoinsAndAmounts(amounts[0])[0]));
         this.cryptoCurrencyProperty.set(transactionController.splitCoinsAndAmounts(amounts[0])[1]);
         this.txIDProperty.set(txid);
+        this.fiatCurrencyProperty.set(transactionController.settingsController.selectedFiatCurrency.getValue());
+
+        List<List<String>> coinPriceList = null;
+
+        switch (this.amountProperty.getValue()[0].split("@")[1]) {
+            case "DFI":
+                coinPriceList = transactionController.coinPriceController.coinPriceModel.GetDfiList(transactionController.settingsController.selectedFiatCurrency.get());
+                break;
+            case "BTC":
+                coinPriceList = transactionController.coinPriceController.coinPriceModel.GetBtcList(transactionController.settingsController.selectedFiatCurrency.get());
+                break;
+            case "ETH":
+                coinPriceList = transactionController.coinPriceController.coinPriceModel.GetEthList(transactionController.settingsController.selectedFiatCurrency.get());
+                break;
+            case "USDT":
+                coinPriceList = transactionController.coinPriceController.coinPriceModel.GetUsdtList(transactionController.settingsController.selectedFiatCurrency.get());
+                break;
+            case "LTC":
+                coinPriceList = transactionController.coinPriceController.coinPriceModel.GetLtcList(transactionController.settingsController.selectedFiatCurrency.get());
+                break;
+            case "BCH":
+                coinPriceList = transactionController.coinPriceController.coinPriceModel.GetBchList(transactionController.settingsController.selectedFiatCurrency.get());
+                break;
+            default:
+                break;
+        }
+
+        if (coinPriceList != null)
+            this.fiatValueProperty.set(this.cryptoValueProperty.getValue() * transactionController.coinPriceController.getPriceFromTimeStamp(coinPriceList,this.blockTimeProperty.getValue() * 1000L));
     }
 
-    public void setOwnerProperty(String owner) {
+    public void setOwner(String owner) {
         this.ownerProperty.set(owner);
     }
 
-    public String getOwnerProperty() {
+    public String getOwnerValue() {
         return ownerProperty.get();
     }
 
-    public void setBlockHeightProperty(int blockHeight) {
+    public StringProperty getOwner() {
+        return ownerProperty;
+    }
+
+    public void setBlockHeight(int blockHeight) {
         this.blockHeightProperty.set(blockHeight);
     }
 
-    public int getBlockHeightProperty() {
+    public int getBlockHeightValue() {
         return blockHeightProperty.get();
     }
 
-    public void setBlockHashProperty(String blockHash) {
+    public IntegerProperty getBlockHeight() {
+        return blockHeightProperty;
+    }
+
+    public void setBlockHash(String blockHash) {
         this.blockHashProperty.set(blockHash);
     }
 
-    public String getBlockHashProperty() {
+    public StringProperty getBlockHash() {
+        return blockHashProperty;
+    }
+
+    public String getBlockHashValue() {
         return blockHashProperty.get();
     }
 
-    public void setBlockTimeProperty(Long blockTime) {
+    public void setBlockTime(Long blockTime) {
         this.blockTimeProperty.set(blockTime);
     }
 
-    public Long getBlockTimeProperty() {
+    public LongProperty getBlockTime() {
+        return blockTimeProperty;
+    }
+
+    public Long getBlockTimeValue() {
         return blockTimeProperty.get();
     }
 
-    public void setTypeProperty(String type) {
+    public void setType(String type) {
         this.typeProperty.set(type);
     }
 
-    public String getPoolIDProperty() {
-        return poolIDProperty.get();
+    public StringProperty getType() {
+        return typeProperty;
     }
 
-    public void setPoolIDProperty(String type) {
-        this.poolIDProperty.set(type);
-    }
-
-    public String getTypeProperty() {
+    public String getTypeValue() {
         return typeProperty.get();
     }
 
-    public void setAmountProperty(String[] amount) {
+    public String getPoolIDValue() {
+        return poolIDProperty.get();
+    }
+
+    public StringProperty getPoolID() {
+        return poolIDProperty;
+    }
+
+
+    public void setPoolID(String type) {
+        this.poolIDProperty.set(type);
+    }
+
+
+    public ObjectProperty<String[]> getAmount() {
+        return amountProperty;
+    }
+
+    public void setAmount(String[] amount) {
         this.amountProperty.set(amount);
     }
 
-    public String[] getAmountProperty() {
+    public String[] getAmountValue() {
         return amountProperty.get();
     }
 
-    public String getCryptoCurrencyProperty() {
+    public StringProperty getCrypto() {
+        return cryptoCurrencyProperty;
+    }
+
+    public String getCryptoyValue() {
         return cryptoCurrencyProperty.get();
     }
-    public void setCryptoCurrencyProperty(String currency) {
+
+    public void setCrypto(String currency) {
         this.cryptoCurrencyProperty.set(currency);
     }
 
-    public String getFiatCurrencyProperty() {
+    public String getFiatCurrencyValue() {
         return fiatCurrencyProperty.get();
     }
-    public void setFiatCurrencyProperty(String currency) {
+
+    public StringProperty getFiatCurrency() {
+        return fiatCurrencyProperty;
+    }
+
+    public void setFiatCurrency(String currency) {
         this.fiatCurrencyProperty.set(currency);
     }
-    public String getTxIDProperty() {
+
+    public StringProperty getTxID() {
+        return txIDProperty;
+    }
+
+    public String getTxIDValue() {
         return txIDProperty.get();
     }
-    public void setTxIDProperty(String currency) {
+
+    public void setTxID(String currency) {
         this.txIDProperty.set(currency);
     }
 
-    public Double getCryptoValueProperty() {
+    public Double getCryptoValueValue() {
         return cryptoValueProperty.get();
     }
-    public void setCryptoCurrencyProperty(Double value) {
+
+    public DoubleProperty getCryptoValue() {
+        return cryptoValueProperty;
+    }
+
+    public void setCrypto(Double value) {
         this.cryptoValueProperty.set(value);
     }
 
-    public Double getFiatValueProperty() {
+    public DoubleProperty getFiat() {
+        return fiatValueProperty;
+    }
+
+    public Double getFiatValueValue() {
         return fiatValueProperty.get();
     }
-    public void setFiatValueProperty(Double value) {
+
+    public void setFiatValue(Double value) {
         this.fiatValueProperty.set(value);
     }
 }

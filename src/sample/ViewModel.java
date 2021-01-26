@@ -11,6 +11,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 import java.io.File;
+import java.sql.Array;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.*;
@@ -37,9 +38,9 @@ public class ViewModel {
     public String strCoinPriceData = "coinPriceData.portfolio";
     public String strSettingsData = "settings.portfolio";
 
-    public TransactionController transactionController = new TransactionController(this.strPathAppData + this.strTransactionData);
     public CoinPriceController coinPriceController = new CoinPriceController(this.strPathAppData + strCoinPriceData);
     public SettingsController settingsController = new SettingsController(this.strPathAppData + strSettingsData);
+    public TransactionController transactionController = new TransactionController(this.strPathAppData + this.strTransactionData,this.settingsController,this.coinPriceController);
 
     public CoinPriceModel coinPriceHistory;
     public ExportService expService;
@@ -65,7 +66,10 @@ public class ViewModel {
         this.coinPriceHistory = this.coinPriceController.coinPriceModel;
         this.expService = new ExportService(this.coinPriceController,this.transactionController);
 
-        //this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + transactionController.getBlockCountRpc());
+        //var test = this.transactionController.getListAddressGroupingsRpc();
+
+
+        this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + transactionController.getBlockCountRpc());
         this.strCurrentBlockLocally.set("Current Block locally: " + transactionController.getLocalBlockCount());
 
         // Init gui elements
@@ -78,6 +82,7 @@ public class ViewModel {
 
         if(!this.coinPriceController.updateCoinPriceData()){
             //Logg error @ coin price update
+           // upDatePrice();
         }
 
         if (new File(strPathAppData + strTransactionData).exists()) {
@@ -105,6 +110,7 @@ public class ViewModel {
             transactionList.removeAll(transactionList);
             transactionList.addAll(this.transactionController.transactionList);
             this.transactionModelList = this.transactionController.transactionList;
+
         } else {
 
         }
@@ -115,25 +121,40 @@ public class ViewModel {
         this.spinner.setValue(false);
     }
 
-    public void plotPressed() {
-        XYChart.Series<Number, Number> series = new XYChart.Series();
-        series.setName("Rewards");
+    public void plotUpdate() {
+
+        XYChart.Series<Number, Number> rewardsSeries = new XYChart.Series();
+        rewardsSeries.setName("Rewards");
+
+        XYChart.Series<Number, Number> commisionsSeries = new XYChart.Series();
+        commisionsSeries.setName("Commissions");
 
         long TimeStampStart = Timestamp.valueOf(this.settingsController.dateFrom.getValue() + " 00:00:00").getTime()/1000L;
         long TimeStampEnd = Timestamp.valueOf(this.settingsController.dateTo.getValue() + " 23:59:59").getTime()/1000L;
 
         List<TransactionModel> transactionsInTime = this.transactionController.getTransactionsInTime(this.transactionList,TimeStampStart,TimeStampEnd);
-        TreeMap<String,Double> joinedTransactions =  this.transactionController.getRewardsJoined(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue());
+        TreeMap<String,Double> joinedRewards =  this.transactionController.getJoinedMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue(),"Rewards");
+        TreeMap<String,Double> joinedCommissions =  this.transactionController.getJoinedMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue(),"Commission");
 
         // Plot timeSeries
-        for (HashMap.Entry<String, Double> entry : joinedTransactions.entrySet()) {
-                series.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
+        for (HashMap.Entry<String, Double> entry : joinedRewards.entrySet()) {
+            rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
         }
+
+        // Plot timeSeries
+        for (HashMap.Entry<String, Double> entry : joinedCommissions.entrySet()) {
+            commisionsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
+        }
+
+        this.hPlot.getData().clear();
+
         if (this.hPlot.getData().size() == 1) {
             this.hPlot.getData().remove(0);
         }
 
-        this.hPlot.getData().add(series);
+        this.hPlot.getData().add(rewardsSeries);
+        this.hPlot.getData().add(commisionsSeries);
+
         for (XYChart.Series<Number, Number> s : this.hPlot.getData()) {
             for (XYChart.Data d : s.getData()) {
                 Tooltip t = new Tooltip(d.getYValue().toString());
@@ -145,24 +166,22 @@ public class ViewModel {
         }
 
         // Plot Kumuliert
-        Collection<Double> values = joinedTransactions.values();
+        Collection<Double> values = joinedRewards.values();
         ArrayList<Double> valueList = new ArrayList<>(values);
         XYChart.Series<Number, Number> series2 = new XYChart.Series();
 
         for (int i = 0 ;i<valueList.size()-1;i++){
             valueList.set(i+1, valueList.get(i)+valueList.get(i+1));
-            System.out.println(valueList.get(i));
         }
 
         int iterator = 0;
-        for (HashMap.Entry<String, Double> entry : joinedTransactions.entrySet()) {
+        for (HashMap.Entry<String, Double> entry : joinedRewards.entrySet()) {
               entry.setValue(valueList.get(iterator));
               iterator++;
         }
         series2.setName("Rewards kumuliert");
 
-        for (HashMap.Entry<String, Double> entry : joinedTransactions.entrySet()) {
-            System.out.println(entry.getValue());
+        for (HashMap.Entry<String, Double> entry : joinedRewards.entrySet()) {
             series2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
         }
         if (this.hPlotKumuliert.getData().size() == 1) {

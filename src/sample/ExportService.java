@@ -23,14 +23,14 @@ TransactionController transactionController;
 
             for (TransactionModel transaction : transactions) {
 
-                for (int i = 0; i < transaction.getAmountProperty().length; i++) {
+                for (int i = 0; i < transaction.getAmountValue().length; i++) {
 
-                    if ((transaction.getBlockTimeProperty() >= TimeStampStart) && (transaction.getBlockTimeProperty() <= TimeStampEnd)) {
+                    if ((transaction.getBlockTimeValue() >= TimeStampStart) && (transaction.getBlockTimeValue() <= TimeStampEnd)) {
 
-                        sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTimeProperty())).append(exportSplitter);
-                        sb.append(transaction.getOwnerProperty()).append(exportSplitter);
-                        sb.append(transaction.getTypeProperty()).append(exportSplitter);
-                        String[] CoinsAndAmounts = this.transactionController.splitCoinsAndAmounts(transaction.getAmountProperty()[i]);
+                        sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTimeValue())).append(exportSplitter);
+                        sb.append(transaction.getOwnerValue()).append(exportSplitter);
+                        sb.append(transaction.getTypeValue()).append(exportSplitter);
+                        String[] CoinsAndAmounts = this.transactionController.splitCoinsAndAmounts(transaction.getAmountValue()[i]);
                         sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]))).append(exportSplitter);
                         sb.append(CoinsAndAmounts[1]).append(exportSplitter);
 
@@ -60,7 +60,7 @@ TransactionController transactionController;
                         }
 
                         if (coinPriceList != null) {
-                            var price = this.coinPriceController.getPriceFromTimeStamp(coinPriceList, transaction.getBlockTimeProperty() * 1000L);
+                            var price = this.coinPriceController.getPriceFromTimeStamp(coinPriceList, transaction.getBlockTimeValue() * 1000L);
                             sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]) * price)).append(exportSplitter);
 
                         } else {
@@ -68,9 +68,9 @@ TransactionController transactionController;
                         }
 
                         sb.append(fiatCurrency).append(exportSplitter);
-                        sb.append(transaction.getBlockHashProperty()).append(exportSplitter);
-                        sb.append(transaction.getBlockHeightProperty()).append(exportSplitter);
-                        sb.append(transaction.getPoolIDProperty());
+                        sb.append(transaction.getBlockHashValue()).append(exportSplitter);
+                        sb.append(transaction.getBlockHeightValue()).append(exportSplitter);
+                        sb.append(transaction.getPoolIDValue());
                         sb.append("\n");
 
                     }

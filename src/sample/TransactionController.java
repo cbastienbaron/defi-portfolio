@@ -1,6 +1,7 @@
 package sample;
 
 import com.google.gson.Gson;
+import okhttp3.Address;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -23,20 +24,29 @@ public class TransactionController {
     String strCookieOath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
     String strCliPath = System.getProperty("user.dir") + "\\src\\sample\\defichain-1.3.17-x86_64-w64-mingw32\\defichain-1.3.17\\bin\\defi-cli.exe";
     public List<TransactionModel> transactionList;
+    public List<TransactionModel> addressModelList;
     String strTransactionData;
     int localBlockCount;
+    SettingsController settingsController;
     OutputStreamWriter wr;
+    public CoinPriceController coinPriceController;
 
-    public TransactionController(String transactionData) {
+    public TransactionController(String transactionData, SettingsController settingsController,CoinPriceController coinPriceController) {
+
         this.strTransactionData = transactionData;
+        this.settingsController = settingsController;
+        this.coinPriceController = coinPriceController;
         this.transactionList = getLocalTransactionList();
         this.localBlockCount = getLocalBlockCount();
-
+        //this.addressModelList = getLocalTransactionList();
     }
 
     public void initCrpConnection() {
         try {
             String strCookieData = "";
+
+            if(new File(strCookieData).exists()){
+
             try {
                 this.url = new URL("http://127.0.0.1:8554");
             } catch (MalformedURLException e) {
@@ -59,10 +69,12 @@ public class TransactionController {
             conn.setRequestProperty("Content-Type", "application/json-rpc");
             conn.setDoOutput(true);
             wr = new OutputStreamWriter(conn.getOutputStream());
-
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 
     public int getBlockCountRpc() {
@@ -112,7 +124,32 @@ public class TransactionController {
 
         JSONObject jsonObject = getRpcResponse("{\"method\": \"accounthistorycount\",\"params\":[\"mine\"]}");
         return Integer.parseInt(jsonObject.get("result").toString());
+    }
 
+    public List<AddressModel> getListAddressGroupingsRpc() {
+        List<AddressModel> addressList = new ArrayList<>();
+        JSONObject jsonObject = getRpcResponse("{\"method\": \"listaddressgroupings\"}");
+        JSONArray transactionJson = (JSONArray) jsonObject.get("result");
+        for (var transaction : (JSONArray) transactionJson.get(0)) {
+            addressList.add(getListReceivedByAddress(((JSONArray) transaction).get(0).toString()));
+        }
+        return addressList;
+    }
+
+    public AddressModel getListReceivedByAddress(String address) {
+
+        AddressModel addressModel = null;
+        JSONObject jsonObject = getRpcResponse("{\"method\": \"listreceivedbyaddress\",\"params\":[1, false, false, \"" + address + "\"]}");
+
+        if (((JSONArray) jsonObject.get("result")).size() > 0) {
+            JSONObject jArray = (JSONObject) (((JSONArray) jsonObject.get("result"))).get(0);
+            String[] arr = new String[((JSONArray) (jArray.get("txids"))).size()];
+            for (int i = 0; i < arr.length; i++) {
+                arr[i] = (String) ((JSONArray) (jArray.get("txids"))).get(i);
+            }
+            return new AddressModel((String) jArray.get("address"), Double.parseDouble(jArray.get("amount").toString()), Long.parseLong(jArray.get("confirmations").toString()), (String) jArray.get("label"), arr);
+        }
+        return addressModel;
     }
 
 
@@ -256,7 +293,7 @@ public class TransactionController {
     public int getLocalBlockCount() {
         if (transactionList.size() > 0) {
 
-            return this.transactionList.get(transactionList.size() - 1).getBlockHeightProperty();
+            return this.transactionList.get(transactionList.size() - 1).getBlockHeightValue();
         } else {
             return 0;
         }
@@ -274,7 +311,7 @@ public class TransactionController {
         List<TransactionModel> updateTransactionList = new ArrayList<>();
 
         for (int i = transactionListNew.size() - 1; i >= 0; i--) {
-            if (transactionListNew.get(i).getBlockHeightProperty() > this.localBlockCount) {
+            if (transactionListNew.get(i).getBlockHeightValue() > this.localBlockCount) {
                 this.transactionList.add(transactionListNew.get(i));
                 updateTransactionList.add(transactionListNew.get(i))
                 ;
@@ -289,18 +326,20 @@ public class TransactionController {
 
                 for (TransactionModel transactionModel : updateTransactionList) {
 
-                    for (int i = 0; i < transactionModel.getAmountProperty().length; i++) {
-                        sb.append(transactionModel.getBlockTimeProperty()).append(exportSplitter);
-                        sb.append(transactionModel.getOwnerProperty()).append(exportSplitter);
-                        sb.append(transactionModel.getTypeProperty()).append(exportSplitter);
-                        sb.append(transactionModel.getAmountProperty()[i]).append(exportSplitter);
-                        sb.append(transactionModel.getBlockHashProperty()).append(exportSplitter);
-                        sb.append(transactionModel.getBlockHeightProperty()).append(exportSplitter);
-                        sb.append(transactionModel.getPoolIDProperty()).append(exportSplitter);
-                        if (transactionModel.getTxIDProperty().equals(""))
+                    for (int i = 0; i < transactionModel.getAmountValue().length; i++) {
+                        sb.append(transactionModel.getBlockTimeValue()).append(exportSplitter);
+                        sb.append(transactionModel.getOwnerValue()).append(exportSplitter);
+                        sb.append(transactionModel.getTypeValue()).append(exportSplitter);
+                        sb.append(transactionModel.getAmountValue()[i]).append(exportSplitter);
+                        sb.append(transactionModel.getBlockHashValue()).append(exportSplitter);
+                        sb.append(transactionModel.getBlockHeightValue()).append(exportSplitter);
+                        sb.append(transactionModel.getPoolIDValue()).append(exportSplitter);//.append(exportSplitter);
+//                        sb.append(transactionModel.getFiatValueValue()).append(exportSplitter);
+//                        sb.append(transactionModel.getFiatCurrencyValue());
+                        if (transactionModel.getTxIDValue().equals(""))
                             sb.append("\"\"");
                         else
-                            sb.append(transactionModel.getTxIDProperty());
+                            sb.append(transactionModel.getTxIDValue());
 
                         sb.append("\n");
                     }
@@ -308,7 +347,7 @@ public class TransactionController {
                 writer.write(sb.toString());
                 writer.close();
 
-                this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).getBlockHeightProperty();
+                this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).getBlockHeightValue();
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -320,7 +359,7 @@ public class TransactionController {
     public List<TransactionModel> getTransactionsInTime(List<TransactionModel> transactions, long startTime, long endTime) {
         List<TransactionModel> filteredTransactions = new ArrayList<>();
         for (int ilist = 1; ilist < transactions.size(); ilist++) {
-            if (transactions.get(ilist).getBlockTimeProperty() >= startTime && transactions.get(ilist).getBlockTimeProperty() <= endTime) {
+            if (transactions.get(ilist).getBlockTimeValue() >= startTime && transactions.get(ilist).getBlockTimeValue() <= endTime) {
                 filteredTransactions.add(transactions.get(ilist));
             }
         }
@@ -330,7 +369,7 @@ public class TransactionController {
     public List<TransactionModel> getTransactionsOfType(List<TransactionModel> transactions, String type) {
         List<TransactionModel> filteredTransactions = new ArrayList<>();
         for (int ilist = 1; ilist < transactions.size(); ilist++) {
-            if (transactions.get(ilist).getTypeProperty().equals(type)) {
+            if (transactions.get(ilist).getTypeValue().equals(type)) {
                 filteredTransactions.add(transactions.get(ilist));
             }
         }
@@ -340,7 +379,7 @@ public class TransactionController {
     public List<TransactionModel> getTransactionsOfOwner(List<TransactionModel> transactions, String owner) {
         List<TransactionModel> filteredTransactions = new ArrayList<>();
         for (int ilist = 1; ilist < transactions.size(); ilist++) {
-            if (transactions.get(ilist).getTypeProperty().equals(owner)) {
+            if (transactions.get(ilist).getTypeValue().equals(owner)) {
                 filteredTransactions.add(transactions.get(ilist));
             }
         }
@@ -350,24 +389,23 @@ public class TransactionController {
     public List<TransactionModel> getTransactionsBetweenBlocks(List<TransactionModel> transactions, long startBlock, long endBlock) {
         List<TransactionModel> filteredTransactions = new ArrayList<>();
         for (int ilist = 1; ilist < transactions.size(); ilist++) {
-            if (transactions.get(ilist).getBlockHeightProperty() >= startBlock && transactions.get(ilist).getBlockHeightProperty() <= endBlock) {
+            if (transactions.get(ilist).getBlockHeightValue() >= startBlock && transactions.get(ilist).getBlockHeightValue() <= endBlock) {
                 filteredTransactions.add(transactions.get(ilist));
             }
         }
         return filteredTransactions;
     }
-
-    public static TreeMap getRewardsJoined(List<TransactionModel> transactions, String intervall , String Coin){
+    public static TreeMap getJoinedMap(List<TransactionModel> transactions, String intervall, String Coin,String type) {
         TreeMap<String, Double> map = new TreeMap<>();
         TreeMap<String, Double> sorted = new TreeMap<>();
         for(TransactionModel item : transactions){
             Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(item.getBlockTimeProperty()*1000L);
+            cal.setTimeInMillis(item.getBlockTimeValue()*1000L);
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH)+1;
             int week = cal.get(Calendar.WEEK_OF_YEAR);
             int day = cal.get(Calendar.DAY_OF_MONTH);
-            String[] AmountCoin = item.getAmountProperty();
+            String[] AmountCoin = item.getAmountValue();
 
             for(int iAmount = 0 ;iAmount<AmountCoin.length;iAmount++) {
                 String[] coinValue = AmountCoin[iAmount].split("@");
@@ -386,7 +424,7 @@ public class TransactionController {
                         date = year + "-";
                     }
 
-                    if (item.getTypeProperty().equals("Rewards")) {
+                    if (item.getTypeValue().equals(type)) {
                         if (map.keySet().contains(date)) {
                             Double oldValue = map.get(date);
                             Double newValue = oldValue + Double.parseDouble(coinValue[0]);
@@ -421,9 +459,9 @@ public class TransactionController {
 
         for (TransactionModel transaction : transactions) {
 
-            for (int i = 0; i < transaction.getAmountProperty().length; i++) {
+            for (int i = 0; i < transaction.getAmountValue().length; i++) {
 
-                String[] CoinsAndAmounts = splitCoinsAndAmounts(transaction.getAmountProperty()[i]);
+                String[] CoinsAndAmounts = splitCoinsAndAmounts(transaction.getAmountValue()[i]);
 
                 if (coinName.equals(CoinsAndAmounts[1])) {
                     amountCoin += Double.parseDouble(CoinsAndAmounts[0]);

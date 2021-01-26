@@ -26,7 +26,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
+<?import javafx.scene.control.RadioButton?>
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
    <children>
       <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0" style="-fx-background-color: #F0F7FF;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
          <children>
@@ -152,8 +153,7 @@
                                     </LineChart>
                                  </children>
                               </StackPane>
-                              <Button fx:id="btnPlot" layoutX="454.0" layoutY="78.0" mnemonicParsing="false" onAction="#btnPlotPressed" prefHeight="25.0" prefWidth="87.0" text="Plot" />
-                              <ComboBox fx:id="cmbCoins" layoutX="238.0" layoutY="76.0" prefHeight="29.0" prefWidth="84.0" />
+                               <ComboBox fx:id="cmbCoins" layoutX="238.0" layoutY="76.0" prefHeight="29.0" prefWidth="84.0" />
                               <ComboBox fx:id="cmbIntervall" layoutX="344.0" layoutY="76.0" prefHeight="29.0" prefWidth="94.0" />
                            </children>
                         </AnchorPane>
@@ -186,15 +186,15 @@
                               <TableView fx:id="hTable" prefHeight="409.0" prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columns>
                                   <TableColumn fx:id="blockTimeColumn" text="Date" />
-                                    <TableColumn fx:id="ownerColumn" text="Owner" />
                                     <TableColumn fx:id="typeColumn" text="Operation" />
                                     <TableColumn fx:id="cryptoValueColumn" text="Amount" />
                                     <TableColumn fx:id="cryptoCurrencyColumn" text="Cryptocurrency" />
                                     <TableColumn fx:id="fiatValueColumn" text="FIAT value" />
                                     <TableColumn fx:id="fiatCurrencyColumn" text="FIAT currency" />
-                                    <TableColumn fx:id="blockHashColumn" text="Block Hash" />
-                                    <TableColumn fx:id="blockHeightColumn" text="Block Height" />
                                     <TableColumn fx:id="poolIDColumn" text="LM Pool" />
+                                    <TableColumn fx:id="blockHeightColumn" text="Block Height" />
+                                    <TableColumn fx:id="blockHashColumn" text="Block Hash" />
+                                    <TableColumn fx:id="ownerColumn" text="Owner" />
                                 </columns>
                               </TableView>
                            </children>
