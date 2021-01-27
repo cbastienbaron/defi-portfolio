@@ -153,8 +153,9 @@
                                     </LineChart>
                                  </children>
                               </StackPane>
-                               <ComboBox fx:id="cmbCoins" layoutX="238.0" layoutY="76.0" prefHeight="29.0" prefWidth="84.0" />
+                               <ComboBox fx:id="cmbCoins" layoutX="238.0" layoutY="76.0" prefHeight="29.0" prefWidth="94.0" />
                               <ComboBox fx:id="cmbIntervall" layoutX="344.0" layoutY="76.0" prefHeight="29.0" prefWidth="94.0" />
+                               <ComboBox fx:id="cmbFiat" layoutX="450.0" layoutY="76.0" prefHeight="29.0" prefWidth="94.0" />
                            </children>
                         </AnchorPane>
                   </content>

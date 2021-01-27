@@ -2,10 +2,13 @@ package sample;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 public class CoinPriceModel implements java.io.Serializable {
 
     public String lastTimeStamp;
+
+    TreeMap<String, List<List<String>>> coinPriceList;
 
     public List<List<String>> dfiEurList;
     public List<List<String>> btcEurList;
@@ -36,6 +39,8 @@ public class CoinPriceModel implements java.io.Serializable {
 
     public CoinPriceModel() {
 
+        this.coinPriceList = new TreeMap<>();
+
         this.dfiEurList = new ArrayList<>();
         this.btcEurList = new ArrayList<>();
         this.ethEurList = new ArrayList<>();
@@ -65,108 +70,36 @@ public class CoinPriceModel implements java.io.Serializable {
 
         lastTimeStamp = "1589179630";
 
-        dfiEurList.add(new ArrayList<>() {
-            {
-                add("1589179630000");
-                add("0.092523");
-            }
-        });
+        List<List<String>> initialList = new ArrayList<>();
+        List<String> initialDFIList = new ArrayList<>();
+        initialDFIList.add("1589179630000");
+        initialDFIList.add("0.092523");
+        initialList.add(initialDFIList);
 
-        dfiUsdList.add(new ArrayList<>() {
-            {
-                add("1589179630000");
-                add("0.1");
-            }
-        });
+        coinPriceList.put("DFIEUR",initialList);
 
-        dfiChfList.add(new ArrayList<>() {
-            {
-                add("1589179630000");
-                add("0.0973");
-            }
-        });
+        initialList = new ArrayList<>();
+        initialDFIList = new ArrayList<>();
+        initialDFIList.add("1589179630000");
+        initialDFIList.add("0.1");
 
-        dfiBtcList.add(new ArrayList<>() {
-            {
-                add("1602867600000");
-                add("1.866e-05");
-            }
-        });
+
+        coinPriceList.put("DFIUSD",initialList);
+
+        initialList = new ArrayList<>();
+        initialDFIList = new ArrayList<>();
+        initialDFIList.add("1589179630000");
+        initialDFIList.add("0.0973");
+
+        coinPriceList.put("DFICHF",initialList);
     }
 
-    public List<List<String>> GetDfiList(String fiatCurrency) {
-        if (fiatCurrency.equals("EUR"))
-            return this.dfiEurList;
-        if (fiatCurrency.equals("USD"))
-            return this.dfiUsdList;
-        if (fiatCurrency.equals("CHF"))
-            return this.dfiChfList;
-        if (fiatCurrency.equals("BTC"))
-            return this.dfiBtcList;
-
-        return this.dfiUsdList;
+    public TreeMap<String, List<List<String>>> GetKeyMap(){
+        return this.coinPriceList;
     }
 
-    public List<List<String>> GetBtcList(String fiatCurrency) {
-        if (fiatCurrency.equals("EUR"))
-            return this.btcEurList;
-        if (fiatCurrency.equals("USD"))
-            return this.btcUsdList;
-        if (fiatCurrency.equals("CHF"))
-            return this.btcChfList;
-        if (fiatCurrency.equals("BTC"))
-            return this.btcBtcList;
-
-        return this.btcEurList;
+    public void SetKeyMap(TreeMap<String, List<List<String>>> coinPriceList){
+        this.coinPriceList=coinPriceList;
     }
 
-    public List<List<String>> GetEthList(String fiatCurrency) {
-        if (fiatCurrency.equals("EUR"))
-            return this.ethEurList;
-        if (fiatCurrency.equals("USD"))
-            return this.ethUsdList;
-        if (fiatCurrency.equals("CHF"))
-            return this.ethChfList;
-        if (fiatCurrency.equals("BTC"))
-            return this.ethBtcList;
-
-        return this.ethEurList;
-    }
-
-    public List<List<String>> GetUsdtList(String fiatCurrency) {
-        if (fiatCurrency.equals("EUR"))
-            return this.usdtEurList;
-        if (fiatCurrency.equals("USD"))
-            return this.usdtUsdList;
-        if (fiatCurrency.equals("CHF"))
-            return this.usdtChfList;
-
-        return this.usdtEurList;
-    }
-
-    public List<List<String>> GetLtcList(String fiatCurrency) {
-        if (fiatCurrency.equals("EUR"))
-            return this.ltcEurList;
-        if (fiatCurrency.equals("USD"))
-            return this.ltcUsdList;
-        if (fiatCurrency.equals("CHF"))
-            return this.ltcChfList;
-        if (fiatCurrency.equals("BTC"))
-            return this.ltcBtcList;
-
-        return this.ltcEurList;
-    }
-
-    public List<List<String>> GetBchList(String fiatCurrency) {
-        if (fiatCurrency.equals("EUR"))
-            return this.bchEurList;
-        if (fiatCurrency.equals("USD"))
-            return this.bchUsdList;
-        if (fiatCurrency.equals("CHF"))
-            return this.bchChfList;
-        if (fiatCurrency.equals("BTC"))
-            return this.bchBtcList;
-
-        return this.bchEurList;
-    }
 }

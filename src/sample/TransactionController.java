@@ -395,7 +395,7 @@ public class TransactionController {
         }
         return filteredTransactions;
     }
-    public static TreeMap getJoinedMap(List<TransactionModel> transactions, String intervall, String Coin,String type) {
+    public static TreeMap getCryptoMap(List<TransactionModel> transactions, String intervall, String Coin,String type) {
         TreeMap<String, Double> map = new TreeMap<>();
         TreeMap<String, Double> sorted = new TreeMap<>();
         for(TransactionModel item : transactions){
@@ -428,6 +428,51 @@ public class TransactionController {
                         if (map.keySet().contains(date)) {
                             Double oldValue = map.get(date);
                             Double newValue = oldValue + Double.parseDouble(coinValue[0]);
+                            map.put(date, newValue);
+                        } else {
+                            map.put(date, Double.parseDouble(coinValue[0]));
+                        }
+                    }
+                }
+            }
+        }
+        sorted.putAll(map);
+        return sorted;
+    }
+
+    public TreeMap getFiatMap(List<TransactionModel> transactions, String intervall, String Coin,String type) {
+        TreeMap<String, Double> map = new TreeMap<>();
+        TreeMap<String, Double> sorted = new TreeMap<>();
+        for(TransactionModel item : transactions){
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(item.getBlockTimeValue()*1000L);
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH)+1;
+            int week = cal.get(Calendar.WEEK_OF_YEAR);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+            String[] AmountCoin = item.getAmountValue();
+
+            for(int iAmount = 0 ;iAmount<AmountCoin.length;iAmount++) {
+                String[] coinValue = AmountCoin[iAmount].split("@");
+                if (coinValue[1].equals(Coin)) {
+                    String date = "";
+                    if(intervall.equals("Daily")) {
+                        date = year + "-" + month + "-" + day;
+                    }
+                    else if(intervall.equals("Monthly")) {
+                        date = year + "-" + month;
+                    }
+                    else if(intervall.equals("Weekly")) {
+                        date = year + "-" + week;
+                    }
+                    else if(intervall.equals("Yearly")) {
+                        date = year + "-";
+                    }
+
+                    if (item.getTypeValue().equals(type)) {
+                        if (map.keySet().contains(date)) {
+                            Double oldValue = map.get(date);
+                            Double newValue = oldValue + Double.parseDouble(coinValue[0])* this.coinPriceController.getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue()+ this.settingsController.selectedFiatCurrency.getValue(),item.getBlockTimeValue());
                             map.put(date, newValue);
                         } else {
                             map.put(date, Double.parseDouble(coinValue[0]));

@@ -9,9 +9,12 @@ public class ExportService {
 
     CoinPriceController coinPriceController;
 TransactionController transactionController;
+SettingsController settingsController;
     public ExportService(CoinPriceController coinPriceController, TransactionController transactionController) {
+        this.settingsController = settingsController;
         this.coinPriceController = coinPriceController;
         this.transactionController = transactionController;
+
     }
 
     public boolean exportTransactionToExcel(List<TransactionModel> transactions, String exportPath, CoinPriceModel coinPrices, String fiatCurrency, Locale localeDecimal, String exportSplitter, Long TimeStampStart, Long TimeStampEnd) {
@@ -34,38 +37,9 @@ TransactionController transactionController;
                         sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]))).append(exportSplitter);
                         sb.append(CoinsAndAmounts[1]).append(exportSplitter);
 
-                        List<List<String>> coinPriceList = null;
-
-                        switch (CoinsAndAmounts[1]) {
-                            case "DFI":
-                                coinPriceList = coinPrices.GetDfiList(fiatCurrency);
-                                break;
-                            case "BTC":
-                                coinPriceList = coinPrices.GetBtcList(fiatCurrency);
-                                break;
-                            case "ETH":
-                                coinPriceList = coinPrices.GetEthList(fiatCurrency);
-                                break;
-                            case "USDT":
-                                coinPriceList = coinPrices.GetUsdtList(fiatCurrency);
-                                break;
-                            case "LTC":
-                                coinPriceList = coinPrices.GetLtcList(fiatCurrency);
-                                break;
-                            case "BCH":
-                                coinPriceList = coinPrices.GetBchList(fiatCurrency);
-                                break;
-                            default:
-                                break;
-                        }
-
-                        if (coinPriceList != null) {
-                            var price = this.coinPriceController.getPriceFromTimeStamp(coinPriceList, transaction.getBlockTimeValue() * 1000L);
+                            var price = this.coinPriceController.getPriceFromTimeStamp(CoinsAndAmounts[1]+this.settingsController.selectedFiatCurrency.getValue(), transaction.getBlockTimeValue() * 1000L);
                             sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]) * price)).append(exportSplitter);
 
-                        } else {
-                            sb.append(exportSplitter);
-                        }
 
                         sb.append(fiatCurrency).append(exportSplitter);
                         sb.append(transaction.getBlockHashValue()).append(exportSplitter);

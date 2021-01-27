@@ -33,33 +33,7 @@ public class TransactionModel {
         this.txIDProperty.set(txid);
         this.fiatCurrencyProperty.set(transactionController.settingsController.selectedFiatCurrency.getValue());
 
-        List<List<String>> coinPriceList = null;
-
-        switch (this.amountProperty.getValue()[0].split("@")[1]) {
-            case "DFI":
-                coinPriceList = transactionController.coinPriceController.coinPriceModel.GetDfiList(transactionController.settingsController.selectedFiatCurrency.get());
-                break;
-            case "BTC":
-                coinPriceList = transactionController.coinPriceController.coinPriceModel.GetBtcList(transactionController.settingsController.selectedFiatCurrency.get());
-                break;
-            case "ETH":
-                coinPriceList = transactionController.coinPriceController.coinPriceModel.GetEthList(transactionController.settingsController.selectedFiatCurrency.get());
-                break;
-            case "USDT":
-                coinPriceList = transactionController.coinPriceController.coinPriceModel.GetUsdtList(transactionController.settingsController.selectedFiatCurrency.get());
-                break;
-            case "LTC":
-                coinPriceList = transactionController.coinPriceController.coinPriceModel.GetLtcList(transactionController.settingsController.selectedFiatCurrency.get());
-                break;
-            case "BCH":
-                coinPriceList = transactionController.coinPriceController.coinPriceModel.GetBchList(transactionController.settingsController.selectedFiatCurrency.get());
-                break;
-            default:
-                break;
-        }
-
-        if (coinPriceList != null)
-            this.fiatValueProperty.set(this.cryptoValueProperty.getValue() * transactionController.coinPriceController.getPriceFromTimeStamp(coinPriceList,this.blockTimeProperty.getValue() * 1000L));
+        if(this.amountProperty.getValue()[0].split("@")[1].length() == 3)this.fiatValueProperty.set(this.cryptoValueProperty.getValue() * transactionController.coinPriceController.getPriceFromTimeStamp(this.amountProperty.getValue()[0].split("@")[1]+transactionController.settingsController.selectedFiatCurrency.getValue(),this.blockTimeProperty.getValue() * 1000L));
     }
 
     public void setOwner(String owner) {

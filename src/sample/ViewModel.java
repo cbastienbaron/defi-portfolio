@@ -31,6 +31,9 @@ public class ViewModel {
     public List<TransactionModel> transactionModelList;
     public ObservableList<TransactionModel> transactionList;
     public String[] cryptoCurrencies = new String[]{"BTC", "DFI", "ETH", "USDT","LTC","BCH"};
+    public String[] fiatCurrencies = new String[]{"EUR", "USDT", "CHF"};
+
+
     public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
     public String strPathDefid = System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
     public String strPathDefiCli = System.getProperty("user.dir") + "\\src\\sample\\defichain-1.3.17-x86_64-w64-mingw32\\defichain-1.3.17\\bin\\defi-cli.exe";
@@ -133,8 +136,8 @@ public class ViewModel {
         long TimeStampEnd = Timestamp.valueOf(this.settingsController.dateTo.getValue() + " 23:59:59").getTime()/1000L;
 
         List<TransactionModel> transactionsInTime = this.transactionController.getTransactionsInTime(this.transactionList,TimeStampStart,TimeStampEnd);
-        TreeMap<String,Double> joinedRewards =  this.transactionController.getJoinedMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue(),"Rewards");
-        TreeMap<String,Double> joinedCommissions =  this.transactionController.getJoinedMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue(),"Commission");
+        TreeMap<String,Double> joinedRewards =  this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue(),"Rewards");
+        TreeMap<String,Double> joinedCommissions =  this.transactionController.getFiatMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue(),"Commission");
 
         // Plot timeSeries
         for (HashMap.Entry<String, Double> entry : joinedRewards.entrySet()) {

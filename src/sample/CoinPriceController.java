@@ -6,6 +6,7 @@ import com.litesoftwares.coingecko.impl.CoinGeckoApiClientImpl;
 import java.io.*;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.TreeMap;
 
 public class CoinPriceController {
 
@@ -15,6 +16,7 @@ public class CoinPriceController {
     public CoinPriceController(String strCoinPriceData) {
         this.strCoinPriceData = strCoinPriceData;
         coinPriceModel = getCoinPriceLocal(this.strCoinPriceData);
+        updateCoinPriceData();
     }
 
     public boolean updateCoinPriceData() {
@@ -27,42 +29,40 @@ public class CoinPriceController {
         if (client.getCoinMarketChartRangeById("defichain", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices().size() > 0) {
 
             //Update DFI
-            coinPrice.dfiEurList.addAll(client.getCoinMarketChartRangeById("defichain", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.dfiUsdList.addAll(client.getCoinMarketChartRangeById("defichain", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.dfiChfList.addAll(client.getCoinMarketChartRangeById("defichain", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.dfiBtcList.addAll(client.getCoinMarketChartRangeById("defichain", "btc", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            TreeMap<String,List<List<String>>> coinPriceList = new TreeMap<>();
+            coinPriceList=this.coinPriceModel.GetKeyMap();
+
+            coinPriceList.put("DFIEUR",client.getCoinMarketChartRangeById("defichain", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("DFIUSD",client.getCoinMarketChartRangeById("defichain", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("DFICHF",client.getCoinMarketChartRangeById("defichain", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
 
             //Update BTC
-            coinPrice.btcEurList.addAll(client.getCoinMarketChartRangeById("bitcoin", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.btcUsdList.addAll(client.getCoinMarketChartRangeById("bitcoin", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.btcChfList.addAll(client.getCoinMarketChartRangeById("bitcoin", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.btcBtcList.addAll(client.getCoinMarketChartRangeById("bitcoin", "btc", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("BTCEUR",client.getCoinMarketChartRangeById("bitcoin", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("BTCUSD",client.getCoinMarketChartRangeById("bitcoin", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("BTCCHF",client.getCoinMarketChartRangeById("bitcoin", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
 
             //Update ETH
-            coinPrice.ethEurList.addAll(client.getCoinMarketChartRangeById("ethereum", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.ethUsdList.addAll(client.getCoinMarketChartRangeById("ethereum", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.ethChfList.addAll(client.getCoinMarketChartRangeById("ethereum", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.ethBtcList.addAll(client.getCoinMarketChartRangeById("ethereum", "btc", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("ETHEUR",client.getCoinMarketChartRangeById("ethereum", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("ETHUSD",client.getCoinMarketChartRangeById("ethereum", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("ETHCHF",client.getCoinMarketChartRangeById("ethereum", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
 
             //Update USDT
-            coinPrice.usdtEurList.addAll(client.getCoinMarketChartRangeById("tether", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.usdtUsdList.addAll(client.getCoinMarketChartRangeById("tether", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.usdtChfList.addAll(client.getCoinMarketChartRangeById("tether", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("USDTEUR",client.getCoinMarketChartRangeById("tether", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("USDTUSD",client.getCoinMarketChartRangeById("tether", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("USDTCHF",client.getCoinMarketChartRangeById("tether", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
 
             //Update LTC
-            coinPrice.ltcEurList.addAll(client.getCoinMarketChartRangeById("litecoin", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.ltcUsdList.addAll(client.getCoinMarketChartRangeById("litecoin", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.ltcChfList.addAll(client.getCoinMarketChartRangeById("litecoin", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.ltcBtcList.addAll(client.getCoinMarketChartRangeById("litecoin", "btc", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("LTCEUR",client.getCoinMarketChartRangeById("litecoin", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("LTCUSD",client.getCoinMarketChartRangeById("litecoin", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("LTCCHF",client.getCoinMarketChartRangeById("litecoin", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
 
             //Update BCH
-            coinPrice.bchEurList.addAll(client.getCoinMarketChartRangeById("bitcoin-cash", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.bchUsdList.addAll(client.getCoinMarketChartRangeById("bitcoin-cash", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.bchChfList.addAll(client.getCoinMarketChartRangeById("bitcoin-cash", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPrice.bchBtcList.addAll(client.getCoinMarketChartRangeById("bitcoin-cash", "btc", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("BCHEUR",client.getCoinMarketChartRangeById("bitcoin-cash", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("BCHUSD",client.getCoinMarketChartRangeById("bitcoin-cash", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("BCHCHF",client.getCoinMarketChartRangeById("bitcoin-cash", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
 
+            coinPrice.SetKeyMap(coinPriceList);
             coinPrice.lastTimeStamp = Long.toString(currentTimeStamp);
-
 
             // Serialization
             try {
@@ -74,6 +74,7 @@ public class CoinPriceController {
                 out.writeObject(coinPrice);
                 out.close();
                 file.close();
+                this.coinPriceModel = coinPrice;
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -109,12 +110,12 @@ public class CoinPriceController {
         return coinPrice;
     }
 
-    public double getPriceFromTimeStamp(List<List<String>> coinPrices, Long timeStamp) {
+    public double getPriceFromTimeStamp(String coinFiatPair, Long timeStamp) {
         double price=0;
 
-        for (int i = coinPrices.size() - 1; i >= 0; i--)
-            if(timeStamp>Long.parseLong(coinPrices.get(i).get(0))){
-                price = Double.parseDouble(coinPrices.get(i).get(1));
+        for (int i = this.coinPriceModel.GetKeyMap().get(coinFiatPair).size() - 1; i >= 0; i--)
+            if(timeStamp>Long.parseLong(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(0))){
+                price = Double.parseDouble(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(1));
                 break;
             }
 

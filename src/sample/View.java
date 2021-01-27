@@ -25,7 +25,7 @@ public class View implements Initializable {
     @FXML
     private Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, strUpToDate, lblProgressBar, strUpdatingDatabase;
     @FXML
-    private ComboBox<String> cmbCoins, cmbIntervall;
+    private ComboBox<String> cmbCoins, cmbIntervall,cmbFiat;
     @FXML
     private ImageView imgViewObj;
     @FXML
@@ -109,6 +109,14 @@ public class View implements Initializable {
         this.cmbCoins.valueProperty().addListener((ov, oldValue, newValue) -> {
             if(viewModel.hPlot!=null) viewModel.plotUpdate();
         });
+
+        this.cmbFiat.getItems().addAll(this.viewModel.fiatCurrencies);
+        this.cmbFiat.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedFiatCurrency);
+        this.cmbFiat.valueProperty().addListener((ov, oldValue, newValue) -> {
+            if(viewModel.hPlot!=null) viewModel.plotUpdate();
+        });
+
+
 
         this.dateFrom.valueProperty().bindBidirectional(this.viewModel.settingsController.dateFrom);
         this.dateFrom.valueProperty().addListener((ov, oldValue, newValue) -> {
