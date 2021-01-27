@@ -11,7 +11,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 import java.io.File;
-import java.sql.Array;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.*;
@@ -33,7 +32,7 @@ public class ViewModel {
     public String[] cryptoCurrencies = new String[]{"BTC", "DFI", "ETH", "USDT","LTC","BCH"};
     public String[] fiatCurrencies = new String[]{"EUR", "USDT", "CHF"};
 
-
+    public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
     public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
     public String strPathDefid = System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
     public String strPathDefiCli = System.getProperty("user.dir") + "\\src\\sample\\defichain-1.3.17-x86_64-w64-mingw32\\defichain-1.3.17\\bin\\defi-cli.exe";
@@ -43,7 +42,7 @@ public class ViewModel {
 
     public CoinPriceController coinPriceController = new CoinPriceController(this.strPathAppData + strCoinPriceData);
     public SettingsController settingsController = new SettingsController(this.strPathAppData + strSettingsData);
-    public TransactionController transactionController = new TransactionController(this.strPathAppData + this.strTransactionData,this.settingsController,this.coinPriceController);
+    public TransactionController transactionController = new TransactionController(this.strPathAppData + this.strTransactionData,this.settingsController,this.coinPriceController,this.strPathDefiCli,this.strCookiePath);
 
     public CoinPriceModel coinPriceHistory;
     public ExportService expService;

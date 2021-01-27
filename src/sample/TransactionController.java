@@ -21,8 +21,8 @@ public class TransactionController {
 
     URL url;
     URLConnection conn;
-    String strCookieOath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
-    String strCliPath = System.getProperty("user.dir") + "\\src\\sample\\defichain-1.3.17-x86_64-w64-mingw32\\defichain-1.3.17\\bin\\defi-cli.exe";
+    String strCookieOath;
+    String strCliPath;
     public List<TransactionModel> transactionList;
     public List<TransactionModel> addressModelList;
     String strTransactionData;
@@ -31,13 +31,15 @@ public class TransactionController {
     OutputStreamWriter wr;
     public CoinPriceController coinPriceController;
 
-    public TransactionController(String transactionData, SettingsController settingsController,CoinPriceController coinPriceController) {
+    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strCliPath, String strCookiePath) {
 
         this.strTransactionData = transactionData;
         this.settingsController = settingsController;
         this.coinPriceController = coinPriceController;
         this.transactionList = getLocalTransactionList();
         this.localBlockCount = getLocalBlockCount();
+        this.strCliPath = strCliPath;
+        this.strCookieOath = strCookiePath;
         //this.addressModelList = getLocalTransactionList();
     }
 
@@ -45,30 +47,30 @@ public class TransactionController {
         try {
             String strCookieData = "";
 
-            if(new File(this.strCookieOath).exists()){
+            if (new File(this.strCookieOath).exists()) {
 
-            try {
-                this.url = new URL("http://127.0.0.1:8554");
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            this.conn = url.openConnection();
+                try {
+                    this.url = new URL("http://127.0.0.1:8554");
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                this.conn = url.openConnection();
 
-            BufferedReader reader;
-            reader = new BufferedReader(new FileReader(
-                    strCookieOath));
-            String line = reader.readLine();
-            String[] kvpSplit = line.split(":");
-            if (Arrays.stream(kvpSplit).count() == 2) {
-                strCookieData = kvpSplit[0] + ":" + kvpSplit[1];
-            }
-            reader.close();
+                BufferedReader reader;
+                reader = new BufferedReader(new FileReader(
+                        strCookieOath));
+                String line = reader.readLine();
+                String[] kvpSplit = line.split(":");
+                if (Arrays.stream(kvpSplit).count() == 2) {
+                    strCookieData = kvpSplit[0] + ":" + kvpSplit[1];
+                }
+                reader.close();
 
-            String basicAuth = "Basic " + new String(Base64.getEncoder().encode((strCookieData.getBytes())));
-            conn.setRequestProperty("Authorization", basicAuth);
-            conn.setRequestProperty("Content-Type", "application/json-rpc");
-            conn.setDoOutput(true);
-            wr = new OutputStreamWriter(conn.getOutputStream());
+                String basicAuth = "Basic " + new String(Base64.getEncoder().encode((strCookieData.getBytes())));
+                conn.setRequestProperty("Authorization", basicAuth);
+                conn.setRequestProperty("Content-Type", "application/json-rpc");
+                conn.setDoOutput(true);
+                wr = new OutputStreamWriter(conn.getOutputStream());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -395,32 +397,30 @@ public class TransactionController {
         }
         return filteredTransactions;
     }
-    public static TreeMap getCryptoMap(List<TransactionModel> transactions, String intervall, String Coin,String type) {
+
+    public static TreeMap getCryptoMap(List<TransactionModel> transactions, String intervall, String Coin, String type) {
         TreeMap<String, Double> map = new TreeMap<>();
         TreeMap<String, Double> sorted = new TreeMap<>();
-        for(TransactionModel item : transactions){
+        for (TransactionModel item : transactions) {
             Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(item.getBlockTimeValue()*1000L);
+            cal.setTimeInMillis(item.getBlockTimeValue() * 1000L);
             int year = cal.get(Calendar.YEAR);
-            int month = cal.get(Calendar.MONTH)+1;
+            int month = cal.get(Calendar.MONTH) + 1;
             int week = cal.get(Calendar.WEEK_OF_YEAR);
             int day = cal.get(Calendar.DAY_OF_MONTH);
             String[] AmountCoin = item.getAmountValue();
 
-            for(int iAmount = 0 ;iAmount<AmountCoin.length;iAmount++) {
+            for (int iAmount = 0; iAmount < AmountCoin.length; iAmount++) {
                 String[] coinValue = AmountCoin[iAmount].split("@");
                 if (coinValue[1].equals(Coin)) {
                     String date = "";
-                    if(intervall.equals("Daily")) {
+                    if (intervall.equals("Daily")) {
                         date = year + "-" + month + "-" + day;
-                    }
-                    else if(intervall.equals("Monthly")) {
+                    } else if (intervall.equals("Monthly")) {
                         date = year + "-" + month;
-                    }
-                    else if(intervall.equals("Weekly")) {
+                    } else if (intervall.equals("Weekly")) {
                         date = year + "-" + week;
-                    }
-                    else if(intervall.equals("Yearly")) {
+                    } else if (intervall.equals("Yearly")) {
                         date = year + "-";
                     }
 
@@ -440,39 +440,36 @@ public class TransactionController {
         return sorted;
     }
 
-    public TreeMap getFiatMap(List<TransactionModel> transactions, String intervall, String Coin,String type) {
+    public TreeMap getFiatMap(List<TransactionModel> transactions, String intervall, String Coin, String type) {
         TreeMap<String, Double> map = new TreeMap<>();
         TreeMap<String, Double> sorted = new TreeMap<>();
-        for(TransactionModel item : transactions){
+        for (TransactionModel item : transactions) {
             Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(item.getBlockTimeValue()*1000L);
+            cal.setTimeInMillis(item.getBlockTimeValue() * 1000L);
             int year = cal.get(Calendar.YEAR);
-            int month = cal.get(Calendar.MONTH)+1;
+            int month = cal.get(Calendar.MONTH) + 1;
             int week = cal.get(Calendar.WEEK_OF_YEAR);
             int day = cal.get(Calendar.DAY_OF_MONTH);
             String[] AmountCoin = item.getAmountValue();
 
-            for(int iAmount = 0 ;iAmount<AmountCoin.length;iAmount++) {
+            for (int iAmount = 0; iAmount < AmountCoin.length; iAmount++) {
                 String[] coinValue = AmountCoin[iAmount].split("@");
                 if (coinValue[1].equals(Coin)) {
                     String date = "";
-                    if(intervall.equals("Daily")) {
+                    if (intervall.equals("Daily")) {
                         date = year + "-" + month + "-" + day;
-                    }
-                    else if(intervall.equals("Monthly")) {
+                    } else if (intervall.equals("Monthly")) {
                         date = year + "-" + month;
-                    }
-                    else if(intervall.equals("Weekly")) {
+                    } else if (intervall.equals("Weekly")) {
                         date = year + "-" + week;
-                    }
-                    else if(intervall.equals("Yearly")) {
+                    } else if (intervall.equals("Yearly")) {
                         date = year + "-";
                     }
 
                     if (item.getTypeValue().equals(type)) {
                         if (map.keySet().contains(date)) {
                             Double oldValue = map.get(date);
-                            Double newValue = oldValue + Double.parseDouble(coinValue[0])* this.coinPriceController.getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue()+ this.settingsController.selectedFiatCurrency.getValue(),item.getBlockTimeValue());
+                            Double newValue = oldValue + Double.parseDouble(coinValue[0]) * this.coinPriceController.getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue() + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue());
                             map.put(date, newValue);
                         } else {
                             map.put(date, Double.parseDouble(coinValue[0]));
