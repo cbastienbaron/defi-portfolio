@@ -1,13 +1,10 @@
 package sample;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
@@ -25,7 +22,7 @@ public class View implements Initializable {
     @FXML
     private Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, strUpToDate, lblProgressBar, strUpdatingDatabase;
     @FXML
-    private ComboBox<String> cmbCoins, cmbIntervall,cmbFiat;
+    private ComboBox<String> cmbCoins, cmbIntervall,cmbFiat,cmbPlotCurrency;
     @FXML
     private ImageView imgViewObj;
     @FXML
@@ -35,7 +32,7 @@ public class View implements Initializable {
     @FXML
     private final ProgressIndicator spinner = new ProgressIndicator();
     @FXML
-    private LineChart<Number, Number> hPlot, hPlotKumuliert;
+    private LineChart<Number, Number> plotRewards,plotCommissions, hPlotKumuliert;
     @FXML
     private TableView<TransactionModel> hTable;
     @FXML
@@ -67,7 +64,8 @@ public class View implements Initializable {
 
     public void btnAnalysePressed() {
         this.anchorPanelAnalyse.toFront();
-        this.viewModel.hPlot = this.hPlot;
+        this.viewModel.plotRewards = this.plotRewards;
+        this.viewModel.plotCommissions = this.plotCommissions;
         this.viewModel.hPlotKumuliert = this.hPlotKumuliert;
         this.viewModel.hTable = this.hTable;
         this.viewModel.plotUpdate();
@@ -101,28 +99,32 @@ public class View implements Initializable {
         this.cmbIntervall.getItems().addAll("Daily", "Weekly", "Monthly", "Yearly");
         this.cmbIntervall.valueProperty().bindBidirectional(this.viewModel.settingsController.cmbIntervall);
         this.cmbIntervall.valueProperty().addListener((ov, oldValue, newValue) -> {
-            if(viewModel.hPlot!=null)  viewModel.plotUpdate();
+            if(viewModel.plotRewards !=null)  viewModel.plotUpdate();
         });
 
         this.cmbCoins.getItems().addAll(this.viewModel.cryptoCurrencies);
         this.cmbCoins.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedCoin);
         this.cmbCoins.valueProperty().addListener((ov, oldValue, newValue) -> {
-            if(viewModel.hPlot!=null) viewModel.plotUpdate();
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate();
         });
 
         this.cmbFiat.getItems().addAll(this.viewModel.fiatCurrencies);
         this.cmbFiat.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedFiatCurrency);
         this.cmbFiat.valueProperty().addListener((ov, oldValue, newValue) -> {
-            if(viewModel.hPlot!=null) viewModel.plotUpdate();
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate();
         });
-
+        this.cmbPlotCurrency.getItems().addAll(this.viewModel.plotCurrencies);
+        this.cmbPlotCurrency.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotCurrency);
+        this.cmbPlotCurrency.valueProperty().addListener((ov, oldValue, newValue) -> {
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate();
+        });
 
 
         this.dateFrom.valueProperty().bindBidirectional(this.viewModel.settingsController.dateFrom);
         this.dateFrom.valueProperty().addListener((ov, oldValue, newValue) -> {
-            if(viewModel.hPlot!=null) viewModel.plotUpdate();
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate();
         });
-        this.dateFrom.setValue(LocalDate.now());
+        this.dateFrom.setValue(LocalDate.now().minusDays(7L));
         this.dateFrom.setDayCellFactory(picker -> new DateCell() {
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
@@ -133,7 +135,7 @@ public class View implements Initializable {
 
         this.dateTo.valueProperty().bindBidirectional(this.viewModel.settingsController.dateTo);
         this.dateTo.valueProperty().addListener((ov, oldValue, newValue) -> {
-            if(viewModel.hPlot!=null) viewModel.plotUpdate();
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate();
         });
         this.dateTo.setValue(LocalDate.now());
         this.dateTo.setDayCellFactory(picker -> new DateCell() {

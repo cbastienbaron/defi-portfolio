@@ -1,6 +1,2 @@
-
-out/production/defi-portfolio/sample/ViewModel.class
-out/production/defi-portfolio/sample/TransactionController.class
-out/production/defi-portfolio/sample/ExportService.class
-out/production/defi-portfolio/sample/CoinPriceController.class
-out/production/defi-portfolio/icons/accept.png
+docu/javadoc/
+out/

@@ -335,9 +335,7 @@ public class TransactionController {
                         sb.append(transactionModel.getAmountValue()[i]).append(exportSplitter);
                         sb.append(transactionModel.getBlockHashValue()).append(exportSplitter);
                         sb.append(transactionModel.getBlockHeightValue()).append(exportSplitter);
-                        sb.append(transactionModel.getPoolIDValue()).append(exportSplitter);//.append(exportSplitter);
-//                        sb.append(transactionModel.getFiatValueValue()).append(exportSplitter);
-//                        sb.append(transactionModel.getFiatCurrencyValue());
+                        sb.append(transactionModel.getPoolIDValue()).append(exportSplitter);
                         if (transactionModel.getTxIDValue().equals(""))
                             sb.append("\"\"");
                         else
@@ -398,7 +396,7 @@ public class TransactionController {
         return filteredTransactions;
     }
 
-    public static TreeMap getCryptoMap(List<TransactionModel> transactions, String intervall, String Coin, String type) {
+    public TreeMap getCryptoMap(List<TransactionModel> transactions, String intervall, String Coin, String type,String plotCurrency) {
         TreeMap<String, Double> map = new TreeMap<>();
         TreeMap<String, Double> sorted = new TreeMap<>();
         for (TransactionModel item : transactions) {
@@ -425,12 +423,17 @@ public class TransactionController {
                     }
 
                     if (item.getTypeValue().equals(type)) {
+                        double fiatPrice = 1;
+                        if(plotCurrency.equals("Fiat")){
+                            fiatPrice = this.coinPriceController.getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue() + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue()*1000L);
+                        }
                         if (map.keySet().contains(date)) {
                             Double oldValue = map.get(date);
-                            Double newValue = oldValue + Double.parseDouble(coinValue[0]);
+
+                            Double newValue = oldValue + (Double.parseDouble(coinValue[0])*fiatPrice);
                             map.put(date, newValue);
                         } else {
-                            map.put(date, Double.parseDouble(coinValue[0]));
+                            map.put(date, Double.parseDouble(coinValue[0])*fiatPrice);
                         }
                     }
                 }

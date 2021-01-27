@@ -2,9 +2,6 @@ package sample;
 
 import javafx.beans.property.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TransactionModel {
 
     private final StringProperty ownerProperty = new SimpleStringProperty("");
@@ -32,7 +29,6 @@ public class TransactionModel {
         this.cryptoCurrencyProperty.set(transactionController.splitCoinsAndAmounts(amounts[0])[1]);
         this.txIDProperty.set(txid);
         this.fiatCurrencyProperty.set(transactionController.settingsController.selectedFiatCurrency.getValue());
-
         if(this.amountProperty.getValue()[0].split("@")[1].length() == 3)this.fiatValueProperty.set(this.cryptoValueProperty.getValue() * transactionController.coinPriceController.getPriceFromTimeStamp(this.amountProperty.getValue()[0].split("@")[1]+transactionController.settingsController.selectedFiatCurrency.getValue(),this.blockTimeProperty.getValue() * 1000L));
     }
 

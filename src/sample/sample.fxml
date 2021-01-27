@@ -141,21 +141,38 @@
                               <Label layoutX="21.0" layoutY="42.0" text="Start date" />
                               <DatePicker fx:id="dateTo" layoutX="83.0" layoutY="78.0" prefHeight="25.0" prefWidth="143.0" />
                               <DatePicker fx:id="dateFrom" layoutX="82.0" layoutY="40.0" prefHeight="25.0" prefWidth="142.0" />
-                              <StackPane fx:id="stackPane" layoutX="8.0" layoutY="118.0" prefHeight="275.0" prefWidth="543.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="118.0">
+                              <StackPane fx:id="stackPane" layoutX="8.0" layoutY="118.0" prefHeight="275.0" prefWidth="543.0" >
                                  <children>
-                                    <LineChart fx:id="hPlot" prefHeight="291.0" prefWidth="543.0">
+                                    <LineChart fx:id="plotRewards" prefHeight="291.0" prefWidth="543.0">
                                       <xAxis>
-                                        <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM" fx:id="xAxis" />
+                                        <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM" />
                                       </xAxis>
                                       <yAxis>
                                         <NumberAxis animated="false" side="LEFT" />
                                       </yAxis>
                                     </LineChart>
                                  </children>
+
                               </StackPane>
+                               <StackPane layoutX="8.0" layoutY="400.0" prefHeight="275.0" prefWidth="543.0">
+                                   <children>
+                                       <LineChart fx:id="plotCommissions" prefHeight="291.0" prefWidth="543.0">
+                                           <xAxis>
+                                               <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM"  />
+                                           </xAxis>
+                                           <yAxis>
+                                               <NumberAxis animated="false" side="LEFT" />
+                                           </yAxis>
+                                       </LineChart>
+                                   </children>
+
+                               </StackPane>
+
                                <ComboBox fx:id="cmbCoins" layoutX="238.0" layoutY="76.0" prefHeight="29.0" prefWidth="94.0" />
                               <ComboBox fx:id="cmbIntervall" layoutX="344.0" layoutY="76.0" prefHeight="29.0" prefWidth="94.0" />
                                <ComboBox fx:id="cmbFiat" layoutX="450.0" layoutY="76.0" prefHeight="29.0" prefWidth="94.0" />
+                               <ComboBox fx:id="cmbPlotCurrency" layoutX="556.0" layoutY="76.0" prefHeight="29.0" prefWidth="94.0" />
+
                            </children>
                         </AnchorPane>
                   </content>

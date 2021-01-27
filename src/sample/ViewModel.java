@@ -10,7 +10,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
+
+import javax.swing.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.*;
@@ -25,12 +30,13 @@ public class ViewModel {
     public StringProperty strProgressbar = new SimpleStringProperty("");
     public StringProperty strUpdatingDatabase = new SimpleStringProperty("");
     public BooleanProperty spinner = new SimpleBooleanProperty();
-    public LineChart<Number, Number> hPlot, hPlotKumuliert;
+    public LineChart<Number, Number> plotRewards, hPlotKumuliert, plotCommissions;
     public TableView hTable;
     public List<TransactionModel> transactionModelList;
     public ObservableList<TransactionModel> transactionList;
     public String[] cryptoCurrencies = new String[]{"BTC", "DFI", "ETH", "USDT","LTC","BCH"};
-    public String[] fiatCurrencies = new String[]{"EUR", "USDT", "CHF"};
+    public String[] fiatCurrencies = new String[]{"EUR", "USD", "CHF"};
+    public String[] plotCurrencies = new String[]{"Crypto", "Fiat"};
 
     public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
     public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
@@ -69,7 +75,11 @@ public class ViewModel {
         this.expService = new ExportService(this.coinPriceController,this.transactionController);
 
         //var test = this.transactionController.getListAddressGroupingsRpc();
-
+        if(checkIfDeFiAppIsRunning())   JOptionPane.showMessageDialog(null,"Please close the defi-app to connect to node","Update information", JOptionPane.INFORMATION_MESSAGE);
+        if(!this.coinPriceController.updateCoinPriceData()){
+            //Logg error @ coin price update
+            // upDatePrice();
+        }
 
         this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + transactionController.getBlockCountRpc());
         this.strCurrentBlockLocally.set("Current Block locally: " + transactionController.getLocalBlockCount());
@@ -82,16 +92,41 @@ public class ViewModel {
 
     public boolean updateTransactionData() {
 
-        if(!this.coinPriceController.updateCoinPriceData()){
-            //Logg error @ coin price update
-           // upDatePrice();
-        }
+
 
         if (new File(strPathAppData + strTransactionData).exists()) {
             int depth = this.transactionController.getBlockCountRpc() - this.transactionController.getLocalBlockCount();
             return this.transactionController.updateTransactionData(depth);
         } else {
             return this.transactionController.updateTransactionData(this.transactionController.getAccountHistoryCountRpc());
+        }
+    }
+
+    public boolean checkIfDeFiAppIsRunning() {
+        String line;
+        String pidInfo ="";
+        Process p = null;
+
+        try {
+            p = Runtime.getRuntime().exec(System.getenv("windir") +"\\system32\\"+"tasklist.exe");
+
+
+        BufferedReader input =  new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+        while ((line = input.readLine()) != null) {
+            pidInfo+=line;
+        }
+
+        input.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(pidInfo.contains("defi-app"))
+        {
+            return true;
+        }else{
+            return false;
         }
     }
 
@@ -135,8 +170,10 @@ public class ViewModel {
         long TimeStampEnd = Timestamp.valueOf(this.settingsController.dateTo.getValue() + " 23:59:59").getTime()/1000L;
 
         List<TransactionModel> transactionsInTime = this.transactionController.getTransactionsInTime(this.transactionList,TimeStampStart,TimeStampEnd);
-        TreeMap<String,Double> joinedRewards =  this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue(),"Rewards");
-        TreeMap<String,Double> joinedCommissions =  this.transactionController.getFiatMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue(),"Commission");
+
+
+        TreeMap<String,Double> joinedRewards =  this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue(),"Rewards",this.settingsController.selectedPlotCurrency.getValue());
+        TreeMap<String,Double> joinedCommissions =  this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue(),"Commission",this.settingsController.selectedPlotCurrency.getValue());
 
         // Plot timeSeries
         for (HashMap.Entry<String, Double> entry : joinedRewards.entrySet()) {
@@ -148,16 +185,41 @@ public class ViewModel {
             commisionsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
         }
 
-        this.hPlot.getData().clear();
+        this.plotRewards.getData().clear();
 
-        if (this.hPlot.getData().size() == 1) {
-            this.hPlot.getData().remove(0);
+        if (this.plotRewards.getData().size() == 1) {
+            this.plotRewards.getData().remove(0);
         }
 
-        this.hPlot.getData().add(rewardsSeries);
-        this.hPlot.getData().add(commisionsSeries);
+        this.plotCommissions.getData().clear();
 
-        for (XYChart.Series<Number, Number> s : this.hPlot.getData()) {
+        if (this.plotCommissions.getData().size() == 1) {
+            this.plotCommissions.getData().remove(0);
+        }
+
+
+
+        if (this.settingsController.selectedPlotCurrency.getValue().equals("Crypto")) {
+            this.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue());
+                    }else{
+            this.plotRewards.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue());
+        }
+
+        if (this.settingsController.selectedPlotCurrency.getValue().equals("Crypto")) {
+            this.plotCommissions.getYAxis().setLabel(this.settingsController.selectedCoin.getValue());
+        }else{
+            this.plotCommissions.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue());
+        }
+
+        if (this.settingsController.selectedPlotCurrency.getValue().equals("Crypto")) {
+            this.hPlotKumuliert.getYAxis().setLabel(this.settingsController.selectedCoin.getValue());
+        }else {
+            this.hPlotKumuliert.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue());
+        }
+        this.plotRewards.getData().add(rewardsSeries);
+        this.plotCommissions.getData().add(commisionsSeries);
+
+        for (XYChart.Series<Number, Number> s : this.plotRewards.getData()) {
             for (XYChart.Data d : s.getData()) {
                 Tooltip t = new Tooltip(d.getYValue().toString());
                 t.setShowDelay(Duration.seconds(0));
@@ -166,6 +228,16 @@ public class ViewModel {
                 d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
             }
         }
+
+            for (XYChart.Series<Number, Number> s : this.plotCommissions.getData()) {
+                for (XYChart.Data d : s.getData()) {
+                    Tooltip t = new Tooltip(d.getYValue().toString());
+                    t.setShowDelay(Duration.seconds(0));
+                    Tooltip.install(d.getNode(), t);
+                    d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
+                    d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                }
+            }
 
         // Plot Kumuliert
         Collection<Double> values = joinedRewards.values();

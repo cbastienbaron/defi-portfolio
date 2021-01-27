@@ -78,7 +78,6 @@ public class AddressModel {
         return amountProperty;
     }
 
-
     public  ObjectProperty<String[]> getTransaction() {
         return transactionProperty;
     }

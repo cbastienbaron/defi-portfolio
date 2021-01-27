@@ -15,6 +15,7 @@ public class SettingsController {
     String strSettingsData;
     public StringProperty selectedCoin = new SimpleStringProperty("DFI");
     public StringProperty selectedFiatCurrency = new SimpleStringProperty("EUR");
+    public StringProperty selectedPlotCurrency = new SimpleStringProperty("Crypto");
     public StringProperty cmbIntervall = new SimpleStringProperty("Daily");
     public StringProperty selectedDecimal = new SimpleStringProperty(".");
     public StringProperty selectedSeperator = new SimpleStringProperty(",");

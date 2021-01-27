@@ -15,7 +15,7 @@ public class CoinPriceController {
 
     public CoinPriceController(String strCoinPriceData) {
         this.strCoinPriceData = strCoinPriceData;
-        coinPriceModel = getCoinPriceLocal(this.strCoinPriceData);
+        this.coinPriceModel = getCoinPriceLocal(this.strCoinPriceData);
         updateCoinPriceData();
     }
 
