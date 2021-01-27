@@ -45,7 +45,7 @@ public class TransactionController {
         try {
             String strCookieData = "";
 
-            if(new File(strCookieData).exists()){
+            if(new File(this.strCookieOath).exists()){
 
             try {
                 this.url = new URL("http://127.0.0.1:8554");

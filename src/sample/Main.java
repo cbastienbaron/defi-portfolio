@@ -9,6 +9,15 @@ import javafx.stage.Stage;
 
 import java.sql.Timestamp;
 
+/**
+ * <h1>Test</h1>
+ *Test Text
+ *
+ *
+ * @author  Daniel Klaiber & Arthur Eisener
+ * @version 0.1
+ * @since   2021-02-02
+ */
 
 public class Main extends Application {
 
