@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="rootPane" prefHeight="337.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SplashFXMLController">
+   <children>
+      <AnchorPane layoutX="-2.0" layoutY="-5.0" prefHeight="344.0" prefWidth="600.0">
+         <children>
+            <ImageView fitHeight="403.0" fitWidth="600.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/splashscreen.PNG" />
+               </image>
+            </ImageView>
+            <Label layoutX="234.0" layoutY="14.0" text="Loading ...">
+               <font>
+                  <Font size="32.0" />
+               </font>
+               <effect>
+                  <Blend />
+               </effect>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

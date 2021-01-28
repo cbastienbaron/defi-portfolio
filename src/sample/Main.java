@@ -1,11 +1,13 @@
 package sample;
 
+import com.sun.javafx.application.LauncherImpl;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.sql.Timestamp;
 
@@ -22,18 +24,18 @@ import java.sql.Timestamp;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage stage) throws Exception{
 
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Defi-Portfolio Management");
-        primaryStage.setScene(new Scene(root, 900, 500));
-        primaryStage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));
-
-        primaryStage.show();
+        Parent root = FXMLLoader.load(getClass().getResource("SplashScreen.fxml"));
+        Scene scene = new Scene(root);
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setScene(scene);
+        stage.show();
     }
 
 
+
     public static void main(String[] args) {
-        launch(args);
+       launch(args);
     }
 }
