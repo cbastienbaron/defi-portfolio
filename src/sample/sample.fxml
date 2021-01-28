@@ -26,7 +26,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.RadioButton?>
 <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
    <children>
       <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0" style="-fx-background-color: #F0F7FF;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
@@ -87,17 +86,12 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
+                    <MenuItem mnemonicParsing="false" onAction="#closePressed" text="Close" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                    <MenuItem mnemonicParsing="false" onAction="#helpPressed" text="Help" />
                   </items>
                 </Menu>
               </menus>
@@ -141,9 +135,9 @@
                               <Label layoutX="21.0" layoutY="42.0" text="Start date" />
                               <DatePicker fx:id="dateTo" layoutX="83.0" layoutY="78.0" prefHeight="25.0" prefWidth="143.0" />
                               <DatePicker fx:id="dateFrom" layoutX="82.0" layoutY="40.0" prefHeight="25.0" prefWidth="142.0" />
-                              <StackPane fx:id="stackPane" layoutX="8.0" layoutY="118.0" prefHeight="275.0" prefWidth="543.0" >
+                              <StackPane fx:id="stackPane" layoutX="8.0" layoutY="118.0" prefHeight="275.0" prefWidth="647.0">
                                  <children>
-                                    <LineChart fx:id="plotRewards" prefHeight="291.0" prefWidth="543.0">
+                                    <LineChart fx:id="plotRewards" prefHeight="275.0" prefWidth="610.0">
                                       <xAxis>
                                         <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM" />
                                       </xAxis>
@@ -158,7 +152,7 @@
                                    <children>
                                        <LineChart fx:id="plotCommissions" prefHeight="291.0" prefWidth="543.0">
                                            <xAxis>
-                                               <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM"  />
+                                               <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM" />
                                            </xAxis>
                                            <yAxis>
                                                <NumberAxis animated="false" side="LEFT" />

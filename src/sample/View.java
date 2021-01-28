@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
+import javax.swing.*;
 import java.net.URL;
 import java.text.*;
 import java.time.LocalDate;
@@ -76,6 +77,15 @@ public class View implements Initializable {
 
         this.viewModel.btnUpdateDatabasePressed();
         this.spinner.setVisible(false);
+    }
+
+    public void closePressed(){
+        System.exit(0);
+    }
+    public void helpPressed(){
+        final ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\mail.png");
+        JOptionPane.showMessageDialog(null, "Contact us: \ndefiportfoliomanagement@gmail.com\n", "Contact information", JOptionPane.INFORMATION_MESSAGE, icon);
+
     }
 
     @Override
