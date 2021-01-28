@@ -73,10 +73,9 @@ public class View implements Initializable {
     }
 
     public void btnUpdateDatabasePressed() throws InterruptedException {
-        this.spinner.setVisible(true);
 
         this.viewModel.btnUpdateDatabasePressed();
-        this.spinner.setVisible(false);
+
     }
 
     public void closePressed(){
@@ -95,8 +94,8 @@ public class View implements Initializable {
         // Update Database Frame
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.viewModel.strCurrentBlockLocally);
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.viewModel.strCurrentBlockOnBlockchain);
-        this.strUpdatingDatabase.textProperty().bindBidirectional(this.viewModel.strUpdatingDatabase);
-        Bindings.bindBidirectional(this.spinner.visibleProperty(), this.viewModel.spinner);
+        //this.strUpdatingDatabase.textProperty().bindBidirectional(this.viewModel.strUpdatingDatabase);
+       // Bindings.bindBidirectional(this.spinner.visibleProperty(), this.viewModel.spinner);
 
         // Status image and text
         Bindings.bindBidirectional(this.imgViewObj.imageProperty(), this.viewModel.imgStatus);

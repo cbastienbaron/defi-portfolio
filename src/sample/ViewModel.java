@@ -131,7 +131,7 @@ public class ViewModel {
     }
 
     public void btnUpdateDatabasePressed() throws InterruptedException {
-        this.spinner.setValue(true);
+       // this.spinner.setValue(true);
         File file = new File(System.getProperty("user.dir") + "\\src\\icons\\accept.png");
         Image image = new Image(file.toURI().toString());
         this.imgStatus.setValue(image);
@@ -155,7 +155,7 @@ public class ViewModel {
         pause.setOnFinished(e -> this.strProgressbar.setValue(null));
         pause.play();
 
-        this.spinner.setValue(false);
+    //    this.spinner.setValue(false);
     }
 
     public void plotUpdate() {

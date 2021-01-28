@@ -13,7 +13,6 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -96,31 +95,6 @@
                 </Menu>
               </menus>
             </MenuBar>
-         </children>
-      </AnchorPane>
-      <AnchorPane id="AnchorPanelUpdateDatabase" fx:id="AnchorPanelUpdateDatabase" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
-         <children>
-            <Label id="strCurrentBlockOnChain" fx:id="strCurrentBlockOnBlockchain" layoutX="69.0" layoutY="101.0" text="Current block on Blockchain: 5700" AnchorPane.leftAnchor="69.0" AnchorPane.topAnchor="101.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Label id="strCurrentBlockLocally" fx:id="strCurrentBlockLocally" layoutX="120.0" layoutY="72.0" text="Current Block locally: 5600" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="72.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Button fx:id="btnUpdateDatabse" layoutX="343.0" layoutY="97.0" mnemonicParsing="false" onAction="#btnUpdateDatabasePressed" text="Update Database">
-               <font>
-                  <Font size="13.0" />
-               </font>
-            </Button>
-            <ProgressIndicator fx:id="spinner" layoutX="250.0" layoutY="202.0" prefHeight="70.0" prefWidth="129.0">
-               <cursor>
-                  <Cursor fx:constant="DEFAULT" />
-               </cursor>
-            </ProgressIndicator>
-            <Label fx:id="strUpdatingDatabase" layoutX="227.0" layoutY="261.0" text="Updating Database" />
          </children>
       </AnchorPane>
       <AnchorPane id="AnchorPanelAnalyse" fx:id="anchorPanelAnalyse" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
@@ -215,6 +189,25 @@
                 </Tab>
               </tabs>
             </TabPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane id="AnchorPanelUpdateDatabase" fx:id="AnchorPanelUpdateDatabase" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+         <children>
+            <Label id="strCurrentBlockOnChain" fx:id="strCurrentBlockOnBlockchain" layoutX="69.0" layoutY="101.0" text="Current block on Blockchain: 5700" AnchorPane.leftAnchor="69.0" AnchorPane.topAnchor="101.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label id="strCurrentBlockLocally" fx:id="strCurrentBlockLocally" layoutX="120.0" layoutY="72.0" text="Current Block locally: 5600" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="72.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Button fx:id="btnUpdateDatabse" layoutX="343.0" layoutY="97.0" mnemonicParsing="false" onAction="#btnUpdateDatabasePressed" text="Update Database">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
          </children>
       </AnchorPane>
    </children>
