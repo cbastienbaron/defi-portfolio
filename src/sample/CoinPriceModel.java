@@ -6,7 +6,7 @@ import java.util.TreeMap;
 
 public class CoinPriceModel implements java.io.Serializable {
 
-    public String lastTimeStamp;
+    public String lastTimeStamp="1589179630";
 
     TreeMap<String, List<List<String>>> coinPriceList;
 
@@ -35,6 +35,31 @@ public class CoinPriceModel implements java.io.Serializable {
         initialDFIList.add("0.0973");
 
         coinPriceList.put("DFICHF",initialList);
+
+        coinPriceList.put("BTCEUR", new ArrayList<>());
+        coinPriceList.put("BTCUSD", new ArrayList<>());
+        coinPriceList.put("BTCCHF", new ArrayList<>());
+
+        coinPriceList.put("ETHEUR", new ArrayList<>());
+        coinPriceList.put("ETHUSD", new ArrayList<>());
+        coinPriceList.put("ETHCHF", new ArrayList<>());
+
+        coinPriceList.put("USDTEUR", new ArrayList<>());
+        coinPriceList.put("USDTUSD", new ArrayList<>());
+        coinPriceList.put("USDTCHF", new ArrayList<>());
+
+        coinPriceList.put("LTCEUR", new ArrayList<>());
+        coinPriceList.put("LTCUSD", new ArrayList<>());
+        coinPriceList.put("LTCCHF", new ArrayList<>());
+
+        coinPriceList.put("BCHEUR", new ArrayList<>());
+        coinPriceList.put("BCHUSD", new ArrayList<>());
+        coinPriceList.put("BCHCHF", new ArrayList<>());
+
+        coinPriceList.put("DOGEUR", new ArrayList<>());
+        coinPriceList.put("DOGUSD", new ArrayList<>());
+        coinPriceList.put("DOGCHF", new ArrayList<>());
+
     }
 
     public TreeMap<String, List<List<String>>> GetKeyMap(){

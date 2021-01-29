@@ -40,7 +40,7 @@ public class ViewModel {
     public TableView hTable;
     public List<TransactionModel> transactionModelList;
     public ObservableList<TransactionModel> transactionList;
-    public String[] cryptoCurrencies = new String[]{"BTC", "DFI", "ETH", "USDT","LTC","BCH"};
+    public String[] cryptoCurrencies = new String[]{"DFI", "BTC",  "ETH", "USDT","LTC","BCH","DOGE"};
     public String[] fiatCurrencies = new String[]{"Crypto","EUR", "USD", "CHF"};
     public String[] plotCurrencies = new String[]{"Crypto", "Fiat"};
 
