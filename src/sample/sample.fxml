@@ -89,7 +89,7 @@
         <AnchorPane layoutY="401.0" prefHeight="29.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <children>
                 <ProgressBar id="progressBar" fx:id="progressBar" layoutY="-7.0" prefHeight="36.0" prefWidth="750.0" progress="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-7.0" />
-                <Label fx:id="lblProgressBar" alignment="CENTER" contentDisplay="CENTER" layoutX="4.0" layoutY="-2.0" prefHeight="29.0" prefWidth="742.0" text=" ">
+                <Label fx:id="lblProgressBar" alignment="CENTER" contentDisplay="CENTER" layoutX="4.0" layoutY="-2.0" prefHeight="29.0" prefWidth="1262.0" text=" " AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="-2.0">
                     <effect>
                         <Blend />
                     </effect>

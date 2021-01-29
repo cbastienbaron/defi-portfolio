@@ -9,9 +9,11 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import javax.swing.*;
+
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -322,24 +324,30 @@ public class ViewModel {
             localeDecimal = Locale.US;
         }
 
-        //TODO brows dialog export --> strPathAppData
 
-        boolean success = this.expService.exportTransactionToExcel(list, strPathAppData+"\\test.csv",this.coinPriceHistory,this.settingsController.selectedFiatCurrency.getValue(),localeDecimal,this.settingsController.selectedSeperator.getValue());
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Text Files", "*.txt")
+        );
+        File selectedFile = fileChooser.showSaveDialog(new Stage());
 
-        if (success) {
-            this.strProgressbar.setValue("Excel successfully exported!");
-            //   this.strProgressbar.setTextFill(Color.LIGHTGREEN);
-            PauseTransition pause = new PauseTransition(Duration.seconds(10));
-            pause.setOnFinished(e -> this.strProgressbar.setValue(null));
-            pause.play();
-        } else {
-            this.strProgressbar.setValue("Error while exporting excel!");
-            //  this.strProgressbar.setTextFill(Color.RED);
-            PauseTransition pause = new PauseTransition(Duration.seconds(10));
-            pause.setOnFinished(e -> this.strProgressbar.setValue(null));
-            pause.play();
+        if (selectedFile != null) {
+            boolean success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), this.coinPriceHistory, this.settingsController.selectedFiatCurrency.getValue(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+
+            if (success) {
+                this.strProgressbar.setValue("Excel successfully exported!");
+              //  this.strProgressbar.setTextFill(Color.Green);
+                PauseTransition pause = new PauseTransition(Duration.seconds(10));
+                pause.setOnFinished(e -> this.strProgressbar.setValue(null));
+                pause.play();
+            } else {
+                this.strProgressbar.setValue("Error while exporting excel!");
+                //  this.strProgressbar.setTextFill(Color.RED);
+                PauseTransition pause = new PauseTransition(Duration.seconds(10));
+                pause.setOnFinished(e -> this.strProgressbar.setValue(null));
+                pause.play();
+            }
         }
-
     }
 
 }
