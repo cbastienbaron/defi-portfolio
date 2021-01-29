@@ -7,11 +7,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" prefHeight="337.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SplashFXMLController">
+<AnchorPane fx:id="rootPane" prefHeight="329.0" prefWidth="598.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SplashFXMLController">
    <children>
-      <AnchorPane layoutX="-2.0" layoutY="-5.0" prefHeight="344.0" prefWidth="600.0">
+      <AnchorPane layoutX="-2.0" layoutY="-7.0" prefHeight="329.0" prefWidth="600.0">
          <children>
-            <ImageView fitHeight="403.0" fitWidth="600.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="371.0" fitWidth="600.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../icons/defi-flag.gif" />
                </image>

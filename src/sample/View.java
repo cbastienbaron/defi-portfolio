@@ -4,16 +4,22 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import javax.security.auth.callback.Callback;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.net.URL;
 import java.text.*;
 import java.time.LocalDate;
@@ -96,10 +102,25 @@ public class View implements Initializable {
     public void closePressed(){
         System.exit(0);
     }
-    public void helpPressed(){
-        final ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\mail.png");
-        JOptionPane.showMessageDialog(null, "Contact us: \ndefiportfoliomanagement@gmail.com\n", "Contact information", JOptionPane.INFORMATION_MESSAGE, icon);
+    public void helpPressed() throws IOException {
+        //  final ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\mail.png");
+        //  JOptionPane.showMessageDialog(null, "Contact us: \ndefiportfoliomanagement@gmail.com\n", "Contact information", JOptionPane.INFORMATION_MESSAGE, icon);
+        Parent root = FXMLLoader.load(getClass().getResource("HelpFXML.fxml"));
+        Scene scene = new Scene(root);
+        Stage s = new Stage();
+        s.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/help.png"));
 
+        s.setScene(scene);
+        s.show();
+    }
+    public void openAccountInformation() throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("DonateFXML.fxml"));
+        Scene scene = new Scene(root);
+        Stage s = new Stage();
+        s.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/donate.png"));
+
+        s.setScene(scene);
+        s.show();
     }
 
     @Override
