@@ -413,7 +413,12 @@ public class TransactionController {
                 if (coinValue[1].equals(Coin)) {
                     String date = "";
                     if (intervall.equals("Daily")) {
-                        date = year + "-" + month + "-" + day;
+                        if (day < 10){
+                            date = year + "-" + month + "-0" + day;
+                        }else{
+                            date = year + "-" + month + "-" + day;
+                        }
+
                     } else if (intervall.equals("Monthly")) {
                         date = year + "-" + month;
                     } else if (intervall.equals("Weekly")) {
