@@ -36,7 +36,7 @@ public class ViewModel {
     public StringProperty strProgressbar = new SimpleStringProperty("");
     public StringProperty strUpdatingDatabase = new SimpleStringProperty("");
     public BooleanProperty spinner = new SimpleBooleanProperty();
-    public LineChart<Number, Number> plotRewards, hPlotKumuliert, plotCommissions;
+    public LineChart<Number, Number> plotRewards, plotCommissions2, plotCommissions;
     public TableView hTable;
     public List<TransactionModel> transactionModelList;
     public ObservableList<TransactionModel> transactionList;
@@ -249,9 +249,9 @@ public class ViewModel {
         }
 
         if (this.settingsController.selectedPlotCurrency.getValue().equals("Crypto")) {
-            this.hPlotKumuliert.getYAxis().setLabel(this.settingsController.selectedCoin.getValue());
+            this.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue());
         }else {
-            this.hPlotKumuliert.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue());
+            this.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue());
         }
         this.plotRewards.getData().add(rewardsSeries);
         this.plotCommissions.getData().add(commisionsSeries);
@@ -295,12 +295,12 @@ public class ViewModel {
         for (HashMap.Entry<String, Double> entry : joinedRewards.entrySet()) {
             series2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
         }
-        if (this.hPlotKumuliert.getData().size() == 1) {
-            this.hPlotKumuliert.getData().remove(0);
+        if (this.plotCommissions2.getData().size() == 1) {
+            this.plotCommissions2.getData().remove(0);
         }
 
-        this.hPlotKumuliert.getData().add(series2);
-        for (XYChart.Series<Number, Number> s : this.hPlotKumuliert.getData()) {
+        this.plotCommissions2.getData().add(series2);
+        for (XYChart.Series<Number, Number> s : this.plotCommissions2.getData()) {
             for (XYChart.Data d : s.getData()) {
                 Tooltip t = new Tooltip(d.getYValue().toString());
                 t.setShowDelay(Duration.seconds(0));

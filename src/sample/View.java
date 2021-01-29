@@ -44,7 +44,7 @@ public class View implements Initializable {
     @FXML
     private final ProgressIndicator spinner = new ProgressIndicator();
     @FXML
-    private LineChart<Number, Number> plotRewards,plotCommissions, hPlotKumuliert;
+    private LineChart<Number, Number> plotRewards,plotCommissions,plotCommissions2;
     @FXML
     private TableView<TransactionModel> hTable,hRawDataTable;
     @FXML
@@ -80,7 +80,7 @@ public class View implements Initializable {
         this.anchorPanelAnalyse.toFront();
         this.viewModel.plotRewards = this.plotRewards;
         this.viewModel.plotCommissions = this.plotCommissions;
-        this.viewModel.hPlotKumuliert = this.hPlotKumuliert;
+        this.viewModel.plotCommissions2 = this.plotCommissions2;
         this.viewModel.hTable= this.hRawDataTable;
         this.viewModel.plotUpdate();
     }
@@ -89,7 +89,7 @@ public class View implements Initializable {
         this.anchorPanelRawData.toFront();
         this.viewModel.plotRewards = this.plotRewards;
         this.viewModel.plotCommissions = this.plotCommissions;
-        this.viewModel.hPlotKumuliert = this.hPlotKumuliert;
+        this.viewModel.plotCommissions2 = this.plotCommissions2;
         this.viewModel.hTable = this.hRawDataTable;
     }
 
