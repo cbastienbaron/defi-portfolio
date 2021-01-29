@@ -12,6 +12,9 @@ import javafx.scene.image.Image;
 import javafx.util.Duration;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +22,7 @@ import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
 
 public class ViewModel {
 
@@ -35,7 +39,7 @@ public class ViewModel {
     public List<TransactionModel> transactionModelList;
     public ObservableList<TransactionModel> transactionList;
     public String[] cryptoCurrencies = new String[]{"BTC", "DFI", "ETH", "USDT","LTC","BCH"};
-    public String[] fiatCurrencies = new String[]{"EUR", "USD", "CHF"};
+    public String[] fiatCurrencies = new String[]{"Crypto","EUR", "USD", "CHF"};
     public String[] plotCurrencies = new String[]{"Crypto", "Fiat"};
 
     public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
@@ -72,7 +76,7 @@ public class ViewModel {
         this.transactionList =FXCollections.observableArrayList(this.transactionController.transactionList);
         this.transactionModelList = this.transactionController.transactionList;
         this.coinPriceHistory = this.coinPriceController.coinPriceModel;
-        this.expService = new ExportService(this.coinPriceController,this.transactionController);
+        this.expService = new ExportService(this.coinPriceController,this.transactionController,this.settingsController);
 
         //var test = this.transactionController.getListAddressGroupingsRpc();
         //if(checkIfDeFiAppIsRunning())   JOptionPane.showMessageDialog(null,"Please close the defi-app to connect to node","Update information", JOptionPane.INFORMATION_MESSAGE);
@@ -84,6 +88,40 @@ public class ViewModel {
         File file = new File(System.getProperty("user.dir") + "\\src\\icons\\warning.png");
         Image image = new Image(file.toURI().toString());
         this.imgStatus.setValue(image);
+    }
+
+    public void copySelectedDataToClipboard(List<TransactionModel> list,boolean withHeaders){
+        var sb = new StringBuilder();
+
+        Locale localeDecimal = Locale.GERMAN;
+        if(settingsController.selectedDecimal.getValue().equals(".")){
+            localeDecimal = Locale.US;
+        }
+
+        if(withHeaders){
+            sb.append("Date,Owner,Operation,Amount,Cryptocurrency,FIAT value,FIAT currency,Block Hash,Block Height,Pool ID".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+        }
+
+        for (TransactionModel transaction:list
+             ) {
+            sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTime().getValue())).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getOwner().getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getType().getValue()).append(this.settingsController.selectedSeperator.getValue());
+            String[] CoinsAndAmounts = this.transactionController.splitCoinsAndAmounts(transaction.getAmount().getValue()[0]);
+            sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]))).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(CoinsAndAmounts[1]).append(this.settingsController.selectedSeperator.getValue());
+
+            var price = this.coinPriceController.getPriceFromTimeStamp(CoinsAndAmounts[1]+this.settingsController.selectedFiatCurrency.getValue(), transaction.getBlockTimeValue() * 1000L);
+            sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]) * price)).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(this.settingsController.selectedFiatCurrency.getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getBlockHash().getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getBlockHeight().getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getPoolID().getValue());
+            sb.append("\n");
+        }
+        StringSelection stringSelection = new StringSelection(sb.toString());
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
     }
 
     public boolean updateTransactionData() {
@@ -277,20 +315,16 @@ public class ViewModel {
         return transactionList;
     }
 
-    public void exportToExcel() {
+    public void exportToExcel(List<TransactionModel> list) {
 
         Locale localeDecimal = Locale.GERMAN;
-        if(settingsController.selectedDecimal.equals(".")){
+        if(settingsController.selectedDecimal.getValue().equals(".")){
             localeDecimal = Locale.US;
         }
 
         //TODO brows dialog export --> strPathAppData
 
-        LocalDate startTime = this.settingsController.dateFrom.getValue();
-        long TimeStampStart = Timestamp.valueOf(String.valueOf(startTime) + " 00:00:00").getTime()/1000L;
-        LocalDate endTime = this.settingsController.dateTo.getValue();
-        long TimeStampEnd = Timestamp.valueOf(String.valueOf(endTime) + " 23:59:59").getTime()/1000L;
-        boolean success = this.expService.exportTransactionToExcel(this.transactionModelList, strPathAppData+"//test.csv",this.coinPriceHistory,this.settingsController.selectedFiatCurrency.getValue(),localeDecimal,this.settingsController.selectedSeperator.getValue(),TimeStampStart,TimeStampEnd);
+        boolean success = this.expService.exportTransactionToExcel(list, strPathAppData+"\\test.csv",this.coinPriceHistory,this.settingsController.selectedFiatCurrency.getValue(),localeDecimal,this.settingsController.selectedSeperator.getValue());
 
         if (success) {
             this.strProgressbar.setValue("Excel successfully exported!");

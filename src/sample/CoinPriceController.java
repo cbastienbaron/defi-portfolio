@@ -29,37 +29,37 @@ public class CoinPriceController {
         if (client.getCoinMarketChartRangeById("defichain", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices().size() > 0) {
 
             //Update DFI
-            TreeMap<String,List<List<String>>> coinPriceList = new TreeMap<>();
-            coinPriceList=this.coinPriceModel.GetKeyMap();
+            TreeMap<String, List<List<String>>> coinPriceList = new TreeMap<>();
+            coinPriceList = this.coinPriceModel.GetKeyMap();
 
-            coinPriceList.put("DFIEUR",client.getCoinMarketChartRangeById("defichain", "eur", "1589179630", Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.put("DFIUSD",client.getCoinMarketChartRangeById("defichain", "usd", "1589179630", Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.put("DFICHF",client.getCoinMarketChartRangeById("defichain", "chf", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("DFIEUR", client.getCoinMarketChartRangeById("defichain", "eur", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("DFIUSD", client.getCoinMarketChartRangeById("defichain", "usd", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("DFICHF", client.getCoinMarketChartRangeById("defichain", "chf", "1589179630", Long.toString(currentTimeStamp)).getPrices());
 
             //Update BTC
-            coinPriceList.put("BTCEUR",client.getCoinMarketChartRangeById("bitcoin", "eur", "1589179630", Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.put("BTCUSD",client.getCoinMarketChartRangeById("bitcoin", "usd", "1589179630", Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.put("BTCCHF",client.getCoinMarketChartRangeById("bitcoin", "chf", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("BTCEUR", client.getCoinMarketChartRangeById("bitcoin", "eur", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("BTCUSD", client.getCoinMarketChartRangeById("bitcoin", "usd", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("BTCCHF", client.getCoinMarketChartRangeById("bitcoin", "chf", "1589179630", Long.toString(currentTimeStamp)).getPrices());
 
             //Update ETH
-            coinPriceList.put("ETHEUR",client.getCoinMarketChartRangeById("ethereum", "eur", "1589179630", Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.put("ETHUSD",client.getCoinMarketChartRangeById("ethereum", "usd", "1589179630", Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.put("ETHCHF",client.getCoinMarketChartRangeById("ethereum", "chf", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("ETHEUR", client.getCoinMarketChartRangeById("ethereum", "eur", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("ETHUSD", client.getCoinMarketChartRangeById("ethereum", "usd", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("ETHCHF", client.getCoinMarketChartRangeById("ethereum", "chf", "1589179630", Long.toString(currentTimeStamp)).getPrices());
 
             //Update USDT
-            coinPriceList.put("USDTEUR",client.getCoinMarketChartRangeById("tether", "eur", "1589179630", Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.put("USDTUSD",client.getCoinMarketChartRangeById("tether", "usd", "1589179630", Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.put("USDTCHF",client.getCoinMarketChartRangeById("tether", "chf", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("USDTEUR", client.getCoinMarketChartRangeById("tether", "eur", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("USDTUSD", client.getCoinMarketChartRangeById("tether", "usd", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("USDTCHF", client.getCoinMarketChartRangeById("tether", "chf", "1589179630", Long.toString(currentTimeStamp)).getPrices());
 
             //Update LTC
-            coinPriceList.put("LTCEUR",client.getCoinMarketChartRangeById("litecoin", "eur", "1589179630", Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.put("LTCUSD",client.getCoinMarketChartRangeById("litecoin", "usd", "1589179630", Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.put("LTCCHF",client.getCoinMarketChartRangeById("litecoin", "chf", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("LTCEUR", client.getCoinMarketChartRangeById("litecoin", "eur", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("LTCUSD", client.getCoinMarketChartRangeById("litecoin", "usd", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("LTCCHF", client.getCoinMarketChartRangeById("litecoin", "chf", "1589179630", Long.toString(currentTimeStamp)).getPrices());
 
             //Update BCH
-            coinPriceList.put("BCHEUR",client.getCoinMarketChartRangeById("bitcoin-cash", "eur", "1589179630", Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.put("BCHUSD",client.getCoinMarketChartRangeById("bitcoin-cash", "usd", "1589179630", Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.put("BCHCHF",client.getCoinMarketChartRangeById("bitcoin-cash", "chf", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("BCHEUR", client.getCoinMarketChartRangeById("bitcoin-cash", "eur", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("BCHUSD", client.getCoinMarketChartRangeById("bitcoin-cash", "usd", "1589179630", Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.put("BCHCHF", client.getCoinMarketChartRangeById("bitcoin-cash", "chf", "1589179630", Long.toString(currentTimeStamp)).getPrices());
 
             coinPrice.SetKeyMap(coinPriceList);
             coinPrice.lastTimeStamp = Long.toString(currentTimeStamp);
@@ -111,14 +111,15 @@ public class CoinPriceController {
     }
 
     public double getPriceFromTimeStamp(String coinFiatPair, Long timeStamp) {
-        double price=0;
-
+        double price = 0;
+if (this.coinPriceModel.GetKeyMap().get(coinFiatPair) == null){
+    int a = 2;
+}
         for (int i = this.coinPriceModel.GetKeyMap().get(coinFiatPair).size() - 1; i >= 0; i--)
-            if(timeStamp>Long.parseLong(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(0))){
-                price = Double.parseDouble(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(1));
-                break;
+            if (timeStamp > Long.parseLong(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(0))) {
+                return Double.parseDouble(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(1));
             }
-
         return price;
+
     }
 }

@@ -37,7 +37,7 @@ public class TransactionModel {
     }
 
     public String getOwnerValue() {
-        return ownerProperty.get();
+        return ownerProperty.getValue();
     }
 
     public StringProperty getOwner() {
@@ -49,7 +49,7 @@ public class TransactionModel {
     }
 
     public int getBlockHeightValue() {
-        return blockHeightProperty.get();
+        return blockHeightProperty.getValue();
     }
 
     public IntegerProperty getBlockHeight() {
@@ -65,7 +65,7 @@ public class TransactionModel {
     }
 
     public String getBlockHashValue() {
-        return blockHashProperty.get();
+        return blockHashProperty.getValue();
     }
 
     public void setBlockTime(Long blockTime) {
@@ -77,7 +77,7 @@ public class TransactionModel {
     }
 
     public Long getBlockTimeValue() {
-        return blockTimeProperty.get();
+        return blockTimeProperty.getValue();
     }
 
     public void setType(String type) {
@@ -89,11 +89,11 @@ public class TransactionModel {
     }
 
     public String getTypeValue() {
-        return typeProperty.get();
+        return typeProperty.getValue();
     }
 
     public String getPoolIDValue() {
-        return poolIDProperty.get();
+        return poolIDProperty.getValue();
     }
 
     public StringProperty getPoolID() {
@@ -115,7 +115,7 @@ public class TransactionModel {
     }
 
     public String[] getAmountValue() {
-        return amountProperty.get();
+        return amountProperty.getValue();
     }
 
     public StringProperty getCrypto() {
@@ -123,7 +123,7 @@ public class TransactionModel {
     }
 
     public String getCryptoyValue() {
-        return cryptoCurrencyProperty.get();
+        return cryptoCurrencyProperty.getValue();
     }
 
     public void setCrypto(String currency) {
@@ -131,7 +131,7 @@ public class TransactionModel {
     }
 
     public String getFiatCurrencyValue() {
-        return fiatCurrencyProperty.get();
+        return fiatCurrencyProperty.getValue();
     }
 
     public StringProperty getFiatCurrency() {
@@ -147,7 +147,7 @@ public class TransactionModel {
     }
 
     public String getTxIDValue() {
-        return txIDProperty.get();
+        return txIDProperty.getValue();
     }
 
     public void setTxID(String currency) {
@@ -155,7 +155,7 @@ public class TransactionModel {
     }
 
     public Double getCryptoValueValue() {
-        return cryptoValueProperty.get();
+        return cryptoValueProperty.getValue();
     }
 
     public DoubleProperty getCryptoValue() {
@@ -171,7 +171,7 @@ public class TransactionModel {
     }
 
     public Double getFiatValueValue() {
-        return fiatValueProperty.get();
+        return fiatValueProperty.getValue();
     }
 
     public void setFiatValue(Double value) {

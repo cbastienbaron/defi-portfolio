@@ -304,14 +304,22 @@ public class View implements Initializable {
     private void initializeTableViewContextMenu(){
         ContextMenu contextMenuRawData = new ContextMenu();
 
-        MenuItem menuItemCopySelected = new MenuItem("Copy to clipboard");
-        contextMenuRawData.getItems().add(menuItemCopySelected);
-
-        MenuItem menuItemExportSelected = new MenuItem("Export to CSV");
-        contextMenuRawData.getItems().add(menuItemExportSelected);
+        MenuItem menuItemCopySelected = new MenuItem("Copy");
+        MenuItem menuItemCopyHeaderSelected = new MenuItem("Copy with header");
+        MenuItem menuItemExportSelected = new MenuItem("Export selected to CSV");
+        MenuItem menuItemExportAllSelected = new MenuItem("Export all selected to CSV");
         MenuItem menuItemOpenInDefiExplorer = new MenuItem("Open in DeFi Blockchain Explorer");
-        contextMenuRawData.getItems().add(menuItemOpenInDefiExplorer);
 
+
+
+        menuItemCopySelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( hRawDataTable.selectionModelProperty().get().getSelectedItems(),false));
+        menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( hRawDataTable.selectionModelProperty().get().getSelectedItems(),true));
+        menuItemExportSelected.setOnAction(event -> viewModel.exportToExcel( hRawDataTable.selectionModelProperty().get().getSelectedItems()));
+
+        contextMenuRawData.getItems().add(menuItemCopySelected);
+        contextMenuRawData.getItems().add(menuItemCopyHeaderSelected);
+        contextMenuRawData.getItems().add(menuItemExportSelected);
+        contextMenuRawData.getItems().add(menuItemOpenInDefiExplorer);
         hRawDataTable.contextMenuProperty().set(contextMenuRawData);
 
 
