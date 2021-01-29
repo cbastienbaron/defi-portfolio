@@ -1,14 +1,19 @@
 package sample;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 
+import javax.security.auth.callback.Callback;
 import javax.swing.*;
+import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.text.*;
 import java.time.LocalDate;
@@ -17,11 +22,11 @@ import java.util.*;
 public class View implements Initializable {
 
     @FXML
-    private Pane AnchorPanelUpdateDatabase, anchorPanelAnalyse, anchorPanelExport;
+    private Pane AnchorPanelUpdateDatabase, anchorPanelAnalyse, anchorPanelRawData;
     @FXML
     private ProgressBar progressBar;
     @FXML
-    private Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, strUpToDate, lblProgressBar, strUpdatingDatabase;
+    private Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, strUpToDate, lblProgressBar;
     @FXML
     private ComboBox<String> cmbCoins, cmbIntervall,cmbFiat,cmbPlotCurrency;
     @FXML
@@ -35,7 +40,7 @@ public class View implements Initializable {
     @FXML
     private LineChart<Number, Number> plotRewards,plotCommissions, hPlotKumuliert;
     @FXML
-    private TableView<TransactionModel> hTable;
+    private TableView<TransactionModel> hTable,hRawDataTable;
     @FXML
     private TableColumn<TransactionModel, Long> blockTimeColumn;
     @FXML
@@ -57,6 +62,8 @@ public class View implements Initializable {
     @FXML
     private TableColumn<TransactionModel, String> fiatCurrencyColumn;
 
+
+
     ViewModel viewModel = new ViewModel();
 
     public void btnUpdatePressed() {
@@ -68,8 +75,16 @@ public class View implements Initializable {
         this.viewModel.plotRewards = this.plotRewards;
         this.viewModel.plotCommissions = this.plotCommissions;
         this.viewModel.hPlotKumuliert = this.hPlotKumuliert;
-        this.viewModel.hTable = this.hTable;
+        this.viewModel.hTable= this.hRawDataTable;
         this.viewModel.plotUpdate();
+    }
+
+    public void btnRawDataPressed() {
+        this.anchorPanelRawData.toFront();
+        this.viewModel.plotRewards = this.plotRewards;
+        this.viewModel.plotCommissions = this.plotCommissions;
+        this.viewModel.hPlotKumuliert = this.hPlotKumuliert;
+        this.viewModel.hTable = this.hRawDataTable;
     }
 
     public void btnUpdateDatabasePressed() throws InterruptedException {
@@ -156,7 +171,12 @@ public class View implements Initializable {
             }
         });
 
-        hTable.itemsProperty().set(this.viewModel.getTransactionTable());
+        initializeTableViewContextMenu();
+        hRawDataTable.itemsProperty().set(this.viewModel.getTransactionTable());
+        hRawDataTable.getSelectionModel().setSelectionMode(
+                SelectionMode.MULTIPLE
+        );
+
         ownerColumn.setCellValueFactory(param -> param.getValue().getOwner());
         blockTimeColumn.setCellValueFactory(param -> param.getValue().getBlockTime().asObject());
         typeColumn.setCellValueFactory(param -> param.getValue().getType());
@@ -258,5 +278,21 @@ public class View implements Initializable {
                 }
             }
         });
+    }
+
+    private void initializeTableViewContextMenu(){
+        ContextMenu contextMenuRawData = new ContextMenu();
+
+        MenuItem menuItemCopySelected = new MenuItem("Copy to clipboard");
+        contextMenuRawData.getItems().add(menuItemCopySelected);
+
+        MenuItem menuItemExportSelected = new MenuItem("Export to CSV");
+        contextMenuRawData.getItems().add(menuItemExportSelected);
+        MenuItem menuItemOpenInDefiExplorer = new MenuItem("Open in DeFi Blockchain Explorer");
+        contextMenuRawData.getItems().add(menuItemOpenInDefiExplorer);
+
+        hRawDataTable.contextMenuProperty().set(contextMenuRawData);
+
+
     }
 }

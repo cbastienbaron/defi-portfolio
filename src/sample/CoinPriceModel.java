@@ -14,8 +14,6 @@ public class CoinPriceModel implements java.io.Serializable {
 
         this.coinPriceList = new TreeMap<>();
 
-        lastTimeStamp = "1589179630";
-
         List<List<String>> initialList = new ArrayList<>();
         List<String> initialDFIList = new ArrayList<>();
         initialDFIList.add("1589179630000");
@@ -28,7 +26,6 @@ public class CoinPriceModel implements java.io.Serializable {
         initialDFIList = new ArrayList<>();
         initialDFIList.add("1589179630000");
         initialDFIList.add("0.1");
-
 
         coinPriceList.put("DFIUSD",initialList);
 

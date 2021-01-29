@@ -27,6 +27,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception{
 
         Parent root = FXMLLoader.load(getClass().getResource("SplashScreen.fxml"));
+        stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));
         Scene scene = new Scene(root);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);

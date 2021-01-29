@@ -29,7 +29,7 @@ new SplassScreen().start();
         @Override
         public  void run(){
             try{
-                Thread.sleep(1000);
+                Thread.sleep(4000);
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -39,8 +39,10 @@ new SplassScreen().start();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+
                         Scene scene = new Scene(root);
                         Stage stage = new Stage();
+                        stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));
                         stage.setScene(scene);
                         stage.show();
 

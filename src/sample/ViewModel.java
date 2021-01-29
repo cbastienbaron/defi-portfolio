@@ -75,11 +75,7 @@ public class ViewModel {
         this.expService = new ExportService(this.coinPriceController,this.transactionController);
 
         //var test = this.transactionController.getListAddressGroupingsRpc();
-        if(checkIfDeFiAppIsRunning())   JOptionPane.showMessageDialog(null,"Please close the defi-app to connect to node","Update information", JOptionPane.INFORMATION_MESSAGE);
-        if(!this.coinPriceController.updateCoinPriceData()){
-            //Logg error @ coin price update
-            // upDatePrice();
-        }
+        //if(checkIfDeFiAppIsRunning())   JOptionPane.showMessageDialog(null,"Please close the defi-app to connect to node","Update information", JOptionPane.INFORMATION_MESSAGE);
 
         this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + transactionController.getBlockCountRpc());
         this.strCurrentBlockLocally.set("Current Block locally: " + transactionController.getLocalBlockCount());
