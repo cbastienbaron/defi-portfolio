@@ -109,7 +109,7 @@ public class View implements Initializable {
         Scene scene = new Scene(root);
         Stage s = new Stage();
         s.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/help.png"));
-
+        s.setTitle(("Contact information"));
         s.setScene(scene);
         s.show();
     }
@@ -118,7 +118,7 @@ public class View implements Initializable {
         Scene scene = new Scene(root);
         Stage s = new Stage();
         s.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/donate.png"));
-
+        s.setTitle("Donate");
         s.setScene(scene);
         s.show();
     }

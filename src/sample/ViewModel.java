@@ -128,9 +128,7 @@ public class ViewModel {
 
     public void btnUpdateDatabasePressed() throws InterruptedException {
        // this.spinner.setValue(true);
-        File file = new File(System.getProperty("user.dir") + "\\src\\icons\\accept.png");
-        Image image = new Image(file.toURI().toString());
-        this.imgStatus.setValue(image);
+
 
         if (updateTransactionData()) {
 
@@ -147,11 +145,14 @@ public class ViewModel {
         } else {
 
         }
-        PauseTransition pause = new PauseTransition(Duration.seconds(10));
-        pause.setOnFinished(e -> this.strProgressbar.setValue(null));
-        pause.play();
+//        PauseTransition pause = new PauseTransition(Duration.seconds(10));
+//        pause.setOnFinished(e -> this.strProgressbar.setValue(null));
+//        pause.play();
 
-    //    this.spinner.setValue(false);
+        File file = new File(System.getProperty("user.dir") + "\\src\\icons\\accept.png");
+        Image image = new Image(file.toURI().toString());
+        this.imgStatus.setValue(image);
+        this.strUpToDate.setValue("Database up to date");
     }
 
     public void plotUpdate() {

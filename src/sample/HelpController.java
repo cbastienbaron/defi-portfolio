@@ -16,17 +16,20 @@ import java.net.URISyntaxException;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 
+import javax.tools.Tool;
+
 
 public class HelpController {
 
     @FXML
     private Button btnMailTo, btnCopy;
+    @FXML
+    private Tool toolTippMail, toolTippCopy;
 
     public HelpController() throws MalformedURLException {
 
     }
     public void btnMailToCallback() throws IOException, URISyntaxException {
-        System.out.println("asdsad");
         Desktop desktop;
         if (Desktop.isDesktopSupported()
                 && (desktop = Desktop.getDesktop()).isSupported(Desktop.Action.MAIL)) {

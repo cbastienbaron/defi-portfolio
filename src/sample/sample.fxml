@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.chart.CategoryAxis?>
@@ -25,7 +26,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="701.0" prefWidth="1051.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
     <children>
         <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0" style="-fx-background-color: #F0F7FF;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
             <children>
@@ -44,19 +45,22 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="btnRawData" layoutY="104.0" mnemonicParsing="false" onAction="#btnRawDataPressed" prefHeight="50.0" prefWidth="191.0" text="Raw Data">
+                <Button fx:id="btnRawData" alignment="CENTER" cache="true" layoutY="153.0" mnemonicParsing="false" onAction="#btnRawDataPressed" prefHeight="50.0" prefWidth="191.0" text="Raw Data">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
                     <graphic>
                         <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../icons/analyse.png" />
+                                <Image url="@../icons/table.png" />
                             </image>
                         </ImageView>
                     </graphic>
+               <padding>
+                  <Insets right="40.0" />
+               </padding>
                 </Button>
-                <Button fx:id="btnAnalyse" layoutY="161.0" mnemonicParsing="false" onAction="#btnAnalysePressed" prefHeight="50.0" prefWidth="191.0" text="Analyse Data">
+                <Button fx:id="btnAnalyse" layoutY="240.0" mnemonicParsing="false" onAction="#btnAnalysePressed" prefHeight="50.0" prefWidth="191.0" text="Analyse Data">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -67,6 +71,9 @@
                             </image>
                         </ImageView>
                     </graphic>
+               <padding>
+                  <Insets right="30.0" />
+               </padding>
                 </Button>
                 <ImageView fx:id="imgViewObj" fitHeight="50.0" fitWidth="47.0" layoutX="6.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="6.0">
                     <image>
@@ -196,25 +203,6 @@
                 </TabPane>
             </children>
         </AnchorPane>
-        <AnchorPane fx:id="anchorPanelRawData" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
-            <children>
-                <TableView fx:id="hRawDataTable" prefHeight="409.0" prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <columns>
-                        <TableColumn fx:id="blockTimeColumn" sortable="false" text="Date" />
-                        <TableColumn fx:id="typeColumn" sortable="false" text="Operation" />
-                        <TableColumn fx:id="cryptoValueColumn" sortable="false" text="Amount" />
-                        <TableColumn fx:id="cryptoCurrencyColumn" sortable="false" text="Cryptocurrency" />
-                        <TableColumn fx:id="fiatValueColumn" sortable="false" text="FIAT value" />
-                        <TableColumn fx:id="fiatCurrencyColumn" sortable="false" text="FIAT currency" />
-                        <TableColumn fx:id="poolIDColumn" sortable="false" text="LM Pool" />
-                        <TableColumn fx:id="blockHeightColumn" sortable="false" text="Block Height" />
-                        <TableColumn fx:id="blockHashColumn" sortable="false" text="Block Hash" />
-                        <TableColumn fx:id="ownerColumn" sortable="false" text="Owner" />
-                    </columns>
-                </TableView>
-
-            </children>
-        </AnchorPane>
         <AnchorPane id="AnchorPanelUpdateDatabase" fx:id="AnchorPanelUpdateDatabase" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
             <children>
                 <Label id="strCurrentBlockOnChain" fx:id="strCurrentBlockOnBlockchain" layoutX="69.0" layoutY="101.0" text="Current block on Blockchain: 5700" AnchorPane.leftAnchor="69.0" AnchorPane.topAnchor="101.0">
@@ -232,6 +220,25 @@
                         <Font size="13.0" />
                     </font>
                 </Button>
+            </children>
+        </AnchorPane>
+        <AnchorPane id="AnchorPanelRawData" fx:id="anchorPanelRawData" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+            <children>
+                <TableView fx:id="hRawDataTable" prefHeight="409.0" prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                        <TableColumn fx:id="blockTimeColumn" sortable="false" text="Date" />
+                        <TableColumn fx:id="typeColumn" sortable="false" text="Operation" />
+                        <TableColumn fx:id="cryptoValueColumn" sortable="false" text="Amount" />
+                        <TableColumn fx:id="cryptoCurrencyColumn" sortable="false" text="Cryptocurrency" />
+                        <TableColumn fx:id="fiatValueColumn" sortable="false" text="FIAT value" />
+                        <TableColumn fx:id="fiatCurrencyColumn" sortable="false" text="FIAT currency" />
+                        <TableColumn fx:id="poolIDColumn" sortable="false" text="LM Pool" />
+                        <TableColumn fx:id="blockHeightColumn" sortable="false" text="Block Height" />
+                        <TableColumn fx:id="blockHashColumn" sortable="false" text="Block Hash" />
+                        <TableColumn fx:id="ownerColumn" sortable="false" text="Owner" />
+                    </columns>
+                </TableView>
+
             </children>
         </AnchorPane>
     </children>
