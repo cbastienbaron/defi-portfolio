@@ -127,6 +127,15 @@ public class View implements Initializable {
         s.setScene(scene);
         s.show();
     }
+    public void openSettingPressed() throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("SettingsFXML.fxml"));
+        Scene scene = new Scene(root);
+        Stage s = new Stage();
+        s.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/settings.png"));
+        s.setTitle("Settings");
+        s.setScene(scene);
+        s.show();
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
