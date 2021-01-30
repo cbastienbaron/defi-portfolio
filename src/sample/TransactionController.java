@@ -420,9 +420,17 @@ public class TransactionController {
                         }
 
                     } else if (intervall.equals("Monthly")) {
-                        date = year + "-" + month;
+                        if (month < 10){
+                            date = year + "-0" + month;
+                        }else{
+                            date = year + "-" + month;
+                        }
                     } else if (intervall.equals("Weekly")) {
-                        date = year + "-" + week;
+                        if (week < 10){
+                            date = year + "-0" + week;
+                        }else{
+                            date = year + "-" + week;
+                        }
                     } else if (intervall.equals("Yearly")) {
                         date = year + "-";
                     }
