@@ -37,9 +37,9 @@ public class ViewModel {
     public ObservableList<TransactionModel> transactionList;
     public ObservableList<PoolPairModel> poolPairList;
 
-    public String[] cryptoCurrencies = new String[]{"DFI", "BTC", "ETH", "USDT", "LTC", "BCH", "DOGE"};
+    public String[] cryptoCurrencies = new String[]{"BTC-DFI",  "ETH-DFI", "USDT-DFI", "LTC-DFI", "BCH-DFI", "DOGE-DFI"};
     public String[] fiatCurrencies = new String[]{"Crypto", "EUR", "USD", "CHF"};
-    public String[] plotCurrencies = new String[]{"Crypto", "Fiat"};
+    public String[] plotCurrencies = new String[]{"Individual", "Cumulated"};
 
     public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
     public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
@@ -220,8 +220,6 @@ public class ViewModel {
         TreeMap<String, Double> joinedRewards = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), this.settingsController.selectedCoin.getValue(), "Rewards", this.settingsController.selectedPlotCurrency.getValue());
         TreeMap<String, Double> joinedCommissions = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), this.settingsController.selectedCoin.getValue(), "Commission", this.settingsController.selectedPlotCurrency.getValue());
 
-
-
         this.poolPairModelList.clear();
         this.poolPairList.clear();
 
@@ -234,6 +232,7 @@ public class ViewModel {
         this.poolPairList.addAll(this.poolPairModelList);
 
         // Plot timeSeries
+        int commissionCounter = 0;
         for (HashMap.Entry<String, Double> entry : joinedCommissions.entrySet()) {
             commisionsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
         }
