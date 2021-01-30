@@ -12,13 +12,8 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
-import javax.security.auth.callback.Callback;
-import javax.swing.*;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.text.*;
@@ -46,7 +41,9 @@ public class View implements Initializable {
     @FXML
     private LineChart<Number, Number> plotRewards,plotCommissions,plotCommissions2;
     @FXML
-    private TableView<TransactionModel> hTable,hRawDataTable;
+    private TableView<TransactionModel> rawDataTable;
+    @FXML
+    private TableView<PoolPairModel> plotTable;
     @FXML
     private TableColumn<TransactionModel, Long> blockTimeColumn;
     @FXML
@@ -67,8 +64,18 @@ public class View implements Initializable {
     private TableColumn<TransactionModel, Double> fiatValueColumn;
     @FXML
     private TableColumn<TransactionModel, String> fiatCurrencyColumn;
-
-
+    @FXML
+    private TableColumn<PoolPairModel, Long> timeStampColumn;
+    @FXML
+    private TableColumn<PoolPairModel, String> typePlotColumn;
+    @FXML
+    private TableColumn<PoolPairModel, Double> crypto1Column;
+    @FXML
+    private TableColumn<PoolPairModel, Double> crypto2Column;
+    @FXML
+    private TableColumn<PoolPairModel, Double> fiatColumn;
+    @FXML
+    private TableColumn<PoolPairModel, String> poolPairColumn;
 
     ViewModel viewModel = new ViewModel();
 
@@ -81,7 +88,6 @@ public class View implements Initializable {
         this.viewModel.plotRewards = this.plotRewards;
         this.viewModel.plotCommissions = this.plotCommissions;
         this.viewModel.plotCommissions2 = this.plotCommissions2;
-        this.viewModel.hTable= this.hRawDataTable;
         this.viewModel.plotUpdate();
     }
 
@@ -90,7 +96,6 @@ public class View implements Initializable {
         this.viewModel.plotRewards = this.plotRewards;
         this.viewModel.plotCommissions = this.plotCommissions;
         this.viewModel.plotCommissions2 = this.plotCommissions2;
-        this.viewModel.hTable = this.hRawDataTable;
     }
 
     public void btnUpdateDatabasePressed() throws InterruptedException {
@@ -193,11 +198,23 @@ public class View implements Initializable {
         });
 
         initializeTableViewContextMenu();
-        hRawDataTable.itemsProperty().set(this.viewModel.getTransactionTable());
-        hRawDataTable.getSelectionModel().setSelectionMode(
+
+        rawDataTable.itemsProperty().set(this.viewModel.getTransactionTable());
+        rawDataTable.getSelectionModel().setSelectionMode(
                 SelectionMode.MULTIPLE
         );
 
+        plotTable.itemsProperty().set(this.viewModel.getPlotData());
+        plotTable.getSelectionModel().setSelectionMode(
+                SelectionMode.MULTIPLE
+        );
+
+        timeStampColumn.setCellValueFactory(param -> param.getValue().getBlockTime().asObject());
+        typePlotColumn.setCellValueFactory(param -> param.getValue().getType());
+        crypto1Column.setCellValueFactory(param -> param.getValue().getCryptoValue1().asObject());
+        crypto2Column.setCellValueFactory(param -> param.getValue().getCryptoValue2().asObject());
+        fiatColumn.setCellValueFactory(param -> param.getValue().getFiatValue().asObject());
+        poolPairColumn.setCellValueFactory(param-> param.getValue().getPoolPair());
         ownerColumn.setCellValueFactory(param -> param.getValue().getOwner());
         blockTimeColumn.setCellValueFactory(param -> param.getValue().getBlockTime().asObject());
         typeColumn.setCellValueFactory(param -> param.getValue().getType());
@@ -228,6 +245,9 @@ public class View implements Initializable {
                             break;
                         case "6":
                             pool = "USDT-DFI";
+                            break;
+                        case "8":
+                            pool = "DOGE-DFI";
                             break;
                         default:
                             break;
@@ -302,6 +322,7 @@ public class View implements Initializable {
     }
 
     private void initializeTableViewContextMenu(){
+
         ContextMenu contextMenuRawData = new ContextMenu();
 
         MenuItem menuItemCopySelected = new MenuItem("Copy");
@@ -310,18 +331,20 @@ public class View implements Initializable {
         MenuItem menuItemExportAllSelected = new MenuItem("Export all selected to CSV");
         MenuItem menuItemOpenInDefiExplorer = new MenuItem("Open in DeFi Blockchain Explorer");
 
+        menuItemCopySelected.setOnAction(event -> viewModel.copySelectedRawDataToClipboard( rawDataTable.selectionModelProperty().get().getSelectedItems(),false));
+        menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedRawDataToClipboard( rawDataTable.selectionModelProperty().get().getSelectedItems(),true));
+        menuItemExportSelected.setOnAction(event -> viewModel.exportTransactionToExcel( rawDataTable.selectionModelProperty().get().getSelectedItems()));
 
-
-        menuItemCopySelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( hRawDataTable.selectionModelProperty().get().getSelectedItems(),false));
-        menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( hRawDataTable.selectionModelProperty().get().getSelectedItems(),true));
-        menuItemExportSelected.setOnAction(event -> viewModel.exportToExcel( hRawDataTable.selectionModelProperty().get().getSelectedItems()));
+        menuItemCopySelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),false));
+        menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),true));
+        menuItemExportSelected.setOnAction(event -> viewModel.exportPoolPairToExcel( plotTable.selectionModelProperty().get().getSelectedItems()));
 
         contextMenuRawData.getItems().add(menuItemCopySelected);
         contextMenuRawData.getItems().add(menuItemCopyHeaderSelected);
         contextMenuRawData.getItems().add(menuItemExportSelected);
         contextMenuRawData.getItems().add(menuItemOpenInDefiExplorer);
-        hRawDataTable.contextMenuProperty().set(contextMenuRawData);
-
+        rawDataTable.contextMenuProperty().set(contextMenuRawData);
+        plotTable.contextMenuProperty().set(contextMenuRawData);
 
     }
 }

@@ -6,14 +6,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -22,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 
@@ -34,12 +30,12 @@ public class ViewModel {
     public StringProperty strUpToDate = new SimpleStringProperty("Database not up to date");
     public SimpleDoubleProperty progress = new SimpleDoubleProperty(.0);
     public StringProperty strProgressbar = new SimpleStringProperty("");
-    public StringProperty strUpdatingDatabase = new SimpleStringProperty("");
-    public BooleanProperty spinner = new SimpleBooleanProperty();
     public LineChart<Number, Number> plotRewards, plotCommissions2, plotCommissions;
-    public TableView hTable;
-    public List<TransactionModel> transactionModelList;
+    public List<TransactionModel> transactionModelList = new ArrayList<>();
+    public List<PoolPairModel> poolPairModelList = new ArrayList<>();
     public ObservableList<TransactionModel> transactionList;
+    public ObservableList<PoolPairModel> poolPairList;
+
     public String[] cryptoCurrencies = new String[]{"DFI", "BTC",  "ETH", "USDT","LTC","BCH","DOGE"};
     public String[] fiatCurrencies = new String[]{"Crypto","EUR", "USD", "CHF"};
     public String[] plotCurrencies = new String[]{"Crypto", "Fiat"};
@@ -56,7 +52,6 @@ public class ViewModel {
     public SettingsController settingsController = new SettingsController(this.strPathAppData + strSettingsData);
     public TransactionController transactionController = new TransactionController(this.strPathAppData + this.strTransactionData,this.settingsController,this.coinPriceController,this.strPathDefiCli,this.strCookiePath);
 
-    public CoinPriceModel coinPriceHistory;
     public ExportService expService;
 
     public ViewModel() {
@@ -77,9 +72,12 @@ public class ViewModel {
 
         this.transactionList =FXCollections.observableArrayList(this.transactionController.transactionList);
         this.transactionModelList = this.transactionController.transactionList;
-        this.coinPriceHistory = this.coinPriceController.coinPriceModel;
         this.expService = new ExportService(this.coinPriceController,this.transactionController,this.settingsController);
 
+        this.poolPairModelList.add(new PoolPairModel(1000L,"Rewards",2.3,2.4,2.5,"BTC-DFI"));
+        this.poolPairList =FXCollections.observableArrayList(this.poolPairModelList);
+        poolPairList.removeAll(poolPairList);
+        poolPairList.addAll(this.poolPairModelList);
         //var test = this.transactionController.getListAddressGroupingsRpc();
         //if(checkIfDeFiAppIsRunning())   JOptionPane.showMessageDialog(null,"Please close the defi-app to connect to node","Update information", JOptionPane.INFORMATION_MESSAGE);
 
@@ -92,7 +90,7 @@ public class ViewModel {
         this.imgStatus.setValue(image);
     }
 
-    public void copySelectedDataToClipboard(List<TransactionModel> list,boolean withHeaders){
+    public void copySelectedRawDataToClipboard(List<TransactionModel> list,boolean withHeaders){
         var sb = new StringBuilder();
 
         Locale localeDecimal = Locale.GERMAN;
@@ -119,6 +117,32 @@ public class ViewModel {
             sb.append(transaction.getBlockHash().getValue()).append(this.settingsController.selectedSeperator.getValue());
             sb.append(transaction.getBlockHeight().getValue()).append(this.settingsController.selectedSeperator.getValue());
             sb.append(transaction.getPoolID().getValue());
+            sb.append("\n");
+        }
+        StringSelection stringSelection = new StringSelection(sb.toString());
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+    }
+
+    public void copySelectedDataToClipboard(List<PoolPairModel> list,boolean withHeaders){
+        var sb = new StringBuilder();
+
+        Locale localeDecimal = Locale.GERMAN;
+        if(settingsController.selectedDecimal.getValue().equals(".")){
+            localeDecimal = Locale.US;
+        }
+
+        if(withHeaders){
+            sb.append("Date,Total in Fiat,Rewards,Crypto 1,Crypto 2".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+        }
+
+        for (PoolPairModel poolPair:list
+        ) {
+            sb.append(this.transactionController.convertTimeStampToString(poolPair.getBlockTime().getValue())).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(poolPair.getFiatValue().getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(poolPair.getType().getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(poolPair.getCryptoValue1().getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(poolPair.getCryptoValue2().getValue()).append(this.settingsController.selectedSeperator.getValue());
             sb.append("\n");
         }
         StringSelection stringSelection = new StringSelection(sb.toString());
@@ -182,6 +206,8 @@ public class ViewModel {
             transactionList.addAll(this.transactionController.transactionList);
             this.transactionModelList = this.transactionController.transactionList;
 
+
+
         } else {
 
         }
@@ -198,19 +224,16 @@ public class ViewModel {
     public void plotUpdate() {
 
         XYChart.Series<Number, Number> rewardsSeries = new XYChart.Series();
-        rewardsSeries.setName("Rewards");
-
         XYChart.Series<Number, Number> commisionsSeries = new XYChart.Series();
-        commisionsSeries.setName("Commissions");
 
         long TimeStampStart = Timestamp.valueOf(this.settingsController.dateFrom.getValue() + " 00:00:00").getTime()/1000L;
         long TimeStampEnd = Timestamp.valueOf(this.settingsController.dateTo.getValue() + " 23:59:59").getTime()/1000L;
 
         List<TransactionModel> transactionsInTime = this.transactionController.getTransactionsInTime(this.transactionList,TimeStampStart,TimeStampEnd);
-
-
         TreeMap<String,Double> joinedRewards =  this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue(),"Rewards",this.settingsController.selectedPlotCurrency.getValue());
         TreeMap<String,Double> joinedCommissions =  this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),this.settingsController.selectedCoin.getValue(),"Commission",this.settingsController.selectedPlotCurrency.getValue());
+
+    
 
         // Plot timeSeries
         for (HashMap.Entry<String, Double> entry : joinedRewards.entrySet()) {
@@ -314,10 +337,14 @@ public class ViewModel {
     }
 
     public ObservableList<TransactionModel> getTransactionTable(){
-        return transactionList;
+        return this.transactionList;
     }
 
-    public void exportToExcel(List<TransactionModel> list) {
+    public ObservableList<PoolPairModel> getPlotData(){
+        return this.poolPairList;
+    }
+
+    public void exportTransactionToExcel(List<TransactionModel> list) {
 
         Locale localeDecimal = Locale.GERMAN;
         if(settingsController.selectedDecimal.getValue().equals(".")){
@@ -332,11 +359,44 @@ public class ViewModel {
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {
-            boolean success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), this.coinPriceHistory, this.settingsController.selectedFiatCurrency.getValue(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+            boolean success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), this.coinPriceController.coinPriceModel, this.settingsController.selectedFiatCurrency.getValue(), localeDecimal, this.settingsController.selectedSeperator.getValue());
 
             if (success) {
                 this.strProgressbar.setValue("Excel successfully exported!");
               //  this.strProgressbar.setTextFill(Color.Green);
+                PauseTransition pause = new PauseTransition(Duration.seconds(10));
+                pause.setOnFinished(e -> this.strProgressbar.setValue(null));
+                pause.play();
+            } else {
+                this.strProgressbar.setValue("Error while exporting excel!");
+                //  this.strProgressbar.setTextFill(Color.RED);
+                PauseTransition pause = new PauseTransition(Duration.seconds(10));
+                pause.setOnFinished(e -> this.strProgressbar.setValue(null));
+                pause.play();
+            }
+        }
+    }
+
+    public void exportPoolPairToExcel(List<PoolPairModel> list) {
+
+        Locale localeDecimal = Locale.GERMAN;
+        if(settingsController.selectedDecimal.getValue().equals(".")){
+            localeDecimal = Locale.US;
+        }
+
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Text Files", "*.txt")
+        );
+        File selectedFile = fileChooser.showSaveDialog(new Stage());
+
+        if (selectedFile != null) {
+            boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), this.coinPriceController.coinPriceModel, this.settingsController.selectedFiatCurrency.getValue(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+
+            if (success) {
+                this.strProgressbar.setValue("Excel successfully exported!");
+                //  this.strProgressbar.setTextFill(Color.Green);
                 PauseTransition pause = new PauseTransition(Duration.seconds(10));
                 pause.setOnFinished(e -> this.strProgressbar.setValue(null));
                 pause.play();
