@@ -65,7 +65,7 @@ public class View implements Initializable {
     @FXML
     private TableColumn<TransactionModel, String> fiatCurrencyColumn;
     @FXML
-    private TableColumn<PoolPairModel, Long> timeStampColumn;
+    private TableColumn<PoolPairModel, String> timeStampColumn;
     @FXML
     private TableColumn<PoolPairModel, String> typePlotColumn;
     @FXML
@@ -218,7 +218,7 @@ public class View implements Initializable {
                 SelectionMode.MULTIPLE
         );
 
-        timeStampColumn.setCellValueFactory(param -> param.getValue().getBlockTime().asObject());
+        timeStampColumn.setCellValueFactory(param -> param.getValue().getBlockTime());
         typePlotColumn.setCellValueFactory(param -> param.getValue().getType());
         crypto1Column.setCellValueFactory(param -> param.getValue().getCryptoValue1().asObject());
         crypto2Column.setCellValueFactory(param -> param.getValue().getCryptoValue2().asObject());

@@ -65,7 +65,7 @@ public class ExportService {
             sb.append("Date,Total in Fiat,Rewards,Crypto 1,Crypto 2".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
 
             for (PoolPairModel poolPairModel : poolPairModelList) {
-                    sb.append(this.transactionController.convertTimeStampToString(poolPairModel.getBlockTime().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(poolPairModel.getFiatValue().getValue()).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(poolPairModel.getType().getValue()).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(poolPairModel.getCryptoValue1().getValue()).append(this.settingsController.selectedSeperator.getValue());
