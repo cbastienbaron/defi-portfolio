@@ -53,7 +53,8 @@ public class ViewModel {
     public String strSettingsData = "settings.portfolio";
 
     public CoinPriceController coinPriceController = new CoinPriceController(this.strPathAppData + strCoinPriceData);
-    public SettingsController settingsController = new SettingsController(this.strPathAppData + strSettingsData);
+    //public SettingsController settingsController = new SettingsController(this.strPathAppData + strSettingsData);
+    public SettingsController settingsController = SettingsController.getInstance();
     public TransactionController transactionController = new TransactionController(this.strPathAppData + this.strTransactionData,this.settingsController,this.coinPriceController,this.strPathDefiCli,this.strCookiePath);
 
     public CoinPriceModel coinPriceHistory;
