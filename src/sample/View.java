@@ -413,29 +413,41 @@ public class View implements Initializable {
         MenuItem menuItemCopySelected = new MenuItem("Copy");
         MenuItem menuItemCopyHeaderSelected = new MenuItem("Copy with header");
         MenuItem menuItemExportSelected = new MenuItem("Export selected to CSV");
-        MenuItem menuItemExportAllSelected = new MenuItem("Export all selected to CSV");
+        MenuItem menuItemExportAllSelected = new MenuItem("Export all to CSV");
         MenuItem menuItemOpenInDefiExplorer = new MenuItem("Open in DeFi Blockchain Explorer");
 
         menuItemCopySelected.setOnAction(event -> viewModel.copySelectedRawDataToClipboard( rawDataTable.selectionModelProperty().get().getSelectedItems(),false));
         menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedRawDataToClipboard( rawDataTable.selectionModelProperty().get().getSelectedItems(),true));
         menuItemExportSelected.setOnAction(event -> viewModel.exportTransactionToExcel( rawDataTable.selectionModelProperty().get().getSelectedItems()));
+        menuItemExportAllSelected.setOnAction(event -> viewModel.exportTransactionToExcel( rawDataTable.getItems()));
+        menuItemOpenInDefiExplorer.setOnAction(event -> viewModel.openBlockChainExplorer( rawDataTable.selectionModelProperty().get().getSelectedItem()));
 
         contextMenuRawData.getItems().add(menuItemCopySelected);
         contextMenuRawData.getItems().add(menuItemCopyHeaderSelected);
         contextMenuRawData.getItems().add(menuItemExportSelected);
+        contextMenuRawData.getItems().add(menuItemExportAllSelected);
         contextMenuRawData.getItems().add(menuItemOpenInDefiExplorer);
-        rawDataTable.contextMenuProperty().set(contextMenuRawData);
+        this.rawDataTable.contextMenuProperty().set(contextMenuRawData);
+
+
 
         ContextMenu contextMenuPlotData = new ContextMenu();
+
+        menuItemCopySelected = new MenuItem("Copy");
+        menuItemCopyHeaderSelected = new MenuItem("Copy with header");
+        menuItemExportSelected = new MenuItem("Export selected to CSV");
+        menuItemExportAllSelected = new MenuItem("Export all to CSV");
 
         menuItemCopySelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),false));
         menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),true));
         menuItemExportSelected.setOnAction(event -> viewModel.exportPoolPairToExcel( plotTable.selectionModelProperty().get().getSelectedItems()));
+        menuItemExportAllSelected.setOnAction(event -> viewModel.exportPoolPairToExcel(plotTable.getItems()));
 
         contextMenuPlotData.getItems().add(menuItemCopySelected);
         contextMenuPlotData.getItems().add(menuItemCopyHeaderSelected);
         contextMenuPlotData.getItems().add(menuItemExportSelected);
-        plotTable.contextMenuProperty().set(contextMenuPlotData);
+        contextMenuPlotData.getItems().add(menuItemExportAllSelected);
+        this.plotTable.contextMenuProperty().set(contextMenuPlotData);
 
     }
 }

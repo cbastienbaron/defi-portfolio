@@ -42,7 +42,7 @@ new SplassScreen().start();
 
                         Scene scene = new Scene(root);
                         Stage stage = new Stage();
-                        stage.setTitle("Defi-Portfolio Management");
+                        stage.setTitle("Defi-Portfolio Management V0.1");
                         stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));
                         stage.setScene(scene);
                         stage.setMinHeight(700);

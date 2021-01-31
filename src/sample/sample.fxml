@@ -29,7 +29,7 @@
 
 <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
     <children>
-        <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0" style="-fx-background-color: #F0F7FF;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
+        <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
             <children>
                 <Button fx:id="btnUpdate" alignment="CENTER" cache="true" layoutY="62.0" mnemonicParsing="false" onAction="#btnUpdatePressed" prefHeight="53.0" prefWidth="191.0" text="Update Database">
                     <cursor>
@@ -87,19 +87,6 @@
                 <DropShadow />
             </effect>
         </AnchorPane>
-        <AnchorPane layoutY="401.0" prefHeight="29.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-            <children>
-                <ProgressBar id="progressBar" fx:id="progressBar" layoutY="-7.0" prefHeight="36.0" prefWidth="750.0" progress="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-7.0" />
-                <Label fx:id="lblProgressBar" alignment="CENTER" contentDisplay="CENTER" layoutX="4.0" layoutY="-2.0" prefHeight="29.0" prefWidth="1262.0" text=" " AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="-2.0">
-                    <effect>
-                        <Blend />
-                    </effect>
-                    <font>
-                        <Font size="13.0" />
-                    </font>
-                </Label>
-            </children>
-        </AnchorPane>
         <AnchorPane layoutY="2.0" prefHeight="0.0" prefWidth="700.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <MenuBar id="menuBar" layoutY="2.0" prefHeight="30.0" prefWidth="700.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -124,25 +111,6 @@
                 </MenuBar>
             </children>
         </AnchorPane>
-        <AnchorPane id="AnchorPanelUpdateDatabase" fx:id="AnchorPanelUpdateDatabase" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
-            <children>
-                <Label id="strCurrentBlockOnChain" fx:id="strCurrentBlockOnBlockchain" layoutX="69.0" layoutY="101.0" text="Current block on Blockchain: 5700" AnchorPane.leftAnchor="69.0" AnchorPane.topAnchor="101.0">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <Label id="strCurrentBlockLocally" fx:id="strCurrentBlockLocally" layoutX="120.0" layoutY="72.0" text="Current Block locally: 5600" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="72.0">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <Button fx:id="btnUpdateDatabse" layoutX="343.0" layoutY="97.0" mnemonicParsing="false" onAction="#btnUpdateDatabasePressed" text="Update Database">
-                    <font>
-                        <Font size="13.0" />
-                    </font>
-                </Button>
-            </children>
-        </AnchorPane>
         <AnchorPane id="AnchorPanelRawData" fx:id="anchorPanelRawData" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
             <children>
                 <TableView fx:id="rawDataTable" prefHeight="409.0" prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -162,91 +130,23 @@
 
             </children>
         </AnchorPane>
+        <AnchorPane layoutY="401.0" prefHeight="29.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <children>
+                <ProgressBar id="progressBar" fx:id="progressBar" layoutY="-7.0" prefHeight="36.0" prefWidth="750.0" progress="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-7.0" />
+                <Label fx:id="lblProgressBar" alignment="CENTER" contentDisplay="CENTER" layoutX="4.0" layoutY="-2.0" prefHeight="29.0" prefWidth="1262.0" text=" " AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="-2.0">
+                    <effect>
+                        <Blend />
+                    </effect>
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
         <AnchorPane id="AnchorPanelAnalyse" fx:id="anchorPanelAnalyse" layoutX="194.0" layoutY="27.0" prefHeight="639.0" prefWidth="857.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
             <children>
-                <AnchorPane prefHeight="639.0" prefWidth="931.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="0.0">
+                <AnchorPane prefHeight="639.0" prefWidth="931.0" style="-fx-background-color: #f4f3f6;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="0.0">
                     <children>
-                        <TabPane fx:id="tabPlane" layoutY="109.0" prefHeight="524.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="463.0" AnchorPane.topAnchor="109.0">
-                            <tabs>
-                                <Tab text="Overview">
-                                    <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="333.0" prefWidth="628.0">
-                                            <children>
-                                                <StackPane prefHeight="450.0" prefWidth="592.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
-                                                    <children>
-                                                        <LineChart fx:id="plotOverview" prefHeight="251.0" prefWidth="620.0">
-                                                            <xAxis>
-                                                                <CategoryAxis animated="false" side="BOTTOM" />
-                                                            </xAxis>
-                                                            <yAxis>
-                                                                <NumberAxis animated="false" side="LEFT" />
-                                                            </yAxis>
-                                                        </LineChart>
-                                                    </children>
-                                                </StackPane>
-                                            </children>
-                                        </AnchorPane>
-                                    </content>
-                                </Tab>
-                                <Tab text="Rewards">
-                                    <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
-                                            <children>
-                                                <StackPane prefHeight="450.0" prefWidth="592.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
-                                                    <children>
-                                                        <LineChart fx:id="plotRewards" prefHeight="406.0" prefWidth="592.0">
-                                                            <xAxis>
-                                                                <CategoryAxis animated="false" side="BOTTOM" />
-                                                            </xAxis>
-                                                            <yAxis>
-                                                                <NumberAxis animated="false" side="LEFT" />
-                                                            </yAxis>
-                                                        </LineChart>
-                                                    </children>
-                                                </StackPane>
-                                            </children>
-                                        </AnchorPane>
-                                    </content>
-                                </Tab>
-                                <Tab text="Commissions">
-                                    <content>
-                                        <AnchorPane prefHeight="431.0" prefWidth="628.0">
-                                            <children>
-                                    <SplitPane dividerPositions="0.4685598377281947" orientation="VERTICAL" prefHeight="495.0" prefWidth="607.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                      <items>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="206.0" prefWidth="543.0">
-                                             <children>
-                                                              <LineChart fx:id="plotCommissions" layoutX="27.0" layoutY="3.0" prefHeight="228.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                  <xAxis>
-                                                                      <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM" />
-                                                                  </xAxis>
-                                                                  <yAxis>
-                                                                      <NumberAxis animated="false" side="LEFT" />
-                                                                  </yAxis>
-                                                              </LineChart>
-                                             </children>
-                                          </AnchorPane>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                             <children>
-                                                            <LineChart fx:id="plotCommissions2" prefHeight="259.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                <xAxis>
-                                                                    <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM" />
-                                                                </xAxis>
-                                                                <yAxis>
-                                                                    <NumberAxis animated="false" side="LEFT" />
-                                                                </yAxis>
-                                                            </LineChart>
-                                             </children>
-                                          </AnchorPane>
-                                      </items>
-                                    </SplitPane>
-
-                                            </children>
-                                        </AnchorPane>
-                                    </content>
-                                </Tab>
-                            </tabs>
-                        </TabPane>
                         <Label layoutX="21.0" layoutY="18.0" text="Start date" />
                         <DatePicker fx:id="dateFrom" layoutX="81.0" layoutY="14.0" prefHeight="25.0" prefWidth="142.0" />
                         <Label layoutX="26.0" layoutY="55.0" text="End date" />
@@ -256,22 +156,131 @@
                         <ComboBox fx:id="cmbIntervall" layoutX="268.0" layoutY="17.0" prefHeight="29.0" prefWidth="94.0" />
                         <ComboBox fx:id="cmbFiat" layoutX="407.0" layoutY="60.0" prefHeight="29.0" prefWidth="94.0" />
                         <ComboBox fx:id="cmbPlotCurrency" layoutX="407.0" layoutY="17.0" prefHeight="29.0" prefWidth="94.0" />
-                  <AnchorPane layoutX="613.0" layoutY="102.0" prefHeight="524.0" prefWidth="452.0" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="102.0">
-                     <children>
-                              <TableView fx:id="plotTable" layoutY="8.0" prefHeight="524.0" prefWidth="452.0" AnchorPane.bottomAnchor="-8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="8.0">
-                                  <columns>
-                                      <TableColumn fx:id="timeStampColumn" prefWidth="75.0" text="Date" />
-                                      <TableColumn fx:id="poolPairColumn" prefWidth="75.0" text="Date" />
-                                      <TableColumn fx:id="fiatColumn" prefWidth="75.0" text="Total in Fiat" />
-                                      <TableColumn fx:id="typePlotColumn" prefWidth="75.0" text="Rewards" />
-                                      <TableColumn fx:id="crypto1Column" prefWidth="75.0" text="DFI" />
-                                      <TableColumn fx:id="crypto2Column" prefWidth="75.0" text="Crypto2" />
-                                  </columns>
-                              </TableView>
-                     </children>
-                  </AnchorPane>
+                  <AnchorPane layoutX="613.0" layoutY="102.0" prefHeight="524.0" prefWidth="452.0" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="102.0" />
+                  <SplitPane dividerPositions="0.5702167766258247" layoutY="123.0" prefHeight="516.0" prefWidth="1063.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="123.0">
+                    <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                           <children>
+                                    <TabPane fx:id="tabPlane" prefHeight="514.0" prefWidth="313.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <tabs>
+                                            <Tab text="Overview">
+                                                <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="333.0" prefWidth="628.0">
+                                                        <children>
+                                                            <StackPane prefHeight="450.0" prefWidth="592.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
+                                                                <children>
+                                                                    <LineChart fx:id="plotOverview" prefHeight="251.0" prefWidth="620.0">
+                                                                        <xAxis>
+                                                                            <CategoryAxis animated="false" side="BOTTOM" />
+                                                                        </xAxis>
+                                                                        <yAxis>
+                                                                            <NumberAxis animated="false" side="LEFT" />
+                                                                        </yAxis>
+                                                                    </LineChart>
+                                                                </children>
+                                                            </StackPane>
+                                                        </children>
+                                                    </AnchorPane>
+                                                </content>
+                                            </Tab>
+                                            <Tab text="Rewards">
+                                                <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
+                                                        <children>
+                                                            <StackPane prefHeight="450.0" prefWidth="592.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
+                                                                <children>
+                                                                    <LineChart fx:id="plotRewards" prefHeight="406.0" prefWidth="592.0">
+                                                                        <xAxis>
+                                                                            <CategoryAxis animated="false" side="BOTTOM" />
+                                                                        </xAxis>
+                                                                        <yAxis>
+                                                                            <NumberAxis animated="false" side="LEFT" />
+                                                                        </yAxis>
+                                                                    </LineChart>
+                                                                </children>
+                                                            </StackPane>
+                                                        </children>
+                                                    </AnchorPane>
+                                                </content>
+                                            </Tab>
+                                            <Tab text="Commissions">
+                                                <content>
+                                                    <AnchorPane prefHeight="431.0" prefWidth="628.0">
+                                                        <children>
+                                                <SplitPane dividerPositions="0.4685598377281947" orientation="VERTICAL" prefHeight="495.0" prefWidth="607.0" style="-fx-background-color: #f4f3f6;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                  <items>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="206.0" prefWidth="543.0">
+                                                         <children>
+                                                                          <LineChart fx:id="plotCommissions" layoutX="27.0" layoutY="3.0" prefHeight="179.0" prefWidth="600.0" AnchorPane.bottomAnchor="44.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                              <xAxis>
+                                                                                  <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM" />
+                                                                              </xAxis>
+                                                                              <yAxis>
+                                                                                  <NumberAxis animated="false" side="LEFT" />
+                                                                              </yAxis>
+                                                                          </LineChart>
+                                                         </children>
+                                                      </AnchorPane>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                         <children>
+                                                                        <LineChart fx:id="plotCommissions2" prefHeight="206.0" prefWidth="600.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                            <xAxis>
+                                                                                <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM" />
+                                                                            </xAxis>
+                                                                            <yAxis>
+                                                                                <NumberAxis animated="false" side="LEFT" />
+                                                                            </yAxis>
+                                                                        </LineChart>
+                                                         </children>
+                                                      </AnchorPane>
+                                                  </items>
+                                                </SplitPane>
+            
+                                                        </children>
+                                                    </AnchorPane>
+                                                </content>
+                                            </Tab>
+                                        </tabs>
+                                    </TabPane>
+                           </children>
+                        </AnchorPane>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                           <children>
+                                    <TableView fx:id="plotTable" prefHeight="514.0" prefWidth="453.0" style="-fx-background-color: #f4f3f6;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <columns>
+                                            <TableColumn fx:id="timeStampColumn" prefWidth="75.0" text="Date" />
+                                            <TableColumn fx:id="poolPairColumn" prefWidth="75.0" text="Date" />
+                                            <TableColumn fx:id="fiatColumn" prefWidth="75.0" text="Total in Fiat" />
+                                            <TableColumn fx:id="typePlotColumn" prefWidth="75.0" text="Rewards" />
+                                            <TableColumn fx:id="crypto1Column" prefWidth="75.0" text="DFI" />
+                                            <TableColumn fx:id="crypto2Column" prefWidth="75.0" text="Crypto2" />
+                                        </columns>
+                                    </TableView>
+                           </children>
+                        </AnchorPane>
+                    </items>
+                  </SplitPane>
                     </children>
                 </AnchorPane>
+            </children>
+        </AnchorPane>
+        <AnchorPane id="AnchorPanelUpdateDatabase" fx:id="AnchorPanelUpdateDatabase" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" style="-fx-background-color: #f4f3f6;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+            <children>
+                <Label id="strCurrentBlockOnChain" fx:id="strCurrentBlockOnBlockchain" layoutX="69.0" layoutY="101.0" text="Current block on Blockchain: 5700" AnchorPane.leftAnchor="69.0" AnchorPane.topAnchor="101.0">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <Label id="strCurrentBlockLocally" fx:id="strCurrentBlockLocally" layoutX="120.0" layoutY="72.0" text="Current Block locally: 5600" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="72.0">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <Button fx:id="btnUpdateDatabse" layoutX="343.0" layoutY="97.0" mnemonicParsing="false" onAction="#btnUpdateDatabasePressed" text="Update Database">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
             </children>
         </AnchorPane>
     </children>

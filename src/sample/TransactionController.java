@@ -432,10 +432,14 @@ public class TransactionController {
                 if (coinValue[1].equals(poolPair.split("-")[poolPairCount]) & item.getTypeValue().equals(type) & poolPair.equals(pool)) {
                     String date = "";
                     if (intervall.equals("Daily")) {
+                        String monthAdapted = Integer.toString(month);
+                        if(month < 10){
+                            monthAdapted = "0"+month;
+                        }
                         if (day < 10) {
-                            date = year + "-" + month + "-0" + day;
+                            date = year + "-" + monthAdapted + "-0" + day;
                         } else {
-                            date = year + "-" + month + "-" + day;
+                            date = year + "-" + monthAdapted + "-" + day;
                         }
 
                     } else if (intervall.equals("Monthly")) {

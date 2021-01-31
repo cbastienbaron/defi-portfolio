@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.List;
@@ -542,6 +543,14 @@ public class ViewModel {
                 pause.setOnFinished(e -> this.strProgressbar.setValue(null));
                 pause.play();
             }
+        }
+    }
+
+    public void openBlockChainExplorer(TransactionModel model){
+        try {
+            Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + model.getBlockHashValue()).toURI());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
