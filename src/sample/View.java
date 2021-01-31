@@ -158,6 +158,7 @@ public class View implements Initializable {
                     @Override
                     public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
                         if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
+                        crypto2Column.setVisible(!tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
                     }
                 }
         );

@@ -471,7 +471,7 @@ public class TransactionController {
                     if (item.getTypeValue().equals(type)) {
                         double fiatPrice = 1;
                         if(plotCurrency.equals("Fiat")){
-                            fiatPrice = this.coinPriceController.getPriceFromTimeStamp(coinValue[1].equals(poolPair.split("-")[poolPairCount]) + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue()*1000L);
+                            fiatPrice = this.coinPriceController.getPriceFromTimeStamp(poolPair.split("-")[poolPairCount] + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue()*1000L);
                         }
                         if (map.keySet().contains(date)) {
                             Double oldValue = map.get(date);

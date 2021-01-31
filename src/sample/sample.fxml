@@ -208,7 +208,7 @@
                                         </AnchorPane>
                                     </content>
                                 </Tab>
-                                <Tab text="Commision">
+                                <Tab text="Commissions">
                                     <content>
                                         <AnchorPane prefHeight="431.0" prefWidth="628.0">
                                             <children>
