@@ -445,10 +445,14 @@ public class TransactionController {
                             date = year + "-" + month;
                         }
                     } else if (intervall.equals("Weekly")) {
-                        if (week < 10) {
-                            date = year + "-0" + week;
-                        } else {
-                            date = year + "-" + week;
+                        int correct = 0;
+                        if(month == 1 && (day == 1 || day == 2 || day == 3)){
+                            correct = 1;
+                        }
+                        if (week < 10){
+                            date = year-correct + "-0" + week;
+                        }else{
+                            date = year-correct + "-" + week;
                         }
                     } else if (intervall.equals("Yearly")) {
                         date = year + "-";
