@@ -396,7 +396,7 @@ public class TransactionController {
         return filteredTransactions;
     }
 
-    public TreeMap getCryptoMap(List<TransactionModel> transactions, String intervall, String Coin, String type,String plotCurrency) {
+    public TreeMap getCryptoMap(List<TransactionModel> transactions, String intervall, String poolPair, String type, String plotCurrency) {
         TreeMap<String, Double> map = new TreeMap<>();
         TreeMap<String, Double> sorted = new TreeMap<>();
         for (TransactionModel item : transactions) {
@@ -407,97 +407,67 @@ public class TransactionController {
             int week = cal.get(Calendar.WEEK_OF_YEAR);
             int day = cal.get(Calendar.DAY_OF_MONTH);
             String[] AmountCoin = item.getAmountValue();
+            String pool = "BTC-DFI";
 
+            switch (item.getPoolIDValue()) {
+                case "4":
+                    pool = "ETH-DFI";
+                    break;
+                case "5":
+                    pool = "BTC-DFI";
+                    break;
+                case "6":
+                    pool = "USDT-DFI";
+                    break;
+                case "8":
+                    pool = "DOGE-DFI";
+                    break;
+                default:
+                    break;
+            }
             for (int iAmount = 0; iAmount < AmountCoin.length; iAmount++) {
                 String[] coinValue = AmountCoin[iAmount].split("@");
-                if (coinValue[1].equals(Coin)) {
+
+                if (coinValue[1].equals(poolPair.split("-")[1]) & item.getTypeValue().equals(type) & poolPair.equals(pool)) {
                     String date = "";
                     if (intervall.equals("Daily")) {
-                        if (day < 10){
+                        if (day < 10) {
                             date = year + "-" + month + "-0" + day;
-                        }else{
+                        } else {
                             date = year + "-" + month + "-" + day;
                         }
 
                     } else if (intervall.equals("Monthly")) {
-                        if (month < 10){
+                        if (month < 10) {
                             date = year + "-0" + month;
-                        }else{
+                        } else {
                             date = year + "-" + month;
                         }
                     } else if (intervall.equals("Weekly")) {
-                        if (week < 10){
+                        if (week < 10) {
                             date = year + "-0" + week;
-                        }else{
+                        } else {
                             date = year + "-" + week;
                         }
                     } else if (intervall.equals("Yearly")) {
                         date = year + "-";
                     }
 
-                    if (item.getTypeValue().equals(type)) {
-                        double fiatPrice = 1;
-                        if(plotCurrency.equals("Fiat")){
-                            fiatPrice = this.coinPriceController.getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue() + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue()*1000L);
-                        }
-                        if (map.keySet().contains(date)) {
-                            Double oldValue = map.get(date);
+                    if (map.keySet().contains(date)) {
+                        Double oldValue = map.get(date);
 
-                            Double newValue = oldValue + (Double.parseDouble(coinValue[0])*fiatPrice);
-                            map.put(date, newValue);
-                        } else {
-                            map.put(date, Double.parseDouble(coinValue[0])*fiatPrice);
-                        }
+                        Double newValue = oldValue + (Double.parseDouble(coinValue[0]));
+                        map.put(date, newValue);
+                    } else {
+                        map.put(date, Double.parseDouble(coinValue[0]));
                     }
+
                 }
             }
         }
         sorted.putAll(map);
         return sorted;
     }
-
-    public TreeMap getFiatMap(List<TransactionModel> transactions, String intervall, String Coin, String type) {
-        TreeMap<String, Double> map = new TreeMap<>();
-        TreeMap<String, Double> sorted = new TreeMap<>();
-        for (TransactionModel item : transactions) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(item.getBlockTimeValue() * 1000L);
-            int year = cal.get(Calendar.YEAR);
-            int month = cal.get(Calendar.MONTH) + 1;
-            int week = cal.get(Calendar.WEEK_OF_YEAR);
-            int day = cal.get(Calendar.DAY_OF_MONTH);
-            String[] AmountCoin = item.getAmountValue();
-
-            for (int iAmount = 0; iAmount < AmountCoin.length; iAmount++) {
-                String[] coinValue = AmountCoin[iAmount].split("@");
-                if (coinValue[1].equals(Coin)) {
-                    String date = "";
-                    if (intervall.equals("Daily")) {
-                        date = year + "-" + month + "-" + day;
-                    } else if (intervall.equals("Monthly")) {
-                        date = year + "-" + month;
-                    } else if (intervall.equals("Weekly")) {
-                        date = year + "-" + week;
-                    } else if (intervall.equals("Yearly")) {
-                        date = year + "-";
-                    }
-
-                    if (item.getTypeValue().equals(type)) {
-                        if (map.keySet().contains(date)) {
-                            Double oldValue = map.get(date);
-                            Double newValue = oldValue + Double.parseDouble(coinValue[0]) * this.coinPriceController.getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue() + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue());
-                            map.put(date, newValue);
-                        } else {
-                            map.put(date, Double.parseDouble(coinValue[0]));
-                        }
-                    }
-                }
-            }
-        }
-        sorted.putAll(map);
-        return sorted;
-    }
-
 
     public String convertTimeStampToString(long timeStamp) {
         Date date = new Date(timeStamp * 1000L);

@@ -135,6 +135,7 @@ public class View implements Initializable {
         s.setTitle("Settings");
         s.setScene(scene);
         s.show();
+        viewModel.plotUpdate();
     }
 
     @Override
@@ -166,14 +167,28 @@ public class View implements Initializable {
         this.cmbCoins.valueProperty().addListener((ov, oldValue, newValue) -> {
             if(viewModel.plotRewards !=null) viewModel.plotUpdate();
         });
+        this.fiatColumn.setText("Total in " + viewModel.settingsController.selectedFiatCurrency.getValue());
 
-        this.cmbFiat.getItems().addAll(this.viewModel.fiatCurrencies);
-        this.cmbFiat.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedFiatCurrency);
+        this.viewModel.settingsController.selectedFiatCurrency.addListener((ov, oldValue, newValue) -> {
+            if(!oldValue.equals(newValue) & this.plotRewards !=null) {
+                viewModel.plotUpdate();
+                this.fiatColumn.setText("Total in " + newValue);
+            }
+        });
+
+        this.viewModel.settingsController.selectedDecimal.addListener((ov, oldValue, newValue) -> {
+            if(!oldValue.equals(newValue) & this.plotRewards !=null) {
+                viewModel.plotUpdate();
+            }
+        });
+
+        this.cmbFiat.getItems().addAll(this.viewModel.plotCurrency);
+        this.cmbFiat.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotCurrency);
         this.cmbFiat.valueProperty().addListener((ov, oldValue, newValue) -> {
             if(viewModel.plotRewards !=null) viewModel.plotUpdate();
         });
-        this.cmbPlotCurrency.getItems().addAll(this.viewModel.plotCurrencies);
-        this.cmbPlotCurrency.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotCurrency);
+        this.cmbPlotCurrency.getItems().addAll(this.viewModel.plotType);
+        this.cmbPlotCurrency.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotType);
         this.cmbPlotCurrency.valueProperty().addListener((ov, oldValue, newValue) -> {
             if(viewModel.plotRewards !=null) viewModel.plotUpdate();
         });
@@ -183,7 +198,7 @@ public class View implements Initializable {
         this.dateFrom.valueProperty().addListener((ov, oldValue, newValue) -> {
             if(viewModel.plotRewards !=null) viewModel.plotUpdate();
         });
-        this.dateFrom.setValue(LocalDate.now().minusDays(7L));
+        this.dateFrom.setValue(LocalDate.now().minusDays(60L));
         this.dateFrom.setDayCellFactory(picker -> new DateCell() {
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
@@ -279,7 +294,22 @@ public class View implements Initializable {
                 }
             }
         });
+        fiatColumn.setCellFactory(tc -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double fiatValue, boolean empty) {
+                super.updateItem(fiatValue, empty);
+                if (empty) {
+                    setText(null);
+                } else {
 
+                    Locale localeDecimal = Locale.GERMAN;
+                    if (viewModel.settingsController.selectedDecimal.getValue().equals(".")) {
+                        localeDecimal = Locale.US;
+                    }
+                    setText(String.format(localeDecimal, "%.8f", fiatValue));
+                }
+            }
+        });
 
         fiatValueColumn.setCellFactory(tc -> new TableCell<>() {
             @Override
@@ -297,6 +327,41 @@ public class View implements Initializable {
                 }
             }
         });
+
+        crypto1Column.setCellFactory(tc -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double cryptoValue, boolean empty) {
+                super.updateItem(cryptoValue, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+
+                    Locale localeDecimal = Locale.GERMAN;
+                    if (viewModel.settingsController.selectedDecimal.getValue().equals(".")) {
+                        localeDecimal = Locale.US;
+                    }
+                    setText(String.format(localeDecimal, "%.8f", cryptoValue));
+                }
+            }
+        });
+
+        crypto2Column.setCellFactory(tc -> new TableCell<>() {
+            @Override
+            protected void updateItem(Double cryptoValue, boolean empty) {
+                super.updateItem(cryptoValue, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+
+                    Locale localeDecimal = Locale.GERMAN;
+                    if (viewModel.settingsController.selectedDecimal.getValue().equals(".")) {
+                        localeDecimal = Locale.US;
+                    }
+                    setText(String.format(localeDecimal, "%.8f", cryptoValue));
+                }
+            }
+        });
+
         cryptoValueColumn.setCellFactory(tc -> new TableCell<>() {
             @Override
             protected void updateItem(Double cryptoValue, boolean empty) {
@@ -304,8 +369,7 @@ public class View implements Initializable {
                 if (empty) {
                     setText(null);
                 } else {
-                    String pattern = "#######.########";
-                    DecimalFormat decimalFormat = new DecimalFormat(pattern);
+
                     Locale localeDecimal = Locale.GERMAN;
                     if (viewModel.settingsController.selectedDecimal.getValue().equals(".")) {
                         localeDecimal = Locale.US;
@@ -344,16 +408,22 @@ public class View implements Initializable {
         menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedRawDataToClipboard( rawDataTable.selectionModelProperty().get().getSelectedItems(),true));
         menuItemExportSelected.setOnAction(event -> viewModel.exportTransactionToExcel( rawDataTable.selectionModelProperty().get().getSelectedItems()));
 
-        menuItemCopySelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),false));
-        menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),true));
-        menuItemExportSelected.setOnAction(event -> viewModel.exportPoolPairToExcel( plotTable.selectionModelProperty().get().getSelectedItems()));
-
         contextMenuRawData.getItems().add(menuItemCopySelected);
         contextMenuRawData.getItems().add(menuItemCopyHeaderSelected);
         contextMenuRawData.getItems().add(menuItemExportSelected);
         contextMenuRawData.getItems().add(menuItemOpenInDefiExplorer);
         rawDataTable.contextMenuProperty().set(contextMenuRawData);
-        plotTable.contextMenuProperty().set(contextMenuRawData);
+
+        ContextMenu contextMenuPlotData = new ContextMenu();
+
+        menuItemCopySelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),false));
+        menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),true));
+        menuItemExportSelected.setOnAction(event -> viewModel.exportPoolPairToExcel( plotTable.selectionModelProperty().get().getSelectedItems()));
+
+        contextMenuPlotData.getItems().add(menuItemCopySelected);
+        contextMenuPlotData.getItems().add(menuItemCopyHeaderSelected);
+        contextMenuPlotData.getItems().add(menuItemExportSelected);
+        plotTable.contextMenuProperty().set(contextMenuPlotData);
 
     }
 }

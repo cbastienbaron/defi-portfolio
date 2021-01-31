@@ -117,9 +117,6 @@ public class CoinPriceController {
 
     public double getPriceFromTimeStamp(String coinFiatPair, Long timeStamp) {
         double price = 0;
-if (this.coinPriceModel.GetKeyMap().get(coinFiatPair) == null){
-    int a = 2;
-}
         for (int i = this.coinPriceModel.GetKeyMap().get(coinFiatPair).size() - 1; i >= 0; i--)
             if (timeStamp > Long.parseLong(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(0))) {
                 return Double.parseDouble(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(1));

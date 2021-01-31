@@ -195,7 +195,7 @@
             <children>
                 <AnchorPane prefHeight="639.0" prefWidth="1076.0">
                     <children>
-                        <TabPane layoutY="109.0" prefHeight="524.0" prefWidth="628.0" tabClosingPolicy="UNAVAILABLE"
+                        <TabPane fx:id="tabPlot" layoutY="109.0" prefHeight="524.0" prefWidth="628.0" tabClosingPolicy="UNAVAILABLE"
                                  AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0"
                                  AnchorPane.rightAnchor="448.0" AnchorPane.topAnchor="109.0">
                             <tabs>
@@ -205,7 +205,7 @@
                                             <children>
                                                 <StackPane prefHeight="234.0" prefWidth="620.0">
                                                     <children>
-                                                        <LineChart fx:id="hPlotKumuliert1" prefHeight="251.0"
+                                                        <LineChart fx:id="plotOverview" prefHeight="251.0"
                                                                    prefWidth="620.0">
                                                             <xAxis>
                                                                 <CategoryAxis side="BOTTOM"/>
@@ -288,8 +288,7 @@
                         <DatePicker fx:id="dateTo" layoutX="81.0" layoutY="51.0" prefHeight="25.0" prefWidth="143.0"/>
 
                         <ComboBox fx:id="cmbCoins" layoutX="268.0" layoutY="15.0" prefHeight="29.0" prefWidth="94.0"/>
-                        <ComboBox fx:id="cmbIntervall" layoutX="267.0" layoutY="58.0" prefHeight="29.0"
-                                  prefWidth="94.0"/>
+                        <ComboBox fx:id="cmbIntervall" layoutX="267.0" layoutY="58.0" prefHeight="29.0" prefWidth="94.0"/>
                         <ComboBox fx:id="cmbFiat" layoutX="407.0" layoutY="15.0" prefHeight="29.0" prefWidth="94.0"/>
                         <ComboBox fx:id="cmbPlotCurrency" layoutX="407.0" layoutY="62.0" prefHeight="29.0"
                                   prefWidth="94.0"/>

@@ -20,19 +20,20 @@ public class SettingsController {
         }
     }
 
-    public StringProperty selectedLanguage = new SimpleStringProperty("english");
+    public StringProperty selectedLanguage = new SimpleStringProperty("English");
     public StringProperty selectedFiatCurrency = new SimpleStringProperty("EUR");
     public StringProperty selectedDecimal = new SimpleStringProperty(".");
     public StringProperty selectedSeperator = new SimpleStringProperty(",");
 
-    public StringProperty selectedCoin = new SimpleStringProperty("DFI");
-    public StringProperty selectedPlotCurrency = new SimpleStringProperty("Crypto");
+    public StringProperty selectedCoin = new SimpleStringProperty("BTC-DFI");
+    public StringProperty selectedPlotCurrency = new SimpleStringProperty("Coin");
+    public StringProperty selectedPlotType = new SimpleStringProperty("Individual");
     public StringProperty cmbIntervall = new SimpleStringProperty("Daily");
     public ObjectProperty<LocalDate>  dateFrom = new SimpleObjectProperty();
     public ObjectProperty<LocalDate> dateTo= new SimpleObjectProperty();
 
-    public String[] languages = new String[]{"english","german"};
-    public String[] currencies = new String[]{"EUR","US Dollar","CHF"};
+    public String[] languages = new String[]{"English","Deutsch"};
+    public String[] currencies = new String[]{"EUR","USD","CHF"};
     public String[] decSeperators = new String[]{",","."};
     public String[] csvSeperators = new String[]{",","."};
     public String pathSettingsFile = System.getenv("APPDATA") + "\\defi-portfolio\\settings.csv";
@@ -51,8 +52,9 @@ public class SettingsController {
             String row;
             while ((row = csvReader.readLine()) != null) {
                 String[] data = row.split(",");
-                this.selectedLanguage.setValue(data[0]);
-                this.selectedFiatCurrency.setValue(data[1]);
+               this.selectedLanguage.setValue(data[0]);
+               this.selectedFiatCurrency.setValue(data[1]);
+
                 switch (data[2]){
                     case "Comma":
                         this.selectedDecimal.setValue(",");

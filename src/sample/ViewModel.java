@@ -38,8 +38,8 @@ public class ViewModel {
     public ObservableList<PoolPairModel> poolPairList;
 
     public String[] cryptoCurrencies = new String[]{"BTC-DFI",  "ETH-DFI", "USDT-DFI", "LTC-DFI", "BCH-DFI", "DOGE-DFI"};
-    public String[] fiatCurrencies = new String[]{"Crypto", "EUR", "USD", "CHF"};
-    public String[] plotCurrencies = new String[]{"Individual", "Cumulated"};
+    public String[] plotCurrency = new String[]{"Coin","Fiat"};
+    public String[] plotType = new String[]{"Individual", "Cumulated"};
 
     public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
     public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
@@ -50,7 +50,6 @@ public class ViewModel {
     public String strSettingsData = "settings.portfolio";
 
     public CoinPriceController coinPriceController = new CoinPriceController(this.strPathAppData + strCoinPriceData);
-    //public SettingsController settingsController = new SettingsController(this.strPathAppData + strSettingsData);
     public SettingsController settingsController = SettingsController.getInstance();
     public TransactionController transactionController = new TransactionController(this.strPathAppData + this.strTransactionData, this.settingsController, this.coinPriceController, this.strPathDefiCli, this.strCookiePath);
 
@@ -211,31 +210,30 @@ public class ViewModel {
     public void plotUpdate() {
 
         XYChart.Series<Number, Number> rewardsSeries = new XYChart.Series();
-        XYChart.Series<Number, Number> commisionsSeries = new XYChart.Series();
 
         long TimeStampStart = Timestamp.valueOf(this.settingsController.dateFrom.getValue() + " 00:00:00").getTime() / 1000L;
         long TimeStampEnd = Timestamp.valueOf(this.settingsController.dateTo.getValue() + " 23:59:59").getTime() / 1000L;
 
         List<TransactionModel> transactionsInTime = this.transactionController.getTransactionsInTime(this.transactionList, TimeStampStart, TimeStampEnd);
         TreeMap<String, Double> joinedRewards = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), this.settingsController.selectedCoin.getValue(), "Rewards", this.settingsController.selectedPlotCurrency.getValue());
-        TreeMap<String, Double> joinedCommissions = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), this.settingsController.selectedCoin.getValue(), "Commission", this.settingsController.selectedPlotCurrency.getValue());
 
         this.poolPairModelList.clear();
         this.poolPairList.clear();
 
+        if(this.settingsController.selectedPlotType.getValue().equals("Individual")){
+
         // Plot timeSeries
         for (HashMap.Entry<String, Double> entry : joinedRewards.entrySet()) {
-            rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
-            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", 2.3, entry.getValue() , 1, "BTC-DFI"));
+            double coinPrice = this.coinPriceController.getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[1] + this.settingsController.selectedFiatCurrency.getValue(), Timestamp.valueOf(entry.getKey()+ " 12:00:00").getTime()*1000L);
+            if(this.settingsController.selectedPlotCurrency.getValue().equals("Coin")){
+                rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
+            }else{
+                rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()* coinPrice));
+            }
+            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", entry.getValue()* coinPrice, entry.getValue() , 1, "BTC-DFI"));
         }
 
         this.poolPairList.addAll(this.poolPairModelList);
-
-        // Plot timeSeries
-        int commissionCounter = 0;
-        for (HashMap.Entry<String, Double> entry : joinedCommissions.entrySet()) {
-            commisionsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
-        }
 
         this.plotRewards.getData().clear();
 
@@ -243,32 +241,15 @@ public class ViewModel {
             this.plotRewards.getData().remove(0);
         }
 
-        this.plotCommissions.getData().clear();
-
-        if (this.plotCommissions.getData().size() == 1) {
-            this.plotCommissions.getData().remove(0);
-        }
 
 
-        if (this.settingsController.selectedPlotCurrency.getValue().equals("Crypto")) {
-            this.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue());
+        if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
+            this.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
         } else {
             this.plotRewards.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue());
         }
 
-        if (this.settingsController.selectedPlotCurrency.getValue().equals("Crypto")) {
-            this.plotCommissions.getYAxis().setLabel(this.settingsController.selectedCoin.getValue());
-        } else {
-            this.plotCommissions.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue());
-        }
-
-        if (this.settingsController.selectedPlotCurrency.getValue().equals("Crypto")) {
-            this.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue());
-        } else {
-            this.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue());
-        }
-        this.plotRewards.getData().add(rewardsSeries);
-        this.plotCommissions.getData().add(commisionsSeries);
+        this.plotRewards.getData().add(rewardsSeries);;
 
         for (XYChart.Series<Number, Number> s : this.plotRewards.getData()) {
             for (XYChart.Data d : s.getData()) {
@@ -280,15 +261,8 @@ public class ViewModel {
             }
         }
 
-        for (XYChart.Series<Number, Number> s : this.plotCommissions.getData()) {
-            for (XYChart.Data d : s.getData()) {
-                Tooltip t = new Tooltip(d.getYValue().toString());
-                t.setShowDelay(Duration.seconds(0));
-                Tooltip.install(d.getNode(), t);
-                d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
-                d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
-            }
-        }
+
+        }else{
 
         // Plot Kumuliert
         Collection<Double> values = joinedRewards.values();
@@ -309,12 +283,12 @@ public class ViewModel {
         for (HashMap.Entry<String, Double> entry : joinedRewards.entrySet()) {
             series2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
         }
-        if (this.plotCommissions2.getData().size() == 1) {
-            this.plotCommissions2.getData().remove(0);
+        if (this.plotRewards.getData().size() == 1) {
+            this.plotRewards.getData().remove(0);
         }
 
-        this.plotCommissions2.getData().add(series2);
-        for (XYChart.Series<Number, Number> s : this.plotCommissions2.getData()) {
+        this.plotRewards.getData().add(series2);
+        for (XYChart.Series<Number, Number> s : this.plotRewards.getData()) {
             for (XYChart.Data d : s.getData()) {
                 Tooltip t = new Tooltip(d.getYValue().toString());
                 t.setShowDelay(Duration.seconds(0));
@@ -324,6 +298,7 @@ public class ViewModel {
             }
         }
 
+        }
 
     }
 
@@ -345,7 +320,7 @@ public class ViewModel {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Text Files", "*.txt")
+                new FileChooser.ExtensionFilter("CSV files", "*.csv)")
         );
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
@@ -377,7 +352,7 @@ public class ViewModel {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Text Files", "*.txt")
+                new FileChooser.ExtensionFilter("CSV files", "*.csv")
         );
 
         File selectedFile = fileChooser.showSaveDialog(new Stage());
