@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -37,7 +38,7 @@ public class View implements Initializable {
     @FXML
     private DatePicker dateTo = new DatePicker();
     @FXML
-    private final ProgressIndicator spinner = new ProgressIndicator();
+    private TabPane tabPlane = new TabPane();
     @FXML
     private LineChart<Number, Number> plotRewards,plotCommissions,plotCommissions2;
     @FXML
@@ -88,7 +89,7 @@ public class View implements Initializable {
         this.viewModel.plotRewards = this.plotRewards;
         this.viewModel.plotCommissions = this.plotCommissions;
         this.viewModel.plotCommissions2 = this.plotCommissions2;
-        this.viewModel.plotUpdate();
+        this.viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
     }
 
     public void btnRawDataPressed() {
@@ -135,7 +136,7 @@ public class View implements Initializable {
         s.setTitle("Settings");
         s.setScene(scene);
         s.show();
-        viewModel.plotUpdate();
+        viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
     }
 
     @Override
@@ -152,6 +153,16 @@ public class View implements Initializable {
         Bindings.bindBidirectional(this.imgViewObj.imageProperty(), this.viewModel.imgStatus);
         this.strUpToDate.textProperty().bindBidirectional(this.viewModel.strUpToDate);
 
+        tabPlane.getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<Tab>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
+                        if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
+                    }
+                }
+        );
+
+
         // Progressbar and label
         this.progressBar.progressProperty().bind(this.viewModel.progress);
         this.lblProgressBar.textProperty().bindBidirectional(this.viewModel.strProgressbar);
@@ -159,44 +170,44 @@ public class View implements Initializable {
         this.cmbIntervall.getItems().addAll("Daily", "Weekly", "Monthly", "Yearly");
         this.cmbIntervall.valueProperty().bindBidirectional(this.viewModel.settingsController.cmbIntervall);
         this.cmbIntervall.valueProperty().addListener((ov, oldValue, newValue) -> {
-            if(viewModel.plotRewards !=null)  viewModel.plotUpdate();
+            if(viewModel.plotRewards !=null)  viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
         });
 
         this.cmbCoins.getItems().addAll(this.viewModel.cryptoCurrencies);
         this.cmbCoins.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedCoin);
         this.cmbCoins.valueProperty().addListener((ov, oldValue, newValue) -> {
-            if(viewModel.plotRewards !=null) viewModel.plotUpdate();
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
         });
         this.fiatColumn.setText("Total in " + viewModel.settingsController.selectedFiatCurrency.getValue());
 
         this.viewModel.settingsController.selectedFiatCurrency.addListener((ov, oldValue, newValue) -> {
             if(!oldValue.equals(newValue) & this.plotRewards !=null) {
-                viewModel.plotUpdate();
+                viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
                 this.fiatColumn.setText("Total in " + newValue);
             }
         });
 
         this.viewModel.settingsController.selectedDecimal.addListener((ov, oldValue, newValue) -> {
             if(!oldValue.equals(newValue) & this.plotRewards !=null) {
-                viewModel.plotUpdate();
+                viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
             }
         });
 
         this.cmbFiat.getItems().addAll(this.viewModel.plotCurrency);
         this.cmbFiat.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotCurrency);
         this.cmbFiat.valueProperty().addListener((ov, oldValue, newValue) -> {
-            if(viewModel.plotRewards !=null) viewModel.plotUpdate();
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
         });
         this.cmbPlotCurrency.getItems().addAll(this.viewModel.plotType);
         this.cmbPlotCurrency.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotType);
         this.cmbPlotCurrency.valueProperty().addListener((ov, oldValue, newValue) -> {
-            if(viewModel.plotRewards !=null) viewModel.plotUpdate();
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
         });
 
 
         this.dateFrom.valueProperty().bindBidirectional(this.viewModel.settingsController.dateFrom);
         this.dateFrom.valueProperty().addListener((ov, oldValue, newValue) -> {
-            if(viewModel.plotRewards !=null) viewModel.plotUpdate();
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
         });
         this.dateFrom.setValue(LocalDate.now().minusDays(60L));
         this.dateFrom.setDayCellFactory(picker -> new DateCell() {
@@ -209,7 +220,7 @@ public class View implements Initializable {
 
         this.dateTo.valueProperty().bindBidirectional(this.viewModel.settingsController.dateTo);
         this.dateTo.valueProperty().addListener((ov, oldValue, newValue) -> {
-            if(viewModel.plotRewards !=null) viewModel.plotUpdate();
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
         });
         this.dateTo.setValue(LocalDate.now());
         this.dateTo.setDayCellFactory(picker -> new DateCell() {

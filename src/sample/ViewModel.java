@@ -207,7 +207,21 @@ public class ViewModel {
         this.strUpToDate.setValue("Database up to date");
     }
 
-    public void plotUpdate() {
+    public void plotUpdate(String openedTab){
+        switch (openedTab) {
+            case "Overview":
+                break;
+            case "Rewards":
+                updateRewards();
+                break;
+            case "Commissions":
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void updateRewards() {
 
         XYChart.Series<Number, Number> rewardsSeries = new XYChart.Series();
 
@@ -215,11 +229,11 @@ public class ViewModel {
         long TimeStampEnd = Timestamp.valueOf(this.settingsController.dateTo.getValue() + " 23:59:59").getTime() / 1000L;
 
         List<TransactionModel> transactionsInTime = this.transactionController.getTransactionsInTime(this.transactionList, TimeStampStart, TimeStampEnd);
-        TreeMap<String, Double> joinedRewards = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), this.settingsController.selectedCoin.getValue(), "Rewards", this.settingsController.selectedPlotCurrency.getValue());
+        TreeMap<String, Double> joinedRewards = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(),1, this.settingsController.selectedCoin.getValue(), "Rewards", this.settingsController.selectedPlotCurrency.getValue());
 
         this.poolPairModelList.clear();
         this.poolPairList.clear();
-
+        this.plotRewards.setLegendVisible(false);
         if(this.settingsController.selectedPlotType.getValue().equals("Individual")){
 
         // Plot timeSeries
@@ -240,8 +254,6 @@ public class ViewModel {
         if (this.plotRewards.getData().size() == 1) {
             this.plotRewards.getData().remove(0);
         }
-
-
 
         if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
             this.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);

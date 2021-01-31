@@ -195,7 +195,7 @@
             <children>
                 <AnchorPane prefHeight="639.0" prefWidth="1076.0">
                     <children>
-                        <TabPane fx:id="tabPlot" layoutY="109.0" prefHeight="524.0" prefWidth="628.0" tabClosingPolicy="UNAVAILABLE"
+                        <TabPane fx:id="tabPlane" layoutY="109.0" prefHeight="524.0" prefWidth="628.0" tabClosingPolicy="UNAVAILABLE"
                                  AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0"
                                  AnchorPane.rightAnchor="448.0" AnchorPane.topAnchor="109.0">
                             <tabs>
