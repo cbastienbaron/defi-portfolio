@@ -396,7 +396,8 @@ public class TransactionController {
         return filteredTransactions;
     }
 
-    public TreeMap getCryptoMap(List<TransactionModel> transactions, String intervall, String poolPair, String type, String plotCurrency) {
+    public TreeMap getCryptoMap(List<TransactionModel> transactions, String intervall, int poolPairCount, String poolPair, String type, String plotCurrency) {
+
         TreeMap<String, Double> map = new TreeMap<>();
         TreeMap<String, Double> sorted = new TreeMap<>();
         for (TransactionModel item : transactions) {
@@ -428,7 +429,7 @@ public class TransactionController {
             for (int iAmount = 0; iAmount < AmountCoin.length; iAmount++) {
                 String[] coinValue = AmountCoin[iAmount].split("@");
 
-                if (coinValue[1].equals(poolPair.split("-")[1]) & item.getTypeValue().equals(type) & poolPair.equals(pool)) {
+                if (coinValue[1].equals(poolPair.split("-")[poolPairCount]) & item.getTypeValue().equals(type) & poolPair.equals(pool)) {
                     String date = "";
                     if (intervall.equals("Daily")) {
                         if (day < 10) {
@@ -462,6 +463,21 @@ public class TransactionController {
                         map.put(date, Double.parseDouble(coinValue[0]));
                     }
 
+
+                    if (item.getTypeValue().equals(type)) {
+                        double fiatPrice = 1;
+                        if(plotCurrency.equals("Fiat")){
+                            fiatPrice = this.coinPriceController.getPriceFromTimeStamp(coinValue[1].equals(poolPair.split("-")[poolPairCount]) + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue()*1000L);
+                        }
+                        if (map.keySet().contains(date)) {
+                            Double oldValue = map.get(date);
+
+                            Double newValue = oldValue + (Double.parseDouble(coinValue[0])*fiatPrice);
+                            map.put(date, newValue);
+                        } else {
+                            map.put(date, Double.parseDouble(coinValue[0])*fiatPrice);
+                        }
+                    }
                 }
             }
         }
