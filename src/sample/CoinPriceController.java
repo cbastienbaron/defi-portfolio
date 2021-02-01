@@ -14,8 +14,13 @@ public class CoinPriceController {
     String strCoinPriceData;
 
     public CoinPriceController(String strCoinPriceData) {
-        this.strCoinPriceData = strCoinPriceData;
+
+           this.strCoinPriceData = strCoinPriceData;
+        try{
         updateCoinPriceData();
+       }catch(Exception e){
+
+        }
     }
 
     public boolean updateCoinPriceData() {
@@ -62,9 +67,9 @@ public class CoinPriceController {
             coinPriceList.get("BCHCHF").addAll(client.getCoinMarketChartRangeById("bitcoin-cash", "chf",coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
 
             //Update BCH
-            coinPriceList.get("DOGEUR").addAll(client.getCoinMarketChartRangeById("dogecoin", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.get("DOGUSD").addAll(client.getCoinMarketChartRangeById("dogecoin", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
-            coinPriceList.get("DOGCHF").addAll(client.getCoinMarketChartRangeById("dogecoin", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.get("DOGEEUR").addAll(client.getCoinMarketChartRangeById("dogecoin", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.get("DOGEUSD").addAll(client.getCoinMarketChartRangeById("dogecoin", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+            coinPriceList.get("DOGECHF").addAll(client.getCoinMarketChartRangeById("dogecoin", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
 
             coinPrice.SetKeyMap(coinPriceList);
             coinPrice.lastTimeStamp = Long.toString(currentTimeStamp);
@@ -117,6 +122,9 @@ public class CoinPriceController {
 
     public double getPriceFromTimeStamp(String coinFiatPair, Long timeStamp) {
         double price = 0;
+        if(this.coinPriceModel.GetKeyMap().get(coinFiatPair) == null){
+            int a= 2;
+        }
         for (int i = this.coinPriceModel.GetKeyMap().get(coinFiatPair).size() - 1; i >= 0; i--)
             if (timeStamp > Long.parseLong(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(0))) {
                 return Double.parseDouble(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(1));

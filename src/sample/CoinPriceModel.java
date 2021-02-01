@@ -56,9 +56,9 @@ public class CoinPriceModel implements java.io.Serializable {
         coinPriceList.put("BCHUSD", new ArrayList<>());
         coinPriceList.put("BCHCHF", new ArrayList<>());
 
-        coinPriceList.put("DOGEUR", new ArrayList<>());
-        coinPriceList.put("DOGUSD", new ArrayList<>());
-        coinPriceList.put("DOGCHF", new ArrayList<>());
+        coinPriceList.put("DOGEEUR", new ArrayList<>());
+        coinPriceList.put("DOGEUSD", new ArrayList<>());
+        coinPriceList.put("DOGECHF", new ArrayList<>());
 
     }
 

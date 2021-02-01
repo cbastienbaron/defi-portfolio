@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -42,6 +43,8 @@ public class View implements Initializable {
     @FXML
     private LineChart<Number, Number> plotRewards,plotCommissions,plotCommissions2;
     @FXML
+    private StackedAreaChart<Number, Number> plotOverview;
+    @FXML
     private TableView<TransactionModel> rawDataTable;
     @FXML
     private TableView<PoolPairModel> plotTable;
@@ -68,13 +71,13 @@ public class View implements Initializable {
     @FXML
     private TableColumn<PoolPairModel, String> timeStampColumn;
     @FXML
-    private TableColumn<PoolPairModel, String> typePlotColumn;
-    @FXML
     private TableColumn<PoolPairModel, Double> crypto1Column;
     @FXML
     private TableColumn<PoolPairModel, Double> crypto2Column;
     @FXML
     private TableColumn<PoolPairModel, Double> fiatColumn;
+    @FXML
+    private TableColumn<PoolPairModel, Double> fiatTotalColumn;
     @FXML
     private TableColumn<PoolPairModel, String> poolPairColumn;
 
@@ -89,7 +92,8 @@ public class View implements Initializable {
         this.viewModel.plotRewards = this.plotRewards;
         this.viewModel.plotCommissions = this.plotCommissions;
         this.viewModel.plotCommissions2 = this.plotCommissions2;
-        this.viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
+        this.viewModel.plotOverview = this.plotOverview;
+        this.viewModel.updateOverview();
     }
 
     public void btnRawDataPressed() {
@@ -100,9 +104,7 @@ public class View implements Initializable {
     }
 
     public void btnUpdateDatabasePressed() throws InterruptedException {
-
         this.viewModel.btnUpdateDatabasePressed();
-
     }
 
     public void closePressed(){
@@ -136,7 +138,6 @@ public class View implements Initializable {
         s.setTitle("Settings");
         s.setScene(scene);
         s.show();
-        viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
     }
 
     @Override
@@ -158,7 +159,15 @@ public class View implements Initializable {
                     @Override
                     public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
                         if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
-                        crypto2Column.setVisible(!tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
+                        if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
+                            crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                            crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                        }
+                        if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
+                            crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
+                            crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1] + "("+viewModel.settingsController.selectedFiatCurrency.getValue()+")");
+                        }
+                        fiatColumn.setVisible(!tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
                     }
                 }
         );
@@ -179,12 +188,20 @@ public class View implements Initializable {
         this.cmbCoins.valueProperty().addListener((ov, oldValue, newValue) -> {
             if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
         });
-        this.fiatColumn.setText("Total in " + viewModel.settingsController.selectedFiatCurrency.getValue());
+
+
+        this.fiatColumn.setText("Total (" + viewModel.settingsController.selectedFiatCurrency.getValue()+")");
+        this.crypto1Column.setText("Rewards ("+ viewModel.settingsController.selectedFiatCurrency.getValue()+")");
+        this.crypto2Column.setText("Commissions ("+ viewModel.settingsController.selectedFiatCurrency.getValue()+")");
 
         this.viewModel.settingsController.selectedFiatCurrency.addListener((ov, oldValue, newValue) -> {
             if(!oldValue.equals(newValue) & this.plotRewards !=null) {
                 viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
-                this.fiatColumn.setText("Total in " + newValue);
+                this.fiatColumn.setText("Total (" + newValue+")");
+                if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
+                    this.crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                    this.crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                }
             }
         });
 
@@ -246,7 +263,6 @@ public class View implements Initializable {
         );
 
         timeStampColumn.setCellValueFactory(param -> param.getValue().getBlockTime());
-        typePlotColumn.setCellValueFactory(param -> param.getValue().getType());
         crypto1Column.setCellValueFactory(param -> param.getValue().getCryptoValue1().asObject());
         crypto2Column.setCellValueFactory(param -> param.getValue().getCryptoValue2().asObject());
         fiatColumn.setCellValueFactory(param -> param.getValue().getFiatValue().asObject());

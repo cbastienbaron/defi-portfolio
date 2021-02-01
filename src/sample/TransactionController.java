@@ -450,42 +450,31 @@ public class TransactionController {
                         }
                     } else if (intervall.equals("Weekly")) {
                         int correct = 0;
-                        if(month == 1 && (day == 1 || day == 2 || day == 3)){
+                        if (month == 1 && (day == 1 || day == 2 || day == 3)) {
                             correct = 1;
                         }
-                        if (week < 10){
-                            date = year-correct + "-0" + week;
-                        }else{
-                            date = year-correct + "-" + week;
+                        if (week < 10) {
+                            date = year - correct + "-0" + week;
+                        } else {
+                            date = year - correct + "-" + week;
                         }
                     } else if (intervall.equals("Yearly")) {
                         date = year + "-";
                     }
 
+                    double fiatPrice = 1;
+                    if (plotCurrency.equals("Fiat")) {
+                        fiatPrice = this.coinPriceController.getPriceFromTimeStamp(poolPair.split("-")[poolPairCount] + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue() * 1000L);
+                    }
                     if (map.keySet().contains(date)) {
                         Double oldValue = map.get(date);
 
-                        Double newValue = oldValue + (Double.parseDouble(coinValue[0]));
+                        Double newValue = oldValue + (Double.parseDouble(coinValue[0]) * fiatPrice);
                         map.put(date, newValue);
                     } else {
-                        map.put(date, Double.parseDouble(coinValue[0]));
+                        map.put(date, Double.parseDouble(coinValue[0]) * fiatPrice);
                     }
 
-
-                    if (item.getTypeValue().equals(type)) {
-                        double fiatPrice = 1;
-                        if(plotCurrency.equals("Fiat")){
-                            fiatPrice = this.coinPriceController.getPriceFromTimeStamp(poolPair.split("-")[poolPairCount] + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue()*1000L);
-                        }
-                        if (map.keySet().contains(date)) {
-                            Double oldValue = map.get(date);
-
-                            Double newValue = oldValue + (Double.parseDouble(coinValue[0])*fiatPrice);
-                            map.put(date, newValue);
-                        } else {
-                            map.put(date, Double.parseDouble(coinValue[0])*fiatPrice);
-                        }
-                    }
                 }
             }
         }

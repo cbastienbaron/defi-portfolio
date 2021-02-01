@@ -27,6 +27,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.chart.StackedAreaChart?>
 <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
     <children>
         <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
@@ -151,7 +152,6 @@
                         <DatePicker fx:id="dateFrom" layoutX="81.0" layoutY="14.0" prefHeight="25.0" prefWidth="142.0" />
                         <Label layoutX="26.0" layoutY="55.0" text="End date" />
                         <DatePicker fx:id="dateTo" layoutX="81.0" layoutY="51.0" prefHeight="25.0" prefWidth="143.0" />
-
                         <ComboBox fx:id="cmbCoins" layoutX="268.0" layoutY="58.0" prefHeight="29.0" prefWidth="94.0" />
                         <ComboBox fx:id="cmbIntervall" layoutX="268.0" layoutY="17.0" prefHeight="29.0" prefWidth="94.0" />
                         <ComboBox fx:id="cmbFiat" layoutX="407.0" layoutY="60.0" prefHeight="29.0" prefWidth="94.0" />
@@ -169,14 +169,14 @@
                                                         <children>
                                                             <StackPane prefHeight="450.0" prefWidth="592.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
                                                                 <children>
-                                                                    <LineChart fx:id="plotOverview" prefHeight="251.0" prefWidth="620.0">
+                                                                    <StackedAreaChart fx:id="plotOverview" prefHeight="251.0" prefWidth="620.0">
                                                                         <xAxis>
                                                                             <CategoryAxis animated="false" side="BOTTOM" />
                                                                         </xAxis>
                                                                         <yAxis>
                                                                             <NumberAxis animated="false" side="LEFT" />
                                                                         </yAxis>
-                                                                    </LineChart>
+                                                                    </StackedAreaChart>
                                                                 </children>
                                                             </StackPane>
                                                         </children>
@@ -247,14 +247,14 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                            <children>
                                     <TableView fx:id="plotTable" prefHeight="514.0" prefWidth="453.0" style="-fx-background-color: #f4f3f6;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                        <columns>
-                                            <TableColumn fx:id="timeStampColumn" prefWidth="75.0" text="Date" />
-                                            <TableColumn fx:id="poolPairColumn" prefWidth="75.0" text="Date" />
-                                            <TableColumn fx:id="fiatColumn" prefWidth="75.0" text="Total in Fiat" />
-                                            <TableColumn fx:id="typePlotColumn" prefWidth="75.0" text="Rewards" />
-                                            <TableColumn fx:id="crypto1Column" prefWidth="75.0" text="DFI" />
-                                            <TableColumn fx:id="crypto2Column" prefWidth="75.0" text="Crypto2" />
-                                        </columns>
+
+                                            <columns>
+                                                <TableColumn fx:id="timeStampColumn" prefWidth="75.0" text="Date" />
+                                                <TableColumn fx:id="poolPairColumn" prefWidth="75.0" text="Pair" />
+                                                <TableColumn fx:id="fiatColumn" prefWidth="75.0" text="Total in EUR" />
+                                                <TableColumn fx:id="crypto1Column" prefWidth="75.0" text="Rewards" />
+                                                <TableColumn fx:id="crypto2Column" prefWidth="75.0" text="Commissions" />
+                                            </columns>
                                     </TableView>
                            </children>
                         </AnchorPane>
