@@ -12,7 +12,7 @@ public class DonateController {
     private Button btnCopy;
 
     public void  btnCopyPressed(){
-        String myString = "dX33VPRi1FMNwkho4xYkKRXAop23ct47mi";
+        String myString = "dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V";
         StringSelection stringSelection = new StringSelection(myString);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);

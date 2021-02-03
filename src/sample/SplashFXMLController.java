@@ -29,7 +29,7 @@ new SplassScreen().start();
         @Override
         public  void run(){
             try{
-                Thread.sleep(4000);
+                Thread.sleep(3000);
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {

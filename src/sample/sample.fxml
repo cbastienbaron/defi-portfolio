@@ -181,27 +181,6 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                            <children>
                                     <TabPane fx:id="tabPlane" prefHeight="514.0" prefWidth="313.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                        <tabs>
-                                            <Tab text="Overview">
-                                                <content>
-                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="333.0" prefWidth="628.0">
-                                                        <children>
-                                                            <StackPane prefHeight="450.0" prefWidth="592.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
-                                                                <children>
-                                                                    <StackedAreaChart fx:id="plotOverview" prefHeight="251.0" prefWidth="620.0">
-                                                                        <xAxis>
-                                                                            <CategoryAxis animated="false" side="BOTTOM" />
-                                                                        </xAxis>
-                                                                        <yAxis>
-                                                                            <NumberAxis animated="false" side="LEFT" />
-                                                                        </yAxis>
-                                                                    </StackedAreaChart>
-                                                                </children>
-                                                            </StackPane>
-                                                        </children>
-                                                    </AnchorPane>
-                                                </content>
-                                            </Tab>
                                             <Tab text="Rewards">
                                                 <content>
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
@@ -255,6 +234,27 @@
                                                   </items>
                                                 </SplitPane>
             
+                                                        </children>
+                                                    </AnchorPane>
+                                                </content>
+                                            </Tab>
+                                        <tabs>
+                                            <Tab text="Overview">
+                                                <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="333.0" prefWidth="628.0">
+                                                        <children>
+                                                            <StackPane prefHeight="450.0" prefWidth="592.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
+                                                                <children>
+                                                                    <StackedAreaChart fx:id="plotOverview" prefHeight="251.0" prefWidth="620.0">
+                                                                        <xAxis>
+                                                                            <CategoryAxis animated="false" side="BOTTOM" />
+                                                                        </xAxis>
+                                                                        <yAxis>
+                                                                            <NumberAxis animated="false" side="LEFT" />
+                                                                        </yAxis>
+                                                                    </StackedAreaChart>
+                                                                </children>
+                                                            </StackPane>
                                                         </children>
                                                     </AnchorPane>
                                                 </content>

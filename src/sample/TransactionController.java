@@ -31,7 +31,7 @@ public class TransactionController {
     OutputStreamWriter wr;
     public CoinPriceController coinPriceController;
 
-    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strCliPath, String strCookiePath) {
+    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strCliPath, String strCookiePath,String strDefidPath) {
 
         this.strTransactionData = transactionData;
         this.settingsController = settingsController;
@@ -43,11 +43,19 @@ public class TransactionController {
         //this.addressModelList = getLocalTransactionList();
     }
 
+    public boolean checkCrp() {
+        return new File(this.strCookieOath).exists();
+    }
+
+    public void startServer() {
+
+    }
+
     public void initCrpConnection() {
         try {
             String strCookieData = "";
 
-            if (new File(this.strCookieOath).exists()) {
+            if (checkCrp()) {
 
                 try {
                     this.url = new URL("http://127.0.0.1:8554");
@@ -423,6 +431,9 @@ public class TransactionController {
                 case "8":
                     pool = "DOGE-DFI";
                     break;
+                case "10":
+                    pool = "LTC-DFI";
+                    break;
                 default:
                     break;
             }
@@ -433,8 +444,8 @@ public class TransactionController {
                     String date = "";
                     if (intervall.equals("Daily")) {
                         String monthAdapted = Integer.toString(month);
-                        if(month < 10){
-                            monthAdapted = "0"+month;
+                        if (month < 10) {
+                            monthAdapted = "0" + month;
                         }
                         if (day < 10) {
                             date = year + "-" + monthAdapted + "-0" + day;

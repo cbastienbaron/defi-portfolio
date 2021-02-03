@@ -36,6 +36,9 @@ public class ExportService {
                     String[] CoinsAndAmounts = this.transactionController.splitCoinsAndAmounts(transaction.getAmountValue()[i]);
                     sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]))).append(exportSplitter);
                     sb.append(CoinsAndAmounts[1]).append(exportSplitter);
+                    if(CoinsAndAmounts[1] + this.settingsController.selectedFiatCurrency.getValue() ==""){
+
+                    }
                     var price = this.coinPriceController.getPriceFromTimeStamp(CoinsAndAmounts[1] + this.settingsController.selectedFiatCurrency.getValue(), transaction.getBlockTime().getValue() * 1000L);
                     sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]) * price)).append(exportSplitter);
                     sb.append(fiatCurrency).append(exportSplitter);
