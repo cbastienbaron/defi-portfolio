@@ -642,7 +642,7 @@ public class ViewModel {
         }
     }
 
-    public void exportPoolPairToExcel(List<PoolPairModel> list) {
+    public void exportPoolPairToExcel(List<PoolPairModel> list, String source) {
 
         Locale localeDecimal = Locale.GERMAN;
         if (settingsController.selectedDecimal.getValue().equals(".")) {
@@ -657,7 +657,7 @@ public class ViewModel {
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {
-            boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), this.coinPriceController.coinPriceModel, this.settingsController.selectedFiatCurrency.getValue(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+            boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), this.settingsController.selectedSeperator.getValue(),source);
 
             if (success) {
                 this.strProgressbar.setValue("Excel successfully exported!");

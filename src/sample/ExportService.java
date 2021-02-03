@@ -23,28 +23,21 @@ public class ExportService {
             PrintWriter writer = new PrintWriter(exportPath);
             StringBuilder sb = new StringBuilder();
 
-            sb.append("Date,Owner,Operation,Amount,Cryptocurrency,FIAT value,FIAT currency,Block Hash,Block Height,Pool ID".replace(",", exportSplitter)).append("\n");
+            sb.append("Date,Operation,Amount,Cryptocurrency,FIAT value,FIAT currency,LM Pool,Block Height,Block Hash,Owner").append("\n");
 
             for (TransactionModel transaction : transactions) {
 
                 for (int i = 0; i < transaction.getAmountValue().length; i++) {
-
-
                     sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTimeValue())).append(exportSplitter);
-                    sb.append(transaction.getOwnerValue()).append(exportSplitter);
                     sb.append(transaction.getTypeValue()).append(exportSplitter);
-                    String[] CoinsAndAmounts = this.transactionController.splitCoinsAndAmounts(transaction.getAmountValue()[i]);
-                    sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]))).append(exportSplitter);
-                    sb.append(CoinsAndAmounts[1]).append(exportSplitter);
-                    if(CoinsAndAmounts[1] + this.settingsController.selectedFiatCurrency.getValue() ==""){
-                        //TODO
-                    }
-                    var price = this.coinPriceController.getPriceFromTimeStamp(CoinsAndAmounts[1] + this.settingsController.selectedFiatCurrency.getValue(), transaction.getBlockTime().getValue() * 1000L);
-                    sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]) * price)).append(exportSplitter);
-                    sb.append(fiatCurrency).append(exportSplitter);
-                    sb.append(transaction.getBlockHashValue()).append(exportSplitter);
+                    sb.append(String.format(localeDecimal, "%.8f", transaction.getCryptoValueValue())).append(exportSplitter);
+                    sb.append(transaction.getCryptoyValue()).append(exportSplitter);
+                    sb.append(String.format(localeDecimal, "%.8f", transaction.getFiatValueValue().doubleValue())).append(exportSplitter);
+                    sb.append(transaction.getFiatCurrencyValue()).append(exportSplitter);
+                    sb.append(transaction.getPoolIDValue()).append(exportSplitter);
                     sb.append(transaction.getBlockHeightValue()).append(exportSplitter);
-                    sb.append(transaction.getPoolIDValue());
+                    sb.append(transaction.getBlockHashValue()).append(exportSplitter);
+                    sb.append(transaction.getOwnerValue()).append(exportSplitter);
                     sb.append("\n");
 
 
@@ -60,21 +53,50 @@ public class ExportService {
         }
     }
 
-    public boolean exportPoolPairToExcel(List<PoolPairModel> poolPairModelList, String exportPath, CoinPriceModel coinPrices, String fiatCurrency, Locale localeDecimal, String exportSplitter) {
+    public boolean exportPoolPairToExcel(List<PoolPairModel> poolPairModelList, String exportPath,String exportSplitter,String source) {
         try {
             PrintWriter writer = new PrintWriter(exportPath);
             StringBuilder sb = new StringBuilder();
 
-            sb.append("Date,Total in Fiat,Rewards,Crypto 1,Crypto 2".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+            switch (source){
+                case "Overview":
+                    sb.append("Date,Pair, Total,Rewards,Commissions".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
 
-            for (PoolPairModel poolPairModel : poolPairModelList) {
-                    sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(poolPairModel.getFiatValue().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(poolPairModel.getType().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(poolPairModel.getCryptoValue1().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(poolPairModel.getCryptoValue2().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append("\n");
+                    for (PoolPairModel poolPairModel : poolPairModelList) {
+                        sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getFiatValue().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getCryptoValue1().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getCryptoValue2().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append("\n");
+                    }
+                    break;
+                case "Rewards":
+                    sb.append("Date,Pair,Total,Rewards, Commissions".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+
+                    for (PoolPairModel poolPairModel : poolPairModelList) {
+                        sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getCryptoValue1().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getCryptoValueValue2()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append("\n");
+                    }
+                    break;
+
+                case "Commissions":
+                    sb.append("Date,Pair,Total Fiat,DFI in Fiat".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+
+                    for (PoolPairModel poolPairModel : poolPairModelList) {
+                        sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getFiatValueValue()+poolPairModel.getCryptoValue2().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getCryptoValueValue1()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getCryptoValueValue2()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append("\n");
+                    }
+                    break;
             }
+
             writer.write(sb.toString());
             writer.close();
 

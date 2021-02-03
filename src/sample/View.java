@@ -44,11 +44,11 @@ public class View implements Initializable {
     @FXML
     private ImageView imgViewObj;
     @FXML
-    private final DatePicker dateFrom = new DatePicker();
+    private  DatePicker dateFrom = new DatePicker();
     @FXML
-    private final DatePicker dateTo = new DatePicker();
+    private  DatePicker dateTo = new DatePicker();
     @FXML
-    private final TabPane tabPlane = new TabPane();
+    private TabPane tabPlane = new TabPane();
     @FXML
     private LineChart<Number, Number> plotRewards,plotCommissions,plotCommissions2;
     @FXML
@@ -514,8 +514,8 @@ public class View implements Initializable {
 
         menuItemCopySelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),false));
         menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),true));
-        menuItemExportSelected.setOnAction(event -> viewModel.exportPoolPairToExcel( plotTable.selectionModelProperty().get().getSelectedItems()));
-        menuItemExportAllSelected.setOnAction(event -> viewModel.exportPoolPairToExcel(plotTable.getItems()));
+        menuItemExportSelected.setOnAction(event -> viewModel.exportPoolPairToExcel( plotTable.selectionModelProperty().get().getSelectedItems(),this.tabPlane.getSelectionModel().getSelectedItem().getText()));
+        menuItemExportAllSelected.setOnAction(event -> viewModel.exportPoolPairToExcel(plotTable.getItems(),this.tabPlane.getSelectionModel().getSelectedItem().getText()));
 
         contextMenuPlotData.getItems().add(menuItemCopySelected);
         contextMenuPlotData.getItems().add(menuItemCopyHeaderSelected);
