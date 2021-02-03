@@ -35,7 +35,7 @@ public class SettingsController {
     public String[] languages = new String[]{"English","Deutsch"};
     public String[] currencies = new String[]{"EUR","USD","CHF"};
     public String[] decSeperators = new String[]{",","."};
-    public String[] csvSeperators = new String[]{",","."};
+    public String[] csvSeperators = new String[]{",",";"};
     public String pathSettingsFile = System.getenv("APPDATA") + "\\defi-portfolio\\settings.csv";
 
     private SettingsController() throws IOException {

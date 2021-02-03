@@ -72,7 +72,6 @@ public class ViewModel {
         if (this.transactionController.checkCrp()) {
             this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + transactionController.getBlockCountRpc());
         }else{
-
             this.strCurrentBlockOnBlockchain.set("No connection to node. For update you have to close the DeFi App and start again");
         }
         // Init gui elements
@@ -166,14 +165,10 @@ public class ViewModel {
             e.printStackTrace();
         }
 
-        if (pidInfo.toString().contains("defi-app")) {
-            return true;
-        } else {
-            return false;
-        }
+        return pidInfo.toString().contains("defi-app");
     }
 
-    public void btnUpdateDatabasePressed() throws InterruptedException {
+    public void btnUpdateDatabasePressed()  {
 
         if (!checkIfDeFiAppIsRunning()) {
 
@@ -632,16 +627,14 @@ public class ViewModel {
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {
-            boolean success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), this.coinPriceController.coinPriceModel, this.settingsController.selectedFiatCurrency.getValue(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+            boolean success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), this.settingsController.selectedFiatCurrency.getValue(), localeDecimal, this.settingsController.selectedSeperator.getValue());
             if (success) {
                 this.strProgressbar.setValue("Excel successfully exported!");
-                //  this.strProgressbar.setTextFill(Color.Green);
                 PauseTransition pause = new PauseTransition(Duration.seconds(10));
                 pause.setOnFinished(e -> this.strProgressbar.setValue(null));
                 pause.play();
             } else {
                 this.strProgressbar.setValue("Error while exporting excel!");
-                //  this.strProgressbar.setTextFill(Color.RED);
                 PauseTransition pause = new PauseTransition(Duration.seconds(10));
                 pause.setOnFinished(e -> this.strProgressbar.setValue(null));
                 pause.play();

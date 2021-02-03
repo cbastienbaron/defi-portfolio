@@ -19,7 +19,7 @@ public class CoinPriceController {
         try{
         updateCoinPriceData();
        }catch(Exception e){
-
+            e.printStackTrace();
         }
     }
 
@@ -33,7 +33,7 @@ public class CoinPriceController {
         if (client.getCoinMarketChartRangeById("defichain", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices().size() > 0) {
 
             //Update DFI
-            TreeMap<String, List<List<String>>> coinPriceList = new TreeMap<>();
+            TreeMap<String, List<List<String>>> coinPriceList;
             coinPriceList = coinPrice.GetKeyMap();
 
             //Update DFI
@@ -122,9 +122,6 @@ public class CoinPriceController {
 
     public double getPriceFromTimeStamp(String coinFiatPair, Long timeStamp) {
         double price = 0;
-        if(this.coinPriceModel.GetKeyMap().get(coinFiatPair) == null){
-            int a= 2;
-        }
         for (int i = this.coinPriceModel.GetKeyMap().get(coinFiatPair).size() - 1; i >= 0; i--)
             if (timeStamp > Long.parseLong(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(0))) {
                 return Double.parseDouble(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(1));

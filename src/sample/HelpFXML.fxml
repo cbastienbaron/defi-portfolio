@@ -11,13 +11,10 @@
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="144.0" prefWidth="517.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.HelpController">
-   <children>
-      <Button fx:id="btnCopy" layoutX="424.0" layoutY="77.0" mnemonicParsing="false" onMouseClicked="#btnCopyCallback" prefHeight="32.0" prefWidth="36.0">
+      <Button layoutX="424.0" layoutY="77.0" mnemonicParsing="false" onMouseClicked="#btnCopyCallback" prefHeight="32.0" prefWidth="36.0">
          <graphic>
             <ImageView fitHeight="23.0" fitWidth="24.0" onMouseClicked="#btnCopyCallback" pickOnBounds="true" preserveRatio="true">
-               <image>
                   <Image url="@../icons/copy.png" />
-               </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -35,25 +32,22 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <ImageView fitHeight="92.0" fitWidth="83.0" layoutX="35.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../icons/mail.png" />
-         </image>
-      </ImageView>
+   <ImageView fitHeight="92.0" fitWidth="83.0" layoutX="35.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
+      <Image url="@../icons/mail.png"/>
+   </ImageView>
       <Text layoutX="146.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="defiportfoliomanagement@gmail.com">
          <font>
             <Font size="16.0" />
          </font>
       </Text>
-      <Button fx:id="btnMailTo" layoutX="470.0" layoutY="77.0" mnemonicParsing="false" onMouseClicked="#btnMailToCallback" prefHeight="32.0" prefWidth="37.0">
+      <Button  layoutX="470.0" layoutY="77.0" mnemonicParsing="false" onMouseClicked="#btnMailToCallback" prefHeight="32.0" prefWidth="37.0">
          <graphic>
-            <ImageView fitHeight="23.0" fitWidth="27.0" onMouseClicked="#btnMailToCallback" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../icons/mailto.png" />
-               </image>
+            <ImageView fitHeight="23.0" fitWidth="27.0" onMouseClicked="#btnMailToCallback" pickOnBounds="true"
+                       preserveRatio="true">
                <cursor>
-                  <Cursor fx:constant="HAND" />
+                  <Cursor fx:constant="HAND"/>
                </cursor>
+               <Image url="@../icons/mailto.png"/>
             </ImageView>
          </graphic>
          <tooltip>
@@ -63,5 +57,4 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-   </children>
 </AnchorPane>

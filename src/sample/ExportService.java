@@ -18,7 +18,7 @@ public class ExportService {
 
     }
 
-    public boolean exportTransactionToExcel(List<TransactionModel> transactions, String exportPath, CoinPriceModel coinPrices, String fiatCurrency, Locale localeDecimal, String exportSplitter) {
+    public boolean exportTransactionToExcel(List<TransactionModel> transactions, String exportPath, String fiatCurrency, Locale localeDecimal, String exportSplitter) {
         try {
             PrintWriter writer = new PrintWriter(exportPath);
             StringBuilder sb = new StringBuilder();
@@ -37,7 +37,7 @@ public class ExportService {
                     sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]))).append(exportSplitter);
                     sb.append(CoinsAndAmounts[1]).append(exportSplitter);
                     if(CoinsAndAmounts[1] + this.settingsController.selectedFiatCurrency.getValue() ==""){
-
+                        //TODO
                     }
                     var price = this.coinPriceController.getPriceFromTimeStamp(CoinsAndAmounts[1] + this.settingsController.selectedFiatCurrency.getValue(), transaction.getBlockTime().getValue() * 1000L);
                     sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]) * price)).append(exportSplitter);

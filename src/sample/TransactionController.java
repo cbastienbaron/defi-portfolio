@@ -1,7 +1,6 @@
 package sample;
 
 import com.google.gson.Gson;
-import okhttp3.Address;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -24,7 +23,6 @@ public class TransactionController {
     String strCookieOath;
     String strCliPath;
     public List<TransactionModel> transactionList;
-    public List<TransactionModel> addressModelList;
     String strTransactionData;
     int localBlockCount;
     SettingsController settingsController;
@@ -40,7 +38,6 @@ public class TransactionController {
         this.localBlockCount = getLocalBlockCount();
         this.strCliPath = strCliPath;
         this.strCookieOath = strCookiePath;
-        //this.addressModelList = getLocalTransactionList();
     }
 
     public boolean checkCrp() {
@@ -407,7 +404,6 @@ public class TransactionController {
     public TreeMap getCryptoMap(List<TransactionModel> transactions, String intervall, int poolPairCount, String poolPair, String type, String plotCurrency) {
 
         TreeMap<String, Double> map = new TreeMap<>();
-        TreeMap<String, Double> sorted = new TreeMap<>();
         for (TransactionModel item : transactions) {
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(item.getBlockTimeValue() * 1000L);
@@ -437,47 +433,52 @@ public class TransactionController {
                 default:
                     break;
             }
-            for (int iAmount = 0; iAmount < AmountCoin.length; iAmount++) {
-                String[] coinValue = AmountCoin[iAmount].split("@");
+            for (String s : AmountCoin) {
+                String[] coinValue = s.split("@");
 
                 if (coinValue[1].equals(poolPair.split("-")[poolPairCount]) & item.getTypeValue().equals(type) & poolPair.equals(pool)) {
                     String date = "";
-                    if (intervall.equals("Daily")) {
-                        String monthAdapted = Integer.toString(month);
-                        if (month < 10) {
-                            monthAdapted = "0" + month;
-                        }
-                        if (day < 10) {
-                            date = year + "-" + monthAdapted + "-0" + day;
-                        } else {
-                            date = year + "-" + monthAdapted + "-" + day;
-                        }
+                    switch (intervall) {
+                        case "Daily":
+                            String monthAdapted = Integer.toString(month);
+                            if (month < 10) {
+                                monthAdapted = "0" + month;
+                            }
+                            if (day < 10) {
+                                date = year + "-" + monthAdapted + "-0" + day;
+                            } else {
+                                date = year + "-" + monthAdapted + "-" + day;
+                            }
 
-                    } else if (intervall.equals("Monthly")) {
-                        if (month < 10) {
-                            date = year + "-0" + month;
-                        } else {
-                            date = year + "-" + month;
-                        }
-                    } else if (intervall.equals("Weekly")) {
-                        int correct = 0;
-                        if (month == 1 && (day == 1 || day == 2 || day == 3)) {
-                            correct = 1;
-                        }
-                        if (week < 10) {
-                            date = year - correct + "-0" + week;
-                        } else {
-                            date = year - correct + "-" + week;
-                        }
-                    } else if (intervall.equals("Yearly")) {
-                        date = year + "-";
+                            break;
+                        case "Monthly":
+                            if (month < 10) {
+                                date = year + "-0" + month;
+                            } else {
+                                date = year + "-" + month;
+                            }
+                            break;
+                        case "Weekly":
+                            int correct = 0;
+                            if (month == 1 && (day == 1 || day == 2 || day == 3)) {
+                                correct = 1;
+                            }
+                            if (week < 10) {
+                                date = year - correct + "-0" + week;
+                            } else {
+                                date = year - correct + "-" + week;
+                            }
+                            break;
+                        case "Yearly":
+                            date = year + "-";
+                            break;
                     }
 
                     double fiatPrice = 1;
                     if (plotCurrency.equals("Fiat")) {
                         fiatPrice = this.coinPriceController.getPriceFromTimeStamp(poolPair.split("-")[poolPairCount] + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue() * 1000L);
                     }
-                    if (map.keySet().contains(date)) {
+                    if (map.containsKey(date)) {
                         Double oldValue = map.get(date);
 
                         Double newValue = oldValue + (Double.parseDouble(coinValue[0]) * fiatPrice);
@@ -489,8 +490,7 @@ public class TransactionController {
                 }
             }
         }
-        sorted.putAll(map);
-        return sorted;
+        return new TreeMap<>(map);
     }
 
     public String convertTimeStampToString(long timeStamp) {
