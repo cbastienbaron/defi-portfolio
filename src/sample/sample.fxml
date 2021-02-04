@@ -280,7 +280,7 @@
                                                           side="BOTTOM"/>
                                         </xAxis>
                                         <yAxis>
-                                            <NumberAxis animated="false" side="LEFT"/>
+                                            <NumberAxis fx:id="yAxis" animated="false" side="LEFT"/>
                                         </yAxis>
                                     </StackedAreaChart>
                                 </StackPane>

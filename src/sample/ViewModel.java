@@ -36,6 +36,10 @@ public class ViewModel {
     public StringProperty strProgressbar = new SimpleStringProperty("");
     public LineChart<Number, Number> plotRewards, plotCommissions2, plotCommissions;
     public StackedAreaChart<Number, Number> plotOverview;
+    public NumberAxis yAxis;
+    public boolean updateOverview = true;
+    public boolean updateRewards = true;
+    public boolean updateCommissions = true;
     public List<TransactionModel> transactionModelList;
     public List<PoolPairModel> poolPairModelList = new ArrayList<>();
     List<TransactionModel> transactionsInTime = new ArrayList<>();
@@ -204,13 +208,16 @@ public class ViewModel {
     public void plotUpdate(String openedTab) {
         switch (openedTab) {
             case "Overview":
-                updateOverview();
+                if(updateOverview) updateOverview();
+                updateOverview = false;
                 break;
             case "Rewards":
-                updateRewards();
+                if(updateRewards) updateRewards();
+                updateRewards = false;
                 break;
             case "Commissions":
-                updateCommissions();
+                if(updateCommissions) updateCommissions();
+                updateCommissions=false;
                 break;
             default:
                 break;
@@ -229,13 +236,13 @@ public class ViewModel {
         this.oldTimeStampTo = TimeStampEnd;
 
         if (this.settingsController.selectedPlotType.getValue().equals("Individual")) this.poolPairModelList.clear();
-        NumberAxis xAxis = new NumberAxis();
-        NumberAxis yAxis = new NumberAxis();
+
         this.plotOverview.getYAxis().setLabel("Total (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
-        this.plotOverview.getYAxis().setAutoRanging(false);
         this.plotOverview.getData().clear();
 
+        double maxValue=0;
         for (String poolPair : this.cryptoCurrencies) {
+
 
             TreeMap<String, Double> joinedRewardsFiat1 = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), 1, poolPair, "Rewards", "Fiat");
             TreeMap<String, Double> joinedCommissionFiat1 = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), 1, poolPair, "Commission", "Fiat");
@@ -316,11 +323,21 @@ public class ViewModel {
                     }
 
                 }
+                yAxis.setAutoRanging(false);
+
+                if(maxValue < rewardsSeries.getData().stream().mapToDouble(d->(Double)d.getYValue()).max().getAsDouble()){
+                yAxis.setUpperBound(rewardsSeries.getData().stream().mapToDouble(d->(Double)d.getYValue()).max().getAsDouble()*1.10);
+                maxValue = rewardsSeries.getData().stream().mapToDouble(d->(Double)d.getYValue()).max().getAsDouble();
+                }
+
                 this.plotOverview.getData().add(rewardsSeries);
                 this.plotOverview.setCreateSymbols(true);
 
             }
         }
+
+
+
 
         for (XYChart.Series<Number, Number> s : this.plotOverview.getData()) {
             if (s != null) {
