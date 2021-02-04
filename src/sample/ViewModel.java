@@ -23,13 +23,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 
 public class ViewModel {
 
-    public StringProperty strCurrentBlockLocally = new SimpleStringProperty("Current Block locally: 0");
-    public StringProperty strCurrentBlockOnBlockchain = new SimpleStringProperty("Current Block on Blockchain: No connection");
+    public StringProperty strCurrentBlockLocally = new SimpleStringProperty("0");
+    public StringProperty strCurrentBlockOnBlockchain = new SimpleStringProperty("No connection");
+    public StringProperty strLastUpdate = new SimpleStringProperty("-");
     public ObjectProperty<javafx.scene.image.Image> imgStatus = new SimpleObjectProperty<>();
     public StringProperty strUpToDate = new SimpleStringProperty("Database not up to date");
     public SimpleDoubleProperty progress = new SimpleDoubleProperty(.0);
@@ -75,18 +78,13 @@ public class ViewModel {
         this.transactionModelList = this.transactionController.transactionList;
         this.poolPairList = FXCollections.observableArrayList(this.poolPairModelList);
         this.expService = new ExportService(this.coinPriceController, this.transactionController, this.settingsController);
-        this.strCurrentBlockLocally.set("Current Block locally: " + transactionController.getLocalBlockCount());
+        this.strCurrentBlockLocally.set(Integer.toString(transactionController.getLocalBlockCount()));
 
         if (this.transactionController.checkCrp()) {
-            this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + transactionController.getBlockCountRpc());
+            this.strCurrentBlockOnBlockchain.set(Integer.toString(transactionController.getBlockCountRpc()));
         }else{
-            String emptyspace = "             ";
-            this.strCurrentBlockOnBlockchain.set(emptyspace+"No connection to node. \n"+emptyspace+"For update you have to close\n"+emptyspace+"the DeFi App and start again");
+            this.strCurrentBlockOnBlockchain.set("No connection");
         }
-        // Init gui elements
-        File file = new File(System.getProperty("user.dir") + "\\src\\icons\\warning.png");
-        Image image = new Image(file.toURI().toString());
-        this.imgStatus.setValue(image);
     }
 
 
@@ -182,20 +180,17 @@ public class ViewModel {
         if (!checkIfDeFiAppIsRunning()) {
 
             if (updateTransactionData()) {
-
-                this.strUpToDate.setValue("Database up to date");
-                this.strProgressbar.setValue("Updating database finished");
-
-                this.strCurrentBlockLocally.set("Current Block locally: " + this.transactionController.getLocalBlockCount());
-                this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + this.transactionController.getBlockCountRpc());
+                this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
+                this.strCurrentBlockOnBlockchain.set(Integer.toString(this.transactionController.getBlockCountRpc()));
 
                 transactionList.clear();
                 transactionList.addAll(this.transactionController.transactionList);
                 this.transactionModelList = this.transactionController.transactionList;
-                File file = new File(System.getProperty("user.dir") + "\\src\\icons\\accept.png");
-                Image image = new Image(file.toURI().toString());
-                this.imgStatus.setValue(image);
-                this.strUpToDate.setValue("Database up to date");
+
+                Date date = new Date(System.currentTimeMillis());
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                this.strLastUpdate.setValue(dateFormat.format(date));
+
 
             } else {
                 //TODO Error during update

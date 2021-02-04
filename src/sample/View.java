@@ -42,7 +42,7 @@ public class View implements Initializable {
     @FXML
     private ProgressBar progressBar;
     @FXML
-    private Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, strUpToDate, lblProgressBar;
+    private Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, strUpToDate, lblProgressBar,strLastUpdate;
     @FXML
     private ComboBox<String> cmbCoins, cmbIntervall,cmbFiat,cmbPlotCurrency;
     @FXML
@@ -98,7 +98,11 @@ public class View implements Initializable {
     }
 
     public void btnUpdatePressed() {
-        this.AnchorPanelUpdateDatabase.toFront();
+        this.viewModel.btnUpdateDatabasePressed();
+        this.anchorPanelRawData.toFront();
+
+
+
     }
 
     public void btnAnalysePressed() {
@@ -120,9 +124,7 @@ public class View implements Initializable {
         this.viewModel.plotCommissions2 = this.plotCommissions2;
     }
 
-    public void btnUpdateDatabasePressed() {
-        this.viewModel.btnUpdateDatabasePressed();
-    }
+
 
     public void closePressed(){
         System.exit(0);
@@ -157,17 +159,14 @@ public class View implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.AnchorPanelUpdateDatabase.toFront();
+        this.anchorPanelRawData.toFront();
 
         // Update Database Frame
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.viewModel.strCurrentBlockLocally);
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.viewModel.strCurrentBlockOnBlockchain);
-        //this.strUpdatingDatabase.textProperty().bindBidirectional(this.viewModel.strUpdatingDatabase);
-       // Bindings.bindBidirectional(this.spinner.visibleProperty(), this.viewModel.spinner);
+        this.strLastUpdate.textProperty().bindBidirectional(this.viewModel.strLastUpdate);
 
-        // Status image and text
-        Bindings.bindBidirectional(this.imgViewObj.imageProperty(), this.viewModel.imgStatus);
-        this.strUpToDate.textProperty().bindBidirectional(this.viewModel.strUpToDate);
+
 
         tabPlane.getSelectionModel().selectedItemProperty().addListener(
                 (ov, t, t1) -> {
