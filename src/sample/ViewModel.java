@@ -75,7 +75,8 @@ public class ViewModel {
         if (this.transactionController.checkCrp()) {
             this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + transactionController.getBlockCountRpc());
         }else{
-            this.strCurrentBlockOnBlockchain.set("No connection to node.");
+            String emptyspace = "             ";
+            this.strCurrentBlockOnBlockchain.set(emptyspace+"No connection to node. \n"+emptyspace+"For update you have to close\n"+emptyspace+"the DeFi App and start again");
         }
         // Init gui elements
         File file = new File(System.getProperty("user.dir") + "\\src\\icons\\warning.png");
