@@ -137,7 +137,7 @@ public class TransactionController {
         List<AddressModel> addressList = new ArrayList<>();
         JSONObject jsonObject = getRpcResponse("{\"method\": \"listaddressgroupings\"}");
         JSONArray transactionJson = (JSONArray) jsonObject.get("result");
-        for (var transaction : (JSONArray) transactionJson.get(0)) {
+        for (Object transaction : (JSONArray) transactionJson.get(0)) {
             addressList.add(getListReceivedByAddress(((JSONArray) transaction).get(0).toString()));
         }
         return addressList;
@@ -195,7 +195,7 @@ public class TransactionController {
 
         for (Object transaction : transactionJson
         ) {
-            var transactionJ = (JSONObject) transaction;
+            JSONObject transactionJ = (JSONObject) transaction;
             if (transactionJ.get("poolID") != null) {
                 transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), new String[]{transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")}, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", this));
             } else {
@@ -314,7 +314,7 @@ public class TransactionController {
 
     public boolean updateTransactionData(int depth) {
 
-        var transactionListNew = getListAccountHistoryRpc(depth);
+        List<TransactionModel>  transactionListNew = getListAccountHistoryRpc(depth);
         List<TransactionModel> updateTransactionList = new ArrayList<>();
 
         for (int i = transactionListNew.size() - 1; i >= 0; i--) {

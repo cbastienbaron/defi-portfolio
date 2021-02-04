@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.StackedAreaChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -103,6 +104,10 @@ public class View implements Initializable {
         this.viewModel.plotCommissions = this.plotCommissions;
         this.viewModel.plotCommissions2 = this.plotCommissions2;
         this.viewModel.plotOverview = this.plotOverview;
+        XYChart.Series<Number, Number> initial = new XYChart.Series();
+        initial.getData().add(new XYChart.Data("Initial",100));
+        this.viewModel.plotOverview.getData().add(initial);
+        fiatColumn.setVisible(!tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
         this.viewModel.updateRewards();
     }
 
@@ -216,6 +221,8 @@ public class View implements Initializable {
                 crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
                 crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
             }
+
+            fiatColumn.setVisible(!tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
         });
 
 
@@ -242,6 +249,8 @@ public class View implements Initializable {
                     crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
                     crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
                 }
+
+                fiatColumn.setVisible(!tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
             }
         });
 
@@ -270,6 +279,8 @@ public class View implements Initializable {
                 crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
                 crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
             }
+
+            fiatColumn.setVisible(!tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
         });
         this.cmbPlotCurrency.getItems().addAll(this.viewModel.plotType);
         this.cmbPlotCurrency.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotType);
@@ -333,7 +344,7 @@ public class View implements Initializable {
         fiatValueColumn.setCellValueFactory(param -> param.getValue().getFiat().asObject());
         fiatCurrencyColumn.setCellValueFactory(param -> param.getValue().getFiatCurrency());
 
-        poolIDColumn.setCellFactory(tc -> new TableCell<>() {
+        poolIDColumn.setCellFactory(tc -> new TableCell<TransactionModel, String>() {
             @Override
             protected void updateItem(String poolID, boolean empty) {
                 super.updateItem(poolID, empty);
@@ -368,7 +379,7 @@ public class View implements Initializable {
             }
         });
 
-        fiatCurrencyColumn.setCellFactory(tc -> new TableCell<>() {
+        fiatCurrencyColumn.setCellFactory(tc -> new TableCell<TransactionModel, String>() {
             @Override
             protected void updateItem(String fiatCurrency, boolean empty) {
                 super.updateItem(fiatCurrency, empty);
@@ -380,7 +391,7 @@ public class View implements Initializable {
                 }
             }
         });
-        fiatColumn.setCellFactory(tc -> new TableCell<>() {
+        fiatColumn.setCellFactory(tc -> new TableCell<PoolPairModel, Double>() {
             @Override
             protected void updateItem(Double fiatValue, boolean empty) {
                 super.updateItem(fiatValue, empty);
@@ -397,7 +408,7 @@ public class View implements Initializable {
             }
         });
 
-        fiatValueColumn.setCellFactory(tc -> new TableCell<>() {
+        fiatValueColumn.setCellFactory(tc -> new TableCell<TransactionModel, Double>() {
             @Override
             protected void updateItem(Double fiatValue, boolean empty) {
                 super.updateItem(fiatValue, empty);
@@ -414,7 +425,7 @@ public class View implements Initializable {
             }
         });
 
-        crypto1Column.setCellFactory(tc -> new TableCell<>() {
+        crypto1Column.setCellFactory(tc -> new TableCell<PoolPairModel, Double>() {
             @Override
             protected void updateItem(Double cryptoValue, boolean empty) {
                 super.updateItem(cryptoValue, empty);
@@ -431,7 +442,7 @@ public class View implements Initializable {
             }
         });
 
-        crypto2Column.setCellFactory(tc -> new TableCell<>() {
+        crypto2Column.setCellFactory(tc -> new TableCell<PoolPairModel, Double>() {
             @Override
             protected void updateItem(Double cryptoValue, boolean empty) {
                 super.updateItem(cryptoValue, empty);
@@ -448,7 +459,7 @@ public class View implements Initializable {
             }
         });
 
-        cryptoValueColumn.setCellFactory(tc -> new TableCell<>() {
+        cryptoValueColumn.setCellFactory(tc -> new TableCell<TransactionModel, Double>() {
             @Override
             protected void updateItem(Double cryptoValue, boolean empty) {
                 super.updateItem(cryptoValue, empty);
@@ -465,7 +476,7 @@ public class View implements Initializable {
             }
         });
 
-        blockTimeColumn.setCellFactory(tc -> new TableCell<>() {
+        blockTimeColumn.setCellFactory(tc -> new TableCell<TransactionModel, Long>() {
             @Override
             protected void updateItem(Long blockTime, boolean empty) {
                 super.updateItem(blockTime, empty);

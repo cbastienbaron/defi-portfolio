@@ -28,7 +28,7 @@ public class CoinPriceController {
         CoinPriceModel coinPrice = getCoinPriceLocal(this.strCoinPriceData);
         CoinGeckoApiClient client = new CoinGeckoApiClientImpl();
 
-        var currentTimeStamp = new Timestamp(System.currentTimeMillis()).getTime() / 1000L;
+        Long currentTimeStamp = new Timestamp(System.currentTimeMillis()).getTime() / 1000L;
 
         if (client.getCoinMarketChartRangeById("defichain", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices().size() > 0) {
 
