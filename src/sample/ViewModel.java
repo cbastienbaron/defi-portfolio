@@ -16,11 +16,14 @@ import javafx.util.Duration;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class ViewModel {
 
@@ -72,7 +75,7 @@ public class ViewModel {
         if (this.transactionController.checkCrp()) {
             this.strCurrentBlockOnBlockchain.set("Current Block on Blockchain: " + transactionController.getBlockCountRpc());
         }else{
-            this.strCurrentBlockOnBlockchain.set("No connection to node. For update you have to close the DeFi App and start again");
+            this.strCurrentBlockOnBlockchain.set("No connection to node.");
         }
         // Init gui elements
         File file = new File(System.getProperty("user.dir") + "\\src\\icons\\warning.png");
@@ -321,7 +324,6 @@ public class ViewModel {
             if (s != null) {
                 for (XYChart.Data d : s.getData()) {
                     if (d != null) {
-
                         Tooltip t = new Tooltip(d.getYValue().toString());
                         t.setShowDelay(Duration.seconds(0));
                         Tooltip.install(d.getNode(), t);

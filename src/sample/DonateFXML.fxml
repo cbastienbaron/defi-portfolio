@@ -12,7 +12,7 @@
 
 <AnchorPane prefHeight="191.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.DonateController">
    <children>
-      <Label layoutX="145.0" layoutY="105.0" prefHeight="25.0" prefWidth="434.0" text="Wallet Address: dX33VPRi1FMNwkho4xYkKRXAop23ct47mi">
+      <Label layoutX="145.0" layoutY="105.0" prefHeight="25.0" prefWidth="434.0" text="Wallet Address: dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V">
          <font>
             <Font size="15.0" />
          </font>
@@ -39,7 +39,7 @@
       </Button>
       <ImageView fx:id="img" fitHeight="101.0" fitWidth="105.0" layoutX="26.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../icons/donate.png" />
+            <Image url="@../icons/DonateQR.png" />
          </image>
       </ImageView>
    </children>
