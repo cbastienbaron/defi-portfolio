@@ -5,7 +5,7 @@ Use DeFi app portfolio to export, analyse and visualize your transactions, rewar
 # Documentation
 
 - [Getting started](#getting-started)
-- [About Us]
+- [About Us](#about-us)
 
 # Getting Started
 
