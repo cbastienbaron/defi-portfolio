@@ -33,9 +33,6 @@ public class ViewModel {
     public StringProperty strCurrentBlockLocally = new SimpleStringProperty("0");
     public StringProperty strCurrentBlockOnBlockchain = new SimpleStringProperty("No connection");
     public StringProperty strLastUpdate = new SimpleStringProperty("-");
-    public ObjectProperty<javafx.scene.image.Image> imgStatus = new SimpleObjectProperty<>();
-    public StringProperty strUpToDate = new SimpleStringProperty("Database not up to date");
-    public SimpleDoubleProperty progress = new SimpleDoubleProperty(.0);
     public StringProperty strProgressbar = new SimpleStringProperty("");
     public LineChart<Number, Number> plotRewards, plotCommissions2, plotCommissions;
     public StackedAreaChart<Number, Number> plotOverview;
@@ -80,13 +77,15 @@ public class ViewModel {
         this.expService = new ExportService(this.coinPriceController, this.transactionController, this.settingsController);
         this.strCurrentBlockLocally.set(Integer.toString(transactionController.getLocalBlockCount()));
 
-        if (this.transactionController.checkCrp()) {
-            this.strCurrentBlockOnBlockchain.set(Integer.toString(transactionController.getBlockCountRpc()));
-        }else{
-            this.strCurrentBlockOnBlockchain.set("No connection");
-        }
-    }
+        startTimer();
 
+    }
+    public void startTimer() {
+
+        TimerController timerController = new TimerController(this);
+        Timer timer = new Timer("Timer");
+        timer.scheduleAtFixedRate(timerController, 0, 30000L);
+    }
 
     public void copySelectedRawDataToClipboard(List<TransactionModel> list, boolean withHeaders) {
         StringBuilder sb = new StringBuilder();
@@ -121,7 +120,6 @@ public class ViewModel {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
     }
-
     public void copySelectedDataToClipboard(List<PoolPairModel> list, boolean withHeaders) {
         StringBuilder sb = new StringBuilder();
 
