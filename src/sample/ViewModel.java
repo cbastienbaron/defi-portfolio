@@ -46,7 +46,7 @@ public class ViewModel {
     public ObservableList<TransactionModel> transactionList;
     public ObservableList<PoolPairModel> poolPairList;
 
-    public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "DOGE-DFI", "LTC-DFI"};
+    public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
     public String[] plotCurrency = new String[]{"Coin", "Fiat"};
     public String[] plotType = new String[]{"Individual", "Cumulated"};
 
@@ -337,7 +337,6 @@ public class ViewModel {
                 for (XYChart.Data d : s.getData()) {
                     if (d != null) {
                         Tooltip t = new Tooltip(d.getYValue().toString());
-                        //t.set(Duration.seconds(0));
                         Tooltip.install(d.getNode(), t);
                         d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
                         d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
@@ -486,7 +485,6 @@ public class ViewModel {
 
         if (this.settingsController.selectedPlotType.getValue().equals("Individual")) {
 
-
             for (HashMap.Entry<String, Double> entry : joinedCommissionsCoin1.entrySet()) {
 
                 if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
@@ -519,8 +517,6 @@ public class ViewModel {
             this.poolPairList.clear();
             this.poolPairList.addAll(this.poolPairModelList);
 
-            this.plotRewards.getData().clear();
-
             if (this.plotCommissions.getData().size() == 1) {
                 this.plotCommissions.getData().remove(0);
             }
@@ -535,7 +531,6 @@ public class ViewModel {
             for (XYChart.Series<Number, Number> s : this.plotCommissions.getData()) {
                 for (XYChart.Data d : s.getData()) {
                     Tooltip t = new Tooltip(d.getYValue().toString());
-                    //t.setShowDelay(Duration.seconds(0));
                     Tooltip.install(d.getNode(), t);
                     d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
                     d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
@@ -545,7 +540,6 @@ public class ViewModel {
             for (XYChart.Series<Number, Number> s : this.plotCommissions2.getData()) {
                 for (XYChart.Data d : s.getData()) {
                     Tooltip t = new Tooltip(d.getYValue().toString());
-                    //t.setShowDelay(Duration.seconds(0));
                     Tooltip.install(d.getNode(), t);
                     d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
                     d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));

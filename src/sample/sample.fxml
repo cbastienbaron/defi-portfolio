@@ -25,59 +25,104 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" stylesheets="@chartStyle.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
     <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
         <effect>
             <DropShadow />
         </effect>
-        <Button fx:id="btnUpdateDatabse" alignment="CENTER" cache="true" layoutY="62.0" mnemonicParsing="false" onAction="#btnUpdatePressed" prefHeight="53.0" prefWidth="191.0" text="Update Database">
-            <cursor>
-                <Cursor fx:constant="DEFAULT" />
-            </cursor>
-            <graphic>
-                <ImageView fitHeight="51.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
-                    <viewport>
-                        <Rectangle2D />
-                    </viewport>
-                    <Image url="@../icons/databaseprocess.png" />
-                </ImageView>
-            </graphic>
-        </Button>
-        <Button fx:id="btnRawData" alignment="CENTER" cache="true" layoutY="153.0" mnemonicParsing="false" onAction="#btnRawDataPressed" prefHeight="50.0" prefWidth="191.0" text="Raw Data">
-            <cursor>
-                <Cursor fx:constant="DEFAULT" />
-            </cursor>
-            <graphic>
-                <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../icons/table.png" />
-                </ImageView>
-            </graphic>
-            <padding>
-                <Insets right="40.0" />
-            </padding>
-        </Button>
-        <Button fx:id="btnAnalyse" layoutY="240.0" mnemonicParsing="false" onAction="#btnAnalysePressed" prefHeight="50.0" prefWidth="191.0" text="Analyse Data">
-            <cursor>
-                <Cursor fx:constant="DEFAULT" />
-            </cursor>
-            <graphic>
-                <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../icons/analyse.png" />
-                </ImageView>
-            </graphic>
-            <padding>
-                <Insets right="30.0" />
-            </padding>
-        </Button>
-        <Label id="strCurrentBlockLocally" layoutX="5.0" layoutY="567.0" text="Current Block locally:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="567.0" />
-        <Label id="strCurrentBlockOnChain" layoutX="5.0" layoutY="592.0" text="Current Block Blockchain:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="592.0" />
-      <Label id="strCurrentBlockOnChain" fx:id="strCurrentBlockOnBlockchain1" layoutX="5.0" layoutY="616.0" text="Last update:" />
-      <Label fx:id="strCurrentBlockLocally" layoutX="144.0" layoutY="567.0" text="5600" />
-      <Label fx:id="strLastUpdate" layoutX="75.0" layoutY="615.0" text="5600" />
-      <Label fx:id="strCurrentBlockOnBlockchain" layoutX="143.0" layoutY="592.0" text="5600" />
+      <GridPane alignment="CENTER" layoutX="3.0" layoutY="6.0" prefHeight="632.0" prefWidth="191.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="70.0" minHeight="70.0" prefHeight="70.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="70.0" minHeight="70.0" prefHeight="70.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="255.0" minHeight="70.0" prefHeight="242.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="237.0" minHeight="10.0" prefHeight="58.0" valignment="CENTER" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="184.0" minHeight="0.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="127.0" minHeight="1.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="105.0" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="95.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="66.0" minHeight="10.0" prefHeight="23.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+             <Button fx:id="btnRawData" alignment="CENTER" cache="true" mnemonicParsing="false" onAction="#btnRawDataPressed" prefHeight="90.0" prefWidth="191.0" stylesheets="@chartStyle.css" text="Raw Data">
+                 <cursor>
+                     <Cursor fx:constant="DEFAULT" />
+                 </cursor>
+                 <graphic>
+                     <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                         <Image url="@../icons/table.png" />
+                     </ImageView>
+                 </graphic>
+                 <padding>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                 </padding>
+                 <GridPane.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                 </GridPane.margin>
+             </Button>
+              <Button fx:id="btnUpdateDatabse" alignment="CENTER" cache="true" mnemonicParsing="false" prefHeight="90.0" prefWidth="191.0" stylesheets="@chartStyle.css" text="Update Data" GridPane.rowIndex="3">
+                  <cursor>
+                      <Cursor fx:constant="DEFAULT" />
+                  </cursor>
+                  <graphic>
+                      <ImageView fitHeight="37.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                          <viewport>
+                              <Rectangle2D />
+                          </viewport>
+                          <Image url="@../icons/databaseprocess.png" />
+                      </ImageView>
+                  </graphic>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+              </Button>
+              <Button fx:id="btnAnalyse" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnalysePressed" prefHeight="90.0" prefWidth="191.0" stylesheets="@chartStyle.css" text="Analyse Data" GridPane.rowIndex="1">
+                  <cursor>
+                      <Cursor fx:constant="DEFAULT" />
+                  </cursor>
+                  <graphic>
+                      <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                          <Image url="@../icons/analyse.png" />
+                      </ImageView>
+                  </graphic>
+                  <padding>
+                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </padding>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+              </Button>
+              <Label id="strCurrentBlockLocally" text="Current Block locally" GridPane.rowIndex="4" />
+            <Label fx:id="strCurrentBlockLocally" text="5600" GridPane.rowIndex="5">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+              <Label id="strCurrentBlockOnChain" alignment="CENTER" text="Current Block Blockchain" GridPane.rowIndex="6" />
+            <Label fx:id="strLastUpdate" text="5600" GridPane.rowIndex="9">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label id="strCurrentBlockOnChain" fx:id="strCurrentBlockOnBlockchain1" text="Last update" GridPane.rowIndex="8" />
+            <Label fx:id="strCurrentBlockOnBlockchain" text="5600" GridPane.rowIndex="7">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+         </children>
+      </GridPane>
     </AnchorPane>
     <AnchorPane layoutY="2.0" prefHeight="0.0" prefWidth="700.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <MenuBar id="menuBar" layoutY="2.0" prefHeight="30.0" prefWidth="700.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -122,79 +167,154 @@
         </Label>
     </AnchorPane>
     <AnchorPane id="AnchorPanelAnalyse" fx:id="anchorPanelAnalyse" layoutX="194.0" layoutY="27.0" prefHeight="639.0" prefWidth="857.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
-        <AnchorPane prefHeight="639.0" prefWidth="931.0" style="-fx-background-color: #f4f3f6;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="0.0">
-            <Label layoutX="21.0" layoutY="18.0" text="Start date" />
-            <DatePicker fx:id="dateFrom" layoutX="81.0" layoutY="14.0" prefHeight="25.0" prefWidth="142.0" />
-            <Label layoutX="26.0" layoutY="55.0" text="End date" />
-            <DatePicker fx:id="dateTo" layoutX="81.0" layoutY="51.0" prefHeight="25.0" prefWidth="143.0" />
-            <ComboBox fx:id="cmbCoins" layoutX="268.0" layoutY="58.0" prefHeight="29.0" prefWidth="94.0" />
-            <ComboBox fx:id="cmbIntervall" layoutX="268.0" layoutY="17.0" prefHeight="29.0" prefWidth="94.0" />
-            <ComboBox fx:id="cmbFiat" layoutX="407.0" layoutY="60.0" prefHeight="29.0" prefWidth="94.0" />
-            <ComboBox fx:id="cmbPlotCurrency" layoutX="407.0" layoutY="17.0" prefHeight="29.0" prefWidth="94.0" />
+        <AnchorPane prefHeight="639.0" prefWidth="931.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="0.0">
             <AnchorPane layoutX="613.0" layoutY="102.0" prefHeight="524.0" prefWidth="452.0" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="102.0" />
-            <SplitPane dividerPositions="0.5702167766258247" layoutY="123.0" prefHeight="516.0" prefWidth="1063.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="123.0">
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                    <TabPane fx:id="tabPlane" prefHeight="514.0" prefWidth="313.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                        <Tab text="Rewards">
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
-                                <StackPane prefHeight="450.0" prefWidth="592.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
-                                    <LineChart fx:id="plotRewards" prefHeight="406.0" prefWidth="592.0">
-                                        <xAxis>
-                                            <CategoryAxis animated="false" side="BOTTOM" />
-                                        </xAxis>
-                                        <yAxis>
-                                            <NumberAxis animated="false" side="LEFT" />
-                                        </yAxis>
-                                    </LineChart>
-                                </StackPane>
-                            </AnchorPane>
-                        </Tab>
-                        <Tab text="Commissions">
-                            <AnchorPane prefHeight="431.0" prefWidth="628.0">
-                                <SplitPane dividerPositions="0.4685598377281947" orientation="VERTICAL" prefHeight="495.0" prefWidth="607.0" style="-fx-background-color: #f4f3f6;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="206.0" prefWidth="543.0">
-                                        <LineChart fx:id="plotCommissions" layoutX="27.0" layoutY="3.0" prefHeight="179.0" prefWidth="600.0" AnchorPane.bottomAnchor="44.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <xAxis>
-                                                <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM" />
-                                            </xAxis>
-                                            <yAxis>
-                                                <NumberAxis animated="false" side="LEFT" />
-                                            </yAxis>
-                                        </LineChart>
+            <SplitPane dividerPositions="0.5702167766258247" prefHeight="639.0" prefWidth="1063.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="607.0" prefWidth="602.0">
+                    <TabPane fx:id="tabPane" layoutY="-2.0" prefHeight="639.0" prefWidth="602.0" style="-fx-background-color: #ffffff;" stylesheets="@chartStyle.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
+                  <Tab text="Rewards">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
+                           <children>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="220.0" prefWidth="571.0" />
+                              <GridPane layoutX="15.0" layoutY="15.0" prefHeight="85.0" prefWidth="567.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="70.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="170.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="170.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="183.0" minWidth="10.0" prefWidth="170.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="41.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Start date" />
+                                    <Label text="End date" GridPane.rowIndex="2" />
+                                    <DatePicker fx:id="dateFrom" prefHeight="25.0" prefWidth="142.0" GridPane.columnIndex="1" />
+                                    <DatePicker fx:id="dateTo" prefHeight="25.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <ComboBox fx:id="cmbCoins" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                    <ComboBox fx:id="cmbIntervall" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" />
+                                    <ComboBox fx:id="cmbFiat" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                    <ComboBox fx:id="cmbPlotCurrency" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="3" />
+                                 </children>
+                              </GridPane>
+                              <LineChart fx:id="plotRewards" layoutY="116.0" prefHeight="461.0" prefWidth="585.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="116.0">
+                                 <xAxis>
+                                    <CategoryAxis animated="false" side="BOTTOM" style="-fx-background-color: #ffffff;" />
+                                 </xAxis>
+                                 <yAxis>
+                                    <NumberAxis animated="false" side="LEFT" style="-fx-background-color: #ffffff;" />
+                                 </yAxis>
+                              </LineChart>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+                  <Tab text="Commissions">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
+                           <children>
+                              <GridPane layoutX="15.0" layoutY="15.0" prefHeight="85.0" prefWidth="567.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="70.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="170.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="170.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="183.0" minWidth="10.0" prefWidth="170.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="41.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Start date" />
+                                    <Label text="End date" GridPane.rowIndex="2" />
+                                    <DatePicker fx:id="dateFromCom" prefHeight="25.0" prefWidth="142.0" GridPane.columnIndex="1" />
+                                    <DatePicker fx:id="dateToCom" prefHeight="25.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <ComboBox fx:id="cmbCoinsCom" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                    <ComboBox fx:id="cmbIntervallCom" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" />
+                                    <ComboBox fx:id="cmbFiatCom" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                    <ComboBox fx:id="cmbPlotCurrencyCom" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="3" />
+                                 </children>
+                              </GridPane>
+                              <SplitPane dividerPositions="0.5098039215686274" layoutX="2.0" layoutY="118.0" orientation="VERTICAL" prefHeight="461.0" prefWidth="602.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="118.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="182.0" prefWidth="592.0">
+                                       <children>
+                                          <LineChart fx:id="plotCommissions" prefHeight="235.0" prefWidth="585.0" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
+                                             <xAxis>
+                                                <CategoryAxis animated="false" side="BOTTOM" style="-fx-background-color: #ffffff;" />
+                                             </xAxis>
+                                             <yAxis>
+                                                <NumberAxis animated="false" side="LEFT" style="-fx-background-color: #ffffff;" />
+                                             </yAxis>
+                                          </LineChart>
+                                       </children>
                                     </AnchorPane>
-                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                        <LineChart fx:id="plotCommissions2" prefHeight="206.0" prefWidth="600.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <xAxis>
-                                                <CategoryAxis animated="false" prefHeight="18.0" prefWidth="462.0" side="BOTTOM" />
-                                            </xAxis>
-                                            <yAxis>
-                                                <NumberAxis animated="false" side="LEFT" />
-                                            </yAxis>
-                                        </LineChart>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="220.0" prefWidth="571.0">
+                                       <children>
+                                          <LineChart fx:id="plotCommissions2" prefHeight="235.0" prefWidth="585.0" AnchorPane.bottomAnchor="-13.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
+                                             <xAxis>
+                                                <CategoryAxis animated="false" side="BOTTOM" style="-fx-background-color: #ffffff;" />
+                                             </xAxis>
+                                             <yAxis>
+                                                <NumberAxis animated="false" side="LEFT" style="-fx-background-color: #ffffff;" />
+                                             </yAxis>
+                                          </LineChart>
+                                       </children>
                                     </AnchorPane>
-                                </SplitPane>
-
-                            </AnchorPane>
-                        </Tab>
-                        <Tab text="Overview">
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="333.0" prefWidth="628.0">
-                                <StackPane prefHeight="450.0" prefWidth="592.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
-                                    <StackedAreaChart fx:id="plotOverview" prefHeight="251.0" prefWidth="620.0">
-                                        <xAxis>
-                                            <CategoryAxis animated="false" side="BOTTOM" />
-                                        </xAxis>
-                                        <yAxis>
-                                            <NumberAxis fx:id="yAxis" animated="false" side="LEFT"/>
-                                        </yAxis>
-                                    </StackedAreaChart>
-                                </StackPane>
-                            </AnchorPane>
-                        </Tab>
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+                  <Tab text="Overview">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
+                           <children>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="220.0" prefWidth="571.0" />
+                              <GridPane layoutX="15.0" layoutY="15.0" prefHeight="85.0" prefWidth="567.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="70.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="170.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="170.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="183.0" minWidth="10.0" prefWidth="170.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="41.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Start date" />
+                                    <Label text="End date" GridPane.rowIndex="2" />
+                                    <DatePicker fx:id="dateFromOver" prefHeight="25.0" prefWidth="142.0" GridPane.columnIndex="1" />
+                                    <DatePicker fx:id="dateToOver" prefHeight="25.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <ComboBox fx:id="cmbCoinsOver" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                    <ComboBox fx:id="cmbIntervallOver" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" />
+                                    <ComboBox fx:id="cmbFiatOver" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                    <ComboBox fx:id="cmbPlotCurrencyOver" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="3" />
+                                 </children>
+                              </GridPane>
+                               <StackedAreaChart fx:id="plotOverview" layoutY="110.0" prefHeight="471.0" prefWidth="602.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0">
+                                   <xAxis>
+                                       <CategoryAxis animated="false" side="BOTTOM" />
+                                   </xAxis>
+                                   <yAxis>
+                                       <NumberAxis fx:id="yAxis" animated="false" side="LEFT" />
+                                   </yAxis>
+                               </StackedAreaChart>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
                     </TabPane>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                    <TableView fx:id="plotTable" prefHeight="514.0" prefWidth="453.0" style="-fx-background-color: #f4f3f6;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-
+                    <TableView fx:id="plotTable" prefHeight="514.0" prefWidth="453.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <columns>
                             <TableColumn fx:id="timeStampColumn" prefWidth="75.0" text="Date" />
                             <TableColumn fx:id="poolPairColumn" prefWidth="75.0" text="Pair" />

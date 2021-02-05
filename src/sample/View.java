@@ -1,6 +1,8 @@
 package sample;
 
 import javafx.beans.binding.Bindings;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -44,7 +46,7 @@ public class View implements Initializable {
     @FXML
     private Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, strUpToDate, lblProgressBar,strLastUpdate;
     @FXML
-    private ComboBox<String> cmbCoins, cmbIntervall,cmbFiat,cmbPlotCurrency;
+    private ComboBox<String> cmbCoins, cmbIntervall,cmbFiat,cmbPlotCurrency,cmbCoinsCom, cmbIntervallCom,cmbFiatCom,cmbPlotCurrencyCom,cmbCoinsOver, cmbIntervallOver,cmbFiatOver,cmbPlotCurrencyOver;
     @FXML
     private ImageView imgViewObj;
     @FXML
@@ -52,7 +54,15 @@ public class View implements Initializable {
     @FXML
     private  DatePicker dateTo = new DatePicker();
     @FXML
-    private TabPane tabPlane = new TabPane();
+    private  DatePicker dateFromCom = new DatePicker();
+    @FXML
+    private  DatePicker dateToCom = new DatePicker();
+    @FXML
+    private  DatePicker dateFromOver = new DatePicker();
+    @FXML
+    private  DatePicker dateToOver = new DatePicker();
+    @FXML
+    private TabPane tabPane = new TabPane();
     @FXML
     private LineChart<Number, Number> plotRewards,plotCommissions,plotCommissions2;
     @FXML
@@ -97,14 +107,6 @@ public class View implements Initializable {
     public View() {
     }
 
-    public void btnUpdatePressed() {
-        this.viewModel.btnUpdateDatabasePressed();
-        this.anchorPanelRawData.toFront();
-
-
-
-    }
-
     public void btnAnalysePressed() {
         this.anchorPanelAnalyse.toFront();
         this.viewModel.plotRewards = this.plotRewards;
@@ -112,9 +114,11 @@ public class View implements Initializable {
         this.viewModel.plotCommissions2 = this.plotCommissions2;
         this.viewModel.plotOverview = this.plotOverview;
         this.viewModel.yAxis = this.yAxis;
-        fiatColumn.setVisible(!tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
-        this.viewModel.updateRewards();
-        this.viewModel.updateRewards =false;
+        this.fiatColumn.setVisible(!this.tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
+        if(this.viewModel.updateRewards) {
+            this.viewModel.updateRewards();
+            this.viewModel.updateRewards =false;
+        }
     }
 
     public void btnRawDataPressed() {
@@ -160,37 +164,54 @@ public class View implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.anchorPanelRawData.toFront();
-
+        this.btnRawData.fire();
         // Update Database Frame
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.viewModel.strCurrentBlockLocally);
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.viewModel.strCurrentBlockOnBlockchain);
         this.strLastUpdate.textProperty().bindBidirectional(this.viewModel.strLastUpdate);
 
+        this.btnUpdateDatabse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                viewModel.btnUpdateDatabasePressed();
+            }
+        });
 
 
-        tabPlane.getSelectionModel().selectedItemProperty().addListener(
+        tabPane.getSelectionModel().selectedItemProperty().addListener(
                 (ov, t, t1) -> {
-                    if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
+                    if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
 
                     cmbCoins.setVisible(true);
                     cmbFiat.setVisible(true);
                     cmbPlotCurrency.setVisible(true);
-                    if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
+                    cmbCoinsCom.setVisible(true);
+                    cmbFiatCom.setVisible(true);
+                    cmbPlotCurrencyCom.setVisible(true);
+                    cmbCoinsOver.setVisible(true);
+                    cmbFiatOver.setVisible(true);
+                    cmbPlotCurrencyOver.setVisible(true);
+                    if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
                         crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
                         crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
                         cmbCoins.setVisible(false);
                         cmbFiat.setVisible(false);
                         cmbPlotCurrency.setVisible(false);
+                        cmbCoinsCom.setVisible(false);
+                        cmbFiatCom.setVisible(false);
+                        cmbPlotCurrencyCom.setVisible(false);
+                        cmbCoinsOver.setVisible(false);
+                        cmbFiatOver.setVisible(false);
+                        cmbPlotCurrencyOver.setVisible(false);
                     }
-                    if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
+                    if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
                         crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
                         crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1] + "("+viewModel.settingsController.selectedFiatCurrency.getValue()+")");
                     }
-                    if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
+                    if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
                         crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
                         crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
                     }
-                    fiatColumn.setVisible(!tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
+                    fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
                 }
         );
 
@@ -200,7 +221,25 @@ public class View implements Initializable {
             viewModel.updateCommissions =true;
             viewModel.updateOverview = true;
             viewModel.updateRewards = true;
-            if(viewModel.plotRewards !=null)  viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
+            if(viewModel.plotRewards !=null)  viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+        });
+
+        this.cmbIntervallCom.getItems().addAll("Daily", "Weekly", "Monthly", "Yearly");
+        this.cmbIntervallCom.valueProperty().bindBidirectional(this.viewModel.settingsController.cmbIntervall);
+        this.cmbIntervallCom.valueProperty().addListener((ov, oldValue, newValue) -> {
+            viewModel.updateCommissions =true;
+            viewModel.updateOverview = true;
+            viewModel.updateRewards = true;
+            if(viewModel.plotRewards !=null)  viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+        });
+
+        this.cmbIntervallOver.getItems().addAll("Daily", "Weekly", "Monthly", "Yearly");
+        this.cmbIntervallOver.valueProperty().bindBidirectional(this.viewModel.settingsController.cmbIntervall);
+        this.cmbIntervallOver.valueProperty().addListener((ov, oldValue, newValue) -> {
+            viewModel.updateCommissions =true;
+            viewModel.updateOverview = true;
+            viewModel.updateRewards = true;
+            if(viewModel.plotRewards !=null)  viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
         });
 
         this.cmbCoins.getItems().addAll(this.viewModel.cryptoCurrencies);
@@ -208,24 +247,75 @@ public class View implements Initializable {
         this.cmbCoins.valueProperty().addListener((ov, oldValue, newValue) -> {
             viewModel.updateCommissions =true;
             viewModel.updateRewards = true;
-            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
-            if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
                 crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
                 crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
                 cmbCoins.setVisible(false);
                 cmbFiat.setVisible(false);
                 cmbPlotCurrency.setVisible(false);
             }
-            if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
                 crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
                 crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1] + "("+viewModel.settingsController.selectedFiatCurrency.getValue()+")");
             }
-            if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
                 crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
                 crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
             }
 
-            fiatColumn.setVisible(!tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
+            fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
+        });
+
+
+        this.cmbCoinsCom.getItems().addAll(this.viewModel.cryptoCurrencies);
+        this.cmbCoinsCom.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedCoin);
+        this.cmbCoinsCom.valueProperty().addListener((ov, oldValue, newValue) -> {
+            viewModel.updateCommissions =true;
+            viewModel.updateRewards = true;
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
+                crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                cmbCoinsCom.setVisible(false);
+                cmbFiatCom.setVisible(false);
+                cmbPlotCurrencyCom.setVisible(false);
+            }
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
+                crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
+                crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1] + "("+viewModel.settingsController.selectedFiatCurrency.getValue()+")");
+            }
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
+                crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
+                crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
+            }
+
+            fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
+        });
+
+        this.cmbCoinsOver.getItems().addAll(this.viewModel.cryptoCurrencies);
+        this.cmbCoinsOver.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedCoin);
+        this.cmbCoinsOver.valueProperty().addListener((ov, oldValue, newValue) -> {
+            viewModel.updateCommissions =true;
+            viewModel.updateRewards = true;
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
+                crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                cmbCoinsOver.setVisible(false);
+                cmbFiatOver.setVisible(false);
+                cmbPlotCurrencyOver.setVisible(false);
+            }
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
+                crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
+                crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1] + "("+viewModel.settingsController.selectedFiatCurrency.getValue()+")");
+            }
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
+                crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
+                crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
+            }
+
+            fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
         });
 
 
@@ -237,32 +327,89 @@ public class View implements Initializable {
             if(!oldValue.equals(newValue) & this.plotRewards !=null) {
                 viewModel.updateCommissions =true;
                 viewModel.updateRewards = true;
-                viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
+                viewModel.updateOverview =true;
+                viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
                 this.fiatColumn.setText("Total (" + newValue+")");
-                if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
+                if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
                     crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
                     crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
                     cmbCoins.setVisible(false);
                     cmbFiat.setVisible(false);
                     cmbPlotCurrency.setVisible(false);
+                    cmbCoinsCom.setVisible(false);
+                    cmbFiatCom.setVisible(false);
+                    cmbPlotCurrencyCom.setVisible(false);
+                    cmbCoinsOver.setVisible(false);
+                    cmbFiatOver.setVisible(false);
+                    cmbPlotCurrencyOver.setVisible(false);
                 }
-                if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
+                if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
                     crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
                     crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1] + "("+viewModel.settingsController.selectedFiatCurrency.getValue()+")");
                 }
-                if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
+                if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
                     crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
                     crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
                 }
 
-                fiatColumn.setVisible(!tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
+                fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
             }
         });
 
         this.viewModel.settingsController.selectedDecimal.addListener((ov, oldValue, newValue) -> {
             if(!oldValue.equals(newValue) & this.plotRewards !=null) {
-                viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
+                viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
             }
+        });
+
+        this.cmbFiatCom.getItems().addAll(this.viewModel.plotCurrency);
+        this.cmbFiatCom.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotCurrency);
+        this.cmbFiatCom.valueProperty().addListener((ov, oldValue, newValue) -> {
+            viewModel.updateCommissions =true;
+            viewModel.updateRewards = true;
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
+                crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                cmbCoinsCom.setVisible(false);
+                cmbFiatCom.setVisible(false);
+                cmbPlotCurrencyCom.setVisible(false);
+            }
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
+                crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
+                crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1] + "("+viewModel.settingsController.selectedFiatCurrency.getValue()+")");
+            }
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
+                crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
+                crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
+            }
+
+            fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
+        });
+
+        this.cmbFiatOver.getItems().addAll(this.viewModel.plotCurrency);
+        this.cmbFiatOver.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotCurrency);
+        this.cmbFiatOver.valueProperty().addListener((ov, oldValue, newValue) -> {
+            viewModel.updateCommissions =true;
+            viewModel.updateRewards = true;
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
+                crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                cmbCoinsOver.setVisible(false);
+                cmbFiatOver.setVisible(false);
+                cmbPlotCurrencyOver.setVisible(false);
+            }
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
+                crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
+                crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1] + "("+viewModel.settingsController.selectedFiatCurrency.getValue()+")");
+            }
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
+                crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
+                crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
+            }
+
+            fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
         });
 
         this.cmbFiat.getItems().addAll(this.viewModel.plotCurrency);
@@ -270,31 +417,50 @@ public class View implements Initializable {
         this.cmbFiat.valueProperty().addListener((ov, oldValue, newValue) -> {
             viewModel.updateCommissions =true;
             viewModel.updateRewards = true;
-            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
-            if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
                 crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
                 crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
                 cmbCoins.setVisible(false);
                 cmbFiat.setVisible(false);
                 cmbPlotCurrency.setVisible(false);
             }
-            if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
                 crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
                 crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1] + "("+viewModel.settingsController.selectedFiatCurrency.getValue()+")");
             }
-            if(tabPlane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
                 crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
                 crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
             }
 
-            fiatColumn.setVisible(!tabPlane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
+            fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
         });
+
+
+
         this.cmbPlotCurrency.getItems().addAll(this.viewModel.plotType);
         this.cmbPlotCurrency.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotType);
         this.cmbPlotCurrency.valueProperty().addListener((ov, oldValue, newValue) -> {
             viewModel.updateCommissions =true;
             viewModel.updateRewards = true;
-            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+        });
+
+        this.cmbPlotCurrencyCom.getItems().addAll(this.viewModel.plotType);
+        this.cmbPlotCurrencyCom.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotType);
+        this.cmbPlotCurrencyCom.valueProperty().addListener((ov, oldValue, newValue) -> {
+            viewModel.updateCommissions =true;
+            viewModel.updateRewards = true;
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+        });
+
+        this.cmbPlotCurrencyOver.getItems().addAll(this.viewModel.plotType);
+        this.cmbPlotCurrencyOver.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotType);
+        this.cmbPlotCurrencyOver.valueProperty().addListener((ov, oldValue, newValue) -> {
+            viewModel.updateCommissions =true;
+            viewModel.updateRewards = true;
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
         });
 
 
@@ -303,9 +469,27 @@ public class View implements Initializable {
             viewModel.updateCommissions =true;
             viewModel.updateOverview = true;
             viewModel.updateRewards = true;
-            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
-
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
         });
+
+        this.dateFromCom.valueProperty().bindBidirectional(this.viewModel.settingsController.dateFrom);
+        this.dateFromCom.valueProperty().addListener((ov, oldValue, newValue) -> {
+            viewModel.updateCommissions =true;
+            viewModel.updateOverview = true;
+            viewModel.updateRewards = true;
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+        });
+
+        this.dateFromOver.valueProperty().bindBidirectional(this.viewModel.settingsController.dateFrom);
+        this.dateFromOver.valueProperty().addListener((ov, oldValue, newValue) -> {
+            viewModel.updateCommissions =true;
+            viewModel.updateOverview = true;
+            viewModel.updateRewards = true;
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+        });
+
+
+
         this.dateFrom.setValue(LocalDate.now().minusDays(60L));
         this.dateFrom.setDayCellFactory(picker -> new DateCell() {
             public void updateItem(LocalDate date, boolean empty) {
@@ -315,15 +499,68 @@ public class View implements Initializable {
             }
         });
 
+        this.dateFromCom.setValue(LocalDate.now().minusDays(60L));
+        this.dateFromCom.setDayCellFactory(picker -> new DateCell() {
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate today = LocalDate.now();
+                setDisable(empty || date.compareTo(today) > 0);
+            }
+        });
+
+        this.dateFromOver.setValue(LocalDate.now().minusDays(60L));
+        this.dateFromOver.setDayCellFactory(picker -> new DateCell() {
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate today = LocalDate.now();
+                setDisable(empty || date.compareTo(today) > 0);
+            }
+        });
+
+
         this.dateTo.valueProperty().bindBidirectional(this.viewModel.settingsController.dateTo);
         this.dateTo.valueProperty().addListener((ov, oldValue, newValue) -> {
             viewModel.updateCommissions =true;
             viewModel.updateOverview = true;
             viewModel.updateRewards = true;
-            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPlane.getSelectionModel().getSelectedItem().getText());
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
         });
         this.dateTo.setValue(LocalDate.now());
         this.dateTo.setDayCellFactory(picker -> new DateCell() {
+
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate today = LocalDate.now();
+                setDisable(empty || date.compareTo(today) > 0);
+            }
+        });
+
+        this.dateToOver.valueProperty().bindBidirectional(this.viewModel.settingsController.dateTo);
+        this.dateToOver.valueProperty().addListener((ov, oldValue, newValue) -> {
+            viewModel.updateCommissions =true;
+            viewModel.updateOverview = true;
+            viewModel.updateRewards = true;
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+        });
+        this.dateToOver.setValue(LocalDate.now());
+        this.dateToOver.setDayCellFactory(picker -> new DateCell() {
+
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate today = LocalDate.now();
+                setDisable(empty || date.compareTo(today) > 0);
+            }
+        });
+
+        this.dateToCom.valueProperty().bindBidirectional(this.viewModel.settingsController.dateTo);
+        this.dateToCom.valueProperty().addListener((ov, oldValue, newValue) -> {
+            viewModel.updateCommissions =true;
+            viewModel.updateOverview = true;
+            viewModel.updateRewards = true;
+            if(viewModel.plotRewards !=null) viewModel.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+        });
+        this.dateToCom.setValue(LocalDate.now());
+        this.dateToCom.setDayCellFactory(picker -> new DateCell() {
 
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
@@ -541,8 +778,8 @@ public class View implements Initializable {
 
         menuItemCopySelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),false));
         menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),true));
-        menuItemExportSelected.setOnAction(event -> viewModel.exportPoolPairToExcel( plotTable.selectionModelProperty().get().getSelectedItems(),this.tabPlane.getSelectionModel().getSelectedItem().getText()));
-        menuItemExportAllSelected.setOnAction(event -> viewModel.exportPoolPairToExcel(plotTable.getItems(),this.tabPlane.getSelectionModel().getSelectedItem().getText()));
+        menuItemExportSelected.setOnAction(event -> viewModel.exportPoolPairToExcel( plotTable.selectionModelProperty().get().getSelectedItems(),this.tabPane.getSelectionModel().getSelectedItem().getText()));
+        menuItemExportAllSelected.setOnAction(event -> viewModel.exportPoolPairToExcel(plotTable.getItems(),this.tabPane.getSelectionModel().getSelectedItem().getText()));
 
         contextMenuPlotData.getItems().add(menuItemCopySelected);
         contextMenuPlotData.getItems().add(menuItemCopyHeaderSelected);
