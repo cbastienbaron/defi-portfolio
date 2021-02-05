@@ -127,10 +127,10 @@
             <DatePicker fx:id="dateFrom" layoutX="81.0" layoutY="14.0" prefHeight="25.0" prefWidth="142.0" />
             <Label layoutX="26.0" layoutY="55.0" text="End date" />
             <DatePicker fx:id="dateTo" layoutX="81.0" layoutY="51.0" prefHeight="25.0" prefWidth="143.0" />
-            <ComboBox fx:id="cmbCoins" layoutX="268.0" layoutY="58.0" prefHeight="29.0" prefWidth="94.0" />
-            <ComboBox fx:id="cmbIntervall" layoutX="268.0" layoutY="17.0" prefHeight="29.0" prefWidth="94.0" />
-            <ComboBox fx:id="cmbFiat" layoutX="407.0" layoutY="60.0" prefHeight="29.0" prefWidth="94.0" />
-            <ComboBox fx:id="cmbPlotCurrency" layoutX="407.0" layoutY="17.0" prefHeight="29.0" prefWidth="94.0" />
+            <ComboBox fx:id="cmbCoins" layoutX="268.0" layoutY="58.0" prefHeight="29.0" prefWidth="100.0" />
+            <ComboBox fx:id="cmbIntervall" layoutX="268.0" layoutY="20.0" prefHeight="29.0" prefWidth="100.0" />
+            <ComboBox fx:id="cmbFiat" layoutX="407.0" layoutY="58.0" prefHeight="29.0" prefWidth="100.0" />
+            <ComboBox fx:id="cmbPlotCurrency" layoutX="407.0" layoutY="20.0" prefHeight="29.0" prefWidth="100.0" />
             <AnchorPane layoutX="613.0" layoutY="102.0" prefHeight="524.0" prefWidth="452.0" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="102.0" />
             <SplitPane dividerPositions="0.5702167766258247" layoutY="123.0" prefHeight="516.0" prefWidth="1063.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="123.0">
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -184,7 +184,7 @@
                                             <CategoryAxis animated="false" side="BOTTOM" />
                                         </xAxis>
                                         <yAxis>
-                                            <NumberAxis fx:id="yAxis" animated="false" side="LEFT"/>
+                                            <NumberAxis fx:id="yAxis" animated="false" side="LEFT" />
                                         </yAxis>
                                     </StackedAreaChart>
                                 </StackPane>
