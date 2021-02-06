@@ -32,7 +32,7 @@ public class SettingsController {
     public ObjectProperty<LocalDate>  dateFrom = new SimpleObjectProperty();
     public ObjectProperty<LocalDate> dateTo= new SimpleObjectProperty();
 
-    public String[] languages = new String[]{"English","Deutsch"};
+    public String[] languages = new String[]{"English"};
     public String[] currencies = new String[]{"EUR","USD","CHF"};
     public String[] decSeperators = new String[]{",","."};
     public String[] csvSeperators = new String[]{",",";"};

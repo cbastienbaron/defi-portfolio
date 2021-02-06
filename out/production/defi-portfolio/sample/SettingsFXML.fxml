@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="278.0" prefWidth="496.0" xmlns="http://javafx.com/javafx/8.0.202-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SettingView">
+   <children>
+      <ImageView fitHeight="119.0" fitWidth="111.0" layoutX="40.0" layoutY="66.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../icons/settings.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="210.0" layoutY="50.0" text="Language" />
+      <Label layoutX="194.0" layoutY="172.0" text="CSV Sperator" />
+      <Label layoutX="164.0" layoutY="94.0" text="Preferred Currency" />
+      <ComboBox fx:id="cmbLanguage" layoutX="289.0" layoutY="48.0" prefWidth="150.0" />
+      <ComboBox fx:id="cmbPrefCurrency" layoutX="289.0" layoutY="90.0" prefWidth="150.0" />
+      <ComboBox fx:id="cmbCSVSeperator" layoutX="289.0" layoutY="172.0" prefWidth="150.0" />
+      <Button fx:id="btnCancel" layoutX="274.0" layoutY="227.0" mnemonicParsing="false" onAction="#btnCancelPressed" text="Cancel" />
+      <Button fx:id="btnSaveAndApply" layoutX="341.0" layoutY="227.0" mnemonicParsing="false" onMouseClicked="#btnSaveAndApplyPressed" text="Save and Apply" />
+      <Label layoutX="168.0" layoutY="137.0" text="Decimal Seperator" />
+      <ComboBox fx:id="cmbDecSeperator" layoutX="289.0" layoutY="132.0" prefWidth="150.0" />
+   </children>
+</AnchorPane>

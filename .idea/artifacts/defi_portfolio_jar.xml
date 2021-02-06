@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="defi-portfolio:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/defi_portfolio_jar</output-path>
+    <root id="archive" name="defi-portfolio.jar">
+      <element id="module-output" name="defi-portfolio" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/sample/libraries/CoinGecko-Java-master.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/sample/libraries/gson-2.8.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/sample/libraries/json-20201115.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/sample/libraries/json-simple-1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.jdks/corretto-1.8.0_275/lib/javafx-mx.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

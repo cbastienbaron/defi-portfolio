@@ -60,10 +60,6 @@
 .default-color6.chart-area-symbol { -fx-background-color: #c62b00, white; }
 .default-color7.chart-area-symbol { -fx-background-color: #ff5700, white; }
 
-.chart-container {
-background-.default-color0.chart-series-line { -fx-stroke: #e9967a; }
-color: white;
-}
 .button {
           -fx-focus-color: transparent;
           -fx-faint-focus-color: transparent;

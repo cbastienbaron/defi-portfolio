@@ -34,22 +34,30 @@ public class ViewModel {
     public StringProperty strCurrentBlockOnBlockchain = new SimpleStringProperty("No connection");
     public StringProperty strLastUpdate = new SimpleStringProperty("-");
     public StringProperty strProgressbar = new SimpleStringProperty("");
+
+    //Plot
     public LineChart<Number, Number> plotRewards, plotCommissions2, plotCommissions;
     public StackedAreaChart<Number, Number> plotOverview;
     public NumberAxis yAxis;
     public boolean updateOverview = true;
     public boolean updateRewards = true;
     public boolean updateCommissions = true;
+
+    //Table and plot lists
     public List<TransactionModel> transactionModelList;
     public List<PoolPairModel> poolPairModelList = new ArrayList<>();
     List<TransactionModel> transactionsInTime = new ArrayList<>();
     public ObservableList<TransactionModel> transactionList;
     public ObservableList<PoolPairModel> poolPairList;
 
+    //Combo box filling
     public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
     public String[] plotCurrency = new String[]{"Coin", "Fiat"};
     public String[] plotType = new String[]{"Individual", "Cumulated"};
+    public Long oldTimeStampFrom = 0L;
+    public Long oldTimeStampTo = 0L;
 
+    //All relevant paths and files
     public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
     public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
     public String strPathDefid = System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
@@ -57,31 +65,47 @@ public class ViewModel {
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
 
+
+    //Init all controller and services
     public CoinPriceController coinPriceController = new CoinPriceController(this.strPathAppData + strCoinPriceData);
     public SettingsController settingsController = SettingsController.getInstance();
     public TransactionController transactionController = new TransactionController(this.strPathAppData + this.strTransactionData, this.settingsController, this.coinPriceController, this.strPathDefiCli, this.strCookiePath,this.strPathDefid);
-    public Long oldTimeStampFrom = 0L;
-    public Long oldTimeStampTo = 0L;
     public ExportService expService;
 
     public ViewModel() {
-        // generate folder %appData%//defiPortfolio if no one exists
+
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")){
+            //Betriebssystem ist Windows-basiert
+        }
+        else if (os.contains("osx")){
+            //Betriebssystem ist Apple OSX
+        }
+        else if (os.contains("nix") || os.contains("aix") || os.contains("nux")){
+            //Betriebssystem ist Linux/Unix basiert
+        }
+
+        // generate folder //defi-portfolio if no one exists
         File directory = new File(strPathAppData);
         if (!directory.exists()) {
             directory.mkdir();
         }
 
+        // init all relevant lists for tables and plots
         this.transactionList = FXCollections.observableArrayList(this.transactionController.transactionList);
         this.transactionModelList = this.transactionController.transactionList;
         this.poolPairList = FXCollections.observableArrayList(this.poolPairModelList);
         this.expService = new ExportService(this.coinPriceController, this.transactionController, this.settingsController);
+
+        // get last block locally
         this.strCurrentBlockLocally.set(Integer.toString(transactionController.getLocalBlockCount()));
 
+        //start timer for getting last block on blockchain
         startTimer();
 
     }
-    public void startTimer() {
 
+    public void startTimer() {
         TimerController timerController = new TimerController(this);
         Timer timer = new Timer("Timer");
         timer.scheduleAtFixedRate(timerController, 0, 30000L);
