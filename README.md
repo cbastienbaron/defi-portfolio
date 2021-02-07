@@ -12,7 +12,7 @@ Use DeFi app portfolio to export, analyse and visualize your transactions, rewar
 # About Us
 Daniel Klaiber (https://t.me/danielklaiber) & (https://twitter.com/danielkolibri)
 
-Arthur Eisener  
+Arthur Eisener (https://t.me/ArthurEisener)
 
 ## Licenses
 
