@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
@@ -268,7 +269,7 @@ public class ViewModel {
         this.frameUpdate.dispose();
     }
 
-    public void plotUpdate(String openedTab) {
+    public void plotUpdate(String openedTab){
         switch (openedTab) {
             case "Overview":
                 updateOverview();
@@ -304,10 +305,13 @@ public class ViewModel {
             if (this.transactionController.getPortfolioList().containsKey(poolPair + "-" + this.settingsController.selectedIntervall.getValue())) {
 
                 for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(poolPair + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
+                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervall.getValue())) >= 0 &&
+                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervall.getValue())) <= 0) {
 
-                    if (poolPair.equals(entry.getValue().getPoolPairValue())) {
-                        overviewSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value()));
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getFiatRewards1Value(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), poolPair));
+                        if (poolPair.equals(entry.getValue().getPoolPairValue())) {
+                            overviewSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value()));
+                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getFiatRewards1Value(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), poolPair));
+                        }
                     }
                 }
 
@@ -359,12 +363,17 @@ public class ViewModel {
             if (this.settingsController.selectedPlotType.getValue().equals("Individual")) {
 
                 for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
-                    if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
-                        rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinRewards1Value()));
-                    } else {
-                        rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value()));
+
+                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervall.getValue())) >= 0 &&
+                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervall.getValue())) <= 0) {
+
+                        if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
+                            rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinRewards1Value()));
+                        } else {
+                            rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value()));
+                        }
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", 1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue()));
                     }
-                    this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", 1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue()));
                 }
 
                 this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
@@ -395,13 +404,16 @@ public class ViewModel {
                 double cumulatedCoinValue = 0;
                 double cumulatedFiatValue = 0;
                 for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
+                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervall.getValue())) >= 0 &&
+                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervall.getValue())) <= 0) {
 
-                    if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
-                        cumulatedCoinValue = cumulatedCoinValue + entry.getValue().getCoinRewards1Value();
-                        rewardsCumulated.getData().add(new XYChart.Data(entry.getKey(), cumulatedCoinValue));
-                    } else {
-                        cumulatedFiatValue = cumulatedFiatValue + entry.getValue().getFiatRewards1Value();
-                        rewardsCumulated.getData().add(new XYChart.Data(entry.getKey(), cumulatedFiatValue));
+                        if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
+                            cumulatedCoinValue = cumulatedCoinValue + entry.getValue().getCoinRewards1Value();
+                            rewardsCumulated.getData().add(new XYChart.Data(entry.getKey(), cumulatedCoinValue));
+                        } else {
+                            cumulatedFiatValue = cumulatedFiatValue + entry.getValue().getFiatRewards1Value();
+                            rewardsCumulated.getData().add(new XYChart.Data(entry.getKey(), cumulatedFiatValue));
+                        }
                     }
                 }
                 if (this.view.plotRewards.getData().size() == 1) {
@@ -449,15 +461,18 @@ public class ViewModel {
             if (this.settingsController.selectedPlotType.getValue().equals("Individual")) {
 
                 for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
+                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervall.getValue())) >= 0 &&
+                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervall.getValue())) <= 0) {
 
-                    if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
-                        commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions1Value()));
-                        commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions2Value()));
-                    } else {
-                        commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatCommissions1Value()));
-                        commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatCommissions2Value()));
+                        if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
+                            commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions1Value()));
+                            commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions2Value()));
+                        } else {
+                            commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatCommissions1Value()));
+                            commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatCommissions2Value()));
+                        }
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue()));
                     }
-                    this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue()));
                 }
 
                 this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
@@ -495,17 +510,20 @@ public class ViewModel {
                 double cumulatedCommissions2CoinValue = 0;
                 double cumulatedCommissions2FiatValue = 0;
                 for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
+                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervall.getValue())) >= 0 &&
+                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervall.getValue())) <= 0) {
 
-                    if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
-                        cumulatedCommissions1CoinValue = cumulatedCommissions1CoinValue + entry.getValue().getCoinCommissions1Value();
-                        cumulatedCommissions2CoinValue = cumulatedCommissions2CoinValue + entry.getValue().getCoinCommissions2Value();
-                        rewardsCumulated1.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions1CoinValue));
-                        rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2CoinValue));
-                    } else {
-                        cumulatedCommissions1FiatValue = cumulatedCommissions1FiatValue + entry.getValue().getFiatCommissions1Value();
-                        cumulatedCommissions2FiatValue = cumulatedCommissions2FiatValue + entry.getValue().getFiatCommissions2Value();
-                        rewardsCumulated1.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions1FiatValue));
-                        rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2FiatValue));
+                        if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
+                            cumulatedCommissions1CoinValue = cumulatedCommissions1CoinValue + entry.getValue().getCoinCommissions1Value();
+                            cumulatedCommissions2CoinValue = cumulatedCommissions2CoinValue + entry.getValue().getCoinCommissions2Value();
+                            rewardsCumulated1.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions1CoinValue));
+                            rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2CoinValue));
+                        } else {
+                            cumulatedCommissions1FiatValue = cumulatedCommissions1FiatValue + entry.getValue().getFiatCommissions1Value();
+                            cumulatedCommissions2FiatValue = cumulatedCommissions2FiatValue + entry.getValue().getFiatCommissions2Value();
+                            rewardsCumulated1.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions1FiatValue));
+                            rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2FiatValue));
+                        }
                     }
                 }
 

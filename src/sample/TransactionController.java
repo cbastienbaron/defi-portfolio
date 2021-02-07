@@ -11,7 +11,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.*;
 import java.io.*;
+import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.ArrayList;
@@ -340,6 +342,17 @@ public class TransactionController {
 
         }
         return date;
+    }
+
+    public String convertDateToIntervall(String strDate, String intervall)  {
+            Date date = null;
+            try {
+                date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Timestamp ts = new Timestamp(date.getTime());
+            return this.getDate(Long.toString(ts.getTime()/1000),intervall);
     }
 
     public int getLocalBlockCount() {
