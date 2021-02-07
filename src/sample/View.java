@@ -11,6 +11,7 @@ import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -95,6 +96,11 @@ public class View implements Initializable {
     public TableColumn<PoolPairModel, String> poolPairColumn;
     public boolean init=true;
     ViewModel viewModel = new ViewModel();
+    MenuItem menuItemCopySelected = new MenuItem("Copy");
+    MenuItem menuItemCopyHeaderSelected = new MenuItem("Copy with header");
+    MenuItem menuItemExportSelected = new MenuItem("Export selected to CSV");
+    MenuItem menuItemExportAllSelected = new MenuItem("Export all to CSV");
+    MenuItem menuItemOpenInDefiExplorer = new MenuItem("Open in DeFi Blockchain Explorer");
 
     public View() {
     }
@@ -551,26 +557,24 @@ public class View implements Initializable {
 
     private void initializeTableViewContextMenu(){
 
-        ContextMenu contextMenuRawData = new ContextMenu();
 
-        MenuItem menuItemCopySelected = new MenuItem("Copy");
-        MenuItem menuItemCopyHeaderSelected = new MenuItem("Copy with header");
-        MenuItem menuItemExportSelected = new MenuItem("Export selected to CSV");
-        MenuItem menuItemExportAllSelected = new MenuItem("Export all to CSV");
-        MenuItem menuItemOpenInDefiExplorer = new MenuItem("Open in DeFi Blockchain Explorer");
+        this.rawDataTable.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
+            ContextMenu contextMenuRawData = new ContextMenu();
+            this.menuItemCopySelected.setOnAction(event -> viewModel.copySelectedRawDataToClipboard( rawDataTable.selectionModelProperty().get().getSelectedItems(),false));
+            this.menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedRawDataToClipboard( rawDataTable.selectionModelProperty().get().getSelectedItems(),true));
+            this.menuItemExportSelected.setOnAction(event -> viewModel.exportTransactionToExcel( rawDataTable.selectionModelProperty().get().getSelectedItems()));
+            this.menuItemExportAllSelected.setOnAction(event -> viewModel.exportTransactionToExcel( rawDataTable.getItems()));
+            this.menuItemOpenInDefiExplorer.setOnAction(event -> viewModel.openBlockChainExplorer( rawDataTable.selectionModelProperty().get().getSelectedItem()));
 
-        menuItemCopySelected.setOnAction(event -> viewModel.copySelectedRawDataToClipboard( rawDataTable.selectionModelProperty().get().getSelectedItems(),false));
-        menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedRawDataToClipboard( rawDataTable.selectionModelProperty().get().getSelectedItems(),true));
-        menuItemExportSelected.setOnAction(event -> viewModel.exportTransactionToExcel( rawDataTable.selectionModelProperty().get().getSelectedItems()));
-        menuItemExportAllSelected.setOnAction(event -> viewModel.exportTransactionToExcel( rawDataTable.getItems()));
-        menuItemOpenInDefiExplorer.setOnAction(event -> viewModel.openBlockChainExplorer( rawDataTable.selectionModelProperty().get().getSelectedItem()));
-
-        contextMenuRawData.getItems().add(menuItemCopySelected);
-        contextMenuRawData.getItems().add(menuItemCopyHeaderSelected);
-        contextMenuRawData.getItems().add(menuItemExportSelected);
-        contextMenuRawData.getItems().add(menuItemExportAllSelected);
-        contextMenuRawData.getItems().add(menuItemOpenInDefiExplorer);
-        this.rawDataTable.contextMenuProperty().set(contextMenuRawData);
+            contextMenuRawData.getItems().add(menuItemCopySelected);
+            contextMenuRawData.getItems().add(menuItemCopyHeaderSelected);
+            contextMenuRawData.getItems().add(menuItemExportSelected);
+            contextMenuRawData.getItems().add(menuItemExportAllSelected);
+            if(this.rawDataTable.getSelectionModel().getSelectedItems().size() == 1){
+                contextMenuRawData.getItems().add(menuItemOpenInDefiExplorer);
+            }
+            this.rawDataTable.contextMenuProperty().set(contextMenuRawData);
+        });
 
         ContextMenu contextMenuPlotData = new ContextMenu();
 
