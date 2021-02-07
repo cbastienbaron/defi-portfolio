@@ -5,6 +5,7 @@ Use DeFi app portfolio to export, analyse and visualize your transactions, rewar
 # Documentation
 
 - [Getting started](#getting-started)
+- [Functionality description:](#functionality-description)
 - [About Us](#about-us)
 
 # Getting Started
@@ -16,7 +17,7 @@ Setup:
   5. Setup is done and you can analyse your rewards and commissions.
   6. After closing the DefiPortfolioManagement you can close the defid.exe
   
-Functionality:
+# Functionality description:
 Update Database:
 
 Raw Data:
