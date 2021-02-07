@@ -95,7 +95,7 @@ public class TransactionController {
                 wr = new OutputStreamWriter(conn.getOutputStream());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("TransactionController.initCrpConnection: Could not connect");;
         }
 
 
@@ -112,7 +112,6 @@ public class TransactionController {
                 return "No connection";
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return "No conenction";
         }
 

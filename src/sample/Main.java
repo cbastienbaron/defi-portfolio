@@ -10,6 +10,8 @@ import javafx.stage.StageStyle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 /**
@@ -26,7 +28,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception{
-        boolean showSplashScreen = true;
+
+        boolean showSplashScreen = false;
         Parent root = null;
         try{
             if(showSplashScreen) {
@@ -39,6 +42,7 @@ public class Main extends Application {
                 stage.show();
             }else {
                 // Without Spalshscreen
+                root = FXMLLoader.load(getClass().getResource("sample.fxml"));
                 Scene scene = new Scene(root);
                 stage.setTitle("DeFi App Portfolio V1.0");
                 stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));

@@ -14,6 +14,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +38,7 @@ public class ViewModel {
     //View
     public View view;
     public JFrame frameUpdate;
+    public Frame frameDefid;
 
     //Table and plot lists
     public List<PoolPairModel> poolPairModelList = new ArrayList<>();
@@ -190,7 +193,7 @@ public class ViewModel {
     }
 
     public boolean updateTransactionData() {
-        if (this.transactionController.checkCrp()) {
+        if (this.transactionController.checkCrp() && !this.transactionController.getBlockCountRpc().equals("No connection")) {
             if (new File(this.settingsController.strPathAppData + this.settingsController.strTransactionData).exists()) {
                 int depth = Integer.parseInt(this.transactionController.getBlockCountRpc()) - this.transactionController.getLocalBlockCount();
                 return this.transactionController.updateTransactionData(depth);
@@ -230,9 +233,8 @@ public class ViewModel {
 
         if (!checkIfDeFiAppIsRunning()) {
 
-            this.showUpdateWindow();
-
             if (updateTransactionData()) {
+                this.showUpdateWindow();
 
                 this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
                 this.strCurrentBlockOnBlockchain.set(this.transactionController.getBlockCountRpc());
@@ -243,14 +245,65 @@ public class ViewModel {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 this.strLastUpdate.setValue(dateFormat.format(date));
 
+                this.closeUpdateWindow();
             } else {
-                JOptionPane.showMessageDialog(new JFrame(), "The Defid.exe is not running! Please start it manually.", "Defid.exe not running", JOptionPane.WARNING_MESSAGE);
+                this.showDefidNotRunning();
                 this.strCurrentBlockOnBlockchain.set("No connection");
             }
-            this.closeUpdateWindow();
+
         } else {
-            //TODO Defi App is running cant update
+            this.showDefiAppIsRunning();
         }
+    }
+
+    public void showDefiAppIsRunning(){
+        JFrame frameDefid = new JFrame("DeFi App running");
+        frameDefid.setLayout(null);
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\process.png");
+        JLabel jl = new JLabel("     The Defi-App is running! Please close it first.",icon,JLabel.CENTER);
+        jl.setSize(400,100);
+        jl.setLocation(0,0);
+        frameDefid.add(jl);
+        frameDefid.setSize(400, 125);
+        frameDefid.setLocationRelativeTo(null);
+        frameDefid.setUndecorated(true);
+
+        JButton b=new JButton("OK");
+        b.setBounds(160,80,80,25);
+        b.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                Component component = (Component) e.getSource();
+                JFrame frame = (JFrame) SwingUtilities.getRoot(component);
+                frame.dispose();
+            }
+        });
+        frameDefid.add(b);
+        frameDefid.setVisible(true);
+    }
+
+    public void showDefidNotRunning(){
+        this.frameDefid = new JFrame("Launch defid.exe");
+        frameDefid.setLayout(null);
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\connected.png");
+        JLabel jl = new JLabel("     The Defid.exe is not running! Please start it manually.",icon,JLabel.CENTER);
+        jl.setSize(400,100);
+        jl.setLocation(0,0);
+        frameDefid.add(jl);
+        frameDefid.setSize(400, 125);
+        frameDefid.setLocationRelativeTo(null);
+        frameDefid.setUndecorated(true);
+
+        JButton b=new JButton("OK");
+        b.setBounds(160,80,80,25);
+        b.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                Component component = (Component) e.getSource();
+                JFrame frame = (JFrame) SwingUtilities.getRoot(component);
+                frame.dispose();
+            }
+        });
+        frameDefid.add(b);
+        frameDefid.setVisible(true);
     }
 
     public void showUpdateWindow(){
