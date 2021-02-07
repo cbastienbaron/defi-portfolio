@@ -3,6 +3,7 @@ package sample;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+
 import javax.swing.*;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -98,18 +99,21 @@ public class TransactionController {
 
     }
 
-    public int getBlockCountRpc() {
+    public String getBlockCountRpc() {
+        try {
 
-        JSONObject jsonObject = getRpcResponse("{\"method\": \"getblockcount\"}");
+            JSONObject jsonObject = getRpcResponse("{\"method\": \"getblockcount\"}");
 
-        if (jsonObject.get("result") != null) {
-
-            return Integer.parseInt(jsonObject.get("result").toString());
-
-        } else {
-
-            return 0;
+            if (jsonObject.get("result") != null) {
+                return jsonObject.get("result").toString();
+            } else {
+                return "No connection";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "No conenction";
         }
+
     }
 
     public int getAccountHistoryCountRpc() {
@@ -151,17 +155,13 @@ public class TransactionController {
 
         JSONArray transactionJson = (JSONArray) jsonObject.get("result");
 
-        if (transactionList.size() > 0) {
-            for (Object transaction : transactionJson) {
-                JSONObject transactionJ = (JSONObject) transaction;
-                if (transactionJ.get("poolID") != null) {
-                    transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), new String[]{transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")}, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", this));
-                } else {
-                    transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), new String[]{transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")}, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), this));
-                }
+        for (Object transaction : transactionJson) {
+            JSONObject transactionJ = (JSONObject) transaction;
+            if (transactionJ.get("poolID") != null) {
+                transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), new String[]{transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")}, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", this));
+            } else {
+                transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), new String[]{transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")}, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), this));
             }
-        } else {
-            JOptionPane.showMessageDialog(new JFrame(), "The Defid.exe is not running! Please start it manually.", "Defid.exe not running", JOptionPane.WARNING_MESSAGE);
         }
 
         return transactionList;
@@ -211,7 +211,8 @@ public class TransactionController {
                     String[] transactionSplit = line.split(";");
                     TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], new String[]{transactionSplit[3]}, transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], this);
                     transactionList.add(transAction);
-                    addToPortfolioModel(transAction);
+                    if (transAction.getTypeValue().equals("Rewards") | transAction.getTypeValue().equals("Commission"))
+                        addToPortfolioModel(transAction);
                     line = reader.readLine();
                 }
 
@@ -251,7 +252,7 @@ public class TransactionController {
 
         for (String intervall : intervallList) {
 
-            String keyValue = pool + "-" +intervall;
+            String keyValue = pool + "-" + intervall;
 
             if (!portfolioList.containsKey(keyValue)) {
                 portfolioList.put(keyValue, new TreeMap<>());
@@ -290,12 +291,12 @@ public class TransactionController {
 
                 portfolioList.get(keyValue).put(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall), new PortfolioModel(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall), oldFiatRewards + newFiatRewards, oldFiatCommissions1 + newFiatCommissions1, oldFiatCommissions2 + newFiatCommissions2, oldCoinRewards + newCoinRewards, oldCoinCommissions1 + newCoinCommissions1, oldCoinCommissions2 + newCoinCommissions2, pool, intervall));
             } else {
-                portfolioList.get(keyValue).put(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall), new PortfolioModel(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall),  newFiatRewards,  newFiatCommissions1,  newFiatCommissions2,  newCoinRewards,  newCoinCommissions1,  newCoinCommissions2, pool, intervall));
+                portfolioList.get(keyValue).put(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall), new PortfolioModel(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall), newFiatRewards, newFiatCommissions1, newFiatCommissions2, newCoinRewards, newCoinCommissions1, newCoinCommissions2, pool, intervall));
             }
-            }
+        }
     }
 
-    private String getDate(String blockTime, String intervall) {
+    public String getDate(String blockTime, String intervall) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(Long.parseLong(blockTime) * 1000L);
         int year = cal.get(Calendar.YEAR);
@@ -365,7 +366,8 @@ public class TransactionController {
             if (transactionListNew.get(i).getBlockHeightValue() > this.localBlockCount) {
                 this.transactionList.add(transactionListNew.get(i));
                 updateTransactionList.add(transactionListNew.get(i));
-                addToPortfolioModel(transactionListNew.get(i));
+                if (transactionListNew.get(i).getTypeValue().equals("Rewards") | transactionListNew.get(i).getTypeValue().equals("Commission"))
+                    addToPortfolioModel(transactionListNew.get(i));
             }
         }
 

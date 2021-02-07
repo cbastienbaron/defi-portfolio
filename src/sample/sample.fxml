@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" stylesheets="@chartStyle.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" stylesheets="@chartStyle.css" xmlns="http://javafx.com/javafx/8.0.202-ea"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
     <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
         <effect>
             <DropShadow />
@@ -126,7 +126,7 @@
                 <TableColumn fx:id="cryptoCurrencyColumn" sortable="false" text="Cryptocurrency" />
                 <TableColumn fx:id="fiatValueColumn" sortable="false" text="FIAT value" />
                 <TableColumn fx:id="fiatCurrencyColumn" sortable="false" text="FIAT currency" />
-                <TableColumn fx:id="poolIDColumn" sortable="false" text="LM Pool" />
+                <TableColumn fx:id="poolIDColumn" sortable="false" text="Pool Pair" />
                 <TableColumn fx:id="blockHeightColumn" sortable="false" text="Block Height" />
                 <TableColumn fx:id="blockHashColumn" sortable="false" text="Block Hash" />
                 <TableColumn fx:id="ownerColumn" sortable="false" text="Owner" />
@@ -301,10 +301,7 @@
                                     <Label text="End date" GridPane.rowIndex="2" />
                                     <DatePicker fx:id="dateFromOver" prefHeight="25.0" prefWidth="142.0" GridPane.columnIndex="1" />
                                     <DatePicker fx:id="dateToOver" prefHeight="25.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <ComboBox fx:id="cmbCoinsOver" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                     <ComboBox fx:id="cmbIntervallOver" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" />
-                                    <ComboBox fx:id="cmbFiatOver" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                    <ComboBox fx:id="cmbPlotCurrencyOver" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="3" />
                                  </children>
                               </GridPane>
                                <StackedAreaChart fx:id="plotOverview" layoutY="110.0" prefHeight="471.0" prefWidth="602.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0">
@@ -325,7 +322,7 @@
                     <TableView fx:id="plotTable" prefHeight="514.0" prefWidth="453.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <columns>
                             <TableColumn fx:id="timeStampColumn" prefWidth="75.0" text="Date" />
-                            <TableColumn fx:id="poolPairColumn" prefWidth="75.0" text="Pair" />
+                            <TableColumn fx:id="poolPairColumn" prefWidth="75.0" text="Pool Pair" />
                             <TableColumn fx:id="fiatColumn" prefWidth="75.0" text="Total in EUR" />
                             <TableColumn fx:id="crypto1Column" prefWidth="75.0" text="Rewards" />
                             <TableColumn fx:id="crypto2Column" prefWidth="75.0" text="Commissions" />

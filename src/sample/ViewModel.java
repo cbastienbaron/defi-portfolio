@@ -10,6 +10,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -22,6 +23,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
+import java.util.Timer;
 
 public class ViewModel {
 
@@ -60,7 +62,6 @@ public class ViewModel {
         if (!directory.exists()) {
             directory.mkdir();
         }
-
         // init all relevant lists for tables and plots
         this.transactionList = FXCollections.observableArrayList(this.transactionController.getTransactionList());
         this.poolPairList = FXCollections.observableArrayList(this.poolPairModelList);
@@ -71,6 +72,20 @@ public class ViewModel {
 
         //start timer for getting last block on blockchain
         startTimer();
+
+        //Add listener to Fiat
+        this.settingsController.selectedFiatCurrency.addListener(
+                (ov, t, t1) -> {
+                    for (TransactionModel transactionModel:this.transactionController.getTransactionList()) {
+                        transactionModel.setFiatCurrency(t);
+                        transactionModel.setFiatValue(this.coinPriceController.getPriceFromTimeStamp(transactionModel.getCryptoCurrencyValue()+t,transactionModel.getBlockTimeValue()*1000L));
+                        //TODO Portfolio clear and   this.transactionController.addPortfoli...
+                    }
+                    this.transactionList.clear();
+                    this.transactionList.addAll(this.transactionController.getTransactionList());
+
+                }
+        );
 
     }
 
@@ -89,24 +104,22 @@ public class ViewModel {
         }
 
         if (withHeaders) {
-            sb.append("Date,Owner,Operation,Amount,Cryptocurrency,FIAT value,FIAT currency,Block Hash,Block Height,Pool ID".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+            sb.append("Date,Operation,Amount,Cryptocurrency,FIAT value,FIAT currency,Pool ID,Block Height,Block Hash,Owner,".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
         }
 
         for (TransactionModel transaction : list
         ) {
             sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTime().getValue())).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.getOwner().getValue()).append(this.settingsController.selectedSeperator.getValue());
             sb.append(transaction.getType().getValue()).append(this.settingsController.selectedSeperator.getValue());
             String[] CoinsAndAmounts = this.transactionController.splitCoinsAndAmounts(transaction.getAmount().getValue()[0]);
             sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]))).append(this.settingsController.selectedSeperator.getValue());
             sb.append(CoinsAndAmounts[1]).append(this.settingsController.selectedSeperator.getValue());
-
-            double price = this.coinPriceController.getPriceFromTimeStamp(CoinsAndAmounts[1] + this.settingsController.selectedFiatCurrency.getValue(), transaction.getBlockTimeValue() * 1000L);
-            sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]) * price)).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(String.format(localeDecimal, "%.8f", transaction.getFiatValueValue())).append(this.settingsController.selectedSeperator.getValue());
             sb.append(this.settingsController.selectedFiatCurrency.getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.getBlockHash().getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getPoolID().getValue()).append(this.settingsController.selectedSeperator.getValue());
             sb.append(transaction.getBlockHeight().getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.getPoolID().getValue());
+            sb.append(transaction.getBlockHash().getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getOwner().getValue());
             sb.append("\n");
         }
         StringSelection stringSelection = new StringSelection(sb.toString());
@@ -117,17 +130,57 @@ public class ViewModel {
     public void copySelectedDataToClipboard(List<PoolPairModel> list, boolean withHeaders) {
         StringBuilder sb = new StringBuilder();
 
+        Locale localeDecimal = Locale.GERMAN;
+        if (settingsController.selectedDecimal.getValue().equals(".")) {
+            localeDecimal = Locale.US;
+        }
+
         if (withHeaders) {
-            sb.append("Date,Total in Fiat,Crypto 1,Crypto 2".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+            switch (this.view.tabPane.getSelectionModel().getSelectedItem().getText()) {
+                case "Overview":
+                    sb.append((this.view.plotTable.getColumns().get(0).getText() + "," + this.view.plotTable.getColumns().get(1).getText() + "," + this.view.plotTable.getColumns().get(2).getText() + "," + this.view.plotTable.getColumns().get(3).getText() + "," + this.view.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    break;
+                case "Rewards":
+                    sb.append((this.view.plotTable.getColumns().get(0).getText() + "," + this.view.plotTable.getColumns().get(1).getText() + "," + this.view.plotTable.getColumns().get(3).getText() + "," + this.view.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    break;
+                case "Commissions":
+                    sb.append((this.view.plotTable.getColumns().get(0).getText() + "," + this.view.plotTable.getColumns().get(1).getText() + "," + this.view.plotTable.getColumns().get(2).getText() + "," + this.view.plotTable.getColumns().get(3).getText() + "," + this.view.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    break;
+                default:
+                    break;
+            }
         }
 
         for (PoolPairModel poolPair : list
         ) {
-            sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(poolPair.getFiatValue().getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(poolPair.getCryptoValue1().getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(poolPair.getCryptoValue2().getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append("\n");
+            switch (this.view.tabPane.getSelectionModel().getSelectedItem().getText()) {
+                case "Overview":
+                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getFiatValue().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue2().getValue()));
+                    sb.append("\n");
+                    break;
+                case "Rewards":
+                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue2().getValue()));
+                    sb.append("\n");
+                    break;
+                case "Commissions":
+                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getFiatValue().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue2().getValue()));
+                    sb.append("\n");
+                    break;
+                default:
+                    break;
+            }
+
+
         }
         StringSelection stringSelection = new StringSelection(sb.toString());
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -135,12 +188,17 @@ public class ViewModel {
     }
 
     public boolean updateTransactionData() {
-        if (new File(this.settingsController.strPathAppData + this.settingsController.strTransactionData).exists()) {
-            int depth = this.transactionController.getBlockCountRpc() - this.transactionController.getLocalBlockCount();
-            return this.transactionController.updateTransactionData(depth);
+        if (this.transactionController.checkCrp()) {
+            if (new File(this.settingsController.strPathAppData + this.settingsController.strTransactionData).exists()) {
+                int depth = Integer.parseInt(this.transactionController.getBlockCountRpc()) - this.transactionController.getLocalBlockCount();
+                return this.transactionController.updateTransactionData(depth);
+            } else {
+                return this.transactionController.updateTransactionData(this.transactionController.getAccountHistoryCountRpc());
+            }
         } else {
-            return this.transactionController.updateTransactionData(this.transactionController.getAccountHistoryCountRpc());
+              return false;
         }
+
     }
 
     public boolean checkIfDeFiAppIsRunning() {
@@ -172,7 +230,7 @@ public class ViewModel {
 
             if (updateTransactionData()) {
                 this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
-                this.strCurrentBlockOnBlockchain.set(Integer.toString(this.transactionController.getBlockCountRpc()));
+                this.strCurrentBlockOnBlockchain.set(this.transactionController.getBlockCountRpc());
 
                 transactionList.clear();
                 transactionList.addAll(this.transactionController.getTransactionList());
@@ -182,7 +240,8 @@ public class ViewModel {
 
 
             } else {
-                //TODO Error during update
+                JOptionPane.showMessageDialog(new JFrame(), "The Defid.exe is not running! Please start it manually.", "Defid.exe not running", JOptionPane.WARNING_MESSAGE);
+                this.strCurrentBlockOnBlockchain.set("No connection");
             }
         } else {
             //TODO Defi App is running cant update
@@ -210,12 +269,10 @@ public class ViewModel {
 //TODO klappt noch nicht wie es soll?
 
         this.poolPairModelList.clear();
-        this.view.plotOverview.setLegendVisible(false);
+        this.view.plotOverview.setLegendVisible(true);
         this.view.plotOverview.getData().clear();
-        this.poolPairList.clear();
-
         this.view.plotOverview.getYAxis().setLabel("Total (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
-        this.poolPairList.clear();
+
 
         double maxValue = 0;
 
@@ -227,6 +284,7 @@ public class ViewModel {
             if (this.transactionController.getPortfolioList().containsKey(poolPair + "-" + this.settingsController.selectedIntervall.getValue())) {
 
                 for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(poolPair + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
+
                     if (poolPair.equals(entry.getValue().getPoolPairValue())) {
                         overviewSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value()));
                         this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getFiatRewards1Value(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), poolPair));
@@ -238,9 +296,10 @@ public class ViewModel {
                     this.view.yAxis.setUpperBound(overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble() * 1.10);
                     maxValue = overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble();
                 }
+                this.view.plotOverview.getData().add(overviewSeries);
+                this.view.plotOverview.setCreateSymbols(true);
             }
-            this.view.plotOverview.getData().add(overviewSeries);
-            this.view.plotOverview.setCreateSymbols(true);
+
         }
         for (XYChart.Series<Number, Number> s : this.view.plotOverview.getData()) {
             if (s != null) {
@@ -259,7 +318,6 @@ public class ViewModel {
         this.poolPairList.clear();
         this.poolPairList.addAll(this.poolPairModelList);
 
-
     }
 
     public void updateRewards() {
@@ -269,7 +327,6 @@ public class ViewModel {
         this.poolPairModelList.clear();
         this.view.plotRewards.setLegendVisible(false);
         this.view.plotRewards.getData().clear();
-        this.poolPairList.clear();
 
         if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
             this.view.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
@@ -282,7 +339,6 @@ public class ViewModel {
             if (this.settingsController.selectedPlotType.getValue().equals("Individual")) {
 
                 for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
-
                     if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
                         rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinRewards1Value()));
                     } else {
@@ -294,8 +350,6 @@ public class ViewModel {
                 this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
                 this.poolPairList.clear();
                 this.poolPairList.addAll(this.poolPairModelList);
-
-                this.view.plotRewards.getData().clear();
 
                 if (this.view.plotRewards.getData().size() == 1) {
                     this.view.plotRewards.getData().remove(0);
@@ -523,7 +577,7 @@ public class ViewModel {
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {
-            boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), this.settingsController.selectedSeperator.getValue(), source);
+            boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), this.settingsController.selectedSeperator.getValue(), source, this.view);
 
             if (success) {
                 this.strProgressbar.setValue("Excel successfully exported!");

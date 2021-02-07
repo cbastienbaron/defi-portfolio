@@ -38,7 +38,7 @@ public class View implements Initializable {
     @FXML
     public Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, lblProgressBar,strLastUpdate;
     @FXML
-    public ComboBox<String> cmbCoins, cmbIntervall,cmbFiat,cmbPlotCurrency,cmbCoinsCom, cmbIntervallCom,cmbFiatCom,cmbPlotCurrencyCom,cmbCoinsOver, cmbIntervallOver,cmbFiatOver,cmbPlotCurrencyOver;
+    public ComboBox<String> cmbCoins, cmbIntervall,cmbFiat,cmbPlotCurrency,cmbCoinsCom, cmbIntervallCom,cmbFiatCom,cmbPlotCurrencyCom,cmbIntervallOver;
     @FXML
     public ImageView coinImageRewards,coinImageCommissions;
     @FXML
@@ -104,6 +104,18 @@ public class View implements Initializable {
         this.fiatColumn.setVisible(!this.tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
         if(!this.init) {
             this.viewModel.updateRewards();
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
+                crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+                crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
+            }
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
+                crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
+                crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1] + "("+viewModel.settingsController.selectedFiatCurrency.getValue()+")");
+            }
+            if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Commissions"))  {
+                crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
+                crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
+            }
         }
     }
 
@@ -164,21 +176,9 @@ public class View implements Initializable {
                     cmbCoinsCom.setVisible(true);
                     cmbFiatCom.setVisible(true);
                     cmbPlotCurrencyCom.setVisible(true);
-                    cmbCoinsOver.setVisible(true);
-                    cmbFiatOver.setVisible(true);
-                    cmbPlotCurrencyOver.setVisible(true);
                     if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
                         crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
                         crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
-                        cmbCoins.setVisible(false);
-                        cmbFiat.setVisible(false);
-                        cmbPlotCurrency.setVisible(false);
-                        cmbCoinsCom.setVisible(false);
-                        cmbFiatCom.setVisible(false);
-                        cmbPlotCurrencyCom.setVisible(false);
-                        cmbCoinsOver.setVisible(false);
-                        cmbFiatOver.setVisible(false);
-                        cmbPlotCurrencyOver.setVisible(false);
                     }
                     if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
                         crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
@@ -224,19 +224,14 @@ public class View implements Initializable {
                 crypto2Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[0]);
             }
 
-
             fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
 
             coinImageRewards.setImage(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/"+viewModel.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
             coinImageCommissions.setImage(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/"+viewModel.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
         });
 
-
         this.cmbCoinsCom.getItems().addAll(this.viewModel.settingsController.cryptoCurrencies);
         this.cmbCoinsCom.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedCoin);
-
-        this.cmbCoinsOver.getItems().addAll(this.viewModel.settingsController.cryptoCurrencies);
-        this.cmbCoinsOver.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedCoin);
 
         this.fiatColumn.setText("Total (" + viewModel.settingsController.selectedFiatCurrency.getValue()+")");
         this.crypto1Column.setText("Rewards ("+ viewModel.settingsController.selectedFiatCurrency.getValue()+")");
@@ -249,15 +244,6 @@ public class View implements Initializable {
                 if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Overview")) {
                     crypto1Column.setText("Rewards (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
                     crypto2Column.setText("Commissions (" + viewModel.settingsController.selectedFiatCurrency.getValue() + ")");
-                    cmbCoins.setVisible(false);
-                    cmbFiat.setVisible(false);
-                    cmbPlotCurrency.setVisible(false);
-                    cmbCoinsCom.setVisible(false);
-                    cmbFiatCom.setVisible(false);
-                    cmbPlotCurrencyCom.setVisible(false);
-                    cmbCoinsOver.setVisible(false);
-                    cmbFiatOver.setVisible(false);
-                    cmbPlotCurrencyOver.setVisible(false);
                 }
                 if(tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"))  {
                     crypto1Column.setText(viewModel.settingsController.selectedCoin.getValue().split("-")[1]);
@@ -275,9 +261,6 @@ public class View implements Initializable {
 
         this.cmbFiatCom.getItems().addAll(this.viewModel.settingsController.plotCurrency);
         this.cmbFiatCom.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotCurrency);
-
-        this.cmbFiatOver.getItems().addAll(this.viewModel.settingsController.plotCurrency);
-        this.cmbFiatOver.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotCurrency);
 
         this.cmbFiat.getItems().addAll(this.viewModel.settingsController.plotCurrency);
         this.cmbFiat.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotCurrency);
@@ -317,9 +300,6 @@ public class View implements Initializable {
 
         this.cmbPlotCurrencyCom.getItems().addAll(this.viewModel.settingsController.plotType);
         this.cmbPlotCurrencyCom.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotType);
-
-        this.cmbPlotCurrencyOver.getItems().addAll(this.viewModel.settingsController.plotType);
-        this.cmbPlotCurrencyOver.valueProperty().bindBidirectional(this.viewModel.settingsController.selectedPlotType);
 
         this.dateFrom.valueProperty().bindBidirectional(this.viewModel.settingsController.dateFrom);
         this.dateFrom.valueProperty().addListener((ov, oldValue, newValue) -> {
@@ -592,8 +572,6 @@ public class View implements Initializable {
         contextMenuRawData.getItems().add(menuItemOpenInDefiExplorer);
         this.rawDataTable.contextMenuProperty().set(contextMenuRawData);
 
-
-
         ContextMenu contextMenuPlotData = new ContextMenu();
 
         menuItemCopySelected = new MenuItem("Copy");
@@ -601,7 +579,7 @@ public class View implements Initializable {
         menuItemExportSelected = new MenuItem("Export selected to CSV");
         menuItemExportAllSelected = new MenuItem("Export all to CSV");
 
-        menuItemCopySelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),false));
+        menuItemCopySelected.setOnAction(event -> viewModel.copySelectedDataToClipboard(plotTable.selectionModelProperty().get().getSelectedItems(),false));
         menuItemCopyHeaderSelected.setOnAction(event -> viewModel.copySelectedDataToClipboard( plotTable.selectionModelProperty().get().getSelectedItems(),true));
         menuItemExportSelected.setOnAction(event -> viewModel.exportPoolPairToExcel( plotTable.selectionModelProperty().get().getSelectedItems(),this.tabPane.getSelectionModel().getSelectedItem().getText()));
         menuItemExportAllSelected.setOnAction(event -> viewModel.exportPoolPairToExcel(plotTable.getItems(),this.tabPane.getSelectionModel().getSelectedItem().getText()));

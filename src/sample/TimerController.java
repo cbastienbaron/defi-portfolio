@@ -11,6 +11,6 @@ public class TimerController extends TimerTask {
     }
     @Override
     public void run() {
-        Platform.runLater(() ->    viewModel.strCurrentBlockOnBlockchain.set(Integer.toString(viewModel.transactionController.getBlockCountRpc())));
+        Platform.runLater(() ->    viewModel.strCurrentBlockOnBlockchain.set(viewModel.transactionController.getBlockCountRpc()));
     }
 }

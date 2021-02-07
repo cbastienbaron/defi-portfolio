@@ -11,7 +11,7 @@ public class ExportService {
     TransactionController transactionController;
     SettingsController settingsController;
 
-    public ExportService(CoinPriceController coinPriceController, TransactionController transactionController,SettingsController settingsController) {
+    public ExportService(CoinPriceController coinPriceController, TransactionController transactionController, SettingsController settingsController) {
         this.settingsController = settingsController;
         this.coinPriceController = coinPriceController;
         this.transactionController = transactionController;
@@ -23,7 +23,8 @@ public class ExportService {
             PrintWriter writer = new PrintWriter(exportPath);
             StringBuilder sb = new StringBuilder();
 
-            sb.append("Date,Operation,Amount,Cryptocurrency,FIAT value,FIAT currency,LM Pool,Block Height,Block Hash,Owner").append("\n");
+
+            sb.append("Date,Operation,Amount,Cryptocurrency,FIAT value,FIAT currency,Pool ID,Block Height,Block Hash,Owner").append("\n");
 
             for (TransactionModel transaction : transactions) {
 
@@ -37,10 +38,8 @@ public class ExportService {
                     sb.append(transaction.getPoolIDValue()).append(exportSplitter);
                     sb.append(transaction.getBlockHeightValue()).append(exportSplitter);
                     sb.append(transaction.getBlockHashValue()).append(exportSplitter);
-                    sb.append(transaction.getOwnerValue()).append(exportSplitter);
+                    sb.append(transaction.getOwnerValue());
                     sb.append("\n");
-
-
                 }
             }
             writer.write(sb.toString());
@@ -53,55 +52,63 @@ public class ExportService {
         }
     }
 
-    public boolean exportPoolPairToExcel(List<PoolPairModel> poolPairModelList, String exportPath,String exportSplitter,String source) {
+    public boolean exportPoolPairToExcel(List<PoolPairModel> poolPairModelList, String exportPath, String exportSplitter, String source, View view) {
         try {
             PrintWriter writer = new PrintWriter(exportPath);
             StringBuilder sb = new StringBuilder();
 
-            switch (source){
+            Locale localeDecimal = Locale.GERMAN;
+            if (settingsController.selectedDecimal.getValue().equals(".")) {
+                localeDecimal = Locale.US;
+            }
+            switch (view.tabPane.getSelectionModel().getSelectedItem().getText()) {
                 case "Overview":
-                    sb.append("Date,Pair, Total,Rewards,Commissions".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
-
+                    sb.append((view.plotTable.getColumns().get(0).getText() + "," + view.plotTable.getColumns().get(1).getText() + "," + view.plotTable.getColumns().get(2).getText() + "," + view.plotTable.getColumns().get(3).getText() + "," + view.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    break;
+                case "Rewards":
+                    sb.append((view.plotTable.getColumns().get(0).getText() + "," + view.plotTable.getColumns().get(2).getText() + "," + view.plotTable.getColumns().get(3).getText() + "," + view.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    break;
+                case "Commissions":
+                    sb.append((view.plotTable.getColumns().get(0).getText() + "," + view.plotTable.getColumns().get(1).getText() + "," + view.plotTable.getColumns().get(2).getText() + "," + view.plotTable.getColumns().get(3).getText() + "," + view.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    break;
+                default:
+                    break;
+            }
+            switch (source) {
+                case "Overview":
                     for (PoolPairModel poolPairModel : poolPairModelList) {
                         sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
                         sb.append(poolPairModel.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(poolPairModel.getFiatValue().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(poolPairModel.getCryptoValue1().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(poolPairModel.getCryptoValue2().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getFiatValue().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue2().getValue())).append(this.settingsController.selectedSeperator.getValue());
                         sb.append("\n");
                     }
                     break;
                 case "Rewards":
-                    sb.append("Date,Pair,Total,Rewards, Commissions".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
-
                     for (PoolPairModel poolPairModel : poolPairModelList) {
                         sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
                         sb.append(poolPairModel.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(poolPairModel.getCryptoValue1().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(poolPairModel.getCryptoValueValue2()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValueValue2())).append(this.settingsController.selectedSeperator.getValue());
                         sb.append("\n");
                     }
                     break;
 
                 case "Commissions":
-                    sb.append("Date,Pair,Total Fiat,DFI in Fiat".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
-
                     for (PoolPairModel poolPairModel : poolPairModelList) {
                         sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
                         sb.append(poolPairModel.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(poolPairModel.getFiatValueValue()+poolPairModel.getCryptoValue2().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(poolPairModel.getCryptoValueValue1()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(poolPairModel.getCryptoValueValue2()).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getFiatValueValue() + poolPairModel.getCryptoValue2().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValueValue1())).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValueValue2())).append(this.settingsController.selectedSeperator.getValue());
                         sb.append("\n");
                     }
                     break;
             }
-
             writer.write(sb.toString());
             writer.close();
-
             return true;
-
         } catch (FileNotFoundException e) {
             return false;
         }
