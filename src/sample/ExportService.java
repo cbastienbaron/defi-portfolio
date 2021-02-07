@@ -31,7 +31,7 @@ public class ExportService {
                     sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTimeValue())).append(exportSplitter);
                     sb.append(transaction.getTypeValue()).append(exportSplitter);
                     sb.append(String.format(localeDecimal, "%.8f", transaction.getCryptoValueValue())).append(exportSplitter);
-                    sb.append(transaction.getCryptoyValue()).append(exportSplitter);
+                    sb.append(transaction.getCryptoCurrencyValue()).append(exportSplitter);
                     sb.append(String.format(localeDecimal, "%.8f", transaction.getFiatValueValue().doubleValue())).append(exportSplitter);
                     sb.append(transaction.getFiatCurrencyValue()).append(exportSplitter);
                     sb.append(transaction.getPoolIDValue()).append(exportSplitter);

@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="defi-portfolio:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/defi_portfolio_jar</output-path>
-    <root id="archive" name="defi-portfolio.jar">
+    <root id="archive" name="defi-portfolio_jar.jar">
       <element id="module-output" name="defi-portfolio" />
       <element id="extracted-dir" path="$PROJECT_DIR$/src/sample/libraries/CoinGecko-Java-master.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/src/sample/libraries/gson-2.8.6.jar" path-in-jar="/" />

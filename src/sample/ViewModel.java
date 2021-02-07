@@ -4,12 +4,8 @@ import javafx.animation.PauseTransition;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -22,7 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -35,65 +30,39 @@ public class ViewModel {
     public StringProperty strLastUpdate = new SimpleStringProperty("-");
     public StringProperty strProgressbar = new SimpleStringProperty("");
 
-    //Plot
-    public LineChart<Number, Number> plotRewards, plotCommissions2, plotCommissions;
-    public StackedAreaChart<Number, Number> plotOverview;
-    public NumberAxis yAxis;
-    public boolean updateOverview = true;
-    public boolean updateRewards = true;
-    public boolean updateCommissions = true;
+    //View
+    public View view;
 
     //Table and plot lists
-    public List<TransactionModel> transactionModelList;
     public List<PoolPairModel> poolPairModelList = new ArrayList<>();
-    List<TransactionModel> transactionsInTime = new ArrayList<>();
     public ObservableList<TransactionModel> transactionList;
     public ObservableList<PoolPairModel> poolPairList;
 
-    //Combo box filling
-    public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
-    public String[] plotCurrency = new String[]{"Coin", "Fiat"};
-    public String[] plotType = new String[]{"Individual", "Cumulated"};
-    public Long oldTimeStampFrom = 0L;
-    public Long oldTimeStampTo = 0L;
-
-    //All relevant paths and files
-    public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
-    public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
-    public String strPathDefid = System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
-    public String strPathDefiCli = System.getProperty("user.dir") + "\\src\\sample\\defichain-1.3.17-x86_64-w64-mingw32\\defichain-1.3.17\\bin\\defi-cli.exe";
-    public String strTransactionData = "transactionData.portfolio";
-    public String strCoinPriceData = "coinPriceData.portfolio";
-
-
     //Init all controller and services
-    public CoinPriceController coinPriceController = new CoinPriceController(this.strPathAppData + strCoinPriceData);
     public SettingsController settingsController = SettingsController.getInstance();
-    public TransactionController transactionController = new TransactionController(this.strPathAppData + this.strTransactionData, this.settingsController, this.coinPriceController, this.strPathDefiCli, this.strCookiePath,this.strPathDefid);
+    public CoinPriceController coinPriceController = new CoinPriceController(this.settingsController.strPathAppData + this.settingsController.strCoinPriceData);
+    public TransactionController transactionController = new TransactionController(this.settingsController.strPathAppData + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.strCookiePath, this.settingsController.strPathDefid);
     public ExportService expService;
 
     public ViewModel() {
 
         String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("win")){
+        if (os.contains("win")) {
             //Betriebssystem ist Windows-basiert
-        }
-        else if (os.contains("osx")){
+        } else if (os.contains("osx")) {
             //Betriebssystem ist Apple OSX
-        }
-        else if (os.contains("nix") || os.contains("aix") || os.contains("nux")){
+        } else if (os.contains("nix") || os.contains("aix") || os.contains("nux")) {
             //Betriebssystem ist Linux/Unix basiert
         }
 
         // generate folder //defi-portfolio if no one exists
-        File directory = new File(strPathAppData);
+        File directory = new File(this.settingsController.strPathAppData);
         if (!directory.exists()) {
             directory.mkdir();
         }
 
         // init all relevant lists for tables and plots
-        this.transactionList = FXCollections.observableArrayList(this.transactionController.transactionList);
-        this.transactionModelList = this.transactionController.transactionList;
+        this.transactionList = FXCollections.observableArrayList(this.transactionController.getTransactionList());
         this.poolPairList = FXCollections.observableArrayList(this.poolPairModelList);
         this.expService = new ExportService(this.coinPriceController, this.transactionController, this.settingsController);
 
@@ -144,18 +113,18 @@ public class ViewModel {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
     }
+
     public void copySelectedDataToClipboard(List<PoolPairModel> list, boolean withHeaders) {
         StringBuilder sb = new StringBuilder();
 
         if (withHeaders) {
-            sb.append("Date,Total in Fiat,Rewards,Crypto 1,Crypto 2".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+            sb.append("Date,Total in Fiat,Crypto 1,Crypto 2".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
         }
 
         for (PoolPairModel poolPair : list
         ) {
             sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
             sb.append(poolPair.getFiatValue().getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(poolPair.getType().getValue()).append(this.settingsController.selectedSeperator.getValue());
             sb.append(poolPair.getCryptoValue1().getValue()).append(this.settingsController.selectedSeperator.getValue());
             sb.append(poolPair.getCryptoValue2().getValue()).append(this.settingsController.selectedSeperator.getValue());
             sb.append("\n");
@@ -166,7 +135,7 @@ public class ViewModel {
     }
 
     public boolean updateTransactionData() {
-        if (new File(strPathAppData + strTransactionData).exists()) {
+        if (new File(this.settingsController.strPathAppData + this.settingsController.strTransactionData).exists()) {
             int depth = this.transactionController.getBlockCountRpc() - this.transactionController.getLocalBlockCount();
             return this.transactionController.updateTransactionData(depth);
         } else {
@@ -197,7 +166,7 @@ public class ViewModel {
         return pidInfo.toString().contains("defi-app");
     }
 
-    public void btnUpdateDatabasePressed()  {
+    public void btnUpdateDatabasePressed() {
 
         if (!checkIfDeFiAppIsRunning()) {
 
@@ -206,9 +175,7 @@ public class ViewModel {
                 this.strCurrentBlockOnBlockchain.set(Integer.toString(this.transactionController.getBlockCountRpc()));
 
                 transactionList.clear();
-                transactionList.addAll(this.transactionController.transactionList);
-                this.transactionModelList = this.transactionController.transactionList;
-
+                transactionList.addAll(this.transactionController.getTransactionList());
                 Date date = new Date(System.currentTimeMillis());
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 this.strLastUpdate.setValue(dateFormat.format(date));
@@ -225,16 +192,13 @@ public class ViewModel {
     public void plotUpdate(String openedTab) {
         switch (openedTab) {
             case "Overview":
-                if(updateOverview) updateOverview();
-                updateOverview = false;
+                updateOverview();
                 break;
             case "Rewards":
-                if(updateRewards) updateRewards();
-                updateRewards = false;
+                updateRewards();
                 break;
             case "Commissions":
-                if(updateCommissions) updateCommissions();
-                updateCommissions=false;
+                updateCommissions();
                 break;
             default:
                 break;
@@ -243,120 +207,42 @@ public class ViewModel {
 
     public void updateOverview() {
 
-        long TimeStampStart = Timestamp.valueOf(this.settingsController.dateFrom.getValue() + " 00:00:00").getTime() / 1000L;
-        long TimeStampEnd = Timestamp.valueOf(this.settingsController.dateTo.getValue() + " 23:59:59").getTime() / 1000L;
+//TODO klappt noch nicht wie es soll?
 
-        if (oldTimeStampFrom != TimeStampStart & oldTimeStampTo != TimeStampEnd) {
-            this.transactionsInTime = this.transactionController.getTransactionsInTime(this.transactionList, TimeStampStart, TimeStampEnd);
-        }
-        this.oldTimeStampFrom = TimeStampStart;
-        this.oldTimeStampTo = TimeStampEnd;
+        this.poolPairModelList.clear();
+        this.view.plotOverview.setLegendVisible(false);
+        this.view.plotOverview.getData().clear();
+        this.poolPairList.clear();
 
-        if (this.settingsController.selectedPlotType.getValue().equals("Individual")) this.poolPairModelList.clear();
+        this.view.plotOverview.getYAxis().setLabel("Total (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
+        this.poolPairList.clear();
 
-        this.plotOverview.getYAxis().setLabel("Total (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
-        this.plotOverview.getData().clear();
+        double maxValue = 0;
 
-        double maxValue=0;
-        for (String poolPair : this.cryptoCurrencies) {
+        for (String poolPair : this.settingsController.cryptoCurrencies) {
 
+            XYChart.Series<Number, Number> overviewSeries = new XYChart.Series();
+            overviewSeries.setName(poolPair);
 
-            TreeMap<String, Double> joinedRewardsFiat1 = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), 1, poolPair, "Rewards", "Fiat");
-            TreeMap<String, Double> joinedCommissionFiat1 = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), 1, poolPair, "Commission", "Fiat");
-            TreeMap<String, Double> joinedCommissionFiat2 = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), 0, poolPair, "Commission", "Fiat");
+            if (this.transactionController.getPortfolioList().containsKey(poolPair + "-" + this.settingsController.selectedIntervall.getValue())) {
 
-            if (joinedRewardsFiat1.size() > 0 | joinedCommissionFiat1.size() > 0 | joinedCommissionFiat2.size() > 0) {
-
-                XYChart.Series<Number, Number> rewardsSeries = new XYChart.Series();
-                rewardsSeries.setName(poolPair);
-
-                if (joinedRewardsFiat1.size() >= joinedCommissionFiat1.size()) {
-
-                    if (joinedRewardsFiat1.size() >= joinedCommissionFiat2.size()) {
-                        for (HashMap.Entry<String, Double> entry : joinedRewardsFiat1.entrySet()) {
-                            double reward = 0;
-                            double commission1 = 0;
-                            double commission2 = 0;
-
-                            if (joinedRewardsFiat1.get(entry.getKey()) != null)
-                                reward = joinedRewardsFiat1.get(entry.getKey());
-                            if (joinedCommissionFiat1.get(entry.getKey()) != null)
-                                commission1 = joinedCommissionFiat1.get(entry.getKey());
-                            if (joinedCommissionFiat2.get(entry.getKey()) != null)
-                                commission2 = joinedCommissionFiat2.get(entry.getKey());
-                            rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), reward + commission1 + commission2));
-                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", reward + commission1 + commission2, reward, commission1 + commission2, poolPair));
-                        }
-                    } else {
-                        for (HashMap.Entry<String, Double> entry : joinedCommissionFiat2.entrySet()) {
-                            double reward = 0;
-                            double commission1 = 0;
-                            double commission2 = 0;
-
-                            if (joinedRewardsFiat1.get(entry.getKey()) != null)
-                                reward = joinedRewardsFiat1.get(entry.getKey());
-                            if (joinedCommissionFiat1.get(entry.getKey()) != null)
-                                commission1 = joinedCommissionFiat1.get(entry.getKey());
-                            if (joinedCommissionFiat2.get(entry.getKey()) != null)
-                                commission2 = joinedCommissionFiat2.get(entry.getKey());
-
-                            rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), reward + commission1 + commission2));
-                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", reward + commission1 + commission2, reward, commission1 + commission2, poolPair));
-                        }
+                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(poolPair + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
+                    if (poolPair.equals(entry.getValue().getPoolPairValue())) {
+                        overviewSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value()));
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getFiatRewards1Value(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), poolPair));
                     }
-                } else {
-                    if (joinedCommissionFiat1.size() >= joinedCommissionFiat2.size()) {
-                        for (HashMap.Entry<String, Double> entry : joinedCommissionFiat1.entrySet()) {
-                            double reward = 0;
-                            double commission1 = 0;
-                            double commission2 = 0;
-
-                            if (joinedRewardsFiat1.get(entry.getKey()) != null)
-                                reward = joinedRewardsFiat1.get(entry.getKey());
-                            if (joinedCommissionFiat1.get(entry.getKey()) != null)
-                                commission1 = joinedCommissionFiat1.get(entry.getKey());
-                            if (joinedCommissionFiat2.get(entry.getKey()) != null)
-                                commission2 = joinedCommissionFiat2.get(entry.getKey());
-
-                            rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), reward + commission1 + commission2));
-                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", reward + commission1 + commission2, reward, commission1 + commission2, poolPair));
-                        }
-                    } else {
-                        for (HashMap.Entry<String, Double> entry : joinedCommissionFiat2.entrySet()) {
-                            double reward = 0;
-                            double commission1 = 0;
-                            double commission2 = 0;
-
-                            if (joinedRewardsFiat1.get(entry.getKey()) != null)
-                                reward = joinedRewardsFiat1.get(entry.getKey());
-                            if (joinedCommissionFiat1.get(entry.getKey()) != null)
-                                commission1 = joinedCommissionFiat1.get(entry.getKey());
-                            if (joinedCommissionFiat2.get(entry.getKey()) != null)
-                                commission2 = joinedCommissionFiat2.get(entry.getKey());
-
-                            rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), reward + commission1 + commission2));
-                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", reward + commission1 + commission2, reward, commission1 + commission2, poolPair));
-                        }
-                    }
-
-                }
-                yAxis.setAutoRanging(false);
-
-                if(maxValue < rewardsSeries.getData().stream().mapToDouble(d->(Double)d.getYValue()).max().getAsDouble()){
-                yAxis.setUpperBound(rewardsSeries.getData().stream().mapToDouble(d->(Double)d.getYValue()).max().getAsDouble()*1.10);
-                maxValue = rewardsSeries.getData().stream().mapToDouble(d->(Double)d.getYValue()).max().getAsDouble();
                 }
 
-                this.plotOverview.getData().add(rewardsSeries);
-                this.plotOverview.setCreateSymbols(true);
-
+                this.view.yAxis.setAutoRanging(false);
+                if (maxValue < overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble()) {
+                    this.view.yAxis.setUpperBound(overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble() * 1.10);
+                    maxValue = overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble();
+                }
             }
+            this.view.plotOverview.getData().add(overviewSeries);
+            this.view.plotOverview.setCreateSymbols(true);
         }
-
-
-
-
-        for (XYChart.Series<Number, Number> s : this.plotOverview.getData()) {
+        for (XYChart.Series<Number, Number> s : this.view.plotOverview.getData()) {
             if (s != null) {
                 for (XYChart.Data d : s.getData()) {
                     if (d != null) {
@@ -372,110 +258,95 @@ public class ViewModel {
         this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
         this.poolPairList.clear();
         this.poolPairList.addAll(this.poolPairModelList);
+
+
     }
 
     public void updateRewards() {
 
         XYChart.Series<Number, Number> rewardsSeries = new XYChart.Series();
 
-        long TimeStampStart = Timestamp.valueOf(this.settingsController.dateFrom.getValue() + " 00:00:00").getTime() / 1000L;
-        long TimeStampEnd = Timestamp.valueOf(this.settingsController.dateTo.getValue() + " 23:59:59").getTime() / 1000L;
-
-        List<TransactionModel> transactionsInTime = this.transactionController.getTransactionsInTime(this.transactionList, TimeStampStart, TimeStampEnd);
-        TreeMap<String, Double> joinedRewards = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), 1, this.settingsController.selectedCoin.getValue(), "Rewards", "Coin");
-        TreeMap<String, Double> joinedRewardsFiat = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), 1, this.settingsController.selectedCoin.getValue(), "Rewards", "Fiat");
-
         this.poolPairModelList.clear();
-        this.plotRewards.setLegendVisible(false);
+        this.view.plotRewards.setLegendVisible(false);
+        this.view.plotRewards.getData().clear();
+        this.poolPairList.clear();
 
         if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
-            this.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
+            this.view.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
         } else {
-            this.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
+            this.view.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
         }
 
-        if (this.settingsController.selectedPlotType.getValue().equals("Individual")) {
+        if (this.transactionController.getPortfolioList().containsKey(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue())) {
 
-            for (HashMap.Entry<String, Double> entry : joinedRewards.entrySet()) {
+            if (this.settingsController.selectedPlotType.getValue().equals("Individual")) {
 
-                if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
-                    rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
-                } else {
-                    rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), joinedRewardsFiat.get(entry.getKey())));
+                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
+
+                    if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
+                        rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinRewards1Value()));
+                    } else {
+                        rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value()));
+                    }
+                    this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", 1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue()));
                 }
-                this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", 1, entry.getValue(), joinedRewardsFiat.get(entry.getKey()), this.settingsController.selectedCoin.getValue()));
-            }
 
-            this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
-            this.poolPairList.clear();
-            this.poolPairList.addAll(this.poolPairModelList);
+                this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
+                this.poolPairList.clear();
+                this.poolPairList.addAll(this.poolPairModelList);
 
-            this.plotRewards.getData().clear();
+                this.view.plotRewards.getData().clear();
 
-            if (this.plotRewards.getData().size() == 1) {
-                this.plotRewards.getData().remove(0);
-            }
-
-            this.plotRewards.getData().add(rewardsSeries);
-
-            for (XYChart.Series<Number, Number> s : this.plotRewards.getData()) {
-                for (XYChart.Data d : s.getData()) {
-                    Tooltip t = new Tooltip(d.getYValue().toString());
-                   //t.setShowDelay(Duration.seconds(0));
-                    Tooltip.install(d.getNode(), t);
-                    d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
-                    d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                if (this.view.plotRewards.getData().size() == 1) {
+                    this.view.plotRewards.getData().remove(0);
                 }
-            }
 
+                this.view.plotRewards.getData().add(rewardsSeries);
 
-        } else {
-
-            Collection<Double> values = joinedRewards.values();
-            ArrayList<Double> valueList = new ArrayList<>(values);
-            Collection<Double> valuesFiat = joinedRewardsFiat.values();
-            ArrayList<Double> valueListFiat = new ArrayList<>(valuesFiat);
-            XYChart.Series<Number, Number> series2 = new XYChart.Series();
-
-            for (int i = 0; i < valueList.size() - 1; i++) {
-                valueList.set(i + 1, valueList.get(i) + valueList.get(i + 1));
-                valueListFiat.set(i + 1, valueListFiat.get(i) + valueListFiat.get(i + 1));
-            }
-
-            int iterator = 0;
-            for (HashMap.Entry<String, Double> entry : joinedRewards.entrySet()) {
-                entry.setValue(valueList.get(iterator));
-                iterator++;
-            }
-            iterator = 0;
-            for (HashMap.Entry<String, Double> entry : joinedRewardsFiat.entrySet()) {
-                entry.setValue(valueListFiat.get(iterator));
-                iterator++;
-            }
-
-            for (HashMap.Entry<String, Double> entry : joinedRewards.entrySet()) {
-                if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
-                    series2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
-                } else {
-                    series2.getData().add(new XYChart.Data(entry.getKey(), joinedRewardsFiat.get(entry.getKey())));
+                for (XYChart.Series<Number, Number> s : this.view.plotRewards.getData()) {
+                    for (XYChart.Data d : s.getData()) {
+                        Tooltip t = new Tooltip(d.getYValue().toString());
+                        //t.setShowDelay(Duration.seconds(0));
+                        Tooltip.install(d.getNode(), t);
+                        d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
+                        d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                    }
                 }
-            }
-            if (this.plotRewards.getData().size() == 1) {
-                this.plotRewards.getData().remove(0);
-            }
+            } else {
 
-            this.plotRewards.getData().add(series2);
+                ArrayList<PortfolioModel> valueList = new ArrayList<>(this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).values());
 
-            for (XYChart.Series<Number, Number> s : this.plotRewards.getData()) {
-                for (XYChart.Data d : s.getData()) {
-                    Tooltip t = new Tooltip(d.getYValue().toString());
-                    //t.setShowDelay(Duration.seconds(0));
-                    Tooltip.install(d.getNode(), t);
-                    d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
-                    d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                XYChart.Series<Number, Number> rewardsCumulated = new XYChart.Series();
+
+                double cumulatedCoinValue = 0;
+                double cumulatedFiatValue = 0;
+                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
+
+                    if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
+                        cumulatedCoinValue = cumulatedCoinValue + entry.getValue().getCoinRewards1Value();
+                        rewardsCumulated.getData().add(new XYChart.Data(entry.getKey(), cumulatedCoinValue));
+                    } else {
+                        cumulatedFiatValue = cumulatedFiatValue + entry.getValue().getFiatRewards1Value();
+                        rewardsCumulated.getData().add(new XYChart.Data(entry.getKey(), cumulatedFiatValue));
+                    }
                 }
-            }
+                if (this.view.plotRewards.getData().size() == 1) {
+                    this.view.plotRewards.getData().remove(0);
+                }
 
+                this.view.plotRewards.getData().add(rewardsCumulated);
+
+                for (XYChart.Series<Number, Number> s : this.view.plotRewards.getData()) {
+                    for (XYChart.Data d : s.getData()) {
+                        Tooltip t = new Tooltip(d.getYValue().toString());
+                        //t.setShowDelay(Duration.seconds(0));
+                        Tooltip.install(d.getNode(), t);
+                        d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
+                        d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                    }
+                }
+
+            }
         }
 
     }
@@ -484,158 +355,118 @@ public class ViewModel {
 
         XYChart.Series<Number, Number> commissionsSeries1 = new XYChart.Series();
         XYChart.Series<Number, Number> commissionsSeries2 = new XYChart.Series();
-
-        long TimeStampStart = Timestamp.valueOf(this.settingsController.dateFrom.getValue() + " 00:00:00").getTime() / 1000L;
-        long TimeStampEnd = Timestamp.valueOf(this.settingsController.dateTo.getValue() + " 23:59:59").getTime() / 1000L;
-
-        List<TransactionModel> transactionsInTime = this.transactionController.getTransactionsInTime(this.transactionList, TimeStampStart, TimeStampEnd);
-
-        TreeMap<String, Double> joinedCommissionsCoin1 = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), 1, this.settingsController.selectedCoin.getValue(), "Commission", "Coin");
-        TreeMap<String, Double> joinedCommissionsCoin2 = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), 0, this.settingsController.selectedCoin.getValue(), "Commission", "Fiat");
-        TreeMap<String, Double> joinedCommissionsFiat1 = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), 1, this.settingsController.selectedCoin.getValue(), "Commission", "Coin");
-        TreeMap<String, Double> joinedCommissionsFiat2 = this.transactionController.getCryptoMap(transactionsInTime, this.settingsController.cmbIntervall.getValue(), 0, this.settingsController.selectedCoin.getValue(), "Commission", "Fiat");
-
+        this.view.plotCommissions1.getData().clear();
+        this.view.plotCommissions2.getData().clear();
         this.poolPairModelList.clear();
-        this.plotCommissions.setLegendVisible(false);
-        this.plotCommissions2.setLegendVisible(false);
+        this.poolPairList.clear();
+        this.view.plotCommissions1.setLegendVisible(false);
+        this.view.plotCommissions2.setLegendVisible(false);
 
         if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
-            this.plotCommissions.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
-            this.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[0]);
+            this.view.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
+            this.view.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[0]);
         } else {
-            this.plotCommissions.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
-            this.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
+            this.view.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
+            this.view.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
         }
 
-        if (this.settingsController.selectedPlotType.getValue().equals("Individual")) {
+        if (this.transactionController.getPortfolioList().containsKey(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue())) {
 
-            for (HashMap.Entry<String, Double> entry : joinedCommissionsCoin1.entrySet()) {
+            if (this.settingsController.selectedPlotType.getValue().equals("Individual")) {
 
-                if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
-                    commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
+                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
 
-                } else {
-                    commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), joinedCommissionsFiat1.get(entry.getKey())));
+                    if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
+                        commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions1Value()));
+                        commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions2Value()));
+                    } else {
+                        commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatCommissions1Value()));
+                        commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatCommissions2Value()));
+                    }
+                    this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue()));
                 }
-                double crypto2 = 0;
-                double coin = 0;
-                if (joinedCommissionsCoin2.size() > 0 & joinedCommissionsCoin2.get(entry.getKey()) != null) {
-                    crypto2 = joinedCommissionsCoin2.get(entry.getKey()) * joinedCommissionsFiat2.get(entry.getKey());
-                    coin = joinedCommissionsCoin2.get(entry.getKey());
+
+                this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
+                this.poolPairList.clear();
+                this.poolPairList.addAll(this.poolPairModelList);
+
+                this.view.plotCommissions1.getData().add(commissionsSeries1);
+                this.view.plotCommissions2.getData().add(commissionsSeries2);
+
+                for (XYChart.Series<Number, Number> s : this.view.plotCommissions1.getData()) {
+                    for (XYChart.Data d : s.getData()) {
+                        Tooltip t = new Tooltip(d.getYValue().toString());
+                        Tooltip.install(d.getNode(), t);
+                        d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
+                        d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                    }
                 }
 
-                this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Commission", joinedCommissionsFiat1.get(entry.getKey()) + crypto2, entry.getValue(), coin, this.settingsController.selectedCoin.getValue()));
-            }
-
-            // Plot commsion 2
-            for (HashMap.Entry<String, Double> entry : joinedCommissionsCoin2.entrySet()) {
-
-                if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
-                    commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), joinedCommissionsCoin2.get(entry.getKey())));
-                } else {
-                    commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), joinedCommissionsFiat2.get(entry.getKey())));
+                for (XYChart.Series<Number, Number> s : this.view.plotCommissions2.getData()) {
+                    for (XYChart.Data d : s.getData()) {
+                        Tooltip t = new Tooltip(d.getYValue().toString());
+                        Tooltip.install(d.getNode(), t);
+                        d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
+                        d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                    }
                 }
-            }
 
-            this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
-            this.poolPairList.clear();
-            this.poolPairList.addAll(this.poolPairModelList);
+            } else {
 
-            if (this.plotCommissions.getData().size() == 1) {
-                this.plotCommissions.getData().remove(0);
-            }
+                XYChart.Series<Number, Number> rewardsCumulated1 = new XYChart.Series();
+                XYChart.Series<Number, Number> rewardsCumulated2 = new XYChart.Series();
 
-            if (this.plotCommissions2.getData().size() == 1) {
-                this.plotCommissions2.getData().remove(0);
-            }
+                double cumulatedCommissions1CoinValue = 0;
+                double cumulatedCommissions1FiatValue = 0;
+                double cumulatedCommissions2CoinValue = 0;
+                double cumulatedCommissions2FiatValue = 0;
+                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
 
-            this.plotCommissions.getData().add(commissionsSeries1);
-            this.plotCommissions2.getData().add(commissionsSeries2);
-
-            for (XYChart.Series<Number, Number> s : this.plotCommissions.getData()) {
-                for (XYChart.Data d : s.getData()) {
-                    Tooltip t = new Tooltip(d.getYValue().toString());
-                    Tooltip.install(d.getNode(), t);
-                    d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
-                    d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                    if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
+                        cumulatedCommissions1CoinValue = cumulatedCommissions1CoinValue + entry.getValue().getCoinCommissions1Value();
+                        cumulatedCommissions2CoinValue = cumulatedCommissions2CoinValue + entry.getValue().getCoinCommissions2Value();
+                        rewardsCumulated1.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions1CoinValue));
+                        rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2CoinValue));
+                    } else {
+                        cumulatedCommissions1FiatValue = cumulatedCommissions1FiatValue + entry.getValue().getFiatCommissions1Value();
+                        cumulatedCommissions2FiatValue = cumulatedCommissions2FiatValue + entry.getValue().getFiatCommissions2Value();
+                        rewardsCumulated1.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions1FiatValue));
+                        rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2FiatValue));
+                    }
                 }
-            }
 
-            for (XYChart.Series<Number, Number> s : this.plotCommissions2.getData()) {
-                for (XYChart.Data d : s.getData()) {
-                    Tooltip t = new Tooltip(d.getYValue().toString());
-                    Tooltip.install(d.getNode(), t);
-                    d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
-                    d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                if (this.view.plotCommissions1.getData().size() == 1) {
+                    this.view.plotCommissions1.getData().remove(0);
                 }
-            }
 
-        } else {
-
-            Collection<Double> values = joinedCommissionsCoin1.values();
-            ArrayList<Double> valueList = new ArrayList<>(values);
-            XYChart.Series<Number, Number> series = new XYChart.Series();
-
-            for (int i = 0; i < valueList.size() - 1; i++) {
-                valueList.set(i + 1, valueList.get(i) + valueList.get(i + 1));
-            }
-
-            int iterator = 0;
-            for (HashMap.Entry<String, Double> entry : joinedCommissionsCoin1.entrySet()) {
-                entry.setValue(valueList.get(iterator));
-                iterator++;
-            }
-
-            for (HashMap.Entry<String, Double> entry : joinedCommissionsCoin1.entrySet()) {
-                series.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
-            }
-            if (this.plotCommissions.getData().size() == 1) {
-                this.plotCommissions.getData().remove(0);
-            }
-
-            this.plotCommissions.getData().add(series);
-            for (XYChart.Series<Number, Number> s : this.plotCommissions.getData()) {
-                for (XYChart.Data d : s.getData()) {
-                    Tooltip t = new Tooltip(d.getYValue().toString());
-                    //t.setShowDelay(Duration.seconds(0));
-                    Tooltip.install(d.getNode(), t);
-                    d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
-                    d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                if (this.view.plotCommissions2.getData().size() == 1) {
+                    this.view.plotCommissions2.getData().remove(0);
                 }
-            }
 
-            values = joinedCommissionsCoin2.values();
-            valueList = new ArrayList<>(values);
-            XYChart.Series<Number, Number> series2 = new XYChart.Series();
+                this.view.plotCommissions1.getData().add(rewardsCumulated1);
 
-            for (int i = 0; i < valueList.size() - 1; i++) {
-                valueList.set(i + 1, valueList.get(i) + valueList.get(i + 1));
-            }
-
-            iterator = 0;
-            for (HashMap.Entry<String, Double> entry : joinedCommissionsCoin2.entrySet()) {
-                entry.setValue(valueList.get(iterator));
-                iterator++;
-            }
-
-            for (HashMap.Entry<String, Double> entry : joinedCommissionsCoin2.entrySet()) {
-                series2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue()));
-            }
-            if (this.plotCommissions2.getData().size() == 1) {
-                this.plotCommissions2.getData().remove(0);
-            }
-
-            this.plotCommissions2.getData().add(series2);
-            for (XYChart.Series<Number, Number> s : this.plotCommissions2.getData()) {
-                for (XYChart.Data d : s.getData()) {
-                    Tooltip t = new Tooltip(d.getYValue().toString());
-                    //t.setShowDelay(Duration.seconds(0));
-                    Tooltip.install(d.getNode(), t);
-                    d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
-                    d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                for (XYChart.Series<Number, Number> s : this.view.plotCommissions1.getData()) {
+                    for (XYChart.Data d : s.getData()) {
+                        Tooltip t = new Tooltip(d.getYValue().toString());
+                        //t.setShowDelay(Duration.seconds(0));
+                        Tooltip.install(d.getNode(), t);
+                        d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
+                        d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                    }
                 }
-            }
 
+                this.view.plotCommissions2.getData().add(rewardsCumulated2);
+                for (XYChart.Series<Number, Number> s : this.view.plotCommissions2.getData()) {
+                    for (XYChart.Data d : s.getData()) {
+                        Tooltip t = new Tooltip(d.getYValue().toString());
+                        //t.setShowDelay(Duration.seconds(0));
+                        Tooltip.install(d.getNode(), t);
+                        d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
+                        d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                    }
+                }
+
+            }
         }
 
     }
@@ -692,7 +523,7 @@ public class ViewModel {
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {
-            boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), this.settingsController.selectedSeperator.getValue(),source);
+            boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), this.settingsController.selectedSeperator.getValue(), source);
 
             if (success) {
                 this.strProgressbar.setValue("Excel successfully exported!");

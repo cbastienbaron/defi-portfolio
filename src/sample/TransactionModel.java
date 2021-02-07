@@ -28,8 +28,9 @@ public class TransactionModel {
         this.cryptoValueProperty.set(Double.parseDouble(transactionController.splitCoinsAndAmounts(amounts[0])[0]));
         this.cryptoCurrencyProperty.set(transactionController.splitCoinsAndAmounts(amounts[0])[1]);
         this.txIDProperty.set(txid);
-        this.fiatCurrencyProperty.set(transactionController.settingsController.selectedFiatCurrency.getValue());
-        if(this.amountProperty.getValue()[0].split("@")[1].length() == 3)this.fiatValueProperty.set(this.cryptoValueProperty.getValue() * transactionController.coinPriceController.getPriceFromTimeStamp(this.amountProperty.getValue()[0].split("@")[1]+transactionController.settingsController.selectedFiatCurrency.getValue(),this.blockTimeProperty.getValue() * 1000L));
+        this.fiatCurrencyProperty.set(transactionController.getSettingsController().selectedFiatCurrency.getValue());
+        if(this.amountProperty.getValue()[0].split("@")[1].length() == 3)this.fiatValueProperty.set(this.cryptoValueProperty.getValue() * transactionController.getCoinPriceController().getPriceFromTimeStamp(this.amountProperty.getValue()[0].split("@")[1]+transactionController.getSettingsController().selectedFiatCurrency.getValue(),this.blockTimeProperty.getValue() * 1000L));
+
     }
 
     public void setOwner(String owner) {
@@ -122,7 +123,7 @@ public class TransactionModel {
         return cryptoCurrencyProperty;
     }
 
-    public String getCryptoyValue() {
+    public String getCryptoCurrencyValue() {
         return cryptoCurrencyProperty.getValue();
     }
 

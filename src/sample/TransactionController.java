@@ -1,12 +1,9 @@
 package sample;
 
-import com.google.gson.Gson;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-
 import javax.swing.*;
-import java.awt.*;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
@@ -21,34 +18,48 @@ import java.util.List;
 
 public class TransactionController {
 
-    URL url;
-    URLConnection conn;
-    String strCookieOath;
-    String strCliPath;
-    public List<TransactionModel> transactionList;
-    String strTransactionData;
-    int localBlockCount;
-    SettingsController settingsController;
-    OutputStreamWriter wr;
-    public CoinPriceController coinPriceController;
+    private URL url;
+    private URLConnection conn;
+    private String strCookiePath;
+    private List<TransactionModel> transactionList;
+    private String strTransactionData;
+    private int localBlockCount;
+    private SettingsController settingsController;
+    private OutputStreamWriter wr;
+    private CoinPriceController coinPriceController;
+    private TreeMap<String, TreeMap<String, PortfolioModel>> portfolioList = new TreeMap<>();
 
-    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strCliPath, String strCookiePath,String strDefidPath) {
-
+    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strCookiePath, String strDefidPath) {
         this.strTransactionData = transactionData;
         this.settingsController = settingsController;
         this.coinPriceController = coinPriceController;
         this.transactionList = getLocalTransactionList();
         this.localBlockCount = getLocalBlockCount();
-        this.strCliPath = strCliPath;
-        this.strCookieOath = strCookiePath;
+        this.strCookiePath = strCookiePath;
     }
 
     public boolean checkCrp() {
-        return new File(this.strCookieOath).exists();
+        return new File(this.strCookiePath).exists();
     }
 
     public void startServer() {
 
+    }
+
+    public CoinPriceController getCoinPriceController() {
+        return coinPriceController;
+    }
+
+    public SettingsController getSettingsController() {
+        return settingsController;
+    }
+
+    public TreeMap<String, TreeMap<String, PortfolioModel>> getPortfolioList() {
+        return portfolioList;
+    }
+
+    public List<TransactionModel> getTransactionList() {
+        return transactionList;
     }
 
     public void initCrpConnection() {
@@ -66,7 +77,7 @@ public class TransactionController {
 
                 BufferedReader reader;
                 reader = new BufferedReader(new FileReader(
-                        strCookieOath));
+                        strCookiePath));
                 String line = reader.readLine();
                 String[] kvpSplit = line.split(":");
                 if (Arrays.stream(kvpSplit).count() == 2) {
@@ -101,35 +112,6 @@ public class TransactionController {
         }
     }
 
-    public int getBlockCountCli() {
-        try {
-            Process p;
-            StringBuilder processOutput = new StringBuilder();
-            p = Runtime.getRuntime().exec(strCliPath + " getblockcount");
-
-
-            try (BufferedReader processOutputReader = new BufferedReader(
-                    new InputStreamReader(p.getInputStream()))) {
-                String readLine;
-
-                while ((readLine = processOutputReader.readLine()) != null) {
-                    processOutput.append(readLine).append(System.lineSeparator());
-                }
-
-                p.waitFor();
-
-                return Integer.parseInt(processOutput.toString().trim());
-
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return 0;
-    }
-
     public int getAccountHistoryCountRpc() {
 
         JSONObject jsonObject = getRpcResponse("{\"method\": \"accounthistorycount\",\"params\":[\"mine\"]}");
@@ -162,33 +144,6 @@ public class TransactionController {
         return addressModel;
     }
 
-
-    public int getAccountHistoryCountCli() {
-        try {
-            Process p;
-            StringBuilder processOutput = new StringBuilder();
-            p = Runtime.getRuntime().exec(strCliPath + " accounthistorycount mine");
-
-
-            try (BufferedReader processOutputReader = new BufferedReader(
-                    new InputStreamReader(p.getInputStream()))) {
-                String readLine;
-
-                while ((readLine = processOutputReader.readLine()) != null) {
-                    processOutput.append(readLine).append(System.lineSeparator());
-                }
-                p.waitFor();
-
-                return Integer.parseInt(processOutput.toString().trim());
-
-            }
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-
     public List<TransactionModel> getListAccountHistoryRpc(int depth) {
 
         List<TransactionModel> transactionList = new ArrayList<>();
@@ -206,43 +161,10 @@ public class TransactionController {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(new JFrame(), "The Defid.exe is not running! Please start it manually.","Defid.exe not running",JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(new JFrame(), "The Defid.exe is not running! Please start it manually.", "Defid.exe not running", JOptionPane.WARNING_MESSAGE);
         }
 
         return transactionList;
-    }
-
-    public List<TransactionModel> getListAccountHistoryCli(int depth) {
-        try {
-            Gson gson = new Gson();
-            StringBuilder processOutput;
-            Process p;
-            p = Runtime.getRuntime().exec(strCliPath + " listaccounthistory mine {\\\"depth\\\":" + depth + ",\\\"no_rewards\\\":" + false + ",\\\"limit\\\":" + depth * 2000 + "}");
-
-            processOutput = new StringBuilder();
-
-            try (BufferedReader processOutputReader = new BufferedReader(
-                    new InputStreamReader(p.getInputStream()))) {
-                String readLine;
-
-                while ((readLine = processOutputReader.readLine()) != null) {
-                    processOutput.append(readLine).append(System.lineSeparator());
-                }
-                p.waitFor();
-
-                String jsonTransaction = processOutput.toString().trim();
-
-                TransactionModel[] transactionsNew = gson.fromJson(jsonTransaction, TransactionModel[].class);
-
-                List<TransactionModel> transactionListNew = Arrays.asList(transactionsNew);
-
-                return new ArrayList<>(transactionListNew);
-
-            }
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     private JSONObject getRpcResponse(String requestJson) {
@@ -250,11 +172,9 @@ public class TransactionController {
             initCrpConnection();
 
             if (conn != null & wr != null) {
-
                 wr.write(requestJson);
                 wr.flush();
                 wr.close();
-
                 BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String line;
                 StringBuilder jsonText = new StringBuilder();
@@ -291,8 +211,10 @@ public class TransactionController {
                     String[] transactionSplit = line.split(";");
                     TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], new String[]{transactionSplit[3]}, transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], this);
                     transactionList.add(transAction);
+                    addToPortfolioModel(transAction);
                     line = reader.readLine();
                 }
+
                 reader.close();
                 return transactionList;
             } catch (IOException e) {
@@ -301,6 +223,122 @@ public class TransactionController {
         }
 
         return transactionList;
+    }
+
+    private void addToPortfolioModel(TransactionModel transactionSplit) {
+
+        String pool = "BTC-DFI";
+        switch (transactionSplit.getPoolIDValue()) {
+            case "4":
+                pool = "ETH-DFI";
+                break;
+            case "5":
+                pool = "BTC-DFI";
+                break;
+            case "6":
+                pool = "USDT-DFI";
+                break;
+            case "8":
+                pool = "DOGE-DFI";
+                break;
+            case "10":
+                pool = "LTC-DFI";
+                break;
+            default:
+                break;
+        }
+        String[] intervallList = new String[]{"Daily", "Weekly", "Monthly", "Yearly"};
+
+        for (String intervall : intervallList) {
+
+            String keyValue = pool + "-" +intervall;
+
+            if (!portfolioList.containsKey(keyValue)) {
+                portfolioList.put(keyValue, new TreeMap<>());
+            }
+
+            Double newFiatRewards = 0.0;
+            Double newFiatCommissions1 = 0.0;
+            Double newFiatCommissions2 = 0.0;
+            Double newCoinRewards = 0.0;
+            Double newCoinCommissions1 = 0.0;
+            Double newCoinCommissions2 = 0.0;
+
+            if (transactionSplit.getTypeValue().equals("Rewards")) {
+                newFiatRewards = transactionSplit.getFiatValueValue();
+                newCoinRewards = transactionSplit.getCryptoValueValue();
+            }
+
+            if (transactionSplit.getTypeValue().equals("Commission")) {
+                if (pool.split("-")[1].equals(transactionSplit.getCryptoCurrencyValue())) {
+                    newFiatCommissions1 = transactionSplit.getFiatValueValue();
+                    newCoinCommissions1 = transactionSplit.getCryptoValueValue();
+                } else {
+                    newFiatCommissions2 = transactionSplit.getFiatValueValue();
+                    newCoinCommissions2 = transactionSplit.getCryptoValueValue();
+                }
+            }
+
+            if (portfolioList.get(keyValue).containsKey(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall))) {
+
+                Double oldCoinRewards = portfolioList.get(keyValue).get(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall)).getCoinRewards1Value();
+                Double oldFiatRewards = portfolioList.get(keyValue).get(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall)).getFiatRewards1Value();
+                Double oldCoinCommissions1 = portfolioList.get(keyValue).get(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall)).getCoinCommissions1Value();
+                Double oldFiatCommissions1 = portfolioList.get(keyValue).get(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall)).getFiatCommissions1Value();
+                Double oldCoinCommissions2 = portfolioList.get(keyValue).get(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall)).getCoinCommissions2Value();
+                Double oldFiatCommissions2 = portfolioList.get(keyValue).get(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall)).getFiatCommissions2Value();
+
+                portfolioList.get(keyValue).put(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall), new PortfolioModel(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall), oldFiatRewards + newFiatRewards, oldFiatCommissions1 + newFiatCommissions1, oldFiatCommissions2 + newFiatCommissions2, oldCoinRewards + newCoinRewards, oldCoinCommissions1 + newCoinCommissions1, oldCoinCommissions2 + newCoinCommissions2, pool, intervall));
+            } else {
+                portfolioList.get(keyValue).put(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall), new PortfolioModel(getDate(Long.toString(transactionSplit.getBlockTimeValue()), intervall),  newFiatRewards,  newFiatCommissions1,  newFiatCommissions2,  newCoinRewards,  newCoinCommissions1,  newCoinCommissions2, pool, intervall));
+            }
+            }
+    }
+
+    private String getDate(String blockTime, String intervall) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(Long.parseLong(blockTime) * 1000L);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int week = cal.get(Calendar.WEEK_OF_YEAR);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        String date = "";
+        switch (intervall) {
+            case "Daily":
+                String monthAdapted = Integer.toString(month);
+                if (month < 10) {
+                    monthAdapted = "0" + month;
+                }
+                if (day < 10) {
+                    date = year + "-" + monthAdapted + "-0" + day;
+                } else {
+                    date = year + "-" + monthAdapted + "-" + day;
+                }
+
+                break;
+            case "Monthly":
+                if (month < 10) {
+                    date = year + "-0" + month;
+                } else {
+                    date = year + "-" + month;
+                }
+                break;
+            case "Weekly":
+                int correct = 0;
+                if (month == 1 && (day == 1 || day == 2 || day == 3)) {
+                    correct = 1;
+                }
+                if (week < 10) {
+                    date = year - correct + "-0" + week;
+                } else {
+                    date = year - correct + "-" + week;
+                }
+                break;
+            case "Yearly":
+                date = year + "-";
+
+        }
+        return date;
     }
 
     public int getLocalBlockCount() {
@@ -320,14 +358,14 @@ public class TransactionController {
 
     public boolean updateTransactionData(int depth) {
 
-        List<TransactionModel>  transactionListNew = getListAccountHistoryRpc(depth);
+        List<TransactionModel> transactionListNew = getListAccountHistoryRpc(depth);
         List<TransactionModel> updateTransactionList = new ArrayList<>();
 
         for (int i = transactionListNew.size() - 1; i >= 0; i--) {
             if (transactionListNew.get(i).getBlockHeightValue() > this.localBlockCount) {
                 this.transactionList.add(transactionListNew.get(i));
-                updateTransactionList.add(transactionListNew.get(i))
-                ;
+                updateTransactionList.add(transactionListNew.get(i));
+                addToPortfolioModel(transactionListNew.get(i));
             }
         }
 

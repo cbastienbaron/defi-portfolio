@@ -28,10 +28,23 @@ public class SettingsController {
     public StringProperty selectedCoin = new SimpleStringProperty("BTC-DFI");
     public StringProperty selectedPlotCurrency = new SimpleStringProperty("Coin");
     public StringProperty selectedPlotType = new SimpleStringProperty("Individual");
-    public StringProperty cmbIntervall = new SimpleStringProperty("Daily");
+    public StringProperty selectedIntervall = new SimpleStringProperty("Daily");
     public ObjectProperty<LocalDate>  dateFrom = new SimpleObjectProperty();
     public ObjectProperty<LocalDate> dateTo= new SimpleObjectProperty();
 
+
+    //Combo box filling
+    public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
+    public String[] intervall =new String[]{"Daily", "Weekly", "Monthly", "Yearly"};
+    public String[] plotCurrency = new String[]{"Coin", "Fiat"};
+    public String[] plotType = new String[]{"Individual", "Cumulated"};
+
+    //All relevant paths and files
+    public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
+    public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
+    public String strPathDefid = System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
+    public String strTransactionData = "transactionData.portfolio";
+    public String strCoinPriceData = "coinPriceData.portfolio";
     public String[] languages = new String[]{"English"};
     public String[] currencies = new String[]{"EUR","USD","CHF"};
     public String[] decSeperators = new String[]{",","."};

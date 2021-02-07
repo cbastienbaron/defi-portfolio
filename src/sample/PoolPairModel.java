@@ -5,7 +5,6 @@ import javafx.beans.property.*;
 public class PoolPairModel {
 
     private final StringProperty blockTimeProperty = new SimpleStringProperty("");
-    private final StringProperty typeProperty = new SimpleStringProperty("");
     private final DoubleProperty fiatValueProperty = new SimpleDoubleProperty(0.0);
     private final DoubleProperty cryptoValue1Property = new SimpleDoubleProperty(0.0);
     private final DoubleProperty cryptoValue2Property = new SimpleDoubleProperty(0.0);
@@ -13,7 +12,6 @@ public class PoolPairModel {
 
     public PoolPairModel(String blockTime,String type, double fiatValue, double cryptoValue1, double cryptoValue2, String poolPair){
         setBlockTime(blockTime);
-        setType(type);
         setFiat(fiatValue);
         setCrypto1(cryptoValue1);
         setCrypto2(cryptoValue2);
@@ -30,18 +28,6 @@ public class PoolPairModel {
 
     public String getBlockTimeValue() {
         return blockTimeProperty.getValue();
-    }
-
-    public void setType(String type) {
-        this.typeProperty.set(type);
-    }
-
-    public StringProperty getType() {
-        return typeProperty;
-    }
-
-    public String getTypeValue() {
-        return typeProperty.getValue();
     }
 
     public Double getCryptoValueValue1() {

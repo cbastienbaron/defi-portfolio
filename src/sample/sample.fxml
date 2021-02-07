@@ -14,7 +14,7 @@
         <effect>
             <DropShadow />
         </effect>
-      <GridPane alignment="CENTER" layoutX="3.0" layoutY="6.0" prefHeight="632.0" prefWidth="191.0">
+      <GridPane alignment="CENTER" layoutX="3.0" layoutY="6.0" prefHeight="632.0" prefWidth="191.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="6.0">
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -31,7 +31,7 @@
             <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-             <Button fx:id="btnRawData" alignment="CENTER" cache="true" mnemonicParsing="false" onAction="#btnRawDataPressed" prefHeight="90.0" prefWidth="191.0" stylesheets="@chartStyle.css" text="Raw Data">
+             <Button fx:id="btnRawData" alignment="CENTER" cache="true" mnemonicParsing="false" onAction="#btnRawDataPressed" prefHeight="90.0" prefWidth="191.0" text="Raw Data">
                  <cursor>
                      <Cursor fx:constant="DEFAULT" />
                  </cursor>
@@ -47,7 +47,7 @@
                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                  </GridPane.margin>
              </Button>
-              <Button fx:id="btnUpdateDatabse" alignment="CENTER" cache="true" mnemonicParsing="false" prefHeight="90.0" prefWidth="191.0" stylesheets="@chartStyle.css" text="Update Data" GridPane.rowIndex="3">
+              <Button fx:id="btnUpdateDatabse" alignment="CENTER" cache="true" mnemonicParsing="false" prefHeight="90.0" prefWidth="191.0" text="Update Data" GridPane.rowIndex="3">
                   <cursor>
                       <Cursor fx:constant="DEFAULT" />
                   </cursor>
@@ -66,7 +66,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </GridPane.margin>
               </Button>
-              <Button fx:id="btnAnalyse" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnalysePressed" prefHeight="90.0" prefWidth="191.0" stylesheets="@chartStyle.css" text="Analyse Data" GridPane.rowIndex="1">
+              <Button fx:id="btnAnalyse" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnalysePressed" prefHeight="90.0" prefWidth="191.0" text="Analyse Data" GridPane.rowIndex="1">
                   <cursor>
                       <Cursor fx:constant="DEFAULT" />
                   </cursor>
@@ -189,8 +189,8 @@
                               <Pane layoutX="241.0" layoutY="129.0" prefHeight="43.0" prefWidth="78.0" AnchorPane.bottomAnchor="409.0" AnchorPane.leftAnchor="241.0" AnchorPane.rightAnchor="283.0" AnchorPane.topAnchor="129.0">
                                  <HBox alignment="CENTER" prefHeight="43.0" prefWidth="81.0">
                                     <children>
-                                            <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
-                                                <Image fx:id="coinImage" url="@../icons/btc-icon.png" />
+                                            <ImageView fx:id="coinImageRewards" fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                                                <Image url="@../icons/btc-icon.png" />
                                             </ImageView>
                                             <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                                                 <Image url="@../icons/dfi-icon.png" />
@@ -206,6 +206,24 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
                            <children>
+                              <Pane layoutX="260.0" layoutY="121.0" prefHeight="43.0" prefWidth="78.0" AnchorPane.bottomAnchor="409.0" AnchorPane.leftAnchor="241.0" AnchorPane.rightAnchor="264.0" AnchorPane.topAnchor="129.0">
+                                 <children>
+                                    <HBox alignment="CENTER" prefHeight="43.0" prefWidth="81.0">
+                                       <children>
+                                          <ImageView fx:id="coinImageCommissions" fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/btc-icon.png" />
+                                             </image>
+                                          </ImageView>
+                                          <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/dfi-icon.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </Pane>
                               <GridPane layoutX="15.0" layoutY="15.0" prefHeight="85.0" prefWidth="567.0">
                                  <columnConstraints>
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="70.0" />
@@ -229,11 +247,11 @@
                                     <ComboBox fx:id="cmbPlotCurrencyCom" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="3" />
                                  </children>
                               </GridPane>
-                              <SplitPane dividerPositions="0.5098039215686274" layoutX="2.0" layoutY="118.0" orientation="VERTICAL" prefHeight="461.0" prefWidth="602.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="118.0">
+                              <SplitPane dividerPositions="0.5012406947890818" layoutX="2.0" layoutY="174.0" orientation="VERTICAL" prefHeight="405.0" prefWidth="602.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="174.0">
                                  <items>
-                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="182.0" prefWidth="592.0">
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="247.0" prefWidth="600.0">
                                        <children>
-                                          <LineChart fx:id="plotCommissions" prefHeight="235.0" prefWidth="585.0" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
+                                          <LineChart fx:id="plotCommissions1" prefHeight="249.0" prefWidth="592.0" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
                                              <xAxis>
                                                 <CategoryAxis animated="false" side="BOTTOM" style="-fx-background-color: #ffffff;" />
                                              </xAxis>
@@ -320,15 +338,4 @@
             </SplitPane>
         </AnchorPane>
     </AnchorPane>
-   <GridPane>
-     <columnConstraints>
-       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-     </columnConstraints>
-     <rowConstraints>
-       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-     </rowConstraints>
-   </GridPane>
 </AnchorPane>
