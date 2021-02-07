@@ -15,7 +15,7 @@ Setup:
   3. Run the DeFiPortfolioManagement.exe (The first startup can take some time!)
   4. Click on update databse (left bottom corner)
   5. Setup is done and you can analyse your rewards and commissions.
-  6. After closing the DefiPortfolioManagement you can close the defid.exe
+  6. After closing the DefiPortfolioManagement you can close the Defid.exe
   
 # Functionality description:
 Update Database:
