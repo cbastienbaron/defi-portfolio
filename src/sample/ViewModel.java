@@ -34,6 +34,7 @@ public class ViewModel {
 
     //View
     public View view;
+    public JFrame frameUpdate;
 
     //Table and plot lists
     public List<PoolPairModel> poolPairModelList = new ArrayList<>();
@@ -228,7 +229,10 @@ public class ViewModel {
 
         if (!checkIfDeFiAppIsRunning()) {
 
+            this.showUpdateWindow();
+
             if (updateTransactionData()) {
+
                 this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
                 this.strCurrentBlockOnBlockchain.set(this.transactionController.getBlockCountRpc());
 
@@ -238,14 +242,30 @@ public class ViewModel {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 this.strLastUpdate.setValue(dateFormat.format(date));
 
-
             } else {
                 JOptionPane.showMessageDialog(new JFrame(), "The Defid.exe is not running! Please start it manually.", "Defid.exe not running", JOptionPane.WARNING_MESSAGE);
                 this.strCurrentBlockOnBlockchain.set("No connection");
             }
+            this.closeUpdateWindow();
         } else {
             //TODO Defi App is running cant update
         }
+    }
+
+    public void showUpdateWindow(){
+        this.frameUpdate = new JFrame("Loading Database");
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\updating.png");
+        JLabel jl = new JLabel("     Updating local files. Please wait...!",icon,JLabel.CENTER);
+        frameUpdate.add(jl);
+        frameUpdate.setSize(350, 125);
+        frameUpdate.setLocationRelativeTo(null);
+        frameUpdate.setUndecorated(true);
+        frameUpdate.setVisible(true);
+    }
+
+    public void closeUpdateWindow() {
+        this.frameUpdate.setVisible(false);
+        this.frameUpdate.dispose();
     }
 
     public void plotUpdate(String openedTab) {

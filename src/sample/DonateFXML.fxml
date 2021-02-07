@@ -9,8 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="191.0" prefWidth="680.0"  xmlns="http://javafx.com/javafx/8.0.202-ea" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="sample.DonateController">
+<AnchorPane prefHeight="191.0" prefWidth="680.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.DonateController">
    <children>
       <Label layoutX="145.0" layoutY="105.0" prefHeight="25.0" prefWidth="434.0" text="Wallet Address: dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V">
          <font>
@@ -22,7 +21,7 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <Button fx:id="btnCopy" layoutX="549.0" layoutY="103.0" mnemonicParsing="false" onAction="#btnCopyPressed" prefHeight="30.0" prefWidth="18.0">
+      <Button fx:id="btnCopy" layoutX="561.0" layoutY="103.0" mnemonicParsing="false" onAction="#btnCopyPressed" prefHeight="30.0" prefWidth="18.0">
          <graphic>
             <ImageView fitHeight="22.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
                <image>

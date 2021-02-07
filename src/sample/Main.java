@@ -8,6 +8,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -24,27 +26,33 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception{
+        boolean showSplashScreen = true;
         Parent root = null;
         try{
-            root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+            if(showSplashScreen) {
+                // With Splashscreen
+                root = FXMLLoader.load(getClass().getResource("SplashScreen.fxml"));
+                stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));
+                Scene scene = new Scene(root);
+                stage.initStyle(StageStyle.UNDECORATED);
+                stage.setScene(scene);
+                stage.show();
+            }else {
+                // Without Spalshscreen
+                Scene scene = new Scene(root);
+                stage.setTitle("DeFi App Portfolio V1.0");
+                stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));
+                stage.setScene(scene);
+                stage.setMinHeight(700);
+                stage.setMinWidth(1200);
+                stage.show();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Scene scene = new Scene(root);
-        stage.setTitle("DeFi App Portfolio V1.0");
-        stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));
-        stage.setScene(scene);
-        stage.setMinHeight(700);
-        stage.setMinWidth(1200);
-        stage.show();
 
-       /* Parent root = FXMLLoader.load(getClass().getResource("SplashScreen.fxml"));
-        stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));
-        Scene scene = new Scene(root);
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.setScene(scene);
-        stage.show();*/
+
     }
 
     public static void main(String[] args) {

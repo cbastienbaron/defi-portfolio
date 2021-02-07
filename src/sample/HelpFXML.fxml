@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="144.0" prefWidth="517.0" xmlns="http://javafx.com/javafx/8.0.202-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.HelpController">
+<AnchorPane prefHeight="144.0" prefWidth="517.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.HelpController">
       <Button layoutX="424.0" layoutY="77.0" mnemonicParsing="false" onMouseClicked="#btnCopyCallback" prefHeight="32.0" prefWidth="36.0">
          <graphic>
             <ImageView fitHeight="23.0" fitWidth="24.0" onMouseClicked="#btnCopyCallback" pickOnBounds="true" preserveRatio="true">
@@ -33,21 +33,20 @@
          </font>
       </Label>
    <ImageView fitHeight="92.0" fitWidth="83.0" layoutX="35.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
-      <Image url="@../icons/mail.png"/>
+      <Image url="@../icons/mail.png" />
    </ImageView>
       <Text layoutX="146.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="defiportfoliomanagement@gmail.com">
          <font>
             <Font size="16.0" />
          </font>
       </Text>
-      <Button  layoutX="470.0" layoutY="77.0" mnemonicParsing="false" onMouseClicked="#btnMailToCallback" prefHeight="32.0" prefWidth="37.0">
+      <Button layoutX="470.0" layoutY="77.0" mnemonicParsing="false" onMouseClicked="#btnMailToCallback" prefHeight="32.0" prefWidth="37.0">
          <graphic>
-            <ImageView fitHeight="23.0" fitWidth="27.0" onMouseClicked="#btnMailToCallback" pickOnBounds="true"
-                       preserveRatio="true">
+            <ImageView fitHeight="23.0" fitWidth="27.0" onMouseClicked="#btnMailToCallback" pickOnBounds="true" preserveRatio="true">
                <cursor>
-                  <Cursor fx:constant="HAND"/>
+                  <Cursor fx:constant="HAND" />
                </cursor>
-               <Image url="@../icons/mailto.png"/>
+               <Image url="@../icons/mailto.png" />
             </ImageView>
          </graphic>
          <tooltip>
