@@ -48,7 +48,19 @@ public class TransactionController {
     }
 
     public void startServer() {
+        try {
+            Runtime.getRuntime().exec("cmd /c start "+this.settingsController.strPathDefid);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void closeServer() {
+        try {
+            getRpcResponse("{\"method\": \"stop\"}");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public CoinPriceController getCoinPriceController() {
@@ -161,18 +173,16 @@ public class TransactionController {
 
         for (Object transaction : transactionJson) {
             JSONObject transactionJ = (JSONObject) transaction;
-            if (transactionJ.get("poolID") != null) {
-                if((transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",").length > 1){
-                    int a =2;
-                }
-                for (String amount : (transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")) {
 
+            for (String amount : (transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")) {
+                if (transactionJ.get("poolID") != null) {
                     transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", this));
+                } else {
+                    transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), this));
                 }
-
-            } else {
-                transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", ""), transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), this));
             }
+
+
         }
 
         return transactionList;
@@ -237,7 +247,7 @@ public class TransactionController {
         return transactionList;
     }
 
-    private void addToPortfolioModel(TransactionModel transactionSplit) {
+    public void addToPortfolioModel(TransactionModel transactionSplit) {
 
         String pool = "BTC-DFI";
         switch (transactionSplit.getPoolIDValue()) {
@@ -574,10 +584,10 @@ public class TransactionController {
         double amountCoin = 0;
 
         for (TransactionModel transaction : transactions) {
-                String[] CoinsAndAmounts = splitCoinsAndAmounts(transaction.getAmountValue());
-                if (coinName.equals(CoinsAndAmounts[1])) {
-                    amountCoin += Double.parseDouble(CoinsAndAmounts[0]);
-                }
+            String[] CoinsAndAmounts = splitCoinsAndAmounts(transaction.getAmountValue());
+            if (coinName.equals(CoinsAndAmounts[1])) {
+                amountCoin += Double.parseDouble(CoinsAndAmounts[0]);
+            }
         }
         return amountCoin;
     }

@@ -1,0 +1,12 @@
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\bin\Release\netcoreapp3.1\defi-portfolio.exe
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\bin\Release\netcoreapp3.1\defi-portfolio.deps.json
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\bin\Release\netcoreapp3.1\defi-portfolio.runtimeconfig.json
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\bin\Release\netcoreapp3.1\defi-portfolio.runtimeconfig.dev.json
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\bin\Release\netcoreapp3.1\defi-portfolio.dll
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\bin\Release\netcoreapp3.1\defi-portfolio.pdb
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\obj\Release\netcoreapp3.1\defi-portfolio.AssemblyInfoInputs.cache
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\obj\Release\netcoreapp3.1\defi-portfolio.AssemblyInfo.cs
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\obj\Release\netcoreapp3.1\defi-portfolio.csproj.CoreCompileInputs.cache
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\obj\Release\netcoreapp3.1\defi-portfolio.dll
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\obj\Release\netcoreapp3.1\defi-portfolio.pdb
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\obj\Release\netcoreapp3.1\defi-portfolio.genruntimeconfig.cache

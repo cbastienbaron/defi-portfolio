@@ -24,15 +24,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        try {
-            Runtime.getRuntime().exec("cmd.exe /c start "+System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         boolean showSplashScreen = true;
         Parent root;
         try{
+
             if(showSplashScreen) {
                 // With Splashscreen
                 root = FXMLLoader.load(getClass().getResource("views/SplashView.fxml"));

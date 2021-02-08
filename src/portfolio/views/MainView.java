@@ -595,7 +595,6 @@ public class MainView implements Initializable {
         contextMenuRawData.getItems().add(menuItemOpenInDefiExplorer);
 
         this.rawDataTable.contextMenuProperty().set(contextMenuRawData);
-
     }
 
     private void initPlotTableContextMenu() {

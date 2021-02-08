@@ -66,6 +66,8 @@ public class MainViewController {
             //Betriebssystem ist Linux/Unix basiert
         }
 
+        this.transactionController.startServer();
+
         // generate folder //defi-portfolio if no one exists
         File directory = new File(this.settingsController.strPathAppData);
         if (!directory.exists()) {
@@ -84,9 +86,16 @@ public class MainViewController {
         //Add listener to Fiat
         this.settingsController.selectedFiatCurrency.addListener(
                 (ov, t, t1) -> {
+                    this.transactionController.getPortfolioList().clear();
                     for (TransactionModel transactionModel : this.transactionController.getTransactionList()) {
-                        transactionModel.setFiatCurrency(t);
-                        transactionModel.setFiatValue(this.coinPriceController.getPriceFromTimeStamp(transactionModel.getCryptoCurrencyValue() + t, transactionModel.getBlockTimeValue() * 1000L));
+                        if (!transactionModel.getCryptoCurrencyValue().contains("-")) {
+                            transactionModel.setFiatCurrency(t1);
+                            transactionModel.setFiatValue(transactionModel.getCryptoValueValue() * this.coinPriceController.getPriceFromTimeStamp(transactionModel.getCryptoCurrencyValue() + t1, transactionModel.getBlockTimeValue() * 1000L));
+                        }
+
+                        if (transactionModel.getTypeValue().equals("Rewards") | transactionModel.getTypeValue().equals("Commission")) {
+                            this.transactionController.addToPortfolioModel(transactionModel);
+                        }
                         //TODO Portfolio clear and   this.transactionController.addPortfoli...
                     }
                     this.transactionList.clear();
@@ -192,17 +201,16 @@ public class MainViewController {
     }
 
     public boolean updateTransactionData() {
-        if (this.transactionController.checkCrp() && !this.transactionController.getBlockCountRpc().equals("No connection")) {
+
+        if (this.transactionController.checkCrp()) {
             if (new File(this.settingsController.strPathAppData + this.settingsController.strTransactionData).exists()) {
                 int depth = Integer.parseInt(this.transactionController.getBlockCountRpc()) - this.transactionController.getLocalBlockCount();
                 return this.transactionController.updateTransactionData(depth);
             } else {
                 return this.transactionController.updateTransactionData(this.transactionController.getAccountHistoryCountRpc());
             }
-        } else {
-            return false;
         }
-
+        return false;
     }
 
     public boolean checkIfDeFiAppIsRunning() {
@@ -212,10 +220,7 @@ public class MainViewController {
 
         try {
             p = Runtime.getRuntime().exec(System.getenv("windir") + "\\system32\\" + "tasklist.exe");
-
-
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
             while ((line = input.readLine()) != null) {
                 pidInfo.append(line);
             }
@@ -233,24 +238,21 @@ public class MainViewController {
         if (!checkIfDeFiAppIsRunning()) {
 
             if (updateTransactionData()) {
-                this.showUpdateWindow();
 
+                this.showUpdateWindow();
                 this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
                 this.strCurrentBlockOnBlockchain.set(this.transactionController.getBlockCountRpc());
-
                 transactionList.clear();
                 transactionList.addAll(this.transactionController.getTransactionList());
                 Date date = new Date(System.currentTimeMillis());
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 this.strLastUpdate.setValue(dateFormat.format(date));
-
                 this.closeUpdateWindow();
+
             } else {
                 if (!this.transactionController.checkCrp()) {
-
                     this.showDefidNotRunning();
                     this.strCurrentBlockOnBlockchain.set("No connection");
-
                 }
             }
 

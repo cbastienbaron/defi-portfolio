@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>defi_portfolio</RootNamespace>
+    <ApplicationIcon>DefiIcon.ico</ApplicationIcon>
+    <StartupObject>defi_portfolio.Program</StartupObject>
+  </PropertyGroup>
+
+</Project>
