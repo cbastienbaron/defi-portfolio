@@ -97,7 +97,8 @@ public class TransactionController {
                 wr = new OutputStreamWriter(conn.getOutputStream());
             }
         } catch (IOException e) {
-            System.out.println("TransactionController.initCrpConnection: Could not connect");;
+            System.out.println("TransactionController.initCrpConnection: Could not connect");
+            ;
         }
 
 
@@ -161,9 +162,16 @@ public class TransactionController {
         for (Object transaction : transactionJson) {
             JSONObject transactionJ = (JSONObject) transaction;
             if (transactionJ.get("poolID") != null) {
-                transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), new String[]{transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")}, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", this));
+                if((transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",").length > 1){
+                    int a =2;
+                }
+                for (String amount : (transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")) {
+
+                    transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", this));
+                }
+
             } else {
-                transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), new String[]{transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")}, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), this));
+                transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", ""), transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), this));
             }
         }
 
@@ -212,7 +220,7 @@ public class TransactionController {
 
                 while (line != null) {
                     String[] transactionSplit = line.split(";");
-                    TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], new String[]{transactionSplit[3]}, transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], this);
+                    TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], transactionSplit[3], transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], this);
                     transactionList.add(transAction);
                     if (transAction.getTypeValue().equals("Rewards") | transAction.getTypeValue().equals("Commission"))
                         addToPortfolioModel(transAction);
@@ -345,15 +353,15 @@ public class TransactionController {
         return date;
     }
 
-    public String convertDateToIntervall(String strDate, String intervall)  {
-            Date date = null;
-            try {
-                date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            Timestamp ts = new Timestamp(date.getTime());
-            return this.getDate(Long.toString(ts.getTime()/1000),intervall);
+    public String convertDateToIntervall(String strDate, String intervall) {
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Timestamp ts = new Timestamp(date.getTime());
+        return this.getDate(Long.toString(ts.getTime() / 1000), intervall);
     }
 
     public int getLocalBlockCount() {
@@ -393,21 +401,20 @@ public class TransactionController {
 
                 for (TransactionModel transactionModel : updateTransactionList) {
 
-                    for (int i = 0; i < transactionModel.getAmountValue().length; i++) {
-                        sb.append(transactionModel.getBlockTimeValue()).append(exportSplitter);
-                        sb.append(transactionModel.getOwnerValue()).append(exportSplitter);
-                        sb.append(transactionModel.getTypeValue()).append(exportSplitter);
-                        sb.append(transactionModel.getAmountValue()[i]).append(exportSplitter);
-                        sb.append(transactionModel.getBlockHashValue()).append(exportSplitter);
-                        sb.append(transactionModel.getBlockHeightValue()).append(exportSplitter);
-                        sb.append(transactionModel.getPoolIDValue()).append(exportSplitter);
-                        if (transactionModel.getTxIDValue().equals(""))
-                            sb.append("\"\"");
-                        else
-                            sb.append(transactionModel.getTxIDValue());
+                    sb.append(transactionModel.getBlockTimeValue()).append(exportSplitter);
+                    sb.append(transactionModel.getOwnerValue()).append(exportSplitter);
+                    sb.append(transactionModel.getTypeValue()).append(exportSplitter);
+                    sb.append(transactionModel.getAmountValue()).append(exportSplitter);
+                    sb.append(transactionModel.getBlockHashValue()).append(exportSplitter);
+                    sb.append(transactionModel.getBlockHeightValue()).append(exportSplitter);
+                    sb.append(transactionModel.getPoolIDValue()).append(exportSplitter);
+                    if (transactionModel.getTxIDValue().equals(""))
+                        sb.append("\"\"");
+                    else
+                        sb.append(transactionModel.getTxIDValue());
 
-                        sb.append("\n");
-                    }
+                    sb.append("\n");
+
                 }
                 writer.write(sb.toString());
                 writer.close();
@@ -471,7 +478,7 @@ public class TransactionController {
             int month = cal.get(Calendar.MONTH) + 1;
             int week = cal.get(Calendar.WEEK_OF_YEAR);
             int day = cal.get(Calendar.DAY_OF_MONTH);
-            String[] AmountCoin = item.getAmountValue();
+            String[] coinValue = item.getAmountValue().split("@");
             String pool = "BTC-DFI";
 
             switch (item.getPoolIDValue()) {
@@ -493,62 +500,59 @@ public class TransactionController {
                 default:
                     break;
             }
-            for (String s : AmountCoin) {
-                String[] coinValue = s.split("@");
 
-                if (coinValue[1].equals(poolPair.split("-")[poolPairCount]) & item.getTypeValue().equals(type) & poolPair.equals(pool)) {
-                    String date = "";
-                    switch (intervall) {
-                        case "Daily":
-                            String monthAdapted = Integer.toString(month);
-                            if (month < 10) {
-                                monthAdapted = "0" + month;
-                            }
-                            if (day < 10) {
-                                date = year + "-" + monthAdapted + "-0" + day;
-                            } else {
-                                date = year + "-" + monthAdapted + "-" + day;
-                            }
-
-                            break;
-                        case "Monthly":
-                            if (month < 10) {
-                                date = year + "-0" + month;
-                            } else {
-                                date = year + "-" + month;
-                            }
-                            break;
-                        case "Weekly":
-                            int correct = 0;
-                            if (month == 1 && (day == 1 || day == 2 || day == 3)) {
-                                correct = 1;
-                            }
-                            if (week < 10) {
-                                date = year - correct + "-0" + week;
-                            } else {
-                                date = year - correct + "-" + week;
-                            }
-                            break;
-                        case "Yearly":
-                            date = year + "-";
-                            break;
-                    }
-
-                    double fiatPrice = 1;
-                    if (plotCurrency.equals("Fiat")) {
-                        fiatPrice = this.coinPriceController.getPriceFromTimeStamp(poolPair.split("-")[poolPairCount] + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue() * 1000L);
-                    }
-                    if (map.containsKey(date)) {
-                        Double oldValue = map.get(date);
-
-                        Double newValue = oldValue + (Double.parseDouble(coinValue[0]) * fiatPrice);
-                        map.put(date, newValue);
-                    } else {
-                        map.put(date, Double.parseDouble(coinValue[0]) * fiatPrice);
-                    }
-
+            if (coinValue[1].equals(poolPair.split("-")[poolPairCount]) & item.getTypeValue().equals(type) & poolPair.equals(pool)) {
+                String date = "";
+                switch (intervall) {
+                    case "Daily":
+                        String monthAdapted = Integer.toString(month);
+                        if (month < 10) {
+                            monthAdapted = "0" + month;
+                        }
+                        if (day < 10) {
+                            date = year + "-" + monthAdapted + "-0" + day;
+                        } else {
+                            date = year + "-" + monthAdapted + "-" + day;
+                        }
+                        break;
+                    case "Monthly":
+                        if (month < 10) {
+                            date = year + "-0" + month;
+                        } else {
+                            date = year + "-" + month;
+                        }
+                        break;
+                    case "Weekly":
+                        int correct = 0;
+                        if (month == 1 && (day == 1 || day == 2 || day == 3)) {
+                            correct = 1;
+                        }
+                        if (week < 10) {
+                            date = year - correct + "-0" + week;
+                        } else {
+                            date = year - correct + "-" + week;
+                        }
+                        break;
+                    case "Yearly":
+                        date = year + "-";
+                        break;
                 }
+
+                double fiatPrice = 1;
+                if (plotCurrency.equals("Fiat")) {
+                    fiatPrice = this.coinPriceController.getPriceFromTimeStamp(poolPair.split("-")[poolPairCount] + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue() * 1000L);
+                }
+                if (map.containsKey(date)) {
+                    Double oldValue = map.get(date);
+
+                    Double newValue = oldValue + (Double.parseDouble(coinValue[0]) * fiatPrice);
+                    map.put(date, newValue);
+                } else {
+                    map.put(date, Double.parseDouble(coinValue[0]) * fiatPrice);
+                }
+
             }
+
         }
         return new TreeMap<>(map);
     }
@@ -570,17 +574,10 @@ public class TransactionController {
         double amountCoin = 0;
 
         for (TransactionModel transaction : transactions) {
-
-            for (int i = 0; i < transaction.getAmountValue().length; i++) {
-
-                String[] CoinsAndAmounts = splitCoinsAndAmounts(transaction.getAmountValue()[i]);
-
+                String[] CoinsAndAmounts = splitCoinsAndAmounts(transaction.getAmountValue());
                 if (coinName.equals(CoinsAndAmounts[1])) {
                     amountCoin += Double.parseDouble(CoinsAndAmounts[0]);
                 }
-
-            }
-
         }
         return amountCoin;
     }

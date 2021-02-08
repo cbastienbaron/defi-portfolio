@@ -25,29 +25,25 @@ public class ExportService {
 
     }
 
-    public boolean exportTransactionToExcel(List<TransactionModel> transactions, String exportPath, String fiatCurrency, Locale localeDecimal, String exportSplitter) {
+    public boolean exportTransactionToExcel(List<TransactionModel> transactions, String exportPath, Locale localeDecimal, String exportSplitter) {
         try {
             PrintWriter writer = new PrintWriter(exportPath);
             StringBuilder sb = new StringBuilder();
 
-
             sb.append("Date,Operation,Amount,Cryptocurrency,FIAT value,FIAT currency,Pool ID,Block Height,Block Hash,Owner").append("\n");
 
             for (TransactionModel transaction : transactions) {
-
-                for (int i = 0; i < transaction.getAmountValue().length; i++) {
-                    sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTimeValue())).append(exportSplitter);
-                    sb.append(transaction.getTypeValue()).append(exportSplitter);
-                    sb.append(String.format(localeDecimal, "%.8f", transaction.getCryptoValueValue())).append(exportSplitter);
-                    sb.append(transaction.getCryptoCurrencyValue()).append(exportSplitter);
-                    sb.append(String.format(localeDecimal, "%.8f", transaction.getFiatValueValue().doubleValue())).append(exportSplitter);
-                    sb.append(transaction.getFiatCurrencyValue()).append(exportSplitter);
-                    sb.append(transaction.getPoolIDValue()).append(exportSplitter);
-                    sb.append(transaction.getBlockHeightValue()).append(exportSplitter);
-                    sb.append(transaction.getBlockHashValue()).append(exportSplitter);
-                    sb.append(transaction.getOwnerValue());
-                    sb.append("\n");
-                }
+                sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTimeValue())).append(exportSplitter);
+                sb.append(transaction.getTypeValue()).append(exportSplitter);
+                sb.append(String.format(localeDecimal, "%.8f", transaction.getCryptoValueValue())).append(exportSplitter);
+                sb.append(transaction.getCryptoCurrencyValue()).append(exportSplitter);
+                sb.append(String.format(localeDecimal, "%.8f", transaction.getFiatValueValue().doubleValue())).append(exportSplitter);
+                sb.append(transaction.getFiatCurrencyValue()).append(exportSplitter);
+                sb.append(transaction.getPoolIDValue()).append(exportSplitter);
+                sb.append(transaction.getBlockHeightValue()).append(exportSplitter);
+                sb.append(transaction.getBlockHashValue()).append(exportSplitter);
+                sb.append(transaction.getOwnerValue());
+                sb.append("\n");
             }
             writer.write(sb.toString());
             writer.close();

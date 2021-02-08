@@ -579,9 +579,7 @@ public class MainView implements Initializable {
         MenuItem menuItemOpenInDefiExplorer = new MenuItem("Open in DeFi Blockchain Explorer");
         ContextMenu contextMenuRawData = new ContextMenu();
 
-        this.rawDataTable.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-            menuItemOpenInDefiExplorer.setVisible(this.rawDataTable.getSelectionModel().getSelectedItems().size() == 1);
-        });
+        this.rawDataTable.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> menuItemOpenInDefiExplorer.setVisible(this.rawDataTable.getSelectionModel().getSelectedItems().size() == 1));
 
         //Init context menu of raw data table
         menuItemCopySelected.setOnAction(event -> mainViewController.copySelectedRawDataToClipboard(rawDataTable.selectionModelProperty().get().getSelectedItems(), false));

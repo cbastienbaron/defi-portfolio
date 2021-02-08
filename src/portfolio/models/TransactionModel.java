@@ -11,27 +11,29 @@ public class TransactionModel {
     private final LongProperty blockTimeProperty = new SimpleLongProperty(0L);
     private final StringProperty typeProperty = new SimpleStringProperty("");
     private final StringProperty poolIDProperty = new SimpleStringProperty("");
-    private final ObjectProperty<String[]> amountProperty = new SimpleObjectProperty<>();
+    private final StringProperty amountProperty = new SimpleStringProperty("");
     private final StringProperty cryptoCurrencyProperty = new SimpleStringProperty("");
     private final DoubleProperty cryptoValueProperty = new SimpleDoubleProperty(0.0);
     private final DoubleProperty fiatValueProperty = new SimpleDoubleProperty(0.0);
     private final StringProperty fiatCurrencyProperty = new SimpleStringProperty("");
     private final StringProperty txIDProperty = new SimpleStringProperty("");
 
-    public TransactionModel(Long blockTime, String owner, String type, String[] amounts, String blockHash, int blockHeight, String poolID, String txid, TransactionController transactionController) {
+    public TransactionModel(Long blockTime, String owner, String type, String amounts, String blockHash, int blockHeight, String poolID, String txid, TransactionController transactionController) {
         this.blockTimeProperty.set(blockTime);
         this.ownerProperty.set(owner);
         this.typeProperty.set(type);
         this.amountProperty.set(amounts);
         this.blockHashProperty.set(blockHash);
         this.blockHeightProperty.set(blockHeight);
+        if(blockHeight==620527){
+            int a=2;
+        }
         this.poolIDProperty.set(poolID);
-        this.cryptoValueProperty.set(Double.parseDouble(transactionController.splitCoinsAndAmounts(amounts[0])[0]));
-        this.cryptoCurrencyProperty.set(transactionController.splitCoinsAndAmounts(amounts[0])[1]);
+        this.cryptoValueProperty.set(Double.parseDouble(transactionController.splitCoinsAndAmounts(amounts)[0]));
+        this.cryptoCurrencyProperty.set(transactionController.splitCoinsAndAmounts(amounts)[1]);
         this.txIDProperty.set(txid);
         this.fiatCurrencyProperty.set(transactionController.getSettingsController().selectedFiatCurrency.getValue());
-        if(this.amountProperty.getValue()[0].split("@")[1].length() == 3)this.fiatValueProperty.set(this.cryptoValueProperty.getValue() * transactionController.getCoinPriceController().getPriceFromTimeStamp(this.amountProperty.getValue()[0].split("@")[1]+transactionController.getSettingsController().selectedFiatCurrency.getValue(),this.blockTimeProperty.getValue() * 1000L));
-
+        if(this.amountProperty.getValue().split("@")[1].length() == 3)this.fiatValueProperty.set(this.cryptoValueProperty.getValue() * transactionController.getCoinPriceController().getPriceFromTimeStamp(this.amountProperty.getValue().split("@")[1]+transactionController.getSettingsController().selectedFiatCurrency.getValue(),this.blockTimeProperty.getValue() * 1000L));
     }
 
     public void setOwner(String owner) {
@@ -108,15 +110,15 @@ public class TransactionModel {
     }
 
 
-    public ObjectProperty<String[]> getAmount() {
+    public StringProperty getAmount() {
         return amountProperty;
     }
 
-    public void setAmount(String[] amount) {
+    public void setAmount(String amount) {
         this.amountProperty.set(amount);
     }
 
-    public String[] getAmountValue() {
+    public String getAmountValue() {
         return amountProperty.getValue();
     }
 

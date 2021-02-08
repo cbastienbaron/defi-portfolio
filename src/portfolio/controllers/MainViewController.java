@@ -98,9 +98,7 @@ public class MainViewController {
     }
 
     public void startTimer() {
-        TimerController timerController = new TimerController(this);
-        Timer timer = new Timer("Timer");
-        timer.scheduleAtFixedRate(timerController, 0, 30000L);
+        new Timer("Timer").scheduleAtFixedRate(new TimerController(this), 0, 30000L);
     }
 
     public void copySelectedRawDataToClipboard(List<TransactionModel> list, boolean withHeaders) {
@@ -111,15 +109,13 @@ public class MainViewController {
             localeDecimal = Locale.US;
         }
 
-        if (withHeaders) {
+        if (withHeaders)
             sb.append("Date,Operation,Amount,Cryptocurrency,FIAT value,FIAT currency,Pool ID,Block Height,Block Hash,Owner,".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
-        }
 
-        for (TransactionModel transaction : list
-        ) {
+        for (TransactionModel transaction : list) {
             sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTime().getValue())).append(this.settingsController.selectedSeperator.getValue());
             sb.append(transaction.getType().getValue()).append(this.settingsController.selectedSeperator.getValue());
-            String[] CoinsAndAmounts = this.transactionController.splitCoinsAndAmounts(transaction.getAmount().getValue()[0]);
+            String[] CoinsAndAmounts = this.transactionController.splitCoinsAndAmounts(transaction.getAmount().getValue());
             sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]))).append(this.settingsController.selectedSeperator.getValue());
             sb.append(CoinsAndAmounts[1]).append(this.settingsController.selectedSeperator.getValue());
             sb.append(String.format(localeDecimal, "%.8f", transaction.getFiatValueValue())).append(this.settingsController.selectedSeperator.getValue());
@@ -649,7 +645,7 @@ public class MainViewController {
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {
-            boolean success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), this.settingsController.selectedFiatCurrency.getValue(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+            boolean success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
             if (success) {
                 this.strProgressbar.setValue("Excel successfully exported!");
                 PauseTransition pause = new PauseTransition(Duration.seconds(10));
