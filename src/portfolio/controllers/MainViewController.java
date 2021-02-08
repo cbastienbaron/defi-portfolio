@@ -347,13 +347,10 @@ public class MainViewController {
 
     public void updateOverview() {
 
-//TODO klappt noch nicht wie es soll?
-
         this.poolPairModelList.clear();
         this.mainView.plotOverview.setLegendVisible(true);
         this.mainView.plotOverview.getData().clear();
         this.mainView.plotOverview.getYAxis().setLabel("Total (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
-
 
         double maxValue = 0;
 
@@ -401,7 +398,6 @@ public class MainViewController {
         this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
         this.poolPairList.clear();
         this.poolPairList.addAll(this.poolPairModelList);
-
     }
 
     public void updateRewards() {
