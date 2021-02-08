@@ -29,6 +29,16 @@ Daniel Klaiber (https://t.me/danielklaiber) & (https://twitter.com/danielkolibri
 
 Arthur Eisener (https://t.me/ArthurEisener)
 
+# Donate
+
+If you like the application and want to support this project with DFI (DefiChain token):
+
+$DFI: dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V
+ 
+![Donate](./src/icons/DonateQR.png)
+
+
+
 ## Licenses
 
 The DeFi App Portfolio is released under the terms of the MIT license. For more information see https://opensource.org/licenses/MIT.
