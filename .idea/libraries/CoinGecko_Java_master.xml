@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="CoinGecko-Java-master">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/src/sample/libraries/CoinGecko-Java-master.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/portfolio/libraries/CoinGecko-Java-master.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -1,4 +1,4 @@
-package sample;
+package portfolio.controllers;
 
 import javafx.animation.PauseTransition;
 import javafx.beans.property.*;
@@ -9,6 +9,11 @@ import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import portfolio.models.PoolPairModel;
+import portfolio.models.PortfolioModel;
+import portfolio.models.TransactionModel;
+import portfolio.services.ExportService;
+import portfolio.views.MainView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,13 +27,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 import java.util.Timer;
 
-public class ViewModel {
+public class MainViewController {
 
     public StringProperty strCurrentBlockLocally = new SimpleStringProperty("0");
     public StringProperty strCurrentBlockOnBlockchain = new SimpleStringProperty("No connection");
@@ -36,7 +40,7 @@ public class ViewModel {
     public StringProperty strProgressbar = new SimpleStringProperty("");
 
     //View
-    public View view;
+    public MainView mainView;
     public JFrame frameUpdate;
     public Frame frameDefid;
 
@@ -51,7 +55,7 @@ public class ViewModel {
     public TransactionController transactionController = new TransactionController(this.settingsController.strPathAppData + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.strCookiePath, this.settingsController.strPathDefid);
     public ExportService expService;
 
-    public ViewModel() {
+    public MainViewController() {
 
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
@@ -77,13 +81,12 @@ public class ViewModel {
 
         //start timer for getting last block on blockchain
         startTimer();
-
         //Add listener to Fiat
         this.settingsController.selectedFiatCurrency.addListener(
                 (ov, t, t1) -> {
-                    for (TransactionModel transactionModel:this.transactionController.getTransactionList()) {
+                    for (TransactionModel transactionModel : this.transactionController.getTransactionList()) {
                         transactionModel.setFiatCurrency(t);
-                        transactionModel.setFiatValue(this.coinPriceController.getPriceFromTimeStamp(transactionModel.getCryptoCurrencyValue()+t,transactionModel.getBlockTimeValue()*1000L));
+                        transactionModel.setFiatValue(this.coinPriceController.getPriceFromTimeStamp(transactionModel.getCryptoCurrencyValue() + t, transactionModel.getBlockTimeValue() * 1000L));
                         //TODO Portfolio clear and   this.transactionController.addPortfoli...
                     }
                     this.transactionList.clear();
@@ -141,15 +144,15 @@ public class ViewModel {
         }
 
         if (withHeaders) {
-            switch (this.view.tabPane.getSelectionModel().getSelectedItem().getText()) {
+            switch (this.mainView.tabPane.getSelectionModel().getSelectedItem().getText()) {
                 case "Overview":
-                    sb.append((this.view.plotTable.getColumns().get(0).getText() + "," + this.view.plotTable.getColumns().get(1).getText() + "," + this.view.plotTable.getColumns().get(2).getText() + "," + this.view.plotTable.getColumns().get(3).getText() + "," + this.view.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((this.mainView.plotTable.getColumns().get(0).getText() + "," + this.mainView.plotTable.getColumns().get(1).getText() + "," + this.mainView.plotTable.getColumns().get(2).getText() + "," + this.mainView.plotTable.getColumns().get(3).getText() + "," + this.mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 case "Rewards":
-                    sb.append((this.view.plotTable.getColumns().get(0).getText() + "," + this.view.plotTable.getColumns().get(1).getText() + "," + this.view.plotTable.getColumns().get(3).getText() + "," + this.view.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((this.mainView.plotTable.getColumns().get(0).getText() + "," + this.mainView.plotTable.getColumns().get(1).getText() + "," + this.mainView.plotTable.getColumns().get(3).getText() + "," + this.mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 case "Commissions":
-                    sb.append((this.view.plotTable.getColumns().get(0).getText() + "," + this.view.plotTable.getColumns().get(1).getText() + "," + this.view.plotTable.getColumns().get(2).getText() + "," + this.view.plotTable.getColumns().get(3).getText() + "," + this.view.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((this.mainView.plotTable.getColumns().get(0).getText() + "," + this.mainView.plotTable.getColumns().get(1).getText() + "," + this.mainView.plotTable.getColumns().get(2).getText() + "," + this.mainView.plotTable.getColumns().get(3).getText() + "," + this.mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 default:
                     break;
@@ -158,7 +161,7 @@ public class ViewModel {
 
         for (PoolPairModel poolPair : list
         ) {
-            switch (this.view.tabPane.getSelectionModel().getSelectedItem().getText()) {
+            switch (this.mainView.tabPane.getSelectionModel().getSelectedItem().getText()) {
                 case "Overview":
                     sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(String.format(localeDecimal, "%.8f", poolPair.getFiatValue().getValue())).append(this.settingsController.selectedSeperator.getValue());
@@ -201,7 +204,7 @@ public class ViewModel {
                 return this.transactionController.updateTransactionData(this.transactionController.getAccountHistoryCountRpc());
             }
         } else {
-              return false;
+            return false;
         }
 
     }
@@ -247,8 +250,12 @@ public class ViewModel {
 
                 this.closeUpdateWindow();
             } else {
-                this.showDefidNotRunning();
-                this.strCurrentBlockOnBlockchain.set("No connection");
+                if (!this.transactionController.checkCrp()) {
+
+                    this.showDefidNotRunning();
+                    this.strCurrentBlockOnBlockchain.set("No connection");
+
+                }
             }
 
         } else {
@@ -256,22 +263,22 @@ public class ViewModel {
         }
     }
 
-    public void showDefiAppIsRunning(){
+    public void showDefiAppIsRunning() {
         JFrame frameDefid = new JFrame("DeFi App running");
         frameDefid.setLayout(null);
         ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\process.png");
-        JLabel jl = new JLabel("     The Defi-App is running! Please close it first.",icon,JLabel.CENTER);
-        jl.setSize(400,100);
-        jl.setLocation(0,0);
+        JLabel jl = new JLabel("     The Defi-App is running! Please close it first.", icon, JLabel.CENTER);
+        jl.setSize(400, 100);
+        jl.setLocation(0, 0);
         frameDefid.add(jl);
         frameDefid.setSize(400, 125);
         frameDefid.setLocationRelativeTo(null);
         frameDefid.setUndecorated(true);
 
-        JButton b=new JButton("OK");
-        b.setBounds(160,80,80,25);
-        b.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
+        JButton b = new JButton("OK");
+        b.setBounds(160, 80, 80, 25);
+        b.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 Component component = (Component) e.getSource();
                 JFrame frame = (JFrame) SwingUtilities.getRoot(component);
                 frame.dispose();
@@ -281,22 +288,22 @@ public class ViewModel {
         frameDefid.setVisible(true);
     }
 
-    public void showDefidNotRunning(){
+    public void showDefidNotRunning() {
         this.frameDefid = new JFrame("Launch defid.exe");
         frameDefid.setLayout(null);
         ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\connected.png");
-        JLabel jl = new JLabel("     The Defid.exe is not running! Please start it manually.",icon,JLabel.CENTER);
-        jl.setSize(400,100);
-        jl.setLocation(0,0);
+        JLabel jl = new JLabel("     The defid.exe is not running! Please start it manually.", icon, JLabel.CENTER);
+        jl.setSize(400, 100);
+        jl.setLocation(0, 0);
         frameDefid.add(jl);
         frameDefid.setSize(400, 125);
         frameDefid.setLocationRelativeTo(null);
         frameDefid.setUndecorated(true);
 
-        JButton b=new JButton("OK");
-        b.setBounds(160,80,80,25);
-        b.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
+        JButton b = new JButton("OK");
+        b.setBounds(160, 80, 80, 25);
+        b.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 Component component = (Component) e.getSource();
                 JFrame frame = (JFrame) SwingUtilities.getRoot(component);
                 frame.dispose();
@@ -306,10 +313,10 @@ public class ViewModel {
         frameDefid.setVisible(true);
     }
 
-    public void showUpdateWindow(){
+    public void showUpdateWindow() {
         this.frameUpdate = new JFrame("Loading Database");
         ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\updating.png");
-        JLabel jl = new JLabel("     Updating local files. Please wait...!",icon,JLabel.CENTER);
+        JLabel jl = new JLabel("     Updating local files. Please wait...!", icon, JLabel.CENTER);
         frameUpdate.add(jl);
         frameUpdate.setSize(350, 125);
         frameUpdate.setLocationRelativeTo(null);
@@ -322,7 +329,7 @@ public class ViewModel {
         this.frameUpdate.dispose();
     }
 
-    public void plotUpdate(String openedTab){
+    public void plotUpdate(String openedTab) {
         switch (openedTab) {
             case "Overview":
                 updateOverview();
@@ -343,9 +350,9 @@ public class ViewModel {
 //TODO klappt noch nicht wie es soll?
 
         this.poolPairModelList.clear();
-        this.view.plotOverview.setLegendVisible(true);
-        this.view.plotOverview.getData().clear();
-        this.view.plotOverview.getYAxis().setLabel("Total (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
+        this.mainView.plotOverview.setLegendVisible(true);
+        this.mainView.plotOverview.getData().clear();
+        this.mainView.plotOverview.getYAxis().setLabel("Total (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
 
 
         double maxValue = 0;
@@ -368,17 +375,17 @@ public class ViewModel {
                     }
                 }
 
-                this.view.yAxis.setAutoRanging(false);
+                this.mainView.yAxis.setAutoRanging(false);
                 if (maxValue < overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble()) {
-                    this.view.yAxis.setUpperBound(overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble() * 1.10);
+                    this.mainView.yAxis.setUpperBound(overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble() * 1.10);
                     maxValue = overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble();
                 }
-                this.view.plotOverview.getData().add(overviewSeries);
-                this.view.plotOverview.setCreateSymbols(true);
+                this.mainView.plotOverview.getData().add(overviewSeries);
+                this.mainView.plotOverview.setCreateSymbols(true);
             }
 
         }
-        for (XYChart.Series<Number, Number> s : this.view.plotOverview.getData()) {
+        for (XYChart.Series<Number, Number> s : this.mainView.plotOverview.getData()) {
             if (s != null) {
                 for (XYChart.Data d : s.getData()) {
                     if (d != null) {
@@ -402,13 +409,13 @@ public class ViewModel {
         XYChart.Series<Number, Number> rewardsSeries = new XYChart.Series();
 
         this.poolPairModelList.clear();
-        this.view.plotRewards.setLegendVisible(false);
-        this.view.plotRewards.getData().clear();
+        this.mainView.plotRewards.setLegendVisible(false);
+        this.mainView.plotRewards.getData().clear();
 
         if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
-            this.view.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
+            this.mainView.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
         } else {
-            this.view.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
+            this.mainView.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
         }
 
         if (this.transactionController.getPortfolioList().containsKey(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue())) {
@@ -429,17 +436,14 @@ public class ViewModel {
                     }
                 }
 
-                this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
-                this.poolPairList.clear();
-                this.poolPairList.addAll(this.poolPairModelList);
 
-                if (this.view.plotRewards.getData().size() == 1) {
-                    this.view.plotRewards.getData().remove(0);
+                if (this.mainView.plotRewards.getData().size() == 1) {
+                    this.mainView.plotRewards.getData().remove(0);
                 }
 
-                this.view.plotRewards.getData().add(rewardsSeries);
+                this.mainView.plotRewards.getData().add(rewardsSeries);
 
-                for (XYChart.Series<Number, Number> s : this.view.plotRewards.getData()) {
+                for (XYChart.Series<Number, Number> s : this.mainView.plotRewards.getData()) {
                     for (XYChart.Data d : s.getData()) {
                         Tooltip t = new Tooltip(d.getYValue().toString());
                         //t.setShowDelay(Duration.seconds(0));
@@ -467,15 +471,17 @@ public class ViewModel {
                             cumulatedFiatValue = cumulatedFiatValue + entry.getValue().getFiatRewards1Value();
                             rewardsCumulated.getData().add(new XYChart.Data(entry.getKey(), cumulatedFiatValue));
                         }
+
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", 1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue()));
                     }
                 }
-                if (this.view.plotRewards.getData().size() == 1) {
-                    this.view.plotRewards.getData().remove(0);
+                if (this.mainView.plotRewards.getData().size() == 1) {
+                    this.mainView.plotRewards.getData().remove(0);
                 }
 
-                this.view.plotRewards.getData().add(rewardsCumulated);
+                this.mainView.plotRewards.getData().add(rewardsCumulated);
 
-                for (XYChart.Series<Number, Number> s : this.view.plotRewards.getData()) {
+                for (XYChart.Series<Number, Number> s : this.mainView.plotRewards.getData()) {
                     for (XYChart.Data d : s.getData()) {
                         Tooltip t = new Tooltip(d.getYValue().toString());
                         //t.setShowDelay(Duration.seconds(0));
@@ -486,6 +492,10 @@ public class ViewModel {
                 }
 
             }
+
+            this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
+            this.poolPairList.clear();
+            this.poolPairList.addAll(this.poolPairModelList);
         }
 
     }
@@ -494,19 +504,19 @@ public class ViewModel {
 
         XYChart.Series<Number, Number> commissionsSeries1 = new XYChart.Series();
         XYChart.Series<Number, Number> commissionsSeries2 = new XYChart.Series();
-        this.view.plotCommissions1.getData().clear();
-        this.view.plotCommissions2.getData().clear();
+        this.mainView.plotCommissions1.getData().clear();
+        this.mainView.plotCommissions2.getData().clear();
         this.poolPairModelList.clear();
         this.poolPairList.clear();
-        this.view.plotCommissions1.setLegendVisible(false);
-        this.view.plotCommissions2.setLegendVisible(false);
+        this.mainView.plotCommissions1.setLegendVisible(false);
+        this.mainView.plotCommissions2.setLegendVisible(false);
 
         if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
-            this.view.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
-            this.view.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[0]);
+            this.mainView.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
+            this.mainView.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[0]);
         } else {
-            this.view.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
-            this.view.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
+            this.mainView.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
+            this.mainView.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
         }
 
         if (this.transactionController.getPortfolioList().containsKey(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue())) {
@@ -528,14 +538,11 @@ public class ViewModel {
                     }
                 }
 
-                this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
-                this.poolPairList.clear();
-                this.poolPairList.addAll(this.poolPairModelList);
 
-                this.view.plotCommissions1.getData().add(commissionsSeries1);
-                this.view.plotCommissions2.getData().add(commissionsSeries2);
+                this.mainView.plotCommissions1.getData().add(commissionsSeries1);
+                this.mainView.plotCommissions2.getData().add(commissionsSeries2);
 
-                for (XYChart.Series<Number, Number> s : this.view.plotCommissions1.getData()) {
+                for (XYChart.Series<Number, Number> s : this.mainView.plotCommissions1.getData()) {
                     for (XYChart.Data d : s.getData()) {
                         Tooltip t = new Tooltip(d.getYValue().toString());
                         Tooltip.install(d.getNode(), t);
@@ -544,7 +551,7 @@ public class ViewModel {
                     }
                 }
 
-                for (XYChart.Series<Number, Number> s : this.view.plotCommissions2.getData()) {
+                for (XYChart.Series<Number, Number> s : this.mainView.plotCommissions2.getData()) {
                     for (XYChart.Data d : s.getData()) {
                         Tooltip t = new Tooltip(d.getYValue().toString());
                         Tooltip.install(d.getNode(), t);
@@ -577,20 +584,23 @@ public class ViewModel {
                             rewardsCumulated1.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions1FiatValue));
                             rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2FiatValue));
                         }
+
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue()));
+
                     }
                 }
 
-                if (this.view.plotCommissions1.getData().size() == 1) {
-                    this.view.plotCommissions1.getData().remove(0);
+                if (this.mainView.plotCommissions1.getData().size() == 1) {
+                    this.mainView.plotCommissions1.getData().remove(0);
                 }
 
-                if (this.view.plotCommissions2.getData().size() == 1) {
-                    this.view.plotCommissions2.getData().remove(0);
+                if (this.mainView.plotCommissions2.getData().size() == 1) {
+                    this.mainView.plotCommissions2.getData().remove(0);
                 }
 
-                this.view.plotCommissions1.getData().add(rewardsCumulated1);
+                this.mainView.plotCommissions1.getData().add(rewardsCumulated1);
 
-                for (XYChart.Series<Number, Number> s : this.view.plotCommissions1.getData()) {
+                for (XYChart.Series<Number, Number> s : this.mainView.plotCommissions1.getData()) {
                     for (XYChart.Data d : s.getData()) {
                         Tooltip t = new Tooltip(d.getYValue().toString());
                         //t.setShowDelay(Duration.seconds(0));
@@ -600,8 +610,8 @@ public class ViewModel {
                     }
                 }
 
-                this.view.plotCommissions2.getData().add(rewardsCumulated2);
-                for (XYChart.Series<Number, Number> s : this.view.plotCommissions2.getData()) {
+                this.mainView.plotCommissions2.getData().add(rewardsCumulated2);
+                for (XYChart.Series<Number, Number> s : this.mainView.plotCommissions2.getData()) {
                     for (XYChart.Data d : s.getData()) {
                         Tooltip t = new Tooltip(d.getYValue().toString());
                         //t.setShowDelay(Duration.seconds(0));
@@ -612,6 +622,11 @@ public class ViewModel {
                 }
 
             }
+
+
+            this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
+            this.poolPairList.clear();
+            this.poolPairList.addAll(this.poolPairModelList);
         }
 
     }
@@ -668,7 +683,7 @@ public class ViewModel {
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {
-            boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), this.settingsController.selectedSeperator.getValue(), source, this.view);
+            boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), this.settingsController.selectedSeperator.getValue(), source, this.mainView);
 
             if (success) {
                 this.strProgressbar.setValue("Excel successfully exported!");

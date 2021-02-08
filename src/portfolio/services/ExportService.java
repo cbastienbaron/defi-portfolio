@@ -1,4 +1,11 @@
-package sample;
+package portfolio.services;
+
+import portfolio.views.MainView;
+import portfolio.controllers.CoinPriceController;
+import portfolio.controllers.SettingsController;
+import portfolio.controllers.TransactionController;
+import portfolio.models.PoolPairModel;
+import portfolio.models.TransactionModel;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -52,7 +59,7 @@ public class ExportService {
         }
     }
 
-    public boolean exportPoolPairToExcel(List<PoolPairModel> poolPairModelList, String exportPath, String exportSplitter, String source, View view) {
+    public boolean exportPoolPairToExcel(List<PoolPairModel> poolPairModelList, String exportPath, String exportSplitter, String source, MainView mainView) {
         try {
             PrintWriter writer = new PrintWriter(exportPath);
             StringBuilder sb = new StringBuilder();
@@ -61,15 +68,15 @@ public class ExportService {
             if (settingsController.selectedDecimal.getValue().equals(".")) {
                 localeDecimal = Locale.US;
             }
-            switch (view.tabPane.getSelectionModel().getSelectedItem().getText()) {
+            switch (mainView.tabPane.getSelectionModel().getSelectedItem().getText()) {
                 case "Overview":
-                    sb.append((view.plotTable.getColumns().get(0).getText() + "," + view.plotTable.getColumns().get(1).getText() + "," + view.plotTable.getColumns().get(2).getText() + "," + view.plotTable.getColumns().get(3).getText() + "," + view.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((mainView.plotTable.getColumns().get(0).getText() + "," + mainView.plotTable.getColumns().get(1).getText() + "," + mainView.plotTable.getColumns().get(2).getText() + "," + mainView.plotTable.getColumns().get(3).getText() + "," + mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 case "Rewards":
-                    sb.append((view.plotTable.getColumns().get(0).getText() + "," + view.plotTable.getColumns().get(2).getText() + "," + view.plotTable.getColumns().get(3).getText() + "," + view.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((mainView.plotTable.getColumns().get(0).getText() + "," + mainView.plotTable.getColumns().get(2).getText() + "," + mainView.plotTable.getColumns().get(3).getText() + "," + mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 case "Commissions":
-                    sb.append((view.plotTable.getColumns().get(0).getText() + "," + view.plotTable.getColumns().get(1).getText() + "," + view.plotTable.getColumns().get(2).getText() + "," + view.plotTable.getColumns().get(3).getText() + "," + view.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((mainView.plotTable.getColumns().get(0).getText() + "," + mainView.plotTable.getColumns().get(1).getText() + "," + mainView.plotTable.getColumns().get(2).getText() + "," + mainView.plotTable.getColumns().get(3).getText() + "," + mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 default:
                     break;

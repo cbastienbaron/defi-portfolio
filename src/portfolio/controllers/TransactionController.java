@@ -1,10 +1,12 @@
-package sample;
+package portfolio.controllers;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import portfolio.models.AddressModel;
+import portfolio.models.PortfolioModel;
+import portfolio.models.TransactionModel;
 
-import javax.swing.*;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;

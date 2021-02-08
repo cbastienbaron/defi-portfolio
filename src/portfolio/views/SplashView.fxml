@@ -7,13 +7,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" prefHeight="329.0" prefWidth="598.0"  xmlns="http://javafx.com/javafx/8.0.202-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SplashFXMLController">
+<AnchorPane fx:id="rootPane" prefHeight="329.0" prefWidth="598.0"  xmlns="http://javafx.com/javafx/8.0.202-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.SplashView">
    <children>
       <AnchorPane layoutX="-2.0" layoutY="-7.0" prefHeight="329.0" prefWidth="600.0">
          <children>
             <ImageView fitHeight="371.0" fitWidth="600.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../icons/defi-flag.gif" />
+                  <Image url="@../../icons/defi-flag.gif" />
                </image>
             </ImageView>
             <Label layoutX="234.0" layoutY="14.0" text="Loading ...">

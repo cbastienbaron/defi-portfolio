@@ -1,15 +1,17 @@
-package sample;
+package portfolio.views;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
+import portfolio.controllers.SettingsController;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class SettingView implements Initializable {
+public class SettingsView implements Initializable {
     @FXML
     private ComboBox<String> cmbLanguage, cmbPrefCurrency,cmbDecSeperator,cmbCSVSeperator;
     public Button btnCancel = new Button();

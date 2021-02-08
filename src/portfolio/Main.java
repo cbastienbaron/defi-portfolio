@@ -1,4 +1,4 @@
-package sample;
+package portfolio;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,10 +8,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 
 /**
@@ -27,14 +23,14 @@ import java.io.IOException;
 public class Main extends Application {
 
     @Override
-    public void start(Stage stage) throws Exception{
+    public void start(Stage stage) {
 
-        boolean showSplashScreen = false;
-        Parent root = null;
+        boolean showSplashScreen = true;
+        Parent root;
         try{
             if(showSplashScreen) {
                 // With Splashscreen
-                root = FXMLLoader.load(getClass().getResource("SplashScreen.fxml"));
+                root = FXMLLoader.load(getClass().getResource("views/SplashView.fxml"));
                 stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));
                 Scene scene = new Scene(root);
                 stage.initStyle(StageStyle.UNDECORATED);
@@ -42,7 +38,7 @@ public class Main extends Application {
                 stage.show();
             }else {
                 // Without Spalshscreen
-                root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+                root = FXMLLoader.load(getClass().getResource("views/MainView.fxml"));
                 Scene scene = new Scene(root);
                 stage.setTitle("DeFi App Portfolio V1.0");
                 stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" stylesheets="@chartStyle.css" xmlns="http://javafx.com/javafx/8.0.202-ea"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.View">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" stylesheets="@../styles/chartStyle.css" xmlns="http://javafx.com/javafx/8.0.202-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.MainView">
     <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
         <effect>
             <DropShadow />
@@ -37,7 +37,7 @@
                  </cursor>
                  <graphic>
                      <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
-                         <Image url="@../icons/table.png" />
+                         <Image url="@../../icons/table.png" />
                      </ImageView>
                  </graphic>
                  <padding>
@@ -56,7 +56,7 @@
                           <viewport>
                               <Rectangle2D />
                           </viewport>
-                          <Image url="@../icons/databaseprocess.png" />
+                          <Image url="@../../icons/databaseprocess.png" />
                       </ImageView>
                   </graphic>
                <padding>
@@ -72,7 +72,7 @@
                   </cursor>
                   <graphic>
                       <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
-                          <Image url="@../icons/analyse.png" />
+                          <Image url="@../../icons/analyse.png" />
                       </ImageView>
                   </graphic>
                   <padding>
@@ -150,7 +150,7 @@
             <AnchorPane layoutX="613.0" layoutY="102.0" prefHeight="524.0" prefWidth="452.0" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="102.0" />
             <SplitPane dividerPositions="0.5702167766258247" prefHeight="639.0" prefWidth="1063.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="607.0" prefWidth="602.0">
-                    <TabPane fx:id="tabPane" layoutY="-2.0" prefHeight="639.0" prefWidth="602.0" style="-fx-background-color: #ffffff;" stylesheets="@chartStyle.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
+                    <TabPane fx:id="tabPane" layoutY="-2.0" prefHeight="639.0" prefWidth="602.0" style="-fx-background-color: #ffffff;" stylesheets="@../styles/chartStyle.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
                   <Tab text="Rewards">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
@@ -190,10 +190,10 @@
                                  <HBox alignment="CENTER" prefHeight="43.0" prefWidth="81.0">
                                     <children>
                                             <ImageView fx:id="coinImageRewards" fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
-                                                <Image url="@../icons/btc-icon.png" />
+                                                <Image url="@../../icons/btc-icon.png" />
                                             </ImageView>
                                             <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
-                                                <Image url="@../icons/dfi-icon.png" />
+                                                <Image url="@../../icons/dfi-icon.png" />
                                             </ImageView>
                                     </children>
                                  </HBox>
@@ -212,12 +212,12 @@
                                        <children>
                                           <ImageView fx:id="coinImageCommissions" fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../icons/btc-icon.png" />
+                                                <Image url="@../../icons/btc-icon.png" />
                                              </image>
                                           </ImageView>
                                           <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../icons/dfi-icon.png" />
+                                                <Image url="@../../icons/dfi-icon.png" />
                                              </image>
                                           </ImageView>
                                        </children>

@@ -1,8 +1,6 @@
-package sample;
+package portfolio.models;
 
 import javafx.beans.property.*;
-
-import java.util.Calendar;
 
 public class PortfolioModel {
 

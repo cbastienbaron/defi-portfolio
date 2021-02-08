@@ -1,4 +1,4 @@
-package sample;
+package portfolio.views;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -8,14 +8,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class SplashFXMLController implements Initializable {
+public class SplashView implements Initializable {
 
 @FXML
 private AnchorPane rootPane;
@@ -35,7 +34,7 @@ new SplassScreen().start();
                     public void run() {
                         Parent root = null;
                         try{
-                            root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+                            root = FXMLLoader.load(getClass().getResource("MainView.fxml"));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

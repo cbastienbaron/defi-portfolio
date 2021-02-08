@@ -1,6 +1,7 @@
-package sample;
+package portfolio.models;
 
 import javafx.beans.property.*;
+import portfolio.controllers.TransactionController;
 
 public class TransactionModel {
 

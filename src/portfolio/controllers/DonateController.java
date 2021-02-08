@@ -1,4 +1,4 @@
-package sample;
+package portfolio.controllers;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
