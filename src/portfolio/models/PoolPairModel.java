@@ -10,7 +10,7 @@ public class PoolPairModel {
     private final DoubleProperty cryptoValue2Property = new SimpleDoubleProperty(0.0);
     private final StringProperty cryptoPoolPair = new SimpleStringProperty("");
 
-    public PoolPairModel(String blockTime,String type, double fiatValue, double cryptoValue1, double cryptoValue2, String poolPair){
+    public PoolPairModel(String blockTime, double fiatValue, double cryptoValue1, double cryptoValue2, String poolPair){
         setBlockTime(blockTime);
         setFiat(fiatValue);
         setCrypto1(cryptoValue1);

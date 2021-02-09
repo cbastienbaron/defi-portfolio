@@ -11,7 +11,7 @@ import java.util.TreeMap;
 
 public class CoinPriceController {
 
-    public CoinPriceModel coinPriceModel;
+    private CoinPriceModel coinPriceModel;
     String strCoinPriceData;
     public CoinPriceController(String strCoinPriceData) {
         this.strCoinPriceData = strCoinPriceData;
@@ -22,14 +22,14 @@ public class CoinPriceController {
         }
     }
 
-    public boolean updateCoinPriceData() {
+    public void updateCoinPriceData() {
 
         CoinPriceModel coinPrice = getCoinPriceLocal(this.strCoinPriceData);
         CoinGeckoApiClient client = new CoinGeckoApiClientImpl();
 
-        Long currentTimeStamp = new Timestamp(System.currentTimeMillis()).getTime() / 1000L;
+        long currentTimeStamp = new Timestamp(System.currentTimeMillis()).getTime() / 1000L;
 
-        if(!new TransactionController("",null,null,"","").getDate(Long.toString(currentTimeStamp),"Daily").equals(new TransactionController("",null,null,"","").getDate(coinPrice.lastTimeStamp,"Daily"))) {
+        if(!new TransactionController("",null,null,"").getDate(Long.toString(currentTimeStamp),"Daily").equals(new TransactionController("",null,null,"").getDate(coinPrice.lastTimeStamp,"Daily"))) {
 
             if (client.getCoinMarketChartRangeById("defichain", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices().size() > 0) {
 
@@ -86,15 +86,11 @@ public class CoinPriceController {
                     out.close();
                     file.close();
                     this.coinPriceModel = coinPrice;
-                    return true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else {
-                return true;
             }
         }
-        return false;
     }
 
     public String getLastTimeStamp(String strCoinPricePath) {

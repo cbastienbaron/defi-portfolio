@@ -15,15 +15,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import portfolio.models.PoolPairModel;
-import portfolio.models.TransactionModel;
-import portfolio.controllers.MainViewController;
-
 import java.io.IOException;
 import java.net.URL;
 import java.text.*;
 import java.time.LocalDate;
 import java.util.*;
+import portfolio.models.PoolPairModel;
+import portfolio.models.TransactionModel;
+import portfolio.controllers.MainViewController;
 
 public class MainView implements Initializable {
     @FXML
@@ -100,6 +99,8 @@ public class MainView implements Initializable {
     public TableColumn<PoolPairModel, String> poolPairColumn;
 
     public boolean init = true;
+    public Label strCurrentBlockOnBlockchain1;
+    public ProgressBar progressBar;
 
     MainViewController mainViewController = new MainViewController();
 

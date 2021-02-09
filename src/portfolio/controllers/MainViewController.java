@@ -19,8 +19,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -52,19 +50,10 @@ public class MainViewController {
     //Init all controller and services
     public SettingsController settingsController = SettingsController.getInstance();
     public CoinPriceController coinPriceController = new CoinPriceController(this.settingsController.strPathAppData + this.settingsController.strCoinPriceData);
-    public TransactionController transactionController = new TransactionController(this.settingsController.strPathAppData + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.strCookiePath, this.settingsController.strPathDefid);
+    public TransactionController transactionController = new TransactionController(this.settingsController.strPathAppData + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.strCookiePath);
     public ExportService expService;
 
     public MainViewController() {
-
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("win")) {
-            //Betriebssystem ist Windows-basiert
-        } else if (os.contains("osx")) {
-            //Betriebssystem ist Apple OSX
-        } else if (os.contains("nix") || os.contains("aix") || os.contains("nux")) {
-            //Betriebssystem ist Linux/Unix basiert
-        }
 
         this.transactionController.startServer();
 
@@ -151,13 +140,11 @@ public class MainViewController {
         if (withHeaders) {
             switch (this.mainView.tabPane.getSelectionModel().getSelectedItem().getText()) {
                 case "Overview":
+                case "Commissions":
                     sb.append((this.mainView.plotTable.getColumns().get(0).getText() + "," + this.mainView.plotTable.getColumns().get(1).getText() + "," + this.mainView.plotTable.getColumns().get(2).getText() + "," + this.mainView.plotTable.getColumns().get(3).getText() + "," + this.mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 case "Rewards":
                     sb.append((this.mainView.plotTable.getColumns().get(0).getText() + "," + this.mainView.plotTable.getColumns().get(1).getText() + "," + this.mainView.plotTable.getColumns().get(3).getText() + "," + this.mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
-                    break;
-                case "Commissions":
-                    sb.append((this.mainView.plotTable.getColumns().get(0).getText() + "," + this.mainView.plotTable.getColumns().get(1).getText() + "," + this.mainView.plotTable.getColumns().get(2).getText() + "," + this.mainView.plotTable.getColumns().get(3).getText() + "," + this.mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 default:
                     break;
@@ -275,12 +262,10 @@ public class MainViewController {
 
         JButton b = new JButton("OK");
         b.setBounds(160, 80, 80, 25);
-        b.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Component component = (Component) e.getSource();
-                JFrame frame = (JFrame) SwingUtilities.getRoot(component);
-                frame.dispose();
-            }
+        b.addActionListener(e -> {
+            Component component = (Component) e.getSource();
+            JFrame frame = (JFrame) SwingUtilities.getRoot(component);
+            frame.dispose();
         });
         frameDefid.add(b);
         frameDefid.setVisible(true);
@@ -300,12 +285,10 @@ public class MainViewController {
 
         JButton b = new JButton("OK");
         b.setBounds(160, 80, 80, 25);
-        b.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Component component = (Component) e.getSource();
-                JFrame frame = (JFrame) SwingUtilities.getRoot(component);
-                frame.dispose();
-            }
+        b.addActionListener(e -> {
+            Component component = (Component) e.getSource();
+            JFrame frame = (JFrame) SwingUtilities.getRoot(component);
+            frame.dispose();
         });
         frameDefid.add(b);
         frameDefid.setVisible(true);
@@ -365,7 +348,7 @@ public class MainViewController {
 
                         if (poolPair.equals(entry.getValue().getPoolPairValue())) {
                             overviewSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value()));
-                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getFiatRewards1Value(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), poolPair));
+                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getFiatRewards1Value(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), poolPair));
                         }
                     }
                 }
@@ -426,7 +409,7 @@ public class MainViewController {
                         } else {
                             rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value()));
                         }
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", 1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue()));
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue()));
                     }
                 }
 
@@ -448,8 +431,6 @@ public class MainViewController {
                 }
             } else {
 
-                ArrayList<PortfolioModel> valueList = new ArrayList<>(this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).values());
-
                 XYChart.Series<Number, Number> rewardsCumulated = new XYChart.Series();
 
                 double cumulatedCoinValue = 0;
@@ -466,7 +447,7 @@ public class MainViewController {
                             rewardsCumulated.getData().add(new XYChart.Data(entry.getKey(), cumulatedFiatValue));
                         }
 
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", 1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue()));
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(),  1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue()));
                     }
                 }
                 if (this.mainView.plotRewards.getData().size() == 1) {
@@ -528,7 +509,7 @@ public class MainViewController {
                             commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatCommissions1Value()));
                             commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatCommissions2Value()));
                         }
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue()));
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue()));
                     }
                 }
 
@@ -579,7 +560,7 @@ public class MainViewController {
                             rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2FiatValue));
                         }
 
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), "Rewards", entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue()));
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue()));
 
                     }
                 }
@@ -664,11 +645,6 @@ public class MainViewController {
 
     public void exportPoolPairToExcel(List<PoolPairModel> list, String source) {
 
-        Locale localeDecimal = Locale.GERMAN;
-        if (settingsController.selectedDecimal.getValue().equals(".")) {
-            localeDecimal = Locale.US;
-        }
-
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("CSV files", "*.csv")
@@ -677,7 +653,7 @@ public class MainViewController {
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {
-            boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), this.settingsController.selectedSeperator.getValue(), source, this.mainView);
+            boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), source, this.mainView);
 
             if (success) {
                 this.strProgressbar.setValue("Excel successfully exported!");

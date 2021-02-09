@@ -10,3 +10,4 @@ C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\obj\
 C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\obj\Debug\netcoreapp3.1\defi-portfolio.dll
 C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\obj\Debug\netcoreapp3.1\defi-portfolio.pdb
 C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\obj\Debug\netcoreapp3.1\defi-portfolio.genruntimeconfig.cache
+C:\Project\test\defi-portfoliomanager\src\exe\defi-portfolio\defi-portfolio\obj\Debug\netcoreapp3.1\defi-portfolio.csprojAssemblyReference.cache

@@ -34,7 +34,7 @@ public class TransactionController {
     private CoinPriceController coinPriceController;
     private TreeMap<String, TreeMap<String, PortfolioModel>> portfolioList = new TreeMap<>();
 
-    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strCookiePath, String strDefidPath) {
+    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strCookiePath) {
         this.strTransactionData = transactionData;
         this.settingsController = settingsController;
         this.coinPriceController = coinPriceController;
@@ -110,7 +110,6 @@ public class TransactionController {
             }
         } catch (IOException e) {
             System.out.println("TransactionController.initCrpConnection: Could not connect");
-            ;
         }
 
 
@@ -269,6 +268,7 @@ public class TransactionController {
             default:
                 break;
         }
+
         String[] intervallList = new String[]{"Daily", "Weekly", "Monthly", "Yearly"};
 
         for (String intervall : intervallList) {
@@ -336,7 +336,6 @@ public class TransactionController {
                 } else {
                     date = year + "-" + monthAdapted + "-" + day;
                 }
-
                 break;
             case "Monthly":
                 if (month < 10) {
@@ -357,8 +356,7 @@ public class TransactionController {
                 }
                 break;
             case "Yearly":
-                date = year + "-";
-
+                date = Integer.toString(year);
         }
         return date;
     }
@@ -370,6 +368,7 @@ public class TransactionController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        assert date != null;
         Timestamp ts = new Timestamp(date.getTime());
         return this.getDate(Long.toString(ts.getTime() / 1000), intervall);
     }
@@ -381,12 +380,6 @@ public class TransactionController {
         } else {
             return 0;
         }
-    }
-
-    public boolean startDefidExe() {
-        //TODO: Start defid.exe
-        //String strPathDefid = System.getenv("LOCALAPPDATA")+"\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
-        return true;
     }
 
     public boolean updateTransactionData(int depth) {
@@ -476,95 +469,6 @@ public class TransactionController {
             }
         }
         return filteredTransactions;
-    }
-
-    public TreeMap getCryptoMap(List<TransactionModel> transactions, String intervall, int poolPairCount, String poolPair, String type, String plotCurrency) {
-
-        TreeMap<String, Double> map = new TreeMap<>();
-        for (TransactionModel item : transactions) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(item.getBlockTimeValue() * 1000L);
-            int year = cal.get(Calendar.YEAR);
-            int month = cal.get(Calendar.MONTH) + 1;
-            int week = cal.get(Calendar.WEEK_OF_YEAR);
-            int day = cal.get(Calendar.DAY_OF_MONTH);
-            String[] coinValue = item.getAmountValue().split("@");
-            String pool = "BTC-DFI";
-
-            switch (item.getPoolIDValue()) {
-                case "4":
-                    pool = "ETH-DFI";
-                    break;
-                case "5":
-                    pool = "BTC-DFI";
-                    break;
-                case "6":
-                    pool = "USDT-DFI";
-                    break;
-                case "8":
-                    pool = "DOGE-DFI";
-                    break;
-                case "10":
-                    pool = "LTC-DFI";
-                    break;
-                default:
-                    break;
-            }
-
-            if (coinValue[1].equals(poolPair.split("-")[poolPairCount]) & item.getTypeValue().equals(type) & poolPair.equals(pool)) {
-                String date = "";
-                switch (intervall) {
-                    case "Daily":
-                        String monthAdapted = Integer.toString(month);
-                        if (month < 10) {
-                            monthAdapted = "0" + month;
-                        }
-                        if (day < 10) {
-                            date = year + "-" + monthAdapted + "-0" + day;
-                        } else {
-                            date = year + "-" + monthAdapted + "-" + day;
-                        }
-                        break;
-                    case "Monthly":
-                        if (month < 10) {
-                            date = year + "-0" + month;
-                        } else {
-                            date = year + "-" + month;
-                        }
-                        break;
-                    case "Weekly":
-                        int correct = 0;
-                        if (month == 1 && (day == 1 || day == 2 || day == 3)) {
-                            correct = 1;
-                        }
-                        if (week < 10) {
-                            date = year - correct + "-0" + week;
-                        } else {
-                            date = year - correct + "-" + week;
-                        }
-                        break;
-                    case "Yearly":
-                        date = year + "-";
-                        break;
-                }
-
-                double fiatPrice = 1;
-                if (plotCurrency.equals("Fiat")) {
-                    fiatPrice = this.coinPriceController.getPriceFromTimeStamp(poolPair.split("-")[poolPairCount] + this.settingsController.selectedFiatCurrency.getValue(), item.getBlockTimeValue() * 1000L);
-                }
-                if (map.containsKey(date)) {
-                    Double oldValue = map.get(date);
-
-                    Double newValue = oldValue + (Double.parseDouble(coinValue[0]) * fiatPrice);
-                    map.put(date, newValue);
-                } else {
-                    map.put(date, Double.parseDouble(coinValue[0]) * fiatPrice);
-                }
-
-            }
-
-        }
-        return new TreeMap<>(map);
     }
 
     public String convertTimeStampToString(long timeStamp) {

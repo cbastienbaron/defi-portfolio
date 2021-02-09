@@ -95,7 +95,7 @@ public class SettingsController {
 
     public void saveSettings() {
 
-        FileWriter csvWriter = null;
+        FileWriter csvWriter;
         try {
             csvWriter = new FileWriter(pathSettingsFile);
 

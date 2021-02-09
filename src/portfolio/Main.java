@@ -1,28 +1,13 @@
 package portfolio;
 
 import javafx.application.Application;
-import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
-import javax.swing.*;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-
-/**
- * <h1>Main</h1>
- *
- *
- *
- * @author  Daniel Klaiber & Arthur Eisener
- * @version 1.0
- * @since   2021-02-06
- */
 
 public class Main extends Application {
 
@@ -31,17 +16,18 @@ public class Main extends Application {
 
         Parent root = null;
         // Splashscreen
-        splash task = new splash();
+        Splash task = new Splash();
         Thread t = new Thread(task);
         t.start();
 
-       // Main Window
+        // Main Window
         try{
             root = FXMLLoader.load(getClass().getResource("views/MainView.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        assert root != null;
         Scene scene = new Scene(root);
         stage = new Stage();
         stage.setTitle("DeFi App Portfolio V1.0");
@@ -49,12 +35,12 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setMinHeight(700);
         stage.setMinWidth(1200);
-
+        stage.show();
         // Stop Splashsccreen
         task.kill();
     }
 
     public static void main(String[] args) {
-       launch(args);
+        launch(args);
     }
 }

@@ -5,13 +5,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
-import portfolio.controllers.SettingsController;
-
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import portfolio.controllers.SettingsController;
 
 public class SettingsView implements Initializable {
+    public Button btnSaveAndApply;
     @FXML
     private ComboBox<String> cmbLanguage, cmbPrefCurrency,cmbDecSeperator,cmbCSVSeperator;
     public Button btnCancel = new Button();
@@ -22,7 +21,7 @@ public class SettingsView implements Initializable {
         stage.close();
     }
 
-    public void btnSaveAndApplyPressed() throws IOException {
+    public void btnSaveAndApplyPressed(){
         this.settingsController.saveSettings();
         Stage stage = (Stage) btnCancel.getScene().getWindow();
         stage.close();

@@ -123,4 +123,10 @@ public class PortfolioModel {
         return poolPairPorperty.getValue();
     }
 
+    public String getIntervall(){
+        return intervall;
+    }
+    public void setIntervall(String intervall){
+        this.intervall =intervall;
+    }
 }
