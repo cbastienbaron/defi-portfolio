@@ -18,12 +18,13 @@ $DFI: dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V
 
 # Getting Started
 Setup:
-  1. Download the files.
-  2. Run the Defid.exe and do not close.
-  3. Run the DeFiPortfolioManagement.exe (The first startup can take some time!)
-  4. Click on update databse (left bottom corner)
-  5. Setup is done and you can analyse your rewards and commissions.
-  6. After closing the DefiPortfolioManagement you can close the Defid.exe
+  1. Download the defi-portfolio-Setup-vX.X.X.exe
+  2. Install
+  3. Run the defi-portfolio.exe
+  4. The defid.exe will start. If you want to Update your data you will need. (You can also close and start it manually)
+  4. Click on update database (left bottom corner)
+  5. Now your big data will imported and you can look on the raw data, export them or analyse your rewards and commissions.
+  6. After closing close the defid.exe. (If not then maybe you need a full resync the next time)
   
 # Functionality description:
 Update Database:
