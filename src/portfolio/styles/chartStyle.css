@@ -1,0 +1,89 @@
+.series-btc-dfi *.chart-series-area-fill{
+    -fx-fill: #ffa700;
+}
+
+.series-eth-dfi *.chart-series-area-fill{
+    -fx-fill: #96a7fd;
+}
+
+.series-usdt-dfi *.chart-series-area-fill{
+    -fx-fill: #60ce88;
+}
+
+.series-doge-dfi *.chart-series-area-fill{
+    -fx-fill: #bab300;
+}
+
+.series-btc-dfi *.chart-series-area-line{
+    -fx-stroke: #ffa700;
+}
+
+.series-eth-dfi *.chart-series-area-line{
+    -fx-stroke: #96a7fd;
+}
+
+.series-usdt-dfi *.chart-series-area-line{
+    -fx-stroke: #60ce88;
+}
+
+.series-ltc-dfi *.chart-series-area-line{
+    -fx-stroke: #375CD6;
+}
+.series-doge-dfi *.chart-series-area-line{
+    -fx-stroke: #bab300;
+}
+
+.default-color0.chart-series-line { -fx-stroke: #FF00AF; }
+.default-color1.chart-series-line { -fx-stroke: #FF00AF; }
+.default-color2.chart-series-line { -fx-stroke: #FF00AF; }
+.default-color3.chart-series-line { -fx-stroke: #FF00AF; }
+.default-color4.chart-series-line { -fx-stroke: #FF00AF; }
+.default-color5.chart-series-line { -fx-stroke: #FF00AF; }
+.default-color6.chart-series-line { -fx-stroke: #FF00AF; }
+.default-color7.chart-series-line { -fx-stroke: #FF00AF; }
+
+.default-color0.chart-line-symbol { -fx-background-color: #FF00AF, white; }
+.default-color1.chart-line-symbol { -fx-background-color: #FF00AF, white; }
+.default-color2.chart-line-symbol { -fx-background-color: #FF00AF, white; }
+.default-color3.chart-line-symbol { -fx-background-color: #FF00AF, white; }
+.default-color4.chart-line-symbol { -fx-background-color: #FF00AF, white; }
+.default-color5.chart-line-symbol { -fx-background-color: #FF00AF, white; }
+.default-color6.chart-line-symbol { -fx-background-color: #FF00AF, white; }
+.default-color7.chart-line-symbol { -fx-background-color: #FF00AF, white; }
+
+.button {
+          -fx-focus-color: transparent;
+          -fx-faint-focus-color: transparent;
+          }
+
+.tab-pane > .tab-header-area {
+  -fx-padding: 0;
+}
+
+.tab-pane > .tab-header-area > .tab-header-background {
+  -fx-background-color: #E1E1E1, white;
+  -fx-background-insets: 0, 0 0 1px 0;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab {
+  -fx-background-color: white;
+  -fx-background-insets: 0 0 1px 0;
+  -fx-padding: 1.5em 1em;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab >.tab-container >.tab-label {
+  -fx-text-fill: #FF00AF;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected {
+  -fx-background-color: #FF00AF, white;
+  -fx-background-insets: 0, 0 0 2px 0;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected >.tab-container >.tab-label {
+  -fx-text-fill: #FF00AF;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected >.tab-container >.focus-indicator {
+  -fx-opacity: 0;
+}
