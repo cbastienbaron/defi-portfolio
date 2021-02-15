@@ -29,7 +29,11 @@ Setup:
   
 # Functionality description:
 Update Database:
-Before you can analyse you rewards and commissions the databse must be updated. Wih
+
+Before you can analyse your rewards and commissions the databse must be updated. With the update databse button the transactions will be read out and saved locally (appdata).
+Note: The button update database will be enabled once the cli has a connection to the blockchain.
+
+
 <img src="./src/screenshots/update_database.png" width="700" height="411"/>
 
 
