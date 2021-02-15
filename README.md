@@ -35,7 +35,7 @@ Before you can analyse you rewards and commissions the databse must be updated. 
 
 Raw Data:
 
-<img src="./src/screenshots/RawData.png" width="700" height="411"/>
+<img src="./src/screenshots/rawdata.png" width="700" height="411"/>
 
 
 Analyse Data:
