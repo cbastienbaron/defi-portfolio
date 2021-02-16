@@ -31,24 +31,34 @@ Setup:
 Update Database:
 
 Before you can analyse your rewards and commissions the databse must be updated. With the update databse button the transactions will be read out and saved locally (appdata).
-Note: The button update database will be enabled once the cli has a connection to the blockchain.
+Note: The button update database will be enabled once the defid.exe has a connection to the blockchain.
 
 
 <img src="./src/screenshots/update_database.png" width="700" height="411"/>
 
 
 Raw Data:
+All transactions are shown here in tabular form.
+The table can be exported as a csv file. To do this, right-click on the corresponding sub-functions.
 
 <img src="./src/screenshots/rawdata.png" width="700" height="411"/>
 
 
 Analyse Data:
+Here the rewards are displayed in graphical form. You can choose the start date and the end date. In addition, the interval (daily, weekly, monthly, yearly) can be selected and the pool share can be chosen. The plot can be switched between individual and cumulative view. 
+
 
 <img src="./src/screenshots/rewards.png" width="700" height="411"/>
 
+
 <img src="./src/screenshots/rewards_cumulated.png" width="700" height="411"/>
 
+
+Here the commissions are displayed in graphical form. The setting options are the same as for Rewards. You can select the start date and the end date. In addition, the interval (daily, weekly, monthly, yearly) can be selected and the pool share can be chosen. The plot can be switched between individual and cumulative view. 
+
 <img src="./src/screenshots/comissions.png" width="700" height="411"/>
+
+Hier werden die Übersicht in grafischer Form dargestellt. Die Rewards und Commissions sind in einem Plot zusammengefügt. Man kann das Startdatum und das enddatum wählen. Außerdem kann das Intervall (täglich, wöchentlich, monatlich, jährlich) gewählt werden.
 
 <img src="./src/screenshots/overview.png" width="700" height="411"/>
 
