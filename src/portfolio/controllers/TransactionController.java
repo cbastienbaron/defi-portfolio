@@ -132,9 +132,8 @@ public class TransactionController {
             }
         } catch (Exception e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
-            return "No conenction";
+            return "No connection";
         }
-
     }
 
     public int getAccountHistoryCountRpc() {
