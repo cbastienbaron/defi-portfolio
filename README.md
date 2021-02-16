@@ -47,7 +47,7 @@ The table can be exported as a csv file. To do this, right-click on the correspo
 
 Analyse Data:
 
-Here the rewards are displayed in graphical form. You can choose the start date and the end date. In addition, the interval (daily, weekly, monthly, yearly) can be selected and the pool share can be chosen. The plot can be switched between individual and cumulative view. 
+Here the rewards are displayed in graphical form. You can choose the start date and the end date. In addition, the interval (daily, weekly, monthly, yearly) can be selected and the pool share can be chosen. The plot can be switched between individual and cumulative view. The table can be exported as a csv file. To do this, right-click on the corresponding sub-functions.
 
 
 <img src="./src/screenshots/rewards.png" width="700" height="411"/>
