@@ -47,16 +47,16 @@ public class SettingsController {
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
 
     //All relevant paths and files
-    public String strCookiePath = System.getenv("APPDATA").replace(" ","\" \"") + "\\DeFi Blockchain\\.cookie";
-    public String strPathAppData = System.getenv("APPDATA").replace(" ","\" \"") + "\\defi-portfolio\\";
-    public String strPathDefid = System.getenv("LOCALAPPDATA").replace(" ","\" \"") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
+    public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
+    public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
+    public String strPathDefid = System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
     public String[] languages = new String[]{"English","Deutsch"};
     public String[] currencies = new String[]{"EUR", "USD", "CHF"};
     public String[] decSeperators = new String[]{",", "."};
     public String[] csvSeperators = new String[]{",", ";"};
-    public String pathSettingsFile = System.getenv("APPDATA").replace(" ","\" \"") + "\\defi-portfolio\\settings.csv";
+    public String pathSettingsFile = System.getenv("APPDATA") + "\\defi-portfolio\\settings.csv";
     public Logger logger = Logger.getLogger("Logger");
 
     private SettingsController() throws IOException {
