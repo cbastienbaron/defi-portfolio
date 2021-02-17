@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import portfolio.controllers.DonateController;
 import portfolio.controllers.SettingsController;
@@ -15,6 +16,7 @@ import portfolio.controllers.SettingsController;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -24,6 +26,8 @@ public class DonateView implements Initializable {
     public Label donateText;
     public Button btnClose;
     public TextField donateTextField;
+    public AnchorPane anchorPane;
+
     DonateController donateController = DonateController.getInstance();
 
     public void  btnCopyPressed(){

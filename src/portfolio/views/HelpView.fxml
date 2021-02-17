@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="160.0" prefWidth="391.0" stylesheets="@../styles/darkMode.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.HelpView">
+<AnchorPane fx:id="anchorPane" prefHeight="160.0" prefWidth="391.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.HelpView">
       <Button fx:id="btnCopyHelp" layoutX="223.0" layoutY="97.0" mnemonicParsing="false" onMouseClicked="#btnCopyCallback" prefHeight="32.0" prefWidth="36.0">
          <graphic>
             <ImageView fitHeight="23.0" fitWidth="24.0" onMouseClicked="#btnCopyCallback" pickOnBounds="true" preserveRatio="true">
@@ -32,11 +32,6 @@
    <ImageView fitHeight="92.0" fitWidth="83.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@../../icons/mail.png" />
    </ImageView>
-      <Text layoutX="122.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="defiportfoliomanagement@gmail.com">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Text>
       <Button fx:id="btnWriteHelp" layoutX="280.0" layoutY="97.0" mnemonicParsing="false" onMouseClicked="#btnMailToCallback" prefHeight="32.0" prefWidth="37.0">
          <graphic>
             <ImageView fitHeight="23.0" fitWidth="27.0" onMouseClicked="#btnMailToCallback" pickOnBounds="true" preserveRatio="true">
@@ -61,6 +56,11 @@
       <padding>
          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
       </padding></Button>
+   <Label fx:id="Contact1" layoutX="122.0" layoutY="56.0" text="defiportfoliomanagement@gmail.com">
+      <font>
+         <Font size="16.0" />
+      </font>
+   </Label>
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
    </padding>
