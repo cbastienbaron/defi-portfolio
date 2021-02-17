@@ -129,6 +129,7 @@ public class MainView implements Initializable {
     public Label StartDateCom;
     public Label StartDateOver;
     public Label EndDateOver;
+    public Stage settingsStage, helpStage, donateStage;
 
     MainViewController mainViewController = new MainViewController();
 
@@ -164,67 +165,82 @@ public class MainView implements Initializable {
     }
 
     public void helpPressed() throws IOException {
-        final Delta dragDelta = new Delta();
-        Parent root = FXMLLoader.load(getClass().getResource("HelpView.fxml"));
-        Scene scene = new Scene(root);
-        Stage s = new Stage();
-        s.initStyle(StageStyle.UNDECORATED);
-        scene.setOnMousePressed(mouseEvent -> {
-            // record a delta distance for the drag and drop operation.
-            dragDelta.x = s.getX() - mouseEvent.getScreenX();
-            dragDelta.y = s.getY() - mouseEvent.getScreenY();
-        });
-        scene.setOnMouseDragged(mouseEvent -> {
-            s.setX(mouseEvent.getScreenX() + dragDelta.x);
-            s.setY(mouseEvent.getScreenY() + dragDelta.y);
-        });
-        s.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/help.png"));
-        s.setTitle((this.mainViewController.settingsController.translationList.getValue().get("HelpTitle").toString()));
-        s.setScene(scene);
-        s.show();
+        if(helpStage== null) {
+            final Delta dragDelta = new Delta();
+            Parent root = FXMLLoader.load(getClass().getResource("HelpView.fxml"));
+            Scene scene = new Scene(root);
+            helpStage = new Stage();
+            helpStage.initStyle(StageStyle.UNDECORATED);
+            scene.setOnMousePressed(mouseEvent -> {
+                // record a delta distance for the drag and drop operation.
+                dragDelta.x = helpStage.getX() - mouseEvent.getScreenX();
+                dragDelta.y = helpStage.getY() - mouseEvent.getScreenY();
+            });
+            scene.setOnMouseDragged(mouseEvent -> {
+                helpStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+                helpStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+            });
+            helpStage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/help.png"));
+            helpStage.setTitle((this.mainViewController.settingsController.translationList.getValue().get("HelpTitle").toString()));
+            helpStage.setScene(scene);
+            helpStage.show();
+        }else{
+            helpStage.show();
+            helpStage.toFront();
+        }
     }
 
     public void openAccountInformation() throws IOException {
-        final Delta dragDelta = new Delta();
-        Parent root = FXMLLoader.load(getClass().getResource("DonateView.fxml"));
-        Scene scene = new Scene(root);
-        Stage s = new Stage();
-        s.initStyle(StageStyle.UNDECORATED);
-        scene.setOnMousePressed(mouseEvent -> {
-            // record a delta distance for the drag and drop operation.
-            dragDelta.x = s.getX() - mouseEvent.getScreenX();
-            dragDelta.y = s.getY() - mouseEvent.getScreenY();
-        });
-        scene.setOnMouseDragged(mouseEvent -> {
-            s.setX(mouseEvent.getScreenX() + dragDelta.x);
-            s.setY(mouseEvent.getScreenY() + dragDelta.y);
-        });
-        s.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/donate.png"));
-        s.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
-        s.setScene(scene);
-        s.show();
+        if(donateStage== null) {
+            final Delta dragDelta = new Delta();
+            Parent root = FXMLLoader.load(getClass().getResource("DonateView.fxml"));
+            Scene scene = new Scene(root);
+            donateStage = new Stage();
+            donateStage.initStyle(StageStyle.UNDECORATED);
+            scene.setOnMousePressed(mouseEvent -> {
+                // record a delta distance for the drag and drop operation.
+                dragDelta.x = donateStage.getX() - mouseEvent.getScreenX();
+                dragDelta.y = donateStage.getY() - mouseEvent.getScreenY();
+            });
+            scene.setOnMouseDragged(mouseEvent -> {
+                donateStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+                donateStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+            });
+            donateStage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/donate.png"));
+            donateStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
+            donateStage.setScene(scene);
+            donateStage.show();
+        }else{
+            donateStage.show();
+            donateStage.toFront();
+        }
     }
 
     public void openSettingPressed() throws IOException {
-        final Delta dragDelta = new Delta();
-        Parent root = FXMLLoader.load(getClass().getResource("SettingsView.fxml"));
-        Scene scene = new Scene(root);
-        Stage s = new Stage();
+        if(settingsStage== null) {
+            final Delta dragDelta = new Delta();
+            Parent root = FXMLLoader.load(getClass().getResource("SettingsView.fxml"));
+            Scene scene = new Scene(root);
+            settingsStage = new Stage();
 
-        s.initStyle(StageStyle.UNDECORATED);
-        scene.setOnMousePressed(mouseEvent -> {
-            // record a delta distance for the drag and drop operation.
-            dragDelta.x = s.getX() - mouseEvent.getScreenX();
-            dragDelta.y = s.getY() - mouseEvent.getScreenY();
-        });
-        scene.setOnMouseDragged(mouseEvent -> {
-            s.setX(mouseEvent.getScreenX() + dragDelta.x);
-            s.setY(mouseEvent.getScreenY() + dragDelta.y);
-        });
-        s.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png"));
-        s.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
-        s.setScene(scene);
-        s.show();
+            settingsStage.initStyle(StageStyle.UNDECORATED);
+            scene.setOnMousePressed(mouseEvent -> {
+                // record a delta distance for the drag and drop operation.
+                dragDelta.x = settingsStage.getX() - mouseEvent.getScreenX();
+                dragDelta.y = settingsStage.getY() - mouseEvent.getScreenY();
+            });
+            scene.setOnMouseDragged(mouseEvent -> {
+                settingsStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+                settingsStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+            });
+            settingsStage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png"));
+            settingsStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
+            settingsStage.setScene(scene);
+            settingsStage.show();
+        }else{
+            settingsStage.show();
+            settingsStage.toFront();
+        }
     }
 
     // records relative x and y co-ordinates.
