@@ -153,7 +153,6 @@ public class SettingsController {
             switch (this.selectedSeperator.getValue()) {
                 case ".":
                     csvWriter.append("dot");
-
                     break;
                 case ";":
                     csvWriter.append("semicolon");

@@ -178,7 +178,7 @@ public class TransactionController {
             int blockDepth = 10000;
             int restBlockCount = blockCount + blockDepth + 1;
             for (int i = 0; i < Math.ceil(depth / blockDepth); i = i + 1) {
-                this.jl.setText("Updating Data: " + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
+                this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
                 JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
                 JSONArray transactionJson = (JSONArray) jsonObject.get("result");
                 for (Object transaction : transactionJson) {
@@ -221,7 +221,7 @@ public class TransactionController {
         this.frameUpdate.setLayout(null);
         this.frameUpdate.setIconImage(new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").getImage());
         ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\ajaxloader.gif");
-        this.jl = new JLabel("Initializing Data...", icon, JLabel.CENTER);
+        this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), icon, JLabel.CENTER);
         this.jl.setSize(400, 100);
         this.jl.setLocation(0, 0);
         this.jl.setForeground(Color.WHITE);
@@ -445,7 +445,7 @@ public class TransactionController {
                 updateTransactionList.add(transactionListNew.get(i));
                 if (transactionListNew.get(i).getTypeValue().equals("Rewards") | transactionListNew.get(i).getTypeValue().equals("Commission"))
                     addToPortfolioModel(transactionListNew.get(i));
-                jl.setText("Preparing data: " + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
+                jl.setText(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
             }
         }
         int i = 1;
@@ -470,7 +470,7 @@ public class TransactionController {
                         sb.append(transactionModel.getTxIDValue());
 
                     sb.append("\n");
-                    jl.setText("Saving data: " + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
+                    jl.setText(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
                     i++;
                 }
                 writer.write(sb.toString());

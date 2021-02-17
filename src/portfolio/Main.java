@@ -31,7 +31,7 @@ public class Main extends Application {
         stage = new Stage();
 
         final Delta dragDelta = new Delta();
-        stage.initStyle(StageStyle.UNDECORATED);
+        //stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("DeFi App Portfolio V1.0");
         stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png"));
         Stage finalStage = stage;
