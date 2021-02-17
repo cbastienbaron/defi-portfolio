@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -33,8 +34,9 @@ public class Main extends Application {
         assert root != null;
         Scene scene = new Scene(root);
         stage = new Stage();
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("DeFi App Portfolio V1.0");
-        stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));
+        stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png"));
         stage.setScene(scene);
         stage.setMinHeight(700);
         stage.setMinWidth(1200);

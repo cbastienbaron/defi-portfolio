@@ -9,12 +9,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" stylesheets="@../styles/chartStyle.css" xmlns="http://javafx.com/javafx/8.0.202-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.MainView">
-    <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" stylesheets="@../styles/darkMode.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.MainView">
+    <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0"  AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
         <effect>
             <DropShadow />
         </effect>
-      <GridPane alignment="CENTER" layoutX="3.0" layoutY="6.0" prefHeight="632.0" prefWidth="191.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="6.0">
+      <GridPane alignment="CENTER" layoutX="3.0" layoutY="6.0" prefHeight="632.0" prefWidth="191.0"  AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="6.0">
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -82,19 +82,19 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </GridPane.margin>
               </Button>
-              <Label id="strCurrentBlockLocally" text="Current Block locally" GridPane.rowIndex="4" />
+              <Label id="strCurrentBlockLocally" fx:id="CurrentBlock" text="Current Block locally" GridPane.rowIndex="4" />
             <Label fx:id="strCurrentBlockLocally" text="5600" GridPane.rowIndex="5">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-              <Label id="strCurrentBlockOnChain" alignment="CENTER" text="Current Block Blockchain" GridPane.rowIndex="6" />
+              <Label id="strCurrentBlockOnChain" fx:id="CurrentBlockChain" alignment="CENTER" text="Current Block Blockchain" GridPane.rowIndex="6" />
             <Label fx:id="strLastUpdate" text="5600" GridPane.rowIndex="9">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Label id="strCurrentBlockOnChain" fx:id="strCurrentBlockOnBlockchain1" text="Last update" GridPane.rowIndex="8" />
+            <Label id="strCurrentBlockOnChain" fx:id="LastUpdate" text="Last update" GridPane.rowIndex="8" />
             <Label fx:id="strCurrentBlockOnBlockchain" text="5600" GridPane.rowIndex="7">
                <font>
                   <Font name="System Bold" size="12.0" />
@@ -105,19 +105,19 @@
     </AnchorPane>
     <AnchorPane layoutY="2.0" prefHeight="0.0" prefWidth="700.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <MenuBar id="menuBar" layoutY="2.0" prefHeight="30.0" prefWidth="700.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <Menu mnemonicParsing="false" text="File">
-                <MenuItem mnemonicParsing="false" onAction="#openSettingPressed" text="Settings" />
-                <MenuItem mnemonicParsing="false" onAction="#closePressed" text="Close" />
+            <Menu fx:id="File" mnemonicParsing="false" text="File">
+                <MenuItem fx:id="Settings" mnemonicParsing="false" onAction="#openSettingPressed" text="Settings" />
+                <MenuItem fx:id="Close" mnemonicParsing="false" onAction="#closePressed" text="Close" />
             </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-                <MenuItem mnemonicParsing="false" onAction="#helpPressed" text="Help" />
+            <Menu fx:id="Help" mnemonicParsing="false" text="Help">
+                <MenuItem fx:id="HelpItem" mnemonicParsing="false" onAction="#helpPressed" text="Help" />
             </Menu>
-            <Menu mnemonicParsing="false" text="Donate">
-                <MenuItem mnemonicParsing="false" onAction="#openAccountInformation" text="Account information" />
+            <Menu fx:id="Donate" mnemonicParsing="false" text="Donate">
+                <MenuItem fx:id="DonateItem" mnemonicParsing="false" onAction="#openAccountInformation" text="Account information" />
             </Menu>
         </MenuBar>
     </AnchorPane>
-    <AnchorPane id="AnchorPanelRawData" fx:id="anchorPanelRawData" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+    <AnchorPane id="AnchorPanelRawData" fx:id="anchorPanelRawData" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0"  AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
         <TableView fx:id="rawDataTable" prefHeight="409.0" prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <columns>
                 <TableColumn fx:id="blockTimeColumn" sortable="false" text="Date" />
@@ -145,19 +145,19 @@
             </font>
         </Label>
     </AnchorPane>
-    <AnchorPane id="AnchorPanelAnalyse" fx:id="anchorPanelAnalyse" layoutX="194.0" layoutY="27.0" prefHeight="639.0" prefWidth="857.0" style="-fx-background-color: #F8F8FF;" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
-        <AnchorPane prefHeight="639.0" prefWidth="931.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="0.0">
+    <AnchorPane id="AnchorPanelAnalyse" fx:id="anchorPanelAnalyse" layoutX="194.0" layoutY="27.0" prefHeight="639.0" prefWidth="857.0" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+        <AnchorPane prefHeight="639.0" prefWidth="931.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="0.0">
             <AnchorPane layoutX="613.0" layoutY="102.0" prefHeight="524.0" prefWidth="452.0" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="102.0" />
             <SplitPane dividerPositions="0.5702167766258247" prefHeight="639.0" prefWidth="1063.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="607.0" prefWidth="602.0">
-                    <TabPane fx:id="tabPane" layoutY="-2.0" prefHeight="639.0" prefWidth="602.0" style="-fx-background-color: #ffffff;" stylesheets="@../styles/chartStyle.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
-                  <Tab text="Rewards">
+                    <TabPane fx:id="tabPane" layoutY="-2.0" prefHeight="639.0" prefWidth="602.0"  tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
+                  <Tab fx:id="Rewards" text="Rewards">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
                            <children>
                               <GridPane layoutX="15.0" layoutY="15.0" prefHeight="85.0" prefWidth="567.0">
                                  <columnConstraints>
-                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="70.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="140.0" minWidth="10.0" prefWidth="90.0" />
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="170.0" />
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="170.0" />
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="183.0" minWidth="10.0" prefWidth="170.0" />
@@ -168,8 +168,8 @@
                                     <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Label text="Start date" />
-                                    <Label text="End date" GridPane.rowIndex="2" />
+                                    <Label fx:id="StartDate" text="Start date" />
+                                    <Label fx:id="EndDate" text="End date" GridPane.rowIndex="2" />
                                     <DatePicker fx:id="dateFrom" prefHeight="25.0" prefWidth="142.0" GridPane.columnIndex="1" />
                                     <DatePicker fx:id="dateTo" prefHeight="25.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <ComboBox fx:id="cmbCoins" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
@@ -180,10 +180,10 @@
                               </GridPane>
                               <LineChart fx:id="plotRewards" layoutY="172.0" prefHeight="405.0" prefWidth="585.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="172.0">
                                  <xAxis>
-                                    <CategoryAxis animated="false" side="BOTTOM" style="-fx-background-color: #ffffff;" />
+                                    <CategoryAxis animated="false" side="BOTTOM" />
                                  </xAxis>
                                  <yAxis>
-                                    <NumberAxis animated="false" side="LEFT" style="-fx-background-color: #ffffff;" />
+                                    <NumberAxis animated="false" side="LEFT"  />
                                  </yAxis>
                               </LineChart>
                               <Pane layoutX="241.0" layoutY="129.0" prefHeight="43.0" prefWidth="78.0" AnchorPane.bottomAnchor="409.0" AnchorPane.leftAnchor="241.0" AnchorPane.rightAnchor="283.0" AnchorPane.topAnchor="129.0">
@@ -202,7 +202,7 @@
                         </AnchorPane>
                      </content>
                   </Tab>
-                  <Tab text="Commissions">
+                  <Tab fx:id="Commissions" text="Commissions">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
                            <children>
@@ -226,7 +226,7 @@
                               </Pane>
                               <GridPane layoutX="15.0" layoutY="15.0" prefHeight="85.0" prefWidth="567.0">
                                  <columnConstraints>
-                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="70.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="140.0" minWidth="10.0" prefWidth="90.0" />
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="170.0" />
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="170.0" />
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="183.0" minWidth="10.0" prefWidth="170.0" />
@@ -237,8 +237,8 @@
                                     <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Label text="Start date" />
-                                    <Label text="End date" GridPane.rowIndex="2" />
+                                    <Label fx:id="StartDateCom" text="Start date" />
+                                    <Label fx:id="EndDateCom" text="End date" GridPane.rowIndex="2" />
                                     <DatePicker fx:id="dateFromCom" prefHeight="25.0" prefWidth="142.0" GridPane.columnIndex="1" />
                                     <DatePicker fx:id="dateToCom" prefHeight="25.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <ComboBox fx:id="cmbCoinsCom" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
@@ -247,16 +247,16 @@
                                     <ComboBox fx:id="cmbPlotCurrencyCom" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="3" />
                                  </children>
                               </GridPane>
-                              <SplitPane dividerPositions="0.5012406947890818" layoutX="2.0" layoutY="174.0" orientation="VERTICAL" prefHeight="405.0" prefWidth="602.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="174.0">
+                              <SplitPane dividerPositions="0.5012406947890818" layoutX="2.0" layoutY="174.0" orientation="VERTICAL" prefHeight="405.0" prefWidth="602.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="174.0">
                                  <items>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="247.0" prefWidth="600.0">
                                        <children>
                                           <LineChart fx:id="plotCommissions1" prefHeight="249.0" prefWidth="592.0" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
                                              <xAxis>
-                                                <CategoryAxis animated="false" side="BOTTOM" style="-fx-background-color: #ffffff;" />
+                                                <CategoryAxis animated="false" side="BOTTOM"  />
                                              </xAxis>
                                              <yAxis>
-                                                <NumberAxis animated="false" side="LEFT" style="-fx-background-color: #ffffff;" />
+                                                <NumberAxis animated="false" side="LEFT" />
                                              </yAxis>
                                           </LineChart>
                                        </children>
@@ -265,10 +265,10 @@
                                        <children>
                                           <LineChart fx:id="plotCommissions2" prefHeight="235.0" prefWidth="585.0" AnchorPane.bottomAnchor="-13.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
                                              <xAxis>
-                                                <CategoryAxis animated="false" side="BOTTOM" style="-fx-background-color: #ffffff;" />
+                                                <CategoryAxis animated="false" side="BOTTOM" />
                                              </xAxis>
                                              <yAxis>
-                                                <NumberAxis animated="false" side="LEFT" style="-fx-background-color: #ffffff;" />
+                                                <NumberAxis animated="false" side="LEFT" />
                                              </yAxis>
                                           </LineChart>
                                        </children>
@@ -279,14 +279,14 @@
                         </AnchorPane>
                      </content>
                   </Tab>
-                  <Tab text="Overview">
+                  <Tab fx:id="Overview" text="Overview">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
                            <children>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="220.0" prefWidth="571.0" />
                               <GridPane layoutX="15.0" layoutY="15.0" prefHeight="85.0" prefWidth="567.0">
                                  <columnConstraints>
-                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="70.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="140.0" minWidth="10.0" prefWidth="90.0" />
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="170.0" />
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="170.0" />
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="183.0" minWidth="10.0" prefWidth="170.0" />
@@ -297,8 +297,8 @@
                                     <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Label text="Start date" />
-                                    <Label text="End date" GridPane.rowIndex="2" />
+                                    <Label fx:id="StartDateOver" text="Start date" />
+                                    <Label fx:id="EndDateOver" text="End date" GridPane.rowIndex="2" />
                                     <DatePicker fx:id="dateFromOver" prefHeight="25.0" prefWidth="142.0" GridPane.columnIndex="1" />
                                     <DatePicker fx:id="dateToOver" prefHeight="25.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <ComboBox fx:id="cmbIntervallOver" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" />
@@ -319,7 +319,7 @@
                     </TabPane>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                    <TableView fx:id="plotTable" prefHeight="514.0" prefWidth="453.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <TableView fx:id="plotTable" prefHeight="514.0" prefWidth="453.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <columns>
                             <TableColumn fx:id="timeStampColumn" prefWidth="75.0" text="Date" />
                             <TableColumn fx:id="poolPairColumn" prefWidth="75.0" text="Pool Pair" />
