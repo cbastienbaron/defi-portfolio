@@ -53,7 +53,7 @@ public class TransactionController {
 
     public void startServer() {
         try {
-            Runtime.getRuntime().exec("cmd /c start " + this.settingsController.strPathDefid);
+            Runtime.getRuntime().exec("cmd /c start " + this.settingsController.strPathDefid.replace(" ","\" \""));
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
