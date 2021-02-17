@@ -4,6 +4,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -30,17 +33,16 @@ public class SettingsController {
 
     public StringProperty selectedCoin = new SimpleStringProperty("BTC-DFI");
     public StringProperty selectedPlotCurrency = new SimpleStringProperty("Coin");
-    public StringProperty selectedPlotType = new SimpleStringProperty("Individual");
-    public StringProperty selectedIntervall = new SimpleStringProperty("Daily");
+    public StringProperty selectedPlotType = new SimpleStringProperty();
+    public StringProperty selectedIntervall = new SimpleStringProperty();
     public ObjectProperty<LocalDate> dateFrom = new SimpleObjectProperty();
     public ObjectProperty<LocalDate> dateTo = new SimpleObjectProperty();
+    public ObjectProperty<JSONObject> translationList = new SimpleObjectProperty();
 
 
     //Combo box filling
     public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
-    public String[] intervall = new String[]{"Daily", "Weekly", "Monthly", "Yearly"};
     public String[] plotCurrency = new String[]{"Coin", "Fiat"};
-    public String[] plotType = new String[]{"Individual", "Cumulated"};
 
     //All relevant paths and files
     public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
@@ -48,7 +50,7 @@ public class SettingsController {
     public String strPathDefid = System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
-    public String[] languages = new String[]{"English"};
+    public String[] languages = new String[]{"English","Deutsch"};
     public String[] currencies = new String[]{"EUR", "USD", "CHF"};
     public String[] decSeperators = new String[]{",", "."};
     public String[] csvSeperators = new String[]{",", ";"};
@@ -63,6 +65,30 @@ public class SettingsController {
         SimpleFormatter formatter = new SimpleFormatter();
         fh.setFormatter(formatter);
         this.loadSettings();
+        updateLanguage();
+    }
+
+    public void updateLanguage(){
+        //JSON parser object to parse read file
+        JSONParser jsonParser = new JSONParser();
+
+        String fileName = System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/translations/";
+        switch (selectedLanguage.getValue()) {
+            case "English":
+                fileName += "en.json";
+                break;
+            case "Deutsch":
+                fileName += "de.json";
+                break;
+            default:
+                break;
+        }
+        try (FileReader reader = new FileReader(fileName)) {
+            Object obj = jsonParser.parse(reader);
+            this.translationList.setValue((JSONObject) obj);
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static SettingsController getInstance() {
@@ -95,10 +121,8 @@ public class SettingsController {
                         break;
                 }
                 this.selectedCoin.setValue(data[4]);
-                this.selectedIntervall.setValue(data[5]);
-                this.selectedPlotType.setValue(data[6]);
-                this.selectedPlotCurrency.setValue(data[7]);
-                this.dateFrom.setValue(LocalDate.parse(data[8]));
+                this.selectedPlotCurrency.setValue(data[5]);
+                this.dateFrom.setValue(LocalDate.parse(data[6]));
             }
         }
     }
@@ -135,10 +159,6 @@ public class SettingsController {
             csvWriter.append(",");
 
             csvWriter.append(this.selectedCoin.getValue());
-            csvWriter.append(",");
-            csvWriter.append(this.selectedIntervall.getValue());
-            csvWriter.append(",");
-            csvWriter.append(this.selectedPlotType.getValue());
             csvWriter.append(",");
             csvWriter.append(this.selectedPlotCurrency.getValue());
             csvWriter.append(",");

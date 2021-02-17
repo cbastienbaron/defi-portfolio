@@ -77,6 +77,7 @@ public class ExportService {
             }
             switch (source) {
                 case "Overview":
+                case "Übersicht":
                     for (PoolPairModel poolPairModel : poolPairModelList) {
                         sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
                         sb.append(poolPairModel.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
@@ -87,6 +88,7 @@ public class ExportService {
                     }
                     break;
                 case "Rewards":
+                case "Belohnungen":
                     for (PoolPairModel poolPairModel : poolPairModelList) {
                         sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
                         sb.append(poolPairModel.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
@@ -97,6 +99,7 @@ public class ExportService {
                     break;
 
                 case "Commissions":
+                case "Kommissionen":
                     for (PoolPairModel poolPairModel : poolPairModelList) {
                         sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
                         sb.append(poolPairModel.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());

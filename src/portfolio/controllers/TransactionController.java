@@ -219,8 +219,8 @@ public class TransactionController {
     public void updateJFrame() {
         this.frameUpdate = new JFrame();
         this.frameUpdate.setLayout(null);
-        this.frameUpdate.setIconImage(new ImageIcon(System.getProperty("user.dir") + "/src/icons/DefiIcon.png").getImage());
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\ajaxloader.gif");
+        this.frameUpdate.setIconImage(new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").getImage());
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\ajaxloader.gif");
         this.jl = new JLabel("Initializing Data...", icon, JLabel.CENTER);
         this.jl.setSize(400, 100);
         this.jl.setLocation(0, 0);
@@ -316,8 +316,12 @@ public class TransactionController {
             default:
                 break;
         }
-
-        String[] intervallList = new String[]{"Daily", "Weekly", "Monthly", "Yearly"};
+        String[] intervallList = new String[]{};
+        if(settingsController.translationList.getValue().get("Daily").equals("Daily")){
+            intervallList = new String[]{"Daily", "Weekly", "Monthly", "Yearly"};
+        }else{
+            intervallList = new String[]{"Täglich", "Wöchentlich", "Monatlich", "Jährlich"};
+        }
 
         for (String intervall : intervallList) {
 
@@ -374,6 +378,7 @@ public class TransactionController {
         int day = cal.get(Calendar.DAY_OF_MONTH);
         String date = "";
         switch (intervall) {
+            case "Täglich":
             case "Daily":
                 String monthAdapted = Integer.toString(month);
                 if (month < 10) {
@@ -385,6 +390,7 @@ public class TransactionController {
                     date = year + "-" + monthAdapted + "-" + day;
                 }
                 break;
+            case "Monatlich":
             case "Monthly":
                 if (month < 10) {
                     date = year + "-0" + month;
@@ -392,6 +398,7 @@ public class TransactionController {
                     date = year + "-" + month;
                 }
                 break;
+            case "Wöchentlich":
             case "Weekly":
                 int correct = 0;
                 if (month == 1 && (day == 1 || day == 2 || day == 3)) {
@@ -403,6 +410,7 @@ public class TransactionController {
                     date = year - correct + "-" + week;
                 }
                 break;
+            case "Jährlich":
             case "Yearly":
                 date = Integer.toString(year);
         }

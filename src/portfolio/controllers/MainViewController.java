@@ -50,6 +50,8 @@ public class MainViewController {
 
     //Init all controller and services
     public SettingsController settingsController = SettingsController.getInstance();
+    public DonateController donateController = DonateController.getInstance();
+    public HelpController helpController = HelpController.getInstance();
     public CoinPriceController coinPriceController = new CoinPriceController(this.settingsController.strPathAppData + this.settingsController.strCoinPriceData);
     public TransactionController transactionController = new TransactionController(this.settingsController.strPathAppData + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.strCookiePath);
     public ExportService expService;
@@ -148,10 +150,13 @@ public class MainViewController {
         if (withHeaders) {
             switch (this.mainView.tabPane.getSelectionModel().getSelectedItem().getText()) {
                 case "Overview":
+                case "Übersicht":
+                case "Kommissionen":
                 case "Commissions":
                     sb.append((this.mainView.plotTable.getColumns().get(0).getText() + "," + this.mainView.plotTable.getColumns().get(1).getText() + "," + this.mainView.plotTable.getColumns().get(2).getText() + "," + this.mainView.plotTable.getColumns().get(3).getText() + "," + this.mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 case "Rewards":
+                case "Belohnungen":
                     sb.append((this.mainView.plotTable.getColumns().get(0).getText() + "," + this.mainView.plotTable.getColumns().get(1).getText() + "," + this.mainView.plotTable.getColumns().get(3).getText() + "," + this.mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 default:
@@ -163,6 +168,7 @@ public class MainViewController {
         ) {
             switch (this.mainView.tabPane.getSelectionModel().getSelectedItem().getText()) {
                 case "Overview":
+                case "Übersicht":
                     sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(String.format(localeDecimal, "%.8f", poolPair.getFiatValue().getValue())).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
@@ -170,6 +176,7 @@ public class MainViewController {
                     sb.append("\n");
                     break;
                 case "Rewards":
+                case "Belohnungen":
                     sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
@@ -177,6 +184,7 @@ public class MainViewController {
                     sb.append("\n");
                     break;
                 case "Commissions":
+                case "Kommissionen":
                     sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(String.format(localeDecimal, "%.8f", poolPair.getFiatValue().getValue())).append(this.settingsController.selectedSeperator.getValue());
@@ -187,8 +195,6 @@ public class MainViewController {
                 default:
                     break;
             }
-
-
         }
         StringSelection stringSelection = new StringSelection(sb.toString());
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -226,7 +232,6 @@ public class MainViewController {
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
-
         return pidInfo.toString().contains("defi-app");
     }
 
@@ -264,7 +269,7 @@ public class MainViewController {
     public void showDefiAppIsRunning() {
         JFrame frameDefid = new JFrame("DeFi App running");
         frameDefid.setLayout(null);
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\process.png");
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\process.png");
         JLabel jl = new JLabel("     The Defi-App is running! Please close it first.", icon, JLabel.CENTER);
         jl.setSize(400, 100);
         jl.setLocation(0, 0);
@@ -287,7 +292,7 @@ public class MainViewController {
     public void showDefidNotRunning() {
         this.frameDefid = new JFrame("Launch defid.exe");
         frameDefid.setLayout(null);
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\connected.png");
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\connected.png");
         JLabel jl = new JLabel("     The defid.exe is not running! Please start it manually.", icon, JLabel.CENTER);
         jl.setSize(400, 100);
         jl.setLocation(0, 0);
@@ -309,7 +314,7 @@ public class MainViewController {
 
     public void showUpdateWindow() {
         this.frameUpdate = new JFrame("Loading Database");
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\updating.png");
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\updating.png");
         JLabel jl = new JLabel("     Updating local files. Please wait...!", icon, JLabel.CENTER);
         frameUpdate.add(jl);
         frameUpdate.setSize(350, 125);
@@ -326,12 +331,15 @@ public class MainViewController {
     public void plotUpdate(String openedTab) {
         switch (openedTab) {
             case "Overview":
+            case "Übersicht":
                 updateOverview();
                 break;
             case "Rewards":
+            case "Belohnungen":
                 updateRewards();
                 break;
             case "Commissions":
+            case "Kommissionen":
                 updateCommissions();
                 break;
             default:
@@ -367,10 +375,14 @@ public class MainViewController {
                 }
 
                 this.mainView.yAxis.setAutoRanging(false);
+
+                maxValue += overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble();
+                this.mainView.yAxis.setUpperBound(maxValue*1.1);
+                /*
                 if (maxValue < overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble()) {
                     this.mainView.yAxis.setUpperBound(overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble() * 1.10);
                     maxValue = overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble();
-                }
+                }*/
                 this.mainView.plotOverview.getData().add(overviewSeries);
                 this.mainView.plotOverview.setCreateSymbols(true);
             }
@@ -410,7 +422,7 @@ public class MainViewController {
 
         if (this.transactionController.getPortfolioList().containsKey(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue())) {
 
-            if (this.settingsController.selectedPlotType.getValue().equals("Individual")) {
+            if (this.settingsController.selectedPlotType.getValue().equals(this.settingsController.translationList.getValue().get("Individual"))) {
 
                 for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
 
@@ -507,7 +519,7 @@ public class MainViewController {
 
         if (this.transactionController.getPortfolioList().containsKey(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue())) {
 
-            if (this.settingsController.selectedPlotType.getValue().equals("Individual")) {
+            if (this.settingsController.selectedPlotType.getValue().equals(this.settingsController.translationList.getValue().get("Individual"))) {
 
                 for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervall.getValue()).entrySet()) {
                     if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervall.getValue())) >= 0 &&

@@ -1,9 +1,11 @@
 package portfolio.views;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -11,24 +13,26 @@ import portfolio.controllers.SettingsController;
 
 public class SettingsView implements Initializable {
     public Button btnSaveAndApply;
+    public Label labelLanguage;
+    public Label CSV;
+    public Label prefferedCurrency;
     @FXML
     private ComboBox<String> cmbLanguage, cmbPrefCurrency,cmbDecSeperator,cmbCSVSeperator;
-    public Button btnCancel = new Button();
     SettingsController settingsController = SettingsController.getInstance();
-
-    public void btnCancelPressed(){
-        Stage stage = (Stage) btnCancel.getScene().getWindow();
-        stage.close();
-    }
 
     public void btnSaveAndApplyPressed(){
         this.settingsController.saveSettings();
-        Stage stage = (Stage) btnCancel.getScene().getWindow();
+        Stage stage = (Stage) btnSaveAndApply.getScene().getWindow();
         stage.close();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+         btnSaveAndApply.setText(this.settingsController.translationList.getValue().get("Close").toString());
+         labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
+         CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
+         prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
 
         this.cmbLanguage.getItems().addAll(this.settingsController.languages);
         this.cmbLanguage.valueProperty().bindBidirectional(this.settingsController.selectedLanguage);
@@ -41,6 +45,14 @@ public class SettingsView implements Initializable {
 
         this.cmbCSVSeperator.getItems().addAll(this.settingsController.csvSeperators);
         this.cmbCSVSeperator.valueProperty().bindBidirectional(this.settingsController.selectedSeperator);
+
+    }
+
+    public void changeLanguage(ActionEvent actionEvent) {
+        this.btnSaveAndApply.textProperty().setValue(this.settingsController.translationList.getValue().get("Close").toString());
+        this.labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
+this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
+this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
 
     }
 }
