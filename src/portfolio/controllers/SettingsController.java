@@ -30,6 +30,7 @@ public class SettingsController {
     public StringProperty selectedFiatCurrency = new SimpleStringProperty("EUR");
     public StringProperty selectedDecimal = new SimpleStringProperty(".");
     public StringProperty selectedSeperator = new SimpleStringProperty(",");
+    public StringProperty selectedStyleMode= new SimpleStringProperty("Light Mode");
 
     public StringProperty selectedCoin = new SimpleStringProperty("BTC-DFI");
     public StringProperty selectedPlotCurrency = new SimpleStringProperty("Coin");
@@ -38,11 +39,12 @@ public class SettingsController {
     public ObjectProperty<LocalDate> dateFrom = new SimpleObjectProperty();
     public ObjectProperty<LocalDate> dateTo = new SimpleObjectProperty();
     public ObjectProperty<JSONObject> translationList = new SimpleObjectProperty();
-
+    public String selectedIntervallInt = "Daily";
 
     //Combo box filling
     public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
     public String[] plotCurrency = new String[]{"Coin", "Fiat"};
+    public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
 
     //All relevant paths and files
     public String strCookiePath = System.getenv("APPDATA").replace(" ","\" \"") + "\\DeFi Blockchain\\.cookie";
@@ -123,6 +125,7 @@ public class SettingsController {
                 this.selectedCoin.setValue(data[4]);
                 this.selectedPlotCurrency.setValue(data[5]);
                 this.dateFrom.setValue(LocalDate.parse(data[6]));
+                if(data.length>7) this.selectedStyleMode.setValue(data[7]);
             }
         }
     }
@@ -163,6 +166,8 @@ public class SettingsController {
             csvWriter.append(this.selectedPlotCurrency.getValue());
             csvWriter.append(",");
             csvWriter.append(this.dateFrom.getValue().toString());
+            csvWriter.append(",");
+            csvWriter.append(this.selectedStyleMode.getValue());
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {

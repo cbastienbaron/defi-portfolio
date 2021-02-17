@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="278.0" prefWidth="496.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.SettingsView">
-   <ImageView fitHeight="119.0" fitWidth="111.0" layoutX="40.0" layoutY="66.0" pickOnBounds="true" preserveRatio="true">
+<AnchorPane prefHeight="236.0" prefWidth="428.0" stylesheets="@../styles/darkMode.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.SettingsView">
+   <ImageView fitHeight="77.0" fitWidth="82.0" layoutX="14.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@../../icons/settings.png" />
    </ImageView>
-   <Label fx:id="labelLanguage" layoutX="210.0" layoutY="50.0" text="Language" textAlignment="RIGHT" />
-   <Label fx:id="CSV" layoutX="194.0" layoutY="172.0" text="CSV Sperator" textAlignment="RIGHT" />
-   <Label fx:id="prefferedCurrency" layoutX="164.0" layoutY="94.0" text="Preferred Currency" textAlignment="RIGHT" />
-   <ComboBox fx:id="cmbLanguage" layoutX="289.0" layoutY="48.0" onAction="#changeLanguage" prefWidth="150.0" />
-   <ComboBox fx:id="cmbPrefCurrency" layoutX="289.0" layoutY="90.0" prefWidth="150.0" />
-   <ComboBox fx:id="cmbCSVSeperator" layoutX="289.0" layoutY="172.0" prefWidth="150.0" />
-   <Button fx:id="btnSaveAndApply" layoutX="394.0" layoutY="230.0" mnemonicParsing="false" onMouseClicked="#btnSaveAndApplyPressed" text="Close" />
-   <Label layoutX="168.0" layoutY="137.0" text="Decimal Seperator" textAlignment="RIGHT" />
-   <ComboBox fx:id="cmbDecSeperator" layoutX="289.0" layoutY="132.0" prefWidth="150.0" />
+   <Label fx:id="labelLanguage" layoutX="155.0" layoutY="19.0" text="Language" textAlignment="RIGHT" />
+   <Label fx:id="CSV" layoutX="139.0" layoutY="141.0" text="CSV Sperator" textAlignment="RIGHT" />
+   <Label fx:id="prefferedCurrency" layoutX="109.0" layoutY="63.0" text="Preferred Currency" textAlignment="RIGHT" />
+   <ComboBox fx:id="cmbLanguage" layoutX="234.0" layoutY="17.0" onAction="#changeLanguage" prefWidth="150.0" />
+   <ComboBox fx:id="cmbPrefCurrency" layoutX="234.0" layoutY="59.0" prefWidth="150.0" />
+   <ComboBox fx:id="cmbCSVSeperator" layoutX="234.0" layoutY="141.0" prefWidth="150.0" />
+   <Label fx:id="prefferedStyle" layoutX="174.0" layoutY="184.0" text="Design" textAlignment="RIGHT" />
+   <ComboBox fx:id="cmbPrefferedStyle" layoutX="234.0" layoutY="180.0" prefWidth="150.0" />
+   <Button fx:id="btnSaveAndApply" layoutX="335.0" layoutY="221.0" mnemonicParsing="false" onMouseClicked="#btnSaveAndApplyPressed" text="Close">
+      <padding>
+         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+      </padding></Button>
+   <Label layoutX="113.0" layoutY="106.0" text="Decimal Seperator" textAlignment="RIGHT" />
+   <ComboBox fx:id="cmbDecSeperator" layoutX="234.0" layoutY="101.0" prefWidth="150.0" />
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
 </AnchorPane>

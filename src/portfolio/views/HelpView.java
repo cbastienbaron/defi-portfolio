@@ -4,6 +4,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import portfolio.controllers.DonateController;
 import portfolio.controllers.HelpController;
 
@@ -20,6 +22,8 @@ public class HelpView implements Initializable {
 
     public Button btnCopyHelp;
     public Label Contact;
+    public Button btnWriteHelp;
+    public Button btnClose;
     HelpController helpController = HelpController.getInstance();
 
     @Override
@@ -40,6 +44,11 @@ public class HelpView implements Initializable {
         StringSelection stringSelection = new StringSelection(myString);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
+    }
+
+    public void Close() {
+        Stage stage = (Stage) btnClose.getScene().getWindow();
+        stage.close();
     }
 }
 

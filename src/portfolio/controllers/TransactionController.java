@@ -224,11 +224,12 @@ public class TransactionController {
         this.jl = new JLabel("Initializing Data...", icon, JLabel.CENTER);
         this.jl.setSize(400, 100);
         this.jl.setLocation(0, 0);
-        this.frameUpdate.add(jl);
+        this.jl.setForeground(Color.WHITE);
+    this.frameUpdate.add(jl);
         this.frameUpdate.setSize(400, 110);
         this.frameUpdate.setLocationRelativeTo(null);
         this.frameUpdate.setUndecorated(true);
-        this.frameUpdate.setBackground(Color.WHITE);
+        this.frameUpdate.getContentPane().setBackground(new Color(55, 62, 67));
         this.frameUpdate.setVisible(true);
         this.frameUpdate.toFront();
     }
@@ -316,12 +317,7 @@ public class TransactionController {
             default:
                 break;
         }
-        String[] intervallList = new String[]{};
-        if(settingsController.translationList.getValue().get("Daily").equals("Daily")){
-            intervallList = new String[]{"Daily", "Weekly", "Monthly", "Yearly"};
-        }else{
-            intervallList = new String[]{"Täglich", "Wöchentlich", "Monatlich", "Jährlich"};
-        }
+        String[] intervallList = new String[]{"Daily", "Weekly", "Monthly", "Yearly"};
 
         for (String intervall : intervallList) {
 

@@ -10,11 +10,11 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="700.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" stylesheets="@../styles/darkMode.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.MainView">
-    <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0"  AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
+    <AnchorPane fx:id="leftAnchorPane" layoutY="24.0" prefHeight="445.0" prefWidth="190.0" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="24.0">
         <effect>
             <DropShadow />
         </effect>
-      <GridPane alignment="CENTER" layoutX="3.0" layoutY="6.0" prefHeight="632.0" prefWidth="191.0"  AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="6.0">
+      <GridPane alignment="CENTER" layoutX="3.0" layoutY="6.0" prefHeight="632.0" prefWidth="191.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="6.0">
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -47,7 +47,7 @@
                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                  </GridPane.margin>
              </Button>
-              <Button fx:id="btnUpdateDatabse" alignment="CENTER" cache="true" mnemonicParsing="false" prefHeight="90.0" prefWidth="191.0" text="Update Data" GridPane.rowIndex="3">
+              <Button fx:id="btnUpdateDatabase" alignment="CENTER" cache="true" mnemonicParsing="false" prefHeight="90.0" prefWidth="191.0" text="Update Data" GridPane.rowIndex="3">
                   <cursor>
                       <Cursor fx:constant="DEFAULT" />
                   </cursor>
@@ -103,21 +103,25 @@
          </children>
       </GridPane>
     </AnchorPane>
-    <AnchorPane layoutY="2.0" prefHeight="0.0" prefWidth="700.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <MenuBar id="menuBar" layoutY="2.0" prefHeight="30.0" prefWidth="700.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <Menu fx:id="File" mnemonicParsing="false" text="File">
-                <MenuItem fx:id="Settings" mnemonicParsing="false" onAction="#openSettingPressed" text="Settings" />
-                <MenuItem fx:id="Close" mnemonicParsing="false" onAction="#closePressed" text="Close" />
-            </Menu>
-            <Menu fx:id="Help" mnemonicParsing="false" text="Help">
-                <MenuItem fx:id="HelpItem" mnemonicParsing="false" onAction="#helpPressed" text="Help" />
-            </Menu>
-            <Menu fx:id="Donate" mnemonicParsing="false" text="Donate">
-                <MenuItem fx:id="DonateItem" mnemonicParsing="false" onAction="#openAccountInformation" text="Account information" />
-            </Menu>
-        </MenuBar>
+    <AnchorPane layoutY="2.0" prefHeight="20.0" prefWidth="700.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+              <MenuBar id="menuBar" prefHeight="25.0" prefWidth="190.0">
+                  <Menu fx:id="File" mnemonicParsing="false" text="File">
+                      <MenuItem fx:id="Settings" mnemonicParsing="false" onAction="#openSettingPressed" text="Settings" />
+                      <MenuItem fx:id="Close" mnemonicParsing="false" onAction="#closePressed" text="Close" />
+                  </Menu>
+                  <Menu fx:id="Help" mnemonicParsing="false" text="Help">
+                      <MenuItem fx:id="HelpItem" mnemonicParsing="false" onAction="#helpPressed" text="Help" />
+                  </Menu>
+                  <Menu fx:id="Donate" mnemonicParsing="false" text="Donate">
+                      <MenuItem fx:id="DonateItem" mnemonicParsing="false" onAction="#openAccountInformation" text="Account information" />
+                  </Menu>
+              </MenuBar>
+         </children>
+      </AnchorPane>
     </AnchorPane>
-    <AnchorPane id="AnchorPanelRawData" fx:id="anchorPanelRawData" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0"  AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+    <AnchorPane id="AnchorPanelRawData" fx:id="anchorPanelRawData" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
         <TableView fx:id="rawDataTable" prefHeight="409.0" prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <columns>
                 <TableColumn fx:id="blockTimeColumn" sortable="false" text="Date" />
@@ -150,7 +154,7 @@
             <AnchorPane layoutX="613.0" layoutY="102.0" prefHeight="524.0" prefWidth="452.0" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="102.0" />
             <SplitPane dividerPositions="0.5702167766258247" prefHeight="639.0" prefWidth="1063.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="607.0" prefWidth="602.0">
-                    <TabPane fx:id="tabPane" layoutY="-2.0" prefHeight="639.0" prefWidth="602.0"  tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
+                    <TabPane fx:id="tabPane" layoutY="-2.0" prefHeight="639.0" prefWidth="602.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
                   <Tab fx:id="Rewards" text="Rewards">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
@@ -183,7 +187,7 @@
                                     <CategoryAxis animated="false" side="BOTTOM" />
                                  </xAxis>
                                  <yAxis>
-                                    <NumberAxis animated="false" side="LEFT"  />
+                                    <NumberAxis animated="false" side="LEFT" />
                                  </yAxis>
                               </LineChart>
                               <Pane layoutX="241.0" layoutY="129.0" prefHeight="43.0" prefWidth="78.0" AnchorPane.bottomAnchor="409.0" AnchorPane.leftAnchor="241.0" AnchorPane.rightAnchor="283.0" AnchorPane.topAnchor="129.0">
@@ -253,7 +257,7 @@
                                        <children>
                                           <LineChart fx:id="plotCommissions1" prefHeight="249.0" prefWidth="592.0" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
                                              <xAxis>
-                                                <CategoryAxis animated="false" side="BOTTOM"  />
+                                                <CategoryAxis animated="false" side="BOTTOM" />
                                              </xAxis>
                                              <yAxis>
                                                 <NumberAxis animated="false" side="LEFT" />

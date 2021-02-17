@@ -20,6 +20,7 @@ import java.net.URL;
 import java.text.*;
 import java.time.LocalDate;
 import java.util.*;
+import javafx.stage.StageStyle;
 import portfolio.models.PoolPairModel;
 import portfolio.models.TransactionModel;
 import portfolio.controllers.MainViewController;
@@ -36,7 +37,7 @@ public class MainView implements Initializable {
     @FXML
     public Button btnAnalyse;
     @FXML
-    public Button btnUpdateDatabse;
+    public Button btnUpdateDatabase;
     @FXML
     public Pane anchorPanelAnalyse, anchorPanelRawData;
     @FXML
@@ -139,15 +140,15 @@ public class MainView implements Initializable {
         this.fiatColumn.setVisible(!this.tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
         if (!this.init) {
             this.mainViewController.updateRewards();
-            if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Overview"))) {
+            if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get(this.mainViewController.settingsController.translationList.getValue().get("Overview")))) {
                 crypto1Column.setText( this.mainViewController.settingsController.translationList.getValue().get("Rewards")+" (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
                 crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions")+" ("+ mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
             }
-            if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Rewards"))) {
+            if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get(this.mainViewController.settingsController.translationList.getValue().get("Rewards")))) {
                 crypto1Column.setText(mainViewController.settingsController.selectedCoin.getValue().split("-")[1]);
                 crypto2Column.setText(mainViewController.settingsController.selectedCoin.getValue().split("-")[1] + "(" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
             }
-            if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Commissions"))) {
+            if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get(this.mainViewController.settingsController.translationList.getValue().get("Commissions")))) {
                 crypto1Column.setText(mainViewController.settingsController.selectedCoin.getValue().split("-")[1]);
                 crypto2Column.setText(mainViewController.settingsController.selectedCoin.getValue().split("-")[0]);
             }
@@ -163,9 +164,20 @@ public class MainView implements Initializable {
     }
 
     public void helpPressed() throws IOException {
+        final Delta dragDelta = new Delta();
         Parent root = FXMLLoader.load(getClass().getResource("HelpView.fxml"));
         Scene scene = new Scene(root);
         Stage s = new Stage();
+        s.initStyle(StageStyle.UNDECORATED);
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = s.getX() - mouseEvent.getScreenX();
+            dragDelta.y = s.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            s.setX(mouseEvent.getScreenX() + dragDelta.x);
+            s.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
         s.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/help.png"));
         s.setTitle((this.mainViewController.settingsController.translationList.getValue().get("HelpTitle").toString()));
         s.setScene(scene);
@@ -173,9 +185,20 @@ public class MainView implements Initializable {
     }
 
     public void openAccountInformation() throws IOException {
+        final Delta dragDelta = new Delta();
         Parent root = FXMLLoader.load(getClass().getResource("DonateView.fxml"));
         Scene scene = new Scene(root);
         Stage s = new Stage();
+        s.initStyle(StageStyle.UNDECORATED);
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = s.getX() - mouseEvent.getScreenX();
+            dragDelta.y = s.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            s.setX(mouseEvent.getScreenX() + dragDelta.x);
+            s.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
         s.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/donate.png"));
         s.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
         s.setScene(scene);
@@ -183,14 +206,29 @@ public class MainView implements Initializable {
     }
 
     public void openSettingPressed() throws IOException {
+        final Delta dragDelta = new Delta();
         Parent root = FXMLLoader.load(getClass().getResource("SettingsView.fxml"));
         Scene scene = new Scene(root);
         Stage s = new Stage();
+
+        s.initStyle(StageStyle.UNDECORATED);
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = s.getX() - mouseEvent.getScreenX();
+            dragDelta.y = s.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            s.setX(mouseEvent.getScreenX() + dragDelta.x);
+            s.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
         s.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png"));
         s.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
         s.setScene(scene);
         s.show();
     }
+
+    // records relative x and y co-ordinates.
+    static class Delta { double x, y; }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -202,12 +240,12 @@ public class MainView implements Initializable {
         coinImageRewards.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
         coinImageCommissions.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
 
-        this.btnUpdateDatabse.disableProperty().bindBidirectional(this.mainViewController.bDataBase);
+        this.btnUpdateDatabase.disableProperty().bindBidirectional(this.mainViewController.bDataBase);
         // Update Database Frame
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockLocally);
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockOnBlockchain);
         this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.strLastUpdate);
-        this.btnUpdateDatabse.setOnAction(e -> mainViewController.btnUpdateDatabasePressed());
+        this.btnUpdateDatabase.setOnAction(e -> mainViewController.btnUpdateDatabasePressed());
 
         tabPane.getSelectionModel().selectedItemProperty().addListener(
                 (ov, t, t1) -> {
@@ -241,6 +279,25 @@ public class MainView implements Initializable {
 
         this.cmbIntervall.valueProperty().bindBidirectional(this.mainViewController.settingsController.selectedIntervall);
         this.cmbIntervall.valueProperty().addListener((ov, oldValue, newValue) -> {
+            if(newValue!=null){
+
+            switch (newValue) {
+                case "Täglich":
+                    this.mainViewController.settingsController.selectedIntervallInt="Daily";
+                    break;
+                case "Wöchentlich":
+                    this.mainViewController.settingsController.selectedIntervallInt=  "Weekly";
+                    break;
+                case "Monatlich":
+                    this.mainViewController.settingsController.selectedIntervallInt=  "Monthly";
+                    break;
+                case "Jährlich":
+                    this.mainViewController.settingsController.selectedIntervallInt= "Yearly";
+                    break;
+                default:
+                    break;
+            }
+            }
             if (!this.init) mainViewController.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
             this.mainViewController.settingsController.saveSettings();
         });
@@ -251,6 +308,7 @@ public class MainView implements Initializable {
         this.cmbCoins.getItems().addAll(this.mainViewController.settingsController.cryptoCurrencies);
         this.cmbCoins.valueProperty().bindBidirectional(this.mainViewController.settingsController.selectedCoin);
         this.cmbCoins.valueProperty().addListener((ov, oldValue, newValue) -> {
+
             if (!this.init) mainViewController.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
 
             if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Overview"))) {
@@ -382,9 +440,7 @@ public class MainView implements Initializable {
             }
         });
 
-        this.mainViewController.settingsController.selectedLanguage.addListener((ov, oldValue, newValue) -> {
-            this.updateLanguage();
-        });
+        this.mainViewController.settingsController.selectedLanguage.addListener((ov, oldValue, newValue) -> this.updateLanguage());
 
         this.dateTo.valueProperty().bindBidirectional(this.mainViewController.settingsController.dateTo);
         this.dateTo.valueProperty().addListener((ov, oldValue, newValue) -> {
@@ -676,7 +732,7 @@ public class MainView implements Initializable {
         this.cmbIntervall.getItems().clear();
         this.cmbPlotCurrency.getItems().clear();
         this.cmbPlotCurrencyCom.getItems().clear();
-        this.btnUpdateDatabse.setText(this.mainViewController.settingsController.translationList.getValue().get("UpdateData").toString());
+        this.btnUpdateDatabase.setText(this.mainViewController.settingsController.translationList.getValue().get("UpdateData").toString());
         this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
         this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
         this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
