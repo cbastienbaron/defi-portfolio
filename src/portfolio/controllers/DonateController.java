@@ -10,5 +10,4 @@ public class DonateController {
     public static DonateController getInstance() {
         return OBJ;
     }
-
 }

@@ -5,13 +5,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import portfolio.controllers.DonateController;
 import portfolio.controllers.HelpController;
+import portfolio.controllers.SettingsController;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,10 +27,13 @@ public class HelpView implements Initializable {
     public Label Contact;
     public Button btnWriteHelp;
     public Button btnClose;
+    public AnchorPane anchorPane;
+    public Label Contact1;
     HelpController helpController = HelpController.getInstance();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         Contact.setText(helpController.strHelpText);
     }
 

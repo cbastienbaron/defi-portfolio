@@ -24,7 +24,6 @@
   "Commissions": "Kommissionen",
   "Overview": "Übersicht",
   "Total": "Gesamt",
-  "UpdateData": "Datenaktualisierung",
   "CurrentBlock": "Aktueller Block (Lokal):",
   "CurrentBlockBC": "Aktueller Block (Blockchain):",
   "LastUpdate": "Letztes Update:",
@@ -47,9 +46,9 @@
   "CSV": "CSV Seperator",
   "Decimal": "Dezimaltrennzeichen",
   "PrefferedCurrency": "Bevorzugte Währung",
-  "NoConnection": "No connection",
-  "InitializingData": "Initialisiere Daten...",
-  "PreparingData": "Bearbeite Daten...",
-  "SaveData": "Schreibe Daten...",
-  "UpdateData": "Aktualisiere Daten: "
+  "NoConnection": "Keine Verbindung",
+  "InitializingData": "Dateninitialisierung...",
+  "PreparingData": "Datenaufbereitung...",
+  "SaveData": "Datenspeicherung...",
+  "UpdateData": "Datenaktualisierung: "
 }

@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="205.0" prefWidth="597.0" stylesheets="@../styles/darkMode.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.DonateView">
+<AnchorPane fx:id="anchorPane" prefHeight="205.0" prefWidth="597.0"  xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.DonateView">
    <children>
       <Label layoutX="145.0" layoutY="105.0" prefHeight="25.0" prefWidth="444.0" text="\$DFI Wallet:">
          <font>

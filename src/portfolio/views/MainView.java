@@ -15,12 +15,17 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.*;
 import java.time.LocalDate;
 import java.util.*;
+
 import javafx.stage.StageStyle;
+import portfolio.controllers.DonateController;
+import portfolio.controllers.HelpController;
 import portfolio.models.PoolPairModel;
 import portfolio.models.TransactionModel;
 import portfolio.controllers.MainViewController;
@@ -142,8 +147,8 @@ public class MainView implements Initializable {
         if (!this.init) {
             this.mainViewController.updateRewards();
             if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get(this.mainViewController.settingsController.translationList.getValue().get("Overview")))) {
-                crypto1Column.setText( this.mainViewController.settingsController.translationList.getValue().get("Rewards")+" (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
-                crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions")+" ("+ mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+                crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+                crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
             }
             if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get(this.mainViewController.settingsController.translationList.getValue().get("Rewards")))) {
                 crypto1Column.setText(mainViewController.settingsController.selectedCoin.getValue().split("-")[1]);
@@ -165,10 +170,11 @@ public class MainView implements Initializable {
     }
 
     public void helpPressed() throws IOException {
-        if(helpStage== null) {
+        if (helpStage == null) {
             final Delta dragDelta = new Delta();
             Parent root = FXMLLoader.load(getClass().getResource("HelpView.fxml"));
             Scene scene = new Scene(root);
+
             helpStage = new Stage();
             helpStage.initStyle(StageStyle.UNDECORATED);
             scene.setOnMousePressed(mouseEvent -> {
@@ -184,14 +190,21 @@ public class MainView implements Initializable {
             helpStage.setTitle((this.mainViewController.settingsController.translationList.getValue().get("HelpTitle").toString()));
             helpStage.setScene(scene);
             helpStage.show();
-        }else{
+        } else {
             helpStage.show();
             helpStage.toFront();
+        }
+        java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+        java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+        if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            helpStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+        } else {
+            helpStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
         }
     }
 
     public void openAccountInformation() throws IOException {
-        if(donateStage== null) {
+        if (donateStage == null) {
             final Delta dragDelta = new Delta();
             Parent root = FXMLLoader.load(getClass().getResource("DonateView.fxml"));
             Scene scene = new Scene(root);
@@ -210,14 +223,22 @@ public class MainView implements Initializable {
             donateStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
             donateStage.setScene(scene);
             donateStage.show();
-        }else{
+        } else {
             donateStage.show();
             donateStage.toFront();
+        }
+
+        java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+        java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+        if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            donateStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+        } else {
+            donateStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
         }
     }
 
     public void openSettingPressed() throws IOException {
-        if(settingsStage== null) {
+        if (settingsStage == null) {
             final Delta dragDelta = new Delta();
             Parent root = FXMLLoader.load(getClass().getResource("SettingsView.fxml"));
             Scene scene = new Scene(root);
@@ -237,14 +258,24 @@ public class MainView implements Initializable {
             settingsStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
             settingsStage.setScene(scene);
             settingsStage.show();
-        }else{
+        } else {
             settingsStage.show();
             settingsStage.toFront();
+        }
+
+        java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+        java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+        if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            settingsStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+        } else {
+            settingsStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
         }
     }
 
     // records relative x and y co-ordinates.
-    static class Delta { double x, y; }
+    static class Delta {
+        double x, y;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -253,8 +284,14 @@ public class MainView implements Initializable {
         this.anchorPanelRawData.toFront();
         this.btnRawData.fire();
         updateLanguage();
+
         coinImageRewards.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
         coinImageCommissions.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
+        updateStylesheet();
+        this.mainViewController.settingsController.selectedStyleMode.addListener(style -> {
+            updateStylesheet();
+        });
+
 
         this.btnUpdateDatabase.disableProperty().bindBidirectional(this.mainViewController.bDataBase);
         // Update Database Frame
@@ -276,8 +313,8 @@ public class MainView implements Initializable {
                     cmbPlotCurrencyCom.setVisible(true);
 
                     if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Overview"))) {
-                        crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards")+ " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
-                        crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions")+ " " + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+                        crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+                        crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") + " " + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
                     }
                     if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Rewards"))) {
                         crypto1Column.setText(mainViewController.settingsController.selectedCoin.getValue().split("-")[1]);
@@ -292,27 +329,26 @@ public class MainView implements Initializable {
         );
 
 
-
         this.cmbIntervall.valueProperty().bindBidirectional(this.mainViewController.settingsController.selectedIntervall);
         this.cmbIntervall.valueProperty().addListener((ov, oldValue, newValue) -> {
-            if(newValue!=null){
+            if (newValue != null) {
 
-            switch (newValue) {
-                case "Täglich":
-                    this.mainViewController.settingsController.selectedIntervallInt="Daily";
-                    break;
-                case "Wöchentlich":
-                    this.mainViewController.settingsController.selectedIntervallInt=  "Weekly";
-                    break;
-                case "Monatlich":
-                    this.mainViewController.settingsController.selectedIntervallInt=  "Monthly";
-                    break;
-                case "Jährlich":
-                    this.mainViewController.settingsController.selectedIntervallInt= "Yearly";
-                    break;
-                default:
-                    break;
-            }
+                switch (newValue) {
+                    case "Täglich":
+                        this.mainViewController.settingsController.selectedIntervallInt = "Daily";
+                        break;
+                    case "Wöchentlich":
+                        this.mainViewController.settingsController.selectedIntervallInt = "Weekly";
+                        break;
+                    case "Monatlich":
+                        this.mainViewController.settingsController.selectedIntervallInt = "Monthly";
+                        break;
+                    case "Jährlich":
+                        this.mainViewController.settingsController.selectedIntervallInt = "Yearly";
+                        break;
+                    default:
+                        break;
+                }
             }
             if (!this.init) mainViewController.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
             this.mainViewController.settingsController.saveSettings();
@@ -328,8 +364,8 @@ public class MainView implements Initializable {
             if (!this.init) mainViewController.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
 
             if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Overview"))) {
-                crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards")+" (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
-                crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") +" (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+                crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+                crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
                 cmbCoins.setVisible(false);
                 cmbFiat.setVisible(false);
                 cmbPlotCurrency.setVisible(false);
@@ -352,18 +388,18 @@ public class MainView implements Initializable {
         this.cmbCoinsCom.getItems().addAll(this.mainViewController.settingsController.cryptoCurrencies);
         this.cmbCoinsCom.valueProperty().bindBidirectional(this.mainViewController.settingsController.selectedCoin);
 
-        this.fiatColumn.setText(this.fiatColumn.getText() +" (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
-        this.crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards")+" (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
-        this.crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") +" (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+        this.fiatColumn.setText(this.fiatColumn.getText() + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+        this.crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+        this.crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
 
         this.mainViewController.settingsController.selectedFiatCurrency.addListener((ov, oldValue, newValue) -> {
             if (!oldValue.equals(newValue) & this.plotRewards != null) {
                 if (!this.init) mainViewController.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
                 this.mainViewController.settingsController.saveSettings();
-                this.fiatColumn.setText(this.fiatColumn.getText() +" (" + newValue + ")");
+                this.fiatColumn.setText(this.fiatColumn.getText() + " (" + newValue + ")");
                 if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Overview"))) {
-                    crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") +" (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
-                    crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") +" (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+                    crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+                    crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
                 }
                 if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Rewards"))) {
                     crypto1Column.setText(mainViewController.settingsController.selectedCoin.getValue().split("-")[1]);
@@ -390,8 +426,8 @@ public class MainView implements Initializable {
             this.mainViewController.settingsController.saveSettings();
 
             if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Overview"))) {
-                crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") +" (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
-                crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") +" (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+                crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+                crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
                 cmbCoins.setVisible(false);
                 cmbFiat.setVisible(false);
                 cmbPlotCurrency.setVisible(false);
@@ -711,6 +747,34 @@ public class MainView implements Initializable {
         this.plotTable.contextMenuProperty().set(contextMenuPlotData);
     }
 
+    private void updateStylesheet() {
+
+        java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+        java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+        this.mainAnchorPane.getStylesheets().clear();
+        if (this.helpStage != null) this.helpStage.getScene().getStylesheets().clear();
+        if (this.settingsStage != null) this.settingsStage.getScene().getStylesheets().clear();
+        if (this.donateStage != null) this.donateStage.getScene().getStylesheets().clear();
+
+        if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            this.mainAnchorPane.getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+            if (this.helpStage != null)
+                this.helpStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+            if (this.settingsStage != null)
+                this.settingsStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+            if (this.donateStage != null)
+                this.donateStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+        } else {
+            this.mainAnchorPane.getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+            if (this.helpStage != null)
+                this.helpStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+            if (this.settingsStage != null)
+                this.settingsStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+            if (this.donateStage != null)
+                this.donateStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+        }
+    }
+
     private void updateLanguage() {
         this.mainViewController.settingsController.updateLanguage();
         this.btnRawData.textProperty().setValue(this.mainViewController.settingsController.translationList.getValue().get("RawData").toString());
@@ -759,29 +823,28 @@ public class MainView implements Initializable {
             this.cmbIntervall.getItems().set(2, this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
             this.cmbIntervall.getItems().set(3, this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
             this.cmbPlotCurrency.getItems().set(0, this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
-            this.cmbPlotCurrency.getItems().add(1, this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
+            this.cmbPlotCurrency.getItems().set(1, this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
             this.cmbPlotCurrencyCom.getItems().add(0, this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
             this.cmbPlotCurrencyCom.getItems().add(1, this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
 
-        }else{
+        } else {
 
-        this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
-        this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
-        this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
-        this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
-        this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
-        this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
-        this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
-        this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
-        this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
-        this.cmbIntervall.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
-        this.cmbIntervall.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
-        this.cmbIntervall.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
-        this.cmbIntervall.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
-        this.cmbPlotCurrency.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
-        this.cmbPlotCurrency.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
-        this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
-        this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
+            this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
+            this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
+            this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
+            this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
+            this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
+            this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
+            this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
+            this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
+            this.cmbIntervall.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
+            this.cmbIntervall.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
+            this.cmbIntervall.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
+            this.cmbIntervall.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
+            this.cmbPlotCurrency.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
+            this.cmbPlotCurrency.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
+            this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
+            this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
         }
         this.blockTimeColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Date").toString());
         this.timeStampColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Date").toString());
@@ -802,4 +865,4 @@ public class MainView implements Initializable {
         this.mainViewController.settingsController.selectedIntervall.setValue(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
     }
 
-    }
+}

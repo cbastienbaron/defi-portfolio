@@ -16,51 +16,36 @@
 .default-color6.chart-line-symbol { -fx-background-color: #FF00AF, white; }
 .default-color7.chart-line-symbol { -fx-background-color: #FF00AF, white; }
 
-
 .root {
-    -fx-base: white;
+    -fx-accent: #FF00AF;
+    -fx-focus-color: -fx-accent;
+    -fx-base: #ffffff;
+    -fx-control-inner-background: #ffffff;
+    -fx-control-inner-background-alt: -fx-control-inner-background ;
 }
 
 .grid-pane {
-    -fx-base: white;
+        -fx-accent: #FF00AF;
+        -fx-focus-color: -fx-accent;
+        -fx-base: #ffffff;
+        -fx-control-inner-background: #ffffff;
+        -fx-control-inner-background-alt: -fx-control-inner-background ;
 }
 
-
 .label{
-    -fx-text-fill: #FF00AF;
+    -fx-text-fill: black;
+}
+
+.text{
+    -fx-text-fill: black;
 }
 
 .text-field {
-    -fx-prompt-text-fill: #FF00AF;
+    -fx-prompt-text-fill: black;
 }
-
-
 .titulo{
     -fx-font-weight: bold;
     -fx-font-size: 18px;
-}
-
-.combo-box-popup .list-view .list-cell {
-    -fx-text-fill: #FF00AF;
-}
-
-.combo-box .cell:selected {
-    -fx-text-fill: #FF00AF;
-}
-
-
-.date-picker > .text-field {
-    -fx-background-color: white;
-    -fx-text-fill: #FF00AF;
-}
-
-.button{
-    -fx-focus-traversable: false;
-    -fx-text-fill: #FF00AF;
-}
-
-.button:hover{
-    -fx-text-fill: #FF00AF;
 }
 
 .tab-pane > .tab-header-area {
@@ -68,35 +53,52 @@
 }
 
 .tab-pane > .tab-header-area > .tab-header-background {
-  -fx-background-color: white, white;
+  -fx-background-color: #ffffff, #ffffff;
   -fx-background-insets: 0, 0 0 1px 0;
 }
 
+.date-picker > .text-field {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: black;
+}
+
+.menu-bar {
+  -fx-background-color:  #fbfbfb;
+}
+
 .tab-pane > .tab-header-area > .headers-region > .tab {
-  -fx-background-color: white;
-  -fx-background-insets: 0 0 1px 0;
+  -fx-background-color: #ffffff;
   -fx-padding: 1.5em 1em;
 }
 
-.tab-pane > .tab-header-area > .headers-region > .tab >.tab-container >.tab-label {
-  -fx-text-fill: #FF00AF;
-}
-
 .tab-pane > .tab-header-area > .headers-region > .tab:selected {
-  -fx-background-color: #FF00AF, white;
+  -fx-background-color: #FF00AF, #ffffff;
   -fx-background-insets: 0, 0 0 2px 0;
 }
 
+.combo-box-popup .list-view .list-cell {
+    -fx-text-fill: black;
+}
+.combo-box .cell:selected {
+    -fx-text-fill: black;
+}
+
 .tab-pane > .tab-header-area > .headers-region > .tab:selected >.tab-container >.tab-label {
-  -fx-text-fill: #FF00AF;
+  -fx-text-fill: black;
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:selected >.tab-container >.focus-indicator {
   -fx-opacity: 0;
 }
 
-.separator *.line {
-    -fx-background-color: white;
-    -fx-border-style: solid;
+.button{
+   -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-background-color: #ffffff;
+    -fx-border-color: derive(grey, 35%);
     -fx-border-width: 1px;
+}
+
+.button:hover{
+    -fx-text-fill: #FF00AF;
 }

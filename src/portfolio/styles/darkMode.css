@@ -25,15 +25,17 @@
 }
 
 .grid-pane {
-    -fx-accent: #FF00AF;
-    -fx-focus-color: -fx-accent;
+    -fx-focus-color: #FF00AF;
     -fx-base: #373e43;
     -fx-control-inner-background: derive(#373e43, 35%);
     -fx-control-inner-background-alt: -fx-control-inner-background ;
 }
 
-
 .label{
+    -fx-text-fill: white;
+}
+
+.text{
     -fx-text-fill: white;
 }
 
@@ -68,15 +70,12 @@
   -fx-padding: 1.5em 1em;
 }
 
-.tab-pane > .tab-header-area > .headers-region > .tab >.tab-container >.tab-label:selected  {
-  -fx-text-fill: #FF00AF;
-}
-
 .tab-pane > .tab-header-area > .headers-region > .tab:selected {
   -fx-background-color: #FF00AF, derive(#373e43, 35%);
   -fx-background-insets: 0, 0 0 2px 0;
 }
-
+    -fx-border-color: derive(#373e43, 35%);
+    -fx-border-width: 1px;
 .combo-box-popup .list-view .list-cell {
     -fx-text-fill: white;
 }
@@ -86,23 +85,21 @@
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:selected >.tab-container >.tab-label {
-  -fx-text-fill: #FF00AF;
+  -fx-text-fill: white;
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:selected >.tab-container >.focus-indicator {
   -fx-opacity: 0;
 }
+
 .button{
-    -fx-focus-traversable: false;
-    -fx-text-fill: white;
+   -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-color: #373e43;
+    -fx-border-color: derive(#373e43, 35%);
+    -fx-border-width: 1px;
 }
 
 .button:hover{
     -fx-text-fill: #FF00AF;
-}
-
-.separator *.line {
-    -fx-background-color: derive(#373e43, 35%);
-    -fx-border-style: solid;
-    -fx-border-width: 1px;
 }

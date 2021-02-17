@@ -6,9 +6,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import portfolio.controllers.DonateController;
+import portfolio.controllers.HelpController;
 import portfolio.controllers.SettingsController;
 
 public class SettingsView implements Initializable {
@@ -18,6 +24,7 @@ public class SettingsView implements Initializable {
     public Label prefferedCurrency;
     public Label prefferedStyle;
     public Label labelDec;
+    public AnchorPane anchorPane;
     @FXML
     private ComboBox<String> cmbLanguage, cmbPrefCurrency,cmbDecSeperator,cmbCSVSeperator,cmbPrefferedStyle;
     SettingsController settingsController = SettingsController.getInstance();
@@ -56,10 +63,11 @@ public class SettingsView implements Initializable {
     public void changeLanguage(ActionEvent actionEvent) {
         this.btnSaveAndApply.textProperty().setValue(this.settingsController.translationList.getValue().get("Close").toString());
         this.labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
-this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
-this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
+        this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
+        this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
         labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
     }
+
 }
 
 
