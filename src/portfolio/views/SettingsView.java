@@ -17,7 +17,7 @@ public class SettingsView implements Initializable {
     public Label CSV;
     public Label prefferedCurrency;
     @FXML
-    private ComboBox<String> cmbLanguage, cmbPrefCurrency,cmbDecSeperator,cmbCSVSeperator;
+    private ComboBox<String> cmbLanguage, cmbPrefCurrency,cmbDecSeperator,cmbCSVSeperator,cmbPrefferedStyle;
     SettingsController settingsController = SettingsController.getInstance();
 
     public void btnSaveAndApplyPressed(){
@@ -45,6 +45,9 @@ public class SettingsView implements Initializable {
 
         this.cmbCSVSeperator.getItems().addAll(this.settingsController.csvSeperators);
         this.cmbCSVSeperator.valueProperty().bindBidirectional(this.settingsController.selectedSeperator);
+
+        this.cmbPrefferedStyle.getItems().addAll(this.settingsController.styleModes);
+        this.cmbPrefferedStyle.valueProperty().bindBidirectional(this.settingsController.selectedStyleMode);
 
     }
 

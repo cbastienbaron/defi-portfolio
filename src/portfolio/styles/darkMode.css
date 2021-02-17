@@ -7,38 +7,38 @@
 .default-color6.chart-series-line { -fx-stroke: #FF00AF; }
 .default-color7.chart-series-line { -fx-stroke: #FF00AF; }
 
-.default-color0.chart-line-symbol { -fx-background-color: #FF00AF, white; }
-.default-color1.chart-line-symbol { -fx-background-color: #FF00AF, white; }
-.default-color2.chart-line-symbol { -fx-background-color: #FF00AF, white; }
-.default-color3.chart-line-symbol { -fx-background-color: #FF00AF, white; }
-.default-color4.chart-line-symbol { -fx-background-color: #FF00AF, white; }
-.default-color5.chart-line-symbol { -fx-background-color: #FF00AF, white; }
-.default-color6.chart-line-symbol { -fx-background-color: #FF00AF, white; }
-.default-color7.chart-line-symbol { -fx-background-color: #FF00AF, white; }
+.default-color0.chart-line-symbol { -fx-background-color: #FF00AF, derive(#373e43, 35%); }
+.default-color1.chart-line-symbol { -fx-background-color: #FF00AF, derive(#373e43, 35%); }
+.default-color2.chart-line-symbol { -fx-background-color: #FF00AF, derive(#373e43, 35%); }
+.default-color3.chart-line-symbol { -fx-background-color: #FF00AF, derive(#373e43, 35%); }
+.default-color4.chart-line-symbol { -fx-background-color: #FF00AF, derive(#373e43, 35%); }
+.default-color5.chart-line-symbol { -fx-background-color: #FF00AF, derive(#373e43, 35%); }
+.default-color6.chart-line-symbol { -fx-background-color: #FF00AF, derive(#373e43, 35%); }
+.default-color7.chart-line-symbol { -fx-background-color: #FF00AF, derive(#373e43, 35%); }
 
 .root {
-    -fx-accent: #1e74c6;
+    -fx-accent: #FF00AF;
     -fx-focus-color: -fx-accent;
     -fx-base: #373e43;
-    -fx-control-inner-background: derive(-fx-base, 35%);
+    -fx-control-inner-background: derive(#373e43, 35%);
     -fx-control-inner-background-alt: -fx-control-inner-background ;
 }
 
 .grid-pane {
-    -fx-accent: #1e74c6;
+    -fx-accent: #FF00AF;
     -fx-focus-color: -fx-accent;
     -fx-base: #373e43;
-    -fx-control-inner-background: derive(-fx-base, 35%);
+    -fx-control-inner-background: derive(#373e43, 35%);
     -fx-control-inner-background-alt: -fx-control-inner-background ;
 }
 
 
 .label{
-    -fx-text-fill: #FF00AF;
+    -fx-text-fill: white;
 }
 
 .text-field {
-    -fx-prompt-text-fill: #FF00AF;
+    -fx-prompt-text-fill: white;
 }
 
 .titulo{
@@ -52,35 +52,37 @@
 }
 
 .tab-pane > .tab-header-area > .tab-header-background {
-  -fx-background-color: #3C3C3C, #3C3C3C;
+  -fx-background-color: #3C3C3C, derive(#373e43, 35%);
   -fx-background-insets: 0, 0 0 1px 0;
 }
 .date-picker > .text-field {
     -fx-background-color:#3C3C3C;
-    -fx-text-fill: #FF00AF;
+    -fx-text-fill: white;
 }
 
-
+.menu-bar {
+  -fx-background-color: derive(#373e43, 35%); // your color here
+}
 .tab-pane > .tab-header-area > .headers-region > .tab {
-  -fx-background-color: #3C3C3C;
+  -fx-background-color: derive(#373e43, 35%);
   -fx-padding: 1.5em 1em;
 }
 
-.tab-pane > .tab-header-area > .headers-region > .tab >.tab-container >.tab-label {
+.tab-pane > .tab-header-area > .headers-region > .tab >.tab-container >.tab-label:selected  {
   -fx-text-fill: #FF00AF;
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:selected {
-  -fx-background-color: #FF00AF, #3C3C3C;
+  -fx-background-color: #FF00AF, derive(#373e43, 35%);
   -fx-background-insets: 0, 0 0 2px 0;
 }
 
 .combo-box-popup .list-view .list-cell {
-    -fx-text-fill: #FF00AF;
+    -fx-text-fill: white;
 }
 
 .combo-box .cell:selected {
-    -fx-text-fill: #FF00AF;
+    -fx-text-fill: white;
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:selected >.tab-container >.tab-label {
@@ -92,7 +94,7 @@
 }
 .button{
     -fx-focus-traversable: false;
-    -fx-text-fill: #FF00AF;
+    -fx-text-fill: white;
 }
 
 .button:hover{
@@ -100,7 +102,7 @@
 }
 
 .separator *.line {
-    -fx-background-color: #3C3C3C;
+    -fx-background-color: derive(#373e43, 35%);
     -fx-border-style: solid;
     -fx-border-width: 1px;
 }

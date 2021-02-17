@@ -5,7 +5,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import portfolio.controllers.DonateController;
 import portfolio.controllers.SettingsController;
@@ -20,6 +22,8 @@ public class DonateView implements Initializable {
     public Button btnCopy;
     public ImageView img;
     public Label donateText;
+    public Button btnClose;
+    public TextField donateTextField;
     DonateController donateController = DonateController.getInstance();
 
     public void  btnCopyPressed(){
@@ -32,6 +36,12 @@ public class DonateView implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.donateText.setText(this.donateController.strDonateText);
+        this.donateTextField.setEditable(false);
+    }
+
+    public void Close(MouseEvent mouseEvent) {
+        Stage stage = (Stage) btnClose.getScene().getWindow();
+        stage.close();
     }
 }
 
