@@ -255,7 +255,7 @@ public class MainViewController {
                 } else {
                     if (!this.transactionController.checkRpc()) {
                         this.showDefidNotRunning();
-                        this.strCurrentBlockOnBlockchain.set("No connection");
+                        this.strCurrentBlockOnBlockchain.set(this.settingsController.translationList.getValue().get("NoConnection").toString());
                     }
                 }
 

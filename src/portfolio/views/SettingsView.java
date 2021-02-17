@@ -16,6 +16,8 @@ public class SettingsView implements Initializable {
     public Label labelLanguage;
     public Label CSV;
     public Label prefferedCurrency;
+    public Label prefferedStyle;
+    public Label labelDec;
     @FXML
     private ComboBox<String> cmbLanguage, cmbPrefCurrency,cmbDecSeperator,cmbCSVSeperator,cmbPrefferedStyle;
     SettingsController settingsController = SettingsController.getInstance();
@@ -33,7 +35,7 @@ public class SettingsView implements Initializable {
          labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
          CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
          prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
-
+        labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
         this.cmbLanguage.getItems().addAll(this.settingsController.languages);
         this.cmbLanguage.valueProperty().bindBidirectional(this.settingsController.selectedLanguage);
 
@@ -56,7 +58,7 @@ public class SettingsView implements Initializable {
         this.labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
 this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
 this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
-
+        labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
     }
 }
 

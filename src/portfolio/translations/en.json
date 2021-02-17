@@ -45,5 +45,11 @@
     "HelpTitle": "Contact information",
     "LanguageLabel": "Language",
     "CSV": "CSV seperator",
-    "PrefferedCurrency": "Preffered currency:"
+    "Decimal": "Decimal",
+    "PrefferedCurrency": "Preffered currency:",
+    "NoConnection": "No Connection",
+    "InitializingData": "Initializing Data...",
+    "PreparingData": "Preparing Data...",
+    "SaveData": "Writing Data...",
+    "UpdateData": "Update Data: "
 }
