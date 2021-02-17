@@ -45,7 +45,7 @@
   "HelpTitle": "Kontaktinformation",
   "LanguageLabel": "Sprache",
   "CSV": "CSV Seperator",
-  "Decimal": "Dezimal",
+  "Decimal": "Dezimaltrennzeichen",
   "PrefferedCurrency": "Bevorzugte Währung",
   "NoConnection": "No Connection",
   "InitializingData": "Initialisiere Daten...",
