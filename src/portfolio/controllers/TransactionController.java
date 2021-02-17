@@ -224,12 +224,19 @@ public class TransactionController {
         this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), icon, JLabel.CENTER);
         this.jl.setSize(400, 100);
         this.jl.setLocation(0, 0);
-        this.jl.setForeground(Color.WHITE);
-    this.frameUpdate.add(jl);
+        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")){
+            this.jl.setForeground(Color.WHITE);
+        }else{
+            this.jl.setForeground(Color.BLACK);
+        }
+        this.frameUpdate.add(jl);
         this.frameUpdate.setSize(400, 110);
         this.frameUpdate.setLocationRelativeTo(null);
         this.frameUpdate.setUndecorated(true);
-        this.frameUpdate.getContentPane().setBackground(new Color(55, 62, 67));
+
+        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            this.frameUpdate.getContentPane().setBackground(new Color(55, 62, 67));
+        }
         this.frameUpdate.setVisible(true);
         this.frameUpdate.toFront();
     }
