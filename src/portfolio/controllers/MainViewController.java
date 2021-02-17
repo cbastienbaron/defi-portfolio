@@ -41,7 +41,7 @@ public class MainViewController {
     //View
     public MainView mainView;
     public JFrame frameUpdate;
-    public Frame frameDefid;
+    public JFrame frameDefid;
 
     //Table and plot lists
     public List<PoolPairModel> poolPairModelList = new ArrayList<>();
@@ -278,6 +278,15 @@ public class MainViewController {
         frameDefid.setLocationRelativeTo(null);
         frameDefid.setUndecorated(true);
 
+        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")){
+            jl.setForeground(Color.WHITE);
+        }else{
+            jl.setForeground(Color.BLACK);
+        }
+        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            frameDefid.getContentPane().setBackground(new Color(55, 62, 67));
+        }
+
         JButton b = new JButton("OK");
         b.setBounds(160, 80, 80, 25);
         b.addActionListener(e -> {
@@ -287,10 +296,11 @@ public class MainViewController {
         });
         frameDefid.add(b);
         frameDefid.setVisible(true);
+        frameDefid.toFront();
     }
 
     public void showDefidNotRunning() {
-        this.frameDefid = new JFrame("Launch defid.exe");
+        frameDefid = new JFrame("Launch defid.exe");
         frameDefid.setLayout(null);
         ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\connected.png");
         JLabel jl = new JLabel("     The defid.exe is not running! Please start it manually.", icon, JLabel.CENTER);
@@ -300,6 +310,14 @@ public class MainViewController {
         frameDefid.setSize(400, 125);
         frameDefid.setLocationRelativeTo(null);
         frameDefid.setUndecorated(true);
+        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")){
+            jl.setForeground(Color.WHITE);
+        }else{
+            jl.setForeground(Color.BLACK);
+        }
+        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            frameDefid.getContentPane().setBackground(new Color(55, 62, 67));
+        }
 
         JButton b = new JButton("OK");
         b.setBounds(160, 80, 80, 25);
@@ -310,6 +328,7 @@ public class MainViewController {
         });
         frameDefid.add(b);
         frameDefid.setVisible(true);
+        frameDefid.toFront();
     }
 
     public void showUpdateWindow() {
@@ -317,10 +336,21 @@ public class MainViewController {
         ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\updating.png");
         JLabel jl = new JLabel("     Updating local files. Please wait...!", icon, JLabel.CENTER);
         frameUpdate.add(jl);
+
+        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")){
+            jl.setForeground(Color.WHITE);
+        }else{
+            jl.setForeground(Color.BLACK);
+        }
+        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            frameUpdate.getContentPane().setBackground(new Color(55, 62, 67));
+        }
+
         frameUpdate.setSize(350, 125);
         frameUpdate.setLocationRelativeTo(null);
         frameUpdate.setUndecorated(true);
         frameUpdate.setVisible(true);
+        frameUpdate.toFront();
     }
 
     public void closeUpdateWindow() {
