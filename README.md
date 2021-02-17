@@ -68,7 +68,7 @@ Here the overview is displayed in graphical form. The rewards and commissions ar
 # About Us
 Daniel Klaiber (https://t.me/danielklaiber) & (https://twitter.com/danielkolibri)
 
-Arthur Eisener (https://t.me/ArthurEisener)
+Arthur Eisener (https://t.me/ArthurEisener) & (https://twitter.com/ArthurEisener)
 
 ## Licenses
 
