@@ -65,7 +65,7 @@ Here the overview is displayed in graphical form. The rewards and commissions ar
 <img src="./src/screenshots/overview.png" width="700" height="411"/>
 
 Settings:
-
+<img src="./src/screenshots/settings.png" width="700" height="411"/>
 
 
 # About Us
