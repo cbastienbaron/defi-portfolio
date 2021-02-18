@@ -22,6 +22,8 @@
     -fx-base: #373e43;
     -fx-control-inner-background: derive(#373e43, 35%);
     -fx-control-inner-background-alt: -fx-control-inner-background ;
+    -fx-border-color: #373e43;
+    -fx-border-width: 1px;
 }
 
 .grid-pane {
@@ -29,7 +31,22 @@
     -fx-base: #373e43;
     -fx-control-inner-background: derive(#373e43, 35%);
     -fx-control-inner-background-alt: -fx-control-inner-background ;
+    -fx-border-color: #373e43; -fx-border-width: 1px 1px 1px 0px
 }
+
+.hyperlink {
+        -fx-underline: true;
+   -fx-text-fill: white;
+    }
+
+.table-row-cell:selected .table-cell .hyperlink:hover {
+    -fx-text-fill: white ;
+}
+
+.hyperlink:hover {
+        -fx-underline: true;
+   -fx-text-fill: #FF00AF;
+ }
 
 .label{
     -fx-text-fill: white;
@@ -101,5 +118,5 @@
 }
 
 .button:hover{
-    -fx-text-fill: #FF00AF;
+    -fx-border-color: #FF00AF;
 }

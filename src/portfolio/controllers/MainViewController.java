@@ -5,6 +5,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -62,7 +63,7 @@ public class MainViewController {
     public MainViewController() {
 
         this.settingsController.logger.info("Start DeFi Portfolio");
-        this.transactionController.startServer();
+        //this.transactionController.startServer();
 
         // generate folder //defi-portfolio if no one exists
         File directory = new File(this.settingsController.strPathAppData);
@@ -73,7 +74,7 @@ public class MainViewController {
         // init all relevant lists for tables and plots
         this.transactionList = FXCollections.observableArrayList(this.transactionController.getTransactionList());
         this.poolPairList = FXCollections.observableArrayList(this.poolPairModelList);
-        this.expService = new ExportService(this.coinPriceController, this.transactionController, this.settingsController);
+        this.expService = new ExportService(this);
 
         // get last block locally
         this.strCurrentBlockLocally.set(Integer.toString(transactionController.getLocalBlockCount()));
@@ -104,7 +105,7 @@ public class MainViewController {
     }
 
     public void startTimer() {
-        timer.scheduleAtFixedRate(new TimerController(this), 0, 3000L);
+        timer.scheduleAtFixedRate(new TimerController(this), 0, 5000L);
     }
 
     public void stopTimer() {
@@ -118,9 +119,14 @@ public class MainViewController {
             localeDecimal = Locale.US;
         }
 
-        if (withHeaders)
-            sb.append("Date,Operation,Amount,Cryptocurrency,FIAT value,FIAT currency,Pool ID,Block Height,Block Hash,Owner,".replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
-
+        if (withHeaders) {
+            for (TableColumn column : this.mainView.rawDataTable.getColumns()
+            ) {
+                sb.append(column.getText()).append(this.settingsController.selectedSeperator.getValue());
+            }
+        }
+        sb.setLength(sb.length() - 1);
+        sb.append("\n");
         for (TransactionModel transaction : list) {
             sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTime().getValue())).append(this.settingsController.selectedSeperator.getValue());
             sb.append(transaction.getType().getValue()).append(this.settingsController.selectedSeperator.getValue());
@@ -132,7 +138,8 @@ public class MainViewController {
             sb.append(transaction.getPoolID().getValue()).append(this.settingsController.selectedSeperator.getValue());
             sb.append(transaction.getBlockHeight().getValue()).append(this.settingsController.selectedSeperator.getValue());
             sb.append(transaction.getBlockHash().getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.getOwner().getValue());
+            sb.append(transaction.getOwner().getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getTxIDValue());
             sb.append("\n");
         }
         StringSelection stringSelection = new StringSelection(sb.toString());
@@ -222,7 +229,7 @@ public class MainViewController {
         Process p;
 
         try {
-            p = Runtime.getRuntime().exec(System.getenv("windir").replace(" ","\" \"")  + "\\system32\\" + "tasklist.exe");
+            p = Runtime.getRuntime().exec(System.getenv("windir").replace(" ", "\" \"") + "\\system32\\" + "tasklist.exe");
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((line = input.readLine()) != null) {
                 pidInfo.append(line);
@@ -278,12 +285,12 @@ public class MainViewController {
         frameDefid.setLocationRelativeTo(null);
         frameDefid.setUndecorated(true);
 
-        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")){
+        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
             jl.setForeground(Color.WHITE);
-        }else{
+        } else {
             jl.setForeground(Color.BLACK);
         }
-        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
             frameDefid.getContentPane().setBackground(new Color(55, 62, 67));
         }
 
@@ -310,12 +317,12 @@ public class MainViewController {
         frameDefid.setSize(400, 125);
         frameDefid.setLocationRelativeTo(null);
         frameDefid.setUndecorated(true);
-        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")){
+        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
             jl.setForeground(Color.WHITE);
-        }else{
+        } else {
             jl.setForeground(Color.BLACK);
         }
-        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
             frameDefid.getContentPane().setBackground(new Color(55, 62, 67));
         }
 
@@ -337,12 +344,12 @@ public class MainViewController {
         JLabel jl = new JLabel("     Updating local files. Please wait...!", icon, JLabel.CENTER);
         frameUpdate.add(jl);
 
-        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")){
+        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
             jl.setForeground(Color.WHITE);
-        }else{
+        } else {
             jl.setForeground(Color.BLACK);
         }
-        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
             frameUpdate.getContentPane().setBackground(new Color(55, 62, 67));
         }
 
@@ -407,7 +414,7 @@ public class MainViewController {
                 this.mainView.yAxis.setAutoRanging(false);
 
                 maxValue += overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble();
-                this.mainView.yAxis.setUpperBound(maxValue*1.1);
+                this.mainView.yAxis.setUpperBound(maxValue * 1.1);
                 /*
                 if (maxValue < overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble()) {
                     this.mainView.yAxis.setUpperBound(overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble() * 1.10);

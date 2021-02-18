@@ -22,6 +22,8 @@
     -fx-base: #ffffff;
     -fx-control-inner-background: #ffffff;
     -fx-control-inner-background-alt: -fx-control-inner-background ;
+    -fx-border-color: derive(grey, 5%);
+    -fx-border-width: 1px;
 }
 
 .grid-pane {
@@ -31,6 +33,21 @@
         -fx-control-inner-background: #ffffff;
         -fx-control-inner-background-alt: -fx-control-inner-background ;
 }
+
+.hyperlink {
+        -fx-underline: true;
+   -fx-text-fill: black;
+    }
+
+
+.table-row-cell:selected .table-cell .hyperlink:hover {
+    -fx-text-fill: black ;
+}
+
+.hyperlink:hover {
+        -fx-underline: true;
+   -fx-text-fill: #FF00AF;
+    }
 
 .label{
     -fx-text-fill: black;
@@ -95,10 +112,10 @@
    -fx-text-fill: black;
     -fx-font-weight: bold;
     -fx-background-color: #ffffff;
-    -fx-border-color: derive(grey, 35%);
+    -fx-border-color: derive(grey, 5%);
     -fx-border-width: 1px;
 }
 
 .button:hover{
-    -fx-text-fill: #FF00AF;
+    -fx-border-color: #FF00AF;
 }

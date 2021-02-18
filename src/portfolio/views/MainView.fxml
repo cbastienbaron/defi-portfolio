@@ -110,6 +110,8 @@
                   </Menu>
                   <Menu fx:id="Help" mnemonicParsing="false" text="Help">
                       <MenuItem fx:id="HelpItem" mnemonicParsing="false" onAction="#helpPressed" text="Help" />
+                      <MenuItem fx:id="DeFiChain" mnemonicParsing="false" onAction="#defichain" text="About DeFiChain" />
+                      <MenuItem fx:id="DeFiChainWiki" mnemonicParsing="false" onAction="#defichainwiki" text="DeFiChain-Wiki" />
                   </Menu>
                   <Menu fx:id="Donate" mnemonicParsing="false" text="Donate">
                       <MenuItem fx:id="DonateItem" mnemonicParsing="false" onAction="#openAccountInformation" text="Account information" />
@@ -131,6 +133,7 @@
                 <TableColumn fx:id="blockHeightColumn" sortable="false" text="Block Height" />
                 <TableColumn fx:id="blockHashColumn" sortable="false" text="Block Hash" />
                 <TableColumn fx:id="ownerColumn" sortable="false" text="Owner" />
+                <TableColumn fx:id="transactionColumn" sortable="false" text="Transaction Hash" />
             </columns>
         </TableView>
 
