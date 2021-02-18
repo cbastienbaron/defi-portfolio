@@ -1,6 +1,6 @@
-# DeFi App Portfolio
+# DeFi-Portfolio
 
-Use DeFi app portfolio to export, analyse and visualize your transactions, rewards and commissions of your liquidity mining pools or DEX transactionsto interact with DeFiChain. 
+Use DeFi-Portfolio to export, analyse and visualize your transactions, rewards and commissions of your liquidity mining pools or DEX transactionsto interact with DeFiChain. 
 
 # Documentation
 
@@ -75,4 +75,4 @@ Arthur Eisener (https://t.me/ArthurEisener) & (https://twitter.com/ArthurEisener
 
 ## Licenses
 
-The DeFi App Portfolio is released under the terms of the MIT license. For more information see https://opensource.org/licenses/MIT.
+The DeFi-Portfolio is released under the terms of the MIT license. For more information see https://opensource.org/licenses/MIT.
