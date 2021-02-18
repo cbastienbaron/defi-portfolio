@@ -152,9 +152,9 @@ public class MainView implements Initializable {
 
     public void btnAnalysePressed() {
         this.anchorPanelAnalyse.toFront();
-        this.fiatColumn.setVisible(!this.tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
+        this.fiatColumn.setVisible(!this.tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Rewards")));
         if (!this.init) {
-            this.mainViewController.updateRewards();
+            this.mainViewController.plotUpdate(this.tabPane.getSelectionModel().getSelectedItem().getText());
             if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get(this.mainViewController.settingsController.translationList.getValue().get("Overview")))) {
                 crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
                 crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
@@ -358,15 +358,19 @@ public class MainView implements Initializable {
             if (newValue != null) {
 
                 switch (newValue) {
+                    case "Daily":
                     case "Täglich":
                         this.mainViewController.settingsController.selectedIntervallInt = "Daily";
                         break;
+                    case "Weekly":
                     case "Wöchentlich":
                         this.mainViewController.settingsController.selectedIntervallInt = "Weekly";
                         break;
+                    case "Monthly":
                     case "Monatlich":
                         this.mainViewController.settingsController.selectedIntervallInt = "Monthly";
                         break;
+                    case "Yearly":
                     case "Jährlich":
                         this.mainViewController.settingsController.selectedIntervallInt = "Yearly";
                         break;
@@ -958,7 +962,7 @@ public class MainView implements Initializable {
             this.cmbIntervall.getItems().set(0, this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
             this.cmbIntervall.getItems().set(1, this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
             this.cmbIntervall.getItems().set(2, this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
-            this.cmbIntervall.getItems().set(3, this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
+            this.cmbIntervall.getItems().set(3, this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());g
             this.cmbPlotCurrency.getItems().set(0, this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
             this.cmbPlotCurrency.getItems().set(1, this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
             this.cmbPlotCurrencyCom.getItems().add(0, this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
@@ -995,9 +999,12 @@ public class MainView implements Initializable {
         this.blockHeightColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("BlockHeight").toString());
         this.blockHashColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("BlockHash").toString());
         this.ownerColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Owner").toString());
+        this.transactionColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("TransactionHash").toString());
         this.fiatColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Total").toString());
-        this.mainViewController.donateController.strDonateText = this.mainViewController.settingsController.translationList.getValue().get("DonateLabel").toString();
-        this.mainViewController.helpController.strHelpText = this.mainViewController.settingsController.translationList.getValue().get("ContactUS").toString();
+        this.mainViewController.donateController.strDonateText.setValue(this.mainViewController.settingsController.translationList.getValue().get("DonateLabel").toString());
+        this.mainViewController.donateController.strBtnClose.setValue(this.mainViewController.settingsController.translationList.getValue().get("Close").toString());
+        this.mainViewController.helpController.strHelpText.setValue(this.mainViewController.settingsController.translationList.getValue().get("ContactUS").toString());
+        this.mainViewController.helpController.strCloseText.setValue(this.mainViewController.settingsController.translationList.getValue().get("Close").toString());
         this.mainViewController.settingsController.selectedPlotType.setValue(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
         this.mainViewController.settingsController.selectedIntervall.setValue(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
     }

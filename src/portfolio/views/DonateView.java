@@ -39,7 +39,8 @@ public class DonateView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.donateText.setText(this.donateController.strDonateText);
+        this.donateText.textProperty().bindBidirectional(this.donateController.strDonateText);
+        this.btnClose.textProperty().bindBidirectional(this.donateController.strBtnClose);
         this.donateTextField.setEditable(false);
     }
 

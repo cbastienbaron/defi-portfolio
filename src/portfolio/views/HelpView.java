@@ -33,8 +33,8 @@ public class HelpView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        Contact.setText(helpController.strHelpText);
+        Contact.textProperty().bindBidirectional (helpController.strHelpText);
+        btnClose.textProperty().bindBidirectional(helpController.strCloseText);
     }
 
     public void btnMailToCallback() throws IOException, URISyntaxException {
@@ -56,6 +56,7 @@ public class HelpView implements Initializable {
         Stage stage = (Stage) btnClose.getScene().getWindow();
         stage.close();
     }
+
 }
 
 

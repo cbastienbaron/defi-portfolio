@@ -51,5 +51,6 @@
     "InitializingData": "Initializing Data...",
     "PreparingData": "Preparing Data...",
     "SaveData": "Writing Data...",
-    "UpdateData": "Update Data: "
+    "UpdateData": "Update Data: ",
+    "TransactionHash": "Transaction Hash"
 }

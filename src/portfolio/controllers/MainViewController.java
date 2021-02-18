@@ -63,7 +63,7 @@ public class MainViewController {
     public MainViewController() {
 
         this.settingsController.logger.info("Start DeFi-Portfolio");
-        //this.transactionController.startServer();
+        this.transactionController.startServer();
 
         // generate folder //defi-portfolio if no one exists
         File directory = new File(this.settingsController.strPathAppData);
@@ -94,7 +94,6 @@ public class MainViewController {
                         if (transactionModel.getTypeValue().equals("Rewards") | transactionModel.getTypeValue().equals("Commission")) {
                             this.transactionController.addToPortfolioModel(transactionModel);
                         }
-                        //TODO Portfolio clear and   this.transactionController.addPortfoli...
                     }
                     this.transactionList.clear();
                     this.transactionList.addAll(this.transactionController.getTransactionList());

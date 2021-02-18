@@ -60,7 +60,7 @@ public class SettingsView implements Initializable {
 
     }
 
-    public void changeLanguage(ActionEvent actionEvent) {
+    public void changeLanguage() {
         this.btnSaveAndApply.textProperty().setValue(this.settingsController.translationList.getValue().get("Close").toString());
         this.labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
         this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
