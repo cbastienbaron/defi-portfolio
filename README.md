@@ -39,7 +39,7 @@ Note: The button update database will be enabled once the defid.exe has a connec
 
 Raw Data:
 
-All transactions are shown here in tabular form.
+All transactions are shown here in tabular form. When clicking on Blockheight, Blockhash, Owner or Transaction-Hash the Blockchain Explorer will be opened with the respective value.
 The table can be exported as a csv file. To do this, right-click on the corresponding sub-functions.
 
 <img src="./src/screenshots/rawdata.png" width="700" height="411"/>
@@ -63,6 +63,9 @@ Here the commissions are displayed in graphical form. The setting options are th
 Here the overview is displayed in graphical form. The rewards and commissions are combined in one plot. You can choose the start date and the end date.You can also select the interval (daily, weekly, monthly, yearly).
 
 <img src="./src/screenshots/overview.png" width="700" height="411"/>
+
+Settings:
+
 
 
 # About Us
