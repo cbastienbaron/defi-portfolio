@@ -1,5 +1,8 @@
 package portfolio.services;
 
+import javafx.scene.control.TableColumn;
+import portfolio.Main;
+import portfolio.controllers.MainViewController;
 import portfolio.views.MainView;
 import portfolio.controllers.CoinPriceController;
 import portfolio.controllers.SettingsController;
@@ -14,15 +17,10 @@ import java.util.Locale;
 
 public class ExportService {
 
-    CoinPriceController coinPriceController;
-    TransactionController transactionController;
-    SettingsController settingsController;
+    MainViewController mainViewController;
 
-    public ExportService(CoinPriceController coinPriceController, TransactionController transactionController, SettingsController settingsController) {
-        this.settingsController = settingsController;
-        this.coinPriceController = coinPriceController;
-        this.transactionController = transactionController;
-
+    public ExportService(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
     }
 
     public boolean exportTransactionToExcel(List<TransactionModel> transactions, String exportPath, Locale localeDecimal, String exportSplitter) {
@@ -30,10 +28,16 @@ public class ExportService {
             PrintWriter writer = new PrintWriter(exportPath);
             StringBuilder sb = new StringBuilder();
 
-            sb.append("Date,Operation,Amount,Cryptocurrency,FIAT value,FIAT currency,Pool ID,Block Height,Block Hash,Owner").append("\n");
+            for (TableColumn column : this.mainViewController.mainView.rawDataTable.getColumns()
+            ) {
+                sb.append(column.getText()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+            }
+
+            sb.setLength(sb.length() - 1);
+            sb.append("\n");
 
             for (TransactionModel transaction : transactions) {
-                sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTimeValue())).append(exportSplitter);
+                sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.getBlockTimeValue())).append(exportSplitter);
                 sb.append(transaction.getTypeValue()).append(exportSplitter);
                 sb.append(String.format(localeDecimal, "%.8f", transaction.getCryptoValueValue())).append(exportSplitter);
                 sb.append(transaction.getCryptoCurrencyValue()).append(exportSplitter);
@@ -42,7 +46,8 @@ public class ExportService {
                 sb.append(transaction.getPoolIDValue()).append(exportSplitter);
                 sb.append(transaction.getBlockHeightValue()).append(exportSplitter);
                 sb.append(transaction.getBlockHashValue()).append(exportSplitter);
-                sb.append(transaction.getOwnerValue());
+                sb.append(transaction.getOwnerValue()).append(exportSplitter);
+                sb.append(transaction.getTxIDValue());
                 sb.append("\n");
             }
             writer.write(sb.toString());
@@ -61,16 +66,16 @@ public class ExportService {
             StringBuilder sb = new StringBuilder();
 
             Locale localeDecimal = Locale.GERMAN;
-            if (settingsController.selectedDecimal.getValue().equals(".")) {
+            if (this.mainViewController.settingsController.selectedDecimal.getValue().equals(".")) {
                 localeDecimal = Locale.US;
             }
             switch (mainView.tabPane.getSelectionModel().getSelectedItem().getText()) {
                 case "Overview":
                 case "Commissions":
-                    sb.append((mainView.plotTable.getColumns().get(0).getText() + "," + mainView.plotTable.getColumns().get(1).getText() + "," + mainView.plotTable.getColumns().get(2).getText() + "," + mainView.plotTable.getColumns().get(3).getText() + "," + mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((mainView.plotTable.getColumns().get(0).getText() + "," + mainView.plotTable.getColumns().get(1).getText() + "," + mainView.plotTable.getColumns().get(2).getText() + "," + mainView.plotTable.getColumns().get(3).getText() + "," + mainView.plotTable.getColumns().get(4).getText()).replace(",", this.mainViewController.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 case "Rewards":
-                    sb.append((mainView.plotTable.getColumns().get(0).getText() + "," + mainView.plotTable.getColumns().get(2).getText() + "," + mainView.plotTable.getColumns().get(3).getText() + "," + mainView.plotTable.getColumns().get(4).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((mainView.plotTable.getColumns().get(0).getText() + "," + mainView.plotTable.getColumns().get(2).getText() + "," + mainView.plotTable.getColumns().get(3).getText() + "," + mainView.plotTable.getColumns().get(4).getText()).replace(",", this.mainViewController.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 default:
                     break;
@@ -79,21 +84,21 @@ public class ExportService {
                 case "Overview":
                 case "Übersicht":
                     for (PoolPairModel poolPairModel : poolPairModelList) {
-                        sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(poolPairModel.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getFiatValue().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue2().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getBlockTime().getValue()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getPoolPair().getValue()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getFiatValue().getValue())).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue1().getValue())).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue2().getValue())).append(this.mainViewController.settingsController.selectedSeperator.getValue());
                         sb.append("\n");
                     }
                     break;
                 case "Rewards":
                 case "Belohnungen":
                     for (PoolPairModel poolPairModel : poolPairModelList) {
-                        sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(poolPairModel.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValueValue2())).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getBlockTime().getValue()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getPoolPair().getValue()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue1().getValue())).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValueValue2())).append(this.mainViewController.settingsController.selectedSeperator.getValue());
                         sb.append("\n");
                     }
                     break;
@@ -101,11 +106,11 @@ public class ExportService {
                 case "Commissions":
                 case "Kommissionen":
                     for (PoolPairModel poolPairModel : poolPairModelList) {
-                        sb.append(poolPairModel.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(poolPairModel.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getFiatValueValue() + poolPairModel.getCryptoValue2().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValueValue1())).append(this.settingsController.selectedSeperator.getValue());
-                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValueValue2())).append(this.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getBlockTime().getValue()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                        sb.append(poolPairModel.getPoolPair().getValue()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getFiatValueValue() + poolPairModel.getCryptoValue2().getValue())).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValueValue1())).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                        sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValueValue2())).append(this.mainViewController.settingsController.selectedSeperator.getValue());
                         sb.append("\n");
                     }
                     break;

@@ -1,5 +1,6 @@
 package portfolio.views;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -9,23 +10,27 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.*;
 import java.time.LocalDate;
 import java.util.*;
 
 import javafx.stage.StageStyle;
-import portfolio.controllers.DonateController;
-import portfolio.controllers.HelpController;
+import javafx.util.Callback;
 import portfolio.models.PoolPairModel;
 import portfolio.models.TransactionModel;
 import portfolio.controllers.MainViewController;
@@ -94,6 +99,8 @@ public class MainView implements Initializable {
     @FXML
     public TableColumn<TransactionModel, String> fiatCurrencyColumn;
     @FXML
+    public TableColumn<TransactionModel, String> transactionColumn;
+    @FXML
     public TableColumn<PoolPairModel, String> timeStampColumn;
     @FXML
     public TableColumn<PoolPairModel, Double> crypto1Column;
@@ -106,15 +113,6 @@ public class MainView implements Initializable {
 
     public boolean init = true;
     public ProgressBar progressBar;
-    public MenuItem menuItemCopySelected = new MenuItem("Copy");
-    public MenuItem menuItemCopyHeaderSelected = new MenuItem("Copy with header");
-    public MenuItem menuItemExportSelected = new MenuItem("Export selected to CSV");
-    public MenuItem menuItemExportAllSelected = new MenuItem("Export all to CSV");
-    public MenuItem menuItemOpenInDefiExplorer = new MenuItem("Open in DeFi Blockchain Explorer");
-    public MenuItem menuItemCopySelectedPlot = new MenuItem("Copy");
-    public MenuItem menuItemCopyHeaderSelectedPlot = new MenuItem("Copy with header");
-    public MenuItem menuItemExportSelectedPlot = new MenuItem("Export selected to CSV");
-    public MenuItem menuItemExportAllSelectedPlot = new MenuItem("Export all to CSV");
     public Label CurrentBlock;
     public Label CurrentBlockChain;
     public Label LastUpdate;
@@ -135,6 +133,17 @@ public class MainView implements Initializable {
     public Label StartDateOver;
     public Label EndDateOver;
     public Stage settingsStage, helpStage, donateStage;
+
+    public MenuItem menuItemCopySelected = new MenuItem("Copy");
+    public MenuItem menuItemCopyHeaderSelected = new MenuItem("Copy with header");
+    public MenuItem menuItemExportSelected = new MenuItem("Export selected to CSV");
+    public MenuItem menuItemExportAllSelected = new MenuItem("Export all to CSV");
+    public MenuItem menuItemCopySelectedPlot = new MenuItem("Copy");
+    public MenuItem menuItemCopyHeaderSelectedPlot = new MenuItem("Copy with header");
+    public MenuItem menuItemExportSelectedPlot = new MenuItem("Export selected to CSV");
+    public MenuItem menuItemExportAllSelectedPlot = new MenuItem("Export all to CSV");
+    public MenuItem DeFiChain;
+    public MenuItem DeFiChainWiki;
 
     MainViewController mainViewController = new MainViewController();
 
@@ -272,6 +281,22 @@ public class MainView implements Initializable {
         }
     }
 
+    public void defichain(ActionEvent actionEvent) {
+        try {
+            Desktop.getDesktop().browse(new URL("https://defichain.com/").toURI());
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void defichainwiki(ActionEvent actionEvent) {
+        try {
+            Desktop.getDesktop().browse(new URL("https://defichain-wiki.com/wiki/Main_Page").toURI());
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
     // records relative x and y co-ordinates.
     static class Delta {
         double x, y;
@@ -288,23 +313,22 @@ public class MainView implements Initializable {
         coinImageRewards.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
         coinImageCommissions.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
         updateStylesheet();
-        this.mainViewController.settingsController.selectedStyleMode.addListener(style -> {
-            updateStylesheet();
-        });
+
+        this.mainViewController.settingsController.selectedStyleMode.addListener(style -> updateStylesheet());
 
 
         this.btnUpdateDatabase.disableProperty().bindBidirectional(this.mainViewController.bDataBase);
-        // Update Database Frame
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockLocally);
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockOnBlockchain);
         this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.strLastUpdate);
-        this.btnUpdateDatabase.setOnAction(e -> mainViewController.btnUpdateDatabasePressed());
+        this.btnUpdateDatabase.setOnAction(e -> {
+            mainViewController.btnUpdateDatabasePressed();
+            if (!this.init)  mainViewController.plotUpdate(this.tabPane.getSelectionModel().getSelectedItem().getText());
+        });
 
         tabPane.getSelectionModel().selectedItemProperty().addListener(
                 (ov, t, t1) -> {
-                    if (!this.init)
-                        mainViewController.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
-
+                    if (!this.init) mainViewController.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
                     cmbCoins.setVisible(true);
                     cmbFiat.setVisible(true);
                     cmbPlotCurrency.setVisible(true);
@@ -558,6 +582,124 @@ public class MainView implements Initializable {
         poolIDColumn.setCellValueFactory(param -> param.getValue().getPoolID());
         fiatValueColumn.setCellValueFactory(param -> param.getValue().getFiat().asObject());
         fiatCurrencyColumn.setCellValueFactory(param -> param.getValue().getFiatCurrency());
+        transactionColumn.setCellValueFactory(param -> param.getValue().getTxID());
+        Callback<TableColumn<TransactionModel, String>, TableCell<TransactionModel, String>> cellFactory0
+                = (final TableColumn<TransactionModel, String> entry) -> new TableCell<TransactionModel, String>() {
+
+            Hyperlink hyperlink = new Hyperlink();
+
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    TransactionModel tempParam = rawDataTable.getItems().get(getIndex());
+                    hyperlink.setText(item);
+                    hyperlink.setOnAction((event) -> {
+                        try {
+                            Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHashValue()).toURI());
+                        } catch (IOException | URISyntaxException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    setGraphic(hyperlink);
+                }
+                setText(null);
+            }
+        };
+        blockHashColumn.setCellFactory(cellFactory0);
+
+        Callback<TableColumn<TransactionModel, String>, TableCell<TransactionModel, String>> cellFactory1
+                = (final TableColumn<TransactionModel, String> entry) -> new TableCell<TransactionModel, String>() {
+
+            Hyperlink hyperlink = new Hyperlink();
+
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    TransactionModel tempParam = rawDataTable.getItems().get(getIndex());
+                    hyperlink.setText(item);
+                    hyperlink.setOnAction((event) -> {
+                        try {
+                            Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/address/" + tempParam.getOwnerValue()).toURI());
+                        } catch (IOException | URISyntaxException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    setGraphic(hyperlink);
+                }
+                setText(null);
+            }
+        };
+        ownerColumn.setCellFactory(cellFactory1);
+
+        Callback<TableColumn<TransactionModel, Integer>, TableCell<TransactionModel, Integer>> cellFactory2
+                = (final TableColumn<TransactionModel, Integer> entry) -> new TableCell<TransactionModel, Integer>() {
+
+            Hyperlink hyperlink = new Hyperlink();
+
+            @Override
+            public void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    TransactionModel tempParam = rawDataTable.getItems().get(getIndex());
+                    hyperlink.setText(item.toString());
+                    hyperlink.setOnAction((event) -> {
+                        try {
+                            Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHeightValue()).toURI());
+                        } catch (IOException | URISyntaxException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    setGraphic(hyperlink);
+                }
+                setText(null);
+            }
+        };
+        blockHeightColumn.setCellFactory(cellFactory2);
+
+        Callback<TableColumn<TransactionModel, String>, TableCell<TransactionModel, String>> cellFactory3
+                = (final TableColumn<TransactionModel, String> entry) -> new TableCell<TransactionModel, String>() {
+
+            Hyperlink hyperlink = new Hyperlink();
+
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    TransactionModel tempParam = rawDataTable.getItems().get(getIndex());
+
+                    if (tempParam.getTxIDValue().equals("\"\"")) {
+                        setText("-");
+                        setGraphic(null);
+                    } else {
+
+                        hyperlink.setText(item);
+                        hyperlink.setOnAction((event) -> {
+                            try {
+                                Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/tx/" + tempParam.getTxIDValue()).toURI());
+                            } catch (IOException | URISyntaxException e) {
+                                e.printStackTrace();
+                            }
+                        });
+
+                        setText(null);
+                        setGraphic(hyperlink);
+                    }
+                }
+            }
+        };
+        transactionColumn.setCellFactory(cellFactory3);
+
 
         poolIDColumn.setCellFactory(tc -> new TableCell<TransactionModel, String>() {
             @Override
@@ -601,7 +743,6 @@ public class MainView implements Initializable {
                 if (empty) {
                     setText(null);
                 } else {
-
                     setText(mainViewController.settingsController.selectedFiatCurrency.getValue());
                 }
             }
@@ -711,20 +852,17 @@ public class MainView implements Initializable {
 
 
         ContextMenu contextMenuRawData = new ContextMenu();
-        this.rawDataTable.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> menuItemOpenInDefiExplorer.setVisible(this.rawDataTable.getSelectionModel().getSelectedItems().size() == 1));
 
         //Init context menu of raw data table
         menuItemCopySelected.setOnAction(event -> mainViewController.copySelectedRawDataToClipboard(rawDataTable.selectionModelProperty().get().getSelectedItems(), false));
         menuItemCopyHeaderSelected.setOnAction(event -> mainViewController.copySelectedRawDataToClipboard(rawDataTable.selectionModelProperty().get().getSelectedItems(), true));
         menuItemExportSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.selectionModelProperty().get().getSelectedItems()));
         menuItemExportAllSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems()));
-        menuItemOpenInDefiExplorer.setOnAction(event -> mainViewController.openBlockChainExplorer(rawDataTable.selectionModelProperty().get().getSelectedItem()));
 
         contextMenuRawData.getItems().add(menuItemCopySelected);
         contextMenuRawData.getItems().add(menuItemCopyHeaderSelected);
         contextMenuRawData.getItems().add(menuItemExportSelected);
         contextMenuRawData.getItems().add(menuItemExportAllSelected);
-        contextMenuRawData.getItems().add(menuItemOpenInDefiExplorer);
 
         this.rawDataTable.contextMenuProperty().set(contextMenuRawData);
     }
@@ -782,7 +920,6 @@ public class MainView implements Initializable {
         this.menuItemCopyHeaderSelected.setText(this.mainViewController.settingsController.translationList.getValue().get("CopyHeader").toString());
         this.menuItemExportSelected.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportSelected").toString());
         this.menuItemExportAllSelected.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportAll").toString());
-        this.menuItemOpenInDefiExplorer.setText(this.mainViewController.settingsController.translationList.getValue().get("OpenExplorer").toString());
         this.menuItemCopySelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("Copy").toString());
         this.menuItemCopyHeaderSelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("CopyHeader").toString());
         this.menuItemExportSelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportSelected").toString());
