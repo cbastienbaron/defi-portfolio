@@ -16,6 +16,8 @@ import java.util.logging.SimpleFormatter;
 
 
 public class SettingsController {
+    public String Version = "V1.1";
+
     private static SettingsController OBJ = null;
 
     static {

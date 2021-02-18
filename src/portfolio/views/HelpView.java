@@ -41,7 +41,7 @@ public class HelpView implements Initializable {
         Desktop desktop;
         if (Desktop.isDesktopSupported()
                 && (desktop = Desktop.getDesktop()).isSupported(Desktop.Action.MAIL)) {
-            URI mailto = new URI("mailto:defiportfoliomanagement@gmail.com?subject=");
+            URI mailto = new URI("mailto:defiportfoliomanagement@gmail.com?subject=DeFi-Portfolio-"+SettingsController.getInstance().Version);
             desktop.mail(mailto);
         }
     }

@@ -62,7 +62,7 @@ public class MainViewController {
 
     public MainViewController() {
 
-        this.settingsController.logger.info("Start DeFi Portfolio");
+        this.settingsController.logger.info("Start DeFi-Portfolio");
         //this.transactionController.startServer();
 
         // generate folder //defi-portfolio if no one exists
@@ -274,7 +274,7 @@ public class MainViewController {
     }
 
     public void showDefiAppIsRunning() {
-        JFrame frameDefid = new JFrame("DeFi App running");
+        JFrame frameDefid = new JFrame("DeFi-App running");
         frameDefid.setLayout(null);
         ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\process.png");
         JLabel jl = new JLabel("     The Defi-App is running! Please close it first.", icon, JLabel.CENTER);

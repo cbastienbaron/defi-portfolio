@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import portfolio.controllers.SettingsController;
+
 import java.io.IOException;
 
 public class Main extends Application {
@@ -32,7 +34,7 @@ public class Main extends Application {
 
         final Delta dragDelta = new Delta();
         //stage.initStyle(StageStyle.UNDECORATED);
-        stage.setTitle("DeFi App Portfolio V1.0");
+        stage.setTitle("DeFi-Portfolio " + SettingsController.getInstance().Version);
         stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png"));
         Stage finalStage = stage;
         scene.setOnMousePressed(mouseEvent -> {
