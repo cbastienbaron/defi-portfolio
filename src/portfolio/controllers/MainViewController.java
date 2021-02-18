@@ -123,9 +123,9 @@ public class MainViewController {
             ) {
                 sb.append(column.getText()).append(this.settingsController.selectedSeperator.getValue());
             }
+            sb.setLength(sb.length() - 1);
+            sb.append("\n");
         }
-        sb.setLength(sb.length() - 1);
-        sb.append("\n");
         for (TransactionModel transaction : list) {
             sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTime().getValue())).append(this.settingsController.selectedSeperator.getValue());
             sb.append(transaction.getType().getValue()).append(this.settingsController.selectedSeperator.getValue());
@@ -550,8 +550,8 @@ public class MainViewController {
             this.mainView.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
             this.mainView.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[0]);
         } else {
-            this.mainView.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
-            this.mainView.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
+            this.mainView.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue() + " ("+this.settingsController.selectedCoin.getValue().split("-")[1] + ")");
+            this.mainView.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue() + " (" +this.settingsController.selectedCoin.getValue().split("-")[0] + ")");
         }
 
         if (this.transactionController.getPortfolioList().containsKey(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervallInt)) {

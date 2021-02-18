@@ -75,7 +75,7 @@ public class ExportService {
                     sb.append((mainView.plotTable.getColumns().get(0).getText() + "," + mainView.plotTable.getColumns().get(1).getText() + "," + mainView.plotTable.getColumns().get(2).getText() + "," + mainView.plotTable.getColumns().get(3).getText() + "," + mainView.plotTable.getColumns().get(4).getText()).replace(",", this.mainViewController.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 case "Rewards":
-                    sb.append((mainView.plotTable.getColumns().get(0).getText() + "," + mainView.plotTable.getColumns().get(2).getText() + "," + mainView.plotTable.getColumns().get(3).getText() + "," + mainView.plotTable.getColumns().get(4).getText()).replace(",", this.mainViewController.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((mainView.plotTable.getColumns().get(0).getText() + "," + mainView.plotTable.getColumns().get(1).getText() + "," + mainView.plotTable.getColumns().get(3).getText() + "," + mainView.plotTable.getColumns().get(4).getText()).replace(",", this.mainViewController.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 default:
                     break;
