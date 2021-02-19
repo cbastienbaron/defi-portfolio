@@ -41,8 +41,12 @@ public class SettingsController {
 
     //All relevant paths and files
     public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
+    public String strCookiePathMac = System.getProperty("user.home") + "/Library/Application Support/DeFi/.cookie";
+
     public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
+    public String strPathAppDataMac = System.getProperty("user.home") + "/Library/Application Support/defi-portfolio/";
     public String strPathDefid = System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
+    public String strPathDefidMac = System.getProperty("user.home") + "/../../Applications/defi-app.app/Contents/Resources/binary/mac/defid";
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
     public String[] languages = new String[]{"English"};
@@ -50,6 +54,7 @@ public class SettingsController {
     public String[] decSeperators = new String[]{",", "."};
     public String[] csvSeperators = new String[]{",", ";"};
     public String pathSettingsFile = System.getenv("APPDATA") + "\\defi-portfolio\\settings.csv";
+    public String pathSettingsFileMac = strPathAppDataMac + "settings.csv";
 
     private SettingsController() throws IOException {
         this.loadSettings();

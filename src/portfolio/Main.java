@@ -9,9 +9,13 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 public class Main extends Application {
+
+    public String strPathDefidMac = System.getProperty("user.home") + "/../../Applications/defi-app.app/Contents/Resources/binary/mac/defid";
 
     @Override
     public void start(Stage stage) {
@@ -21,11 +25,11 @@ public class Main extends Application {
         Splash task = new Splash();
         Thread t = new Thread(task);
         t.start();
-
+        System.out.println(getClass().getResource("views/MainView.fxml") );
         // Main Window
         try{
-            root = FXMLLoader.load(getClass().getResource("views/MainView.fxml"));
-        } catch (IOException e) {
+            root = FXMLLoader.load(new File(System.getProperty("user.home") + "/Desktop/Defi/out/production/defi-portfolio/portfolio/views/MainView.fxml").toURI().toURL());
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -33,7 +37,7 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         stage = new Stage();
         stage.setTitle("DeFi App Portfolio V1.0");
-        stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png"));
+        //stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png")); TODO:
         stage.setScene(scene);
         stage.setMinHeight(700);
         stage.setMinWidth(1200);
