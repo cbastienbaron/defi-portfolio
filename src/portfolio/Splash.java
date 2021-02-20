@@ -1,5 +1,7 @@
 package portfolio;
 import javafx.concurrent.Task;
+import portfolio.controllers.SettingsController;
+
 import javax.swing.*;
 
 public class Splash extends Task{

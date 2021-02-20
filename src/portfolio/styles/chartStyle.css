@@ -84,9 +84,14 @@
   -fx-text-fill: #FF00AF;
 }
 
+<<<<<<< Updated upstream:src/portfolio/styles/chartStyle.css
 .tab-pane > .tab-header-area > .headers-region > .tab:selected {
   -fx-background-color: #FF00AF, white;
   -fx-background-insets: 0, 0 0 2px 0;
+=======
+.combo-box .cell:selected {
+    -fx-text-fill: black;
+>>>>>>> Stashed changes:src/portfolio/styles/lightMode.css
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:selected >.tab-container >.tab-label {

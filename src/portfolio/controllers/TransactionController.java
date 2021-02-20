@@ -13,6 +13,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,6 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.sun.deploy.cache.Cache.exists;
 
 public class TransactionController {
 
@@ -43,13 +48,24 @@ public class TransactionController {
         this.strCookiePath = strCookiePath;
     }
 
+<<<<<<< Updated upstream
     public boolean checkCrp() {
         return new File(this.strCookiePath).exists();
+=======
+    public boolean checkRpc() {
+        return  new File(this.strCookiePath).exists();
+>>>>>>> Stashed changes
     }
 
     public void startServer() {
         try {
+<<<<<<< Updated upstream
             Runtime.getRuntime().exec("cmd /c start "+this.settingsController.strPathDefid);
+=======
+            //Runtime.getRuntime().exec("/usr/bin/open -a Terminal "+this.settingsController.BINARY_FILE_PATH.replace(" ","\" \""));
+
+            Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH.replace(" ","\" \""));
+>>>>>>> Stashed changes
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -182,6 +198,21 @@ public class TransactionController {
             }
 
 
+<<<<<<< Updated upstream
+=======
+    public void updateJFrame() {
+        this.frameUpdate = new JFrame();
+        this.frameUpdate.setLayout(null);
+        this.frameUpdate.setIconImage(new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").getImage());
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/ajaxloader.gif");
+        this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), icon, JLabel.CENTER);
+        this.jl.setSize(400, 100);
+        this.jl.setLocation(0, 0);
+        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")){
+            this.jl.setForeground(Color.WHITE);
+        }else{
+            this.jl.setForeground(Color.BLACK);
+>>>>>>> Stashed changes
         }
 
         return transactionList;

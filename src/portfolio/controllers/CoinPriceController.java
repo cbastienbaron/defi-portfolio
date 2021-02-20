@@ -99,7 +99,7 @@ public class CoinPriceController {
 
     public CoinPriceModel getCoinPriceLocal(String strCoinPricePath) {
         CoinPriceModel coinPrice = new CoinPriceModel();
-        if (new File(strCoinPricePath).exists()) {
+        if (new File(strCoinPricePath).getAbsoluteFile().exists()) {
             try {
                 // Reading the object from a file
                 FileInputStream file = new FileInputStream(strCoinPricePath);

@@ -9,7 +9,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
+<<<<<<< Updated upstream
 <AnchorPane prefHeight="191.0" prefWidth="680.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8.0.202-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.controllers.DonateController">
+=======
+<AnchorPane fx:id="anchorPane" prefHeight="205.0" prefWidth="597.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.DonateView">
+>>>>>>> Stashed changes
    <children>
       <Label layoutX="145.0" layoutY="105.0" prefHeight="25.0" prefWidth="434.0" text="Wallet Address: dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V">
          <font>

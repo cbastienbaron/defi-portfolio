@@ -136,6 +136,7 @@ public class MainView implements Initializable {
     }
 
     public void helpPressed() throws IOException {
+<<<<<<< Updated upstream
         Parent root = FXMLLoader.load(getClass().getResource("HelpView.fxml"));
         Scene scene = new Scene(root);
         Stage s = new Stage();
@@ -163,6 +164,124 @@ public class MainView implements Initializable {
         s.setTitle("Settings");
         s.setScene(scene);
         s.show();
+=======
+        if (helpStage == null) {
+            final Delta dragDelta = new Delta();
+            Parent root = FXMLLoader.load(getClass().getResource("HelpView.fxml"));
+            Scene scene = new Scene(root);
+
+            helpStage = new Stage();
+            helpStage.initStyle(StageStyle.UNDECORATED);
+            scene.setOnMousePressed(mouseEvent -> {
+                // record a delta distance for the drag and drop operation.
+                dragDelta.x = helpStage.getX() - mouseEvent.getScreenX();
+                dragDelta.y = helpStage.getY() - mouseEvent.getScreenY();
+            });
+            scene.setOnMouseDragged(mouseEvent -> {
+                helpStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+                helpStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+            });
+            helpStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/help.png").toURI().toString()));
+            helpStage.setTitle((this.mainViewController.settingsController.translationList.getValue().get("HelpTitle").toString()));
+            helpStage.setScene(scene);
+            helpStage.show();
+        } else {
+            helpStage.show();
+            helpStage.toFront();
+        }
+
+        if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            helpStage.getScene().getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css").toURI().toString());
+        } else {
+            helpStage.getScene().getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css").toURI().toString());
+        }
+    }
+
+    public void openAccountInformation() throws IOException {
+        if (donateStage == null) {
+            final Delta dragDelta = new Delta();
+            Parent root = FXMLLoader.load(getClass().getResource("DonateView.fxml"));
+            Scene scene = new Scene(root);
+            donateStage = new Stage();
+            donateStage.initStyle(StageStyle.UNDECORATED);
+            scene.setOnMousePressed(mouseEvent -> {
+                // record a delta distance for the drag and drop operation.
+                dragDelta.x = donateStage.getX() - mouseEvent.getScreenX();
+                dragDelta.y = donateStage.getY() - mouseEvent.getScreenY();
+            });
+            scene.setOnMouseDragged(mouseEvent -> {
+                donateStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+                donateStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+            });
+            donateStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/icons/donate.png").toURI().toString()));
+            donateStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
+            donateStage.setScene(scene);
+            donateStage.show();
+        } else {
+            donateStage.show();
+            donateStage.toFront();
+        }
+
+        if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            donateStage.getScene().getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css").toURI().toString());
+        } else {
+            donateStage.getScene().getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css").toURI().toString());
+        }
+    }
+
+    public void openSettingPressed() throws IOException {
+        if (settingsStage == null) {
+            final Delta dragDelta = new Delta();
+            Parent root = FXMLLoader.load(getClass().getResource("SettingsView.fxml"));
+            Scene scene = new Scene(root);
+            settingsStage = new Stage();
+
+            settingsStage.initStyle(StageStyle.UNDECORATED);
+            scene.setOnMousePressed(mouseEvent -> {
+                // record a delta distance for the drag and drop operation.
+                dragDelta.x = settingsStage.getX() - mouseEvent.getScreenX();
+                dragDelta.y = settingsStage.getY() - mouseEvent.getScreenY();
+            });
+            scene.setOnMouseDragged(mouseEvent -> {
+                settingsStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+                settingsStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+            });
+            settingsStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/icons/help.png").toURI().toString()));
+            settingsStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
+            settingsStage.setScene(scene);
+            settingsStage.show();
+        } else {
+            settingsStage.show();
+            settingsStage.toFront();
+        }
+
+        if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            settingsStage.getScene().getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css").toURI().toString());
+        } else {
+            settingsStage.getScene().getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css").toURI().toString());
+        }
+    }
+
+    public void defichain(ActionEvent actionEvent) {
+        try {
+            Desktop.getDesktop().browse(new URL("https://defichain.com/").toURI());
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void defichainwiki(ActionEvent actionEvent) {
+        try {
+            Desktop.getDesktop().browse(new URL("https://defichain-wiki.com/wiki/Main_Page").toURI());
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // records relative x and y co-ordinates.
+    static class Delta {
+        double x, y;
+>>>>>>> Stashed changes
     }
 
     @Override
@@ -170,6 +289,16 @@ public class MainView implements Initializable {
         this.mainViewController.mainView = this;
         this.anchorPanelRawData.toFront();
         this.btnRawData.fire();
+<<<<<<< Updated upstream
+=======
+        updateLanguage();
+
+        coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/icons/" +mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+        coinImageCommissions.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/icons/" +mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+        updateStylesheet();
+
+        this.mainViewController.settingsController.selectedStyleMode.addListener(style -> updateStylesheet());
+>>>>>>> Stashed changes
 
         coinImageRewards.setImage(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
         coinImageCommissions.setImage(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
@@ -243,8 +372,13 @@ public class MainView implements Initializable {
 
             fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals("Rewards"));
             this.mainViewController.settingsController.saveSettings();
+<<<<<<< Updated upstream
             coinImageRewards.setImage(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
             coinImageCommissions.setImage(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
+=======
+            coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+            coinImageCommissions.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/icons/" +  mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+>>>>>>> Stashed changes
         });
 
         this.cmbCoinsCom.getItems().addAll(this.mainViewController.settingsController.cryptoCurrencies);
@@ -620,4 +754,125 @@ public class MainView implements Initializable {
         this.plotTable.contextMenuProperty().set(contextMenuPlotData);
     }
 
+<<<<<<< Updated upstream
+=======
+    private void updateStylesheet() {
+
+           this.mainAnchorPane.getStylesheets().clear();
+        if (this.helpStage != null) this.helpStage.getScene().getStylesheets().clear();
+        if (this.settingsStage != null) this.settingsStage.getScene().getStylesheets().clear();
+        if (this.donateStage != null) this.donateStage.getScene().getStylesheets().clear();
+
+        if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            this.mainAnchorPane.getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css").toURI().toString());
+            if (this.helpStage != null)
+                this.helpStage.getScene().getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css").toURI().toString());
+            if (this.settingsStage != null)
+                this.settingsStage.getScene().getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css").toURI().toString());
+            if (this.donateStage != null)
+                this.donateStage.getScene().getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css").toURI().toString());
+        } else {
+            this.mainAnchorPane.getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css").toURI().toString());
+            if (this.helpStage != null)
+                this.helpStage.getScene().getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css").toURI().toString());
+            if (this.settingsStage != null)
+                this.settingsStage.getScene().getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css").toURI().toString());
+            if (this.donateStage != null)
+                this.donateStage.getScene().getStylesheets().add(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css").toURI().toString());
+        }
+    }
+
+    private void updateLanguage() {
+        this.mainViewController.settingsController.updateLanguage();
+        this.btnRawData.textProperty().setValue(this.mainViewController.settingsController.translationList.getValue().get("RawData").toString());
+        this.menuItemCopySelected.setText(this.mainViewController.settingsController.translationList.getValue().get("Copy").toString());
+        this.menuItemCopyHeaderSelected.setText(this.mainViewController.settingsController.translationList.getValue().get("CopyHeader").toString());
+        this.menuItemExportSelected.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportSelected").toString());
+        this.menuItemExportAllSelected.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportAll").toString());
+        this.menuItemCopySelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("Copy").toString());
+        this.menuItemCopyHeaderSelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("CopyHeader").toString());
+        this.menuItemExportSelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportSelected").toString());
+        this.menuItemExportAllSelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportAll").toString());
+        this.CurrentBlock.setText(this.mainViewController.settingsController.translationList.getValue().get("CurrentBlock").toString());
+        this.CurrentBlockChain.setText(this.mainViewController.settingsController.translationList.getValue().get("CurrentBlockBC").toString());
+        this.LastUpdate.setText(this.mainViewController.settingsController.translationList.getValue().get("LastUpdate").toString());
+        this.File.setText(this.mainViewController.settingsController.translationList.getValue().get("File").toString());
+        this.Settings.setText(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
+        this.Help.setText(this.mainViewController.settingsController.translationList.getValue().get("Help").toString());
+        this.DonateItem.setText(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
+        this.Donate.setText(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
+        this.Rewards.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards").toString());
+        this.HelpItem.setText(this.mainViewController.settingsController.translationList.getValue().get("Account").toString());
+        this.Close.setText(this.mainViewController.settingsController.translationList.getValue().get("Close").toString());
+        this.Commissions.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions").toString());
+        this.Overview.setText(this.mainViewController.settingsController.translationList.getValue().get("Overview").toString());
+        this.StartDate.setText(this.mainViewController.settingsController.translationList.getValue().get("StartDate").toString());
+        this.EndDate.setText(this.mainViewController.settingsController.translationList.getValue().get("EndDate").toString());
+        this.StartDateCom.setText(this.mainViewController.settingsController.translationList.getValue().get("StartDate").toString());
+        this.EndDateCom.setText(this.mainViewController.settingsController.translationList.getValue().get("EndDate").toString());
+        this.StartDateOver.setText(this.mainViewController.settingsController.translationList.getValue().get("StartDate").toString());
+        this.EndDateOver.setText(this.mainViewController.settingsController.translationList.getValue().get("EndDate").toString());
+        this.btnAnalyse.setText(this.mainViewController.settingsController.translationList.getValue().get("AnalyseData").toString());
+        this.btnUpdateDatabase.setText(this.mainViewController.settingsController.translationList.getValue().get("UpdateData").toString());
+        if (this.cmbIntervall.getItems().size() > 0) {
+
+            this.cmbIntervallCom.getItems().set(0, this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
+            this.cmbIntervallCom.getItems().set(1, this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
+            this.cmbIntervallCom.getItems().set(2, this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
+            this.cmbIntervallCom.getItems().set(3, this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
+            this.cmbIntervallOver.getItems().set(0, this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
+            this.cmbIntervallOver.getItems().set(1, this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
+            this.cmbIntervallOver.getItems().set(2, this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
+            this.cmbIntervallOver.getItems().set(3, this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
+            this.cmbIntervall.getItems().set(0, this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
+            this.cmbIntervall.getItems().set(1, this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
+            this.cmbIntervall.getItems().set(2, this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
+            this.cmbIntervall.getItems().set(3, this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
+            this.cmbPlotCurrency.getItems().set(0, this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
+            this.cmbPlotCurrency.getItems().set(1, this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
+            this.cmbPlotCurrencyCom.getItems().add(0, this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
+            this.cmbPlotCurrencyCom.getItems().add(1, this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
+
+        } else {
+
+            this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
+            this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
+            this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
+            this.cmbIntervallCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
+            this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
+            this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
+            this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
+            this.cmbIntervallOver.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
+            this.cmbIntervall.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
+            this.cmbIntervall.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Weekly").toString());
+            this.cmbIntervall.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Monthly").toString());
+            this.cmbIntervall.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Yearly").toString());
+            this.cmbPlotCurrency.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
+            this.cmbPlotCurrency.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
+            this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
+            this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
+        }
+        this.blockTimeColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Date").toString());
+        this.timeStampColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Date").toString());
+        this.typeColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Operation").toString());
+        this.cryptoValueColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("CryptoValue").toString());
+        this.cryptoCurrencyColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("CryptoCurrency").toString());
+        this.fiatValueColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("FIATValue").toString());
+        this.fiatCurrencyColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("FIATCurrency").toString());
+        this.poolIDColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("PoolPair").toString());
+        this.poolPairColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("PoolPair").toString());
+        this.blockHeightColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("BlockHeight").toString());
+        this.blockHashColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("BlockHash").toString());
+        this.ownerColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Owner").toString());
+        this.transactionColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("TransactionHash").toString());
+        this.fiatColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Total").toString());
+        this.mainViewController.donateController.strDonateText.setValue(this.mainViewController.settingsController.translationList.getValue().get("DonateLabel").toString());
+        this.mainViewController.donateController.strBtnClose.setValue(this.mainViewController.settingsController.translationList.getValue().get("Close").toString());
+        this.mainViewController.helpController.strHelpText.setValue(this.mainViewController.settingsController.translationList.getValue().get("ContactUS").toString());
+        this.mainViewController.helpController.strCloseText.setValue(this.mainViewController.settingsController.translationList.getValue().get("Close").toString());
+        this.mainViewController.settingsController.selectedPlotType.setValue(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
+        this.mainViewController.settingsController.selectedIntervall.setValue(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
+    }
+
+>>>>>>> Stashed changes
 }

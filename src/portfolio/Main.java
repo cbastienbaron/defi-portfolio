@@ -36,13 +36,32 @@ public class Main extends Application {
         assert root != null;
         Scene scene = new Scene(root);
         stage = new Stage();
+<<<<<<< Updated upstream
         stage.setTitle("DeFi App Portfolio V1.0");
         //stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/src/icons/DefiIcon.png")); TODO:
+=======
+
+        final Delta dragDelta = new Delta();
+        //stage.initStyle(StageStyle.UNDECORATED);
+        stage.setTitle("DeFi-Portfolio " + SettingsController.getInstance().Version);
+        stage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/icons/DefiIcon.png").toURI().toString()));
+        Stage finalStage = stage;
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = finalStage.getX() - mouseEvent.getScreenX();
+            dragDelta.y = finalStage.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            finalStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+            finalStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+>>>>>>> Stashed changes
         stage.setScene(scene);
         stage.setMinHeight(700);
         stage.setMinWidth(1200);
         stage.show();
         // Stop Splashsccreen
+<<<<<<< Updated upstream
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
                 try {
@@ -51,9 +70,17 @@ public class Main extends Application {
                     e.printStackTrace();
                 }
             }
+=======
+        stage.setOnCloseRequest(we -> {
+           /* try {
+                Runtime.getRuntime().exec("cmd /c taskkill /f /im java.exe");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
+>>>>>>> Stashed changes
         });
 
-        task.kill();
+       // task.kill();
 
     }
 

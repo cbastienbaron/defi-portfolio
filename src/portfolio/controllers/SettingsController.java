@@ -6,8 +6,17 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.time.LocalDate;
+<<<<<<< Updated upstream
 
+=======
+import java.util.Locale;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.nio.file.Path;
+>>>>>>> Stashed changes
 
 public class SettingsController {
     private static SettingsController OBJ = null;
@@ -24,6 +33,10 @@ public class SettingsController {
     public StringProperty selectedFiatCurrency = new SimpleStringProperty("EUR");
     public StringProperty selectedDecimal = new SimpleStringProperty(".");
     public StringProperty selectedSeperator = new SimpleStringProperty(",");
+<<<<<<< Updated upstream
+=======
+    public StringProperty selectedStyleMode = new SimpleStringProperty("Light Mode");
+>>>>>>> Stashed changes
 
     public StringProperty selectedCoin = new SimpleStringProperty("BTC-DFI");
     public StringProperty selectedPlotCurrency = new SimpleStringProperty("Coin");
@@ -40,6 +53,7 @@ public class SettingsController {
     public String[] plotType = new String[]{"Individual", "Cumulated"};
 
     //All relevant paths and files
+<<<<<<< Updated upstream
     public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
     public String strCookiePathMac = System.getProperty("user.home") + "/Library/Application Support/DeFi/.cookie";
 
@@ -58,6 +72,85 @@ public class SettingsController {
 
     private SettingsController() throws IOException {
         this.loadSettings();
+=======
+
+    public  String USER_HOME_PATH = System.getProperty("user.home");
+    public  String BINARY_FILE_NAME = getPlatform() == "win" ? "defid.exe" : "defid";
+    public  String BINARY_FILE_PATH = getPlatform() == "win" ?
+            (System.getenv("LOCALAPPDATA")+ "/Programs/defi-app/resources/binary/win/"+BINARY_FILE_NAME).replace("\\","/") : //WIN PATH
+            getPlatform() == "mac" ?
+                    USER_HOME_PATH+ "../.."+ "/Applications/defi-app.app/Contents/Resources/binary/mac/"+ BINARY_FILE_NAME : //MAC PATH
+                    ""; //LINUX PATH;
+    public  String COOKIE_FILE_PATH = getPlatform() == "win" ?
+           System.getenv("APPDATA")+ "/DeFi Blockchain/.cookie" : //WIN PATH
+            getPlatform() == "mac" ? USER_HOME_PATH+ "/Library/Application Support/DeFi/.cookie" : //MAC PATH
+                    ""; //LINUX PATH;
+    public  String DEFI_PORTFOLIO_HOME = getPlatform() == "win" ?
+            System.getenv("APPDATA")+ "/defi-portfolio/" : //WIN PATH
+            getPlatform() == "mac" ? USER_HOME_PATH+ "/Library/Application Support/defi-portfolio/" : //MAC PATH
+                    ""; //LINUX PATH;
+
+    public  String SETTING_FILE_PATH = DEFI_PORTFOLIO_HOME+ "settings.csv";
+
+    public String strTransactionData = "transactionData.portfolio";
+    public String strCoinPriceData = "coinPriceData.portfolio";
+    public String[] languages = new String[]{"English", "Deutsch"};
+    public String[] currencies = new String[]{"EUR", "USD", "CHF"};
+    public String[] decSeperators = new String[]{",", "."};
+    public String[] csvSeperators = new String[]{",", ";"};
+    public Logger logger = Logger.getLogger("Logger");
+
+    private SettingsController() throws IOException {
+        FileHandler fh;
+        // generate folder //defi-portfolio if no one exists
+        File directory = new File(DEFI_PORTFOLIO_HOME);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        // This block configure the logger with handler and formatter
+        fh = new FileHandler(DEFI_PORTFOLIO_HOME + "log.txt");
+        this.logger.addHandler(fh);
+        SimpleFormatter formatter = new SimpleFormatter();
+        fh.setFormatter(formatter);
+        this.loadSettings();
+        updateLanguage();
+    }
+
+    public void updateLanguage() {
+        //JSON parser object to parse read file
+        JSONParser jsonParser = new JSONParser();
+
+        String fileName = System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/translations/";
+        switch (selectedLanguage.getValue()) {
+            case "English":
+                fileName += "en.json";
+                break;
+            case "Deutsch":
+                fileName += "de.json";
+                break;
+            default:
+                break;
+        }
+        try (FileReader reader = new FileReader(fileName)) {
+            Object obj = jsonParser.parse(reader);
+            this.translationList.setValue((JSONObject) obj);
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
+        }
+>>>>>>> Stashed changes
+    }
+
+    private String getPlatform() {
+        String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+        if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
+            return "mac";
+        } else if (OS.indexOf("win") >= 0) {
+            return "win";
+        } else if (OS.indexOf("nux") >= 0) {
+            return "linux";
+        } else {
+            return "win";
+        }
     }
 
     public static SettingsController getInstance() {
@@ -65,9 +158,9 @@ public class SettingsController {
     }
 
     public void loadSettings() throws IOException {
-        File f = new File(pathSettingsFile);
-        if (f.exists() && !f.isDirectory()) {
-            BufferedReader csvReader = new BufferedReader(new FileReader(pathSettingsFile));
+        File f = new File(this.SETTING_FILE_PATH);
+        if (f.getAbsoluteFile().exists() && !f.getAbsoluteFile().isDirectory()) {
+            BufferedReader csvReader = new BufferedReader(new FileReader(this.SETTING_FILE_PATH));
             String row;
             while ((row = csvReader.readLine()) != null) {
                 String[] data = row.split(",");
@@ -90,10 +183,16 @@ public class SettingsController {
                         break;
                 }
                 this.selectedCoin.setValue(data[4]);
+<<<<<<< Updated upstream
                 this.selectedIntervall.setValue(data[5]);
                 this.selectedPlotType.setValue(data[6]);
                 this.selectedPlotCurrency.setValue(data[7]);
                 this.dateFrom.setValue(LocalDate.parse(data[8]));
+=======
+                this.selectedPlotCurrency.setValue(data[5]);
+                this.dateFrom.setValue(LocalDate.parse(data[6]));
+                if (data.length > 7) this.selectedStyleMode.setValue(data[7]);
+>>>>>>> Stashed changes
             }
         }
     }
@@ -102,7 +201,7 @@ public class SettingsController {
 
         FileWriter csvWriter;
         try {
-            csvWriter = new FileWriter(pathSettingsFile);
+            csvWriter = new FileWriter(this.SETTING_FILE_PATH);
 
             csvWriter.append(this.selectedLanguage.getValue());
             csvWriter.append(",");
@@ -141,7 +240,11 @@ public class SettingsController {
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {
+<<<<<<< Updated upstream
             e.printStackTrace();
+=======
+            this.logger.warning("Exception occured: " + e.toString());
+>>>>>>> Stashed changes
         }
     }
 }

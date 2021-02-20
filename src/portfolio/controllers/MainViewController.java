@@ -49,19 +49,29 @@ public class MainViewController {
 
     //Init all controller and services
     public SettingsController settingsController = SettingsController.getInstance();
+<<<<<<< Updated upstream
     public CoinPriceController coinPriceController = new CoinPriceController(this.settingsController.strPathAppData + this.settingsController.strCoinPriceData);
     public TransactionController transactionController = new TransactionController(this.settingsController.strPathAppData + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.strCookiePath);
+=======
+    public DonateController donateController = DonateController.getInstance();
+    public HelpController helpController = HelpController.getInstance();
+    public CoinPriceController coinPriceController = new CoinPriceController(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strCoinPriceData);
+    public TransactionController transactionController = new TransactionController(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.COOKIE_FILE_PATH);
+>>>>>>> Stashed changes
     public ExportService expService;
 
     public MainViewController() {
 
         this.transactionController.startServer();
 
+<<<<<<< Updated upstream
         // generate folder //defi-portfolio if no one exists
         File directory = new File(this.settingsController.strPathAppData);
         if (!directory.exists()) {
             directory.mkdir();
         }
+=======
+>>>>>>> Stashed changes
         // init all relevant lists for tables and plots
         this.transactionList = FXCollections.observableArrayList(this.transactionController.getTransactionList());
         this.poolPairList = FXCollections.observableArrayList(this.poolPairModelList);
@@ -188,9 +198,14 @@ public class MainViewController {
     }
 
     public boolean updateTransactionData() {
+<<<<<<< Updated upstream
 
         if (this.transactionController.checkCrp()) {
             if (new File(this.settingsController.strPathAppData + this.settingsController.strTransactionData).exists()) {
+=======
+        if (this.transactionController.checkRpc()) {
+            if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).getAbsoluteFile().exists()) {
+>>>>>>> Stashed changes
                 int depth = Integer.parseInt(this.transactionController.getBlockCountRpc()) - this.transactionController.getLocalBlockCount();
                 return this.transactionController.updateTransactionData(depth);
             } else {
@@ -206,7 +221,11 @@ public class MainViewController {
         Process p;
 
         try {
+<<<<<<< Updated upstream
             p = Runtime.getRuntime().exec(System.getenv("windir") + "\\system32\\" + "tasklist.exe");
+=======
+            p = Runtime.getRuntime().exec(System.getenv("windir").replace(" ", "\" \"") + "/system32/" + "tasklist.exe");
+>>>>>>> Stashed changes
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((line = input.readLine()) != null) {
                 pidInfo.append(line);
@@ -251,7 +270,11 @@ public class MainViewController {
     public void showDefiAppIsRunning() {
         JFrame frameDefid = new JFrame("DeFi App running");
         frameDefid.setLayout(null);
+<<<<<<< Updated upstream
         ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\process.png");
+=======
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/process.png");
+>>>>>>> Stashed changes
         JLabel jl = new JLabel("     The Defi-App is running! Please close it first.", icon, JLabel.CENTER);
         jl.setSize(400, 100);
         jl.setLocation(0, 0);
@@ -274,7 +297,11 @@ public class MainViewController {
     public void showDefidNotRunning() {
         this.frameDefid = new JFrame("Launch defid.exe");
         frameDefid.setLayout(null);
+<<<<<<< Updated upstream
         ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\connected.png");
+=======
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/connected.png");
+>>>>>>> Stashed changes
         JLabel jl = new JLabel("     The defid.exe is not running! Please start it manually.", icon, JLabel.CENTER);
         jl.setSize(400, 100);
         jl.setLocation(0, 0);
@@ -296,7 +323,11 @@ public class MainViewController {
 
     public void showUpdateWindow() {
         this.frameUpdate = new JFrame("Loading Database");
+<<<<<<< Updated upstream
         ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\src\\icons\\updating.png");
+=======
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/updating.png");
+>>>>>>> Stashed changes
         JLabel jl = new JLabel("     Updating local files. Please wait...!", icon, JLabel.CENTER);
         frameUpdate.add(jl);
         frameUpdate.setSize(350, 125);
