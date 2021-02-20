@@ -195,7 +195,7 @@ public class MainView implements Initializable {
                 helpStage.setX(mouseEvent.getScreenX() + dragDelta.x);
                 helpStage.setY(mouseEvent.getScreenY() + dragDelta.y);
             });
-            helpStage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/help.png"));
+            helpStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/help.png").toURI().toString()));
             helpStage.setTitle((this.mainViewController.settingsController.translationList.getValue().get("HelpTitle").toString()));
             helpStage.setScene(scene);
             helpStage.show();
@@ -206,9 +206,9 @@ public class MainView implements Initializable {
         java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
         java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            helpStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+            helpStage.getScene().getStylesheets().add( darkMode.toURI().toString());
         } else {
-            helpStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+            helpStage.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
     }
 
@@ -228,7 +228,7 @@ public class MainView implements Initializable {
                 donateStage.setX(mouseEvent.getScreenX() + dragDelta.x);
                 donateStage.setY(mouseEvent.getScreenY() + dragDelta.y);
             });
-            donateStage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/donate.png"));
+            donateStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/donate.png").toURI().toString()));
             donateStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
             donateStage.setScene(scene);
             donateStage.show();
@@ -240,9 +240,9 @@ public class MainView implements Initializable {
         java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
         java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            donateStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+            donateStage.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
-            donateStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+            donateStage.getScene().getStylesheets().add( lightMode.toURI().toString());
         }
     }
 
@@ -263,7 +263,7 @@ public class MainView implements Initializable {
                 settingsStage.setX(mouseEvent.getScreenX() + dragDelta.x);
                 settingsStage.setY(mouseEvent.getScreenY() + dragDelta.y);
             });
-            settingsStage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png"));
+            settingsStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
             settingsStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
             settingsStage.setScene(scene);
             settingsStage.show();
@@ -275,9 +275,9 @@ public class MainView implements Initializable {
         java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
         java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            settingsStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+            settingsStage.getScene().getStylesheets().add( darkMode.toURI().toString());
         } else {
-            settingsStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+            settingsStage.getScene().getStylesheets().add( lightMode.toURI().toString());
         }
     }
 
@@ -310,8 +310,8 @@ public class MainView implements Initializable {
         this.btnRawData.fire();
         updateLanguage();
 
-        coinImageRewards.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
-        coinImageCommissions.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
+        coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+        coinImageCommissions.setImage(new Image(new File( System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
         updateStylesheet();
 
         this.mainViewController.settingsController.selectedStyleMode.addListener(style -> updateStylesheet());
@@ -409,8 +409,8 @@ public class MainView implements Initializable {
 
             fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Rewards")));
             this.mainViewController.settingsController.saveSettings();
-            coinImageRewards.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
-            coinImageCommissions.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
+            coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+            coinImageCommissions.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
         });
 
         this.cmbCoinsCom.getItems().addAll(this.mainViewController.settingsController.cryptoCurrencies);
@@ -899,21 +899,21 @@ public class MainView implements Initializable {
         if (this.donateStage != null) this.donateStage.getScene().getStylesheets().clear();
 
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            this.mainAnchorPane.getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+            this.mainAnchorPane.getStylesheets().add( darkMode.toURI().toString());
             if (this.helpStage != null)
-                this.helpStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+                this.helpStage.getScene().getStylesheets().add( darkMode.toURI().toString());
             if (this.settingsStage != null)
-                this.settingsStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+                this.settingsStage.getScene().getStylesheets().add(darkMode.toURI().toString());
             if (this.donateStage != null)
-                this.donateStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+                this.donateStage.getScene().getStylesheets().add( darkMode.toURI().toString());
         } else {
-            this.mainAnchorPane.getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+            this.mainAnchorPane.getStylesheets().add( lightMode.toURI().toString());
             if (this.helpStage != null)
-                this.helpStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+                this.helpStage.getScene().getStylesheets().add( lightMode.toURI().toString());
             if (this.settingsStage != null)
-                this.settingsStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+                this.settingsStage.getScene().getStylesheets().add(lightMode.toURI().toString());
             if (this.donateStage != null)
-                this.donateStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+                this.donateStage.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
     }
 

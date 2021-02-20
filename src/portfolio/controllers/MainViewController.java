@@ -53,8 +53,8 @@ public class MainViewController {
     public SettingsController settingsController = SettingsController.getInstance();
     public DonateController donateController = DonateController.getInstance();
     public HelpController helpController = HelpController.getInstance();
-    public CoinPriceController coinPriceController = new CoinPriceController(this.settingsController.strPathAppData + this.settingsController.strCoinPriceData);
-    public TransactionController transactionController = new TransactionController(this.settingsController.strPathAppData + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.strCookiePath);
+    public CoinPriceController coinPriceController = new CoinPriceController(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strCoinPriceData);
+    public TransactionController transactionController = new TransactionController(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.COOKIE_FILE_PATH);
     public ExportService expService;
     public boolean updateSingleton = true;
 
@@ -64,12 +64,6 @@ public class MainViewController {
 
         this.settingsController.logger.info("Start DeFi-Portfolio");
         this.transactionController.startServer();
-
-        // generate folder //defi-portfolio if no one exists
-        File directory = new File(this.settingsController.strPathAppData);
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
 
         // init all relevant lists for tables and plots
         this.transactionList = FXCollections.observableArrayList(this.transactionController.getTransactionList());
@@ -209,7 +203,7 @@ public class MainViewController {
 
     public boolean updateTransactionData() {
         if (this.transactionController.checkRpc()) {
-            if (new File(this.settingsController.strPathAppData + this.settingsController.strTransactionData).exists()) {
+            if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).exists()) {
                 int depth = Integer.parseInt(this.transactionController.getBlockCountRpc()) - this.transactionController.getLocalBlockCount();
                 this.transactionController.updateJFrame();
                 return this.transactionController.updateTransactionData(depth);
@@ -227,17 +221,17 @@ public class MainViewController {
         StringBuilder pidInfo = new StringBuilder();
         Process p;
 
-        try {
-            p = Runtime.getRuntime().exec(System.getenv("windir").replace(" ", "\" \"") + "\\system32\\" + "tasklist.exe");
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            while ((line = input.readLine()) != null) {
-                pidInfo.append(line);
-            }
+            //p = Runtime.getRuntime().exec(System.getenv("windir").replace(" ", "\" \"") + "\\system32\\" + "tasklist.exe");
+            //BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            //while ((line = input.readLine()) != null) {
+            //    pidInfo.append(line);
+            // }
 
-            input.close();
-        } catch (IOException e) {
-            this.settingsController.logger.warning("Exception occured: " + e.toString());
-        }
+            //input.close();
+            //} catch (IOException e) {
+            //  this.settingsController.logger.warning("Exception occured: " + e.toString());
+            //  }
+
         return pidInfo.toString().contains("defi-app");
     }
 
@@ -275,7 +269,7 @@ public class MainViewController {
     public void showDefiAppIsRunning() {
         JFrame frameDefid = new JFrame("DeFi-App running");
         frameDefid.setLayout(null);
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\process.png");
+        ImageIcon icon = new ImageIcon(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/process.png").toURI().toString());
         JLabel jl = new JLabel("     The Defi-App is running! Please close it first.", icon, JLabel.CENTER);
         jl.setSize(400, 100);
         jl.setLocation(0, 0);

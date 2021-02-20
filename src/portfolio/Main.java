@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import portfolio.controllers.SettingsController;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Main extends Application {
@@ -34,7 +35,7 @@ public class Main extends Application {
         final Delta dragDelta = new Delta();
         //stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("DeFi-Portfolio " + SettingsController.getInstance().Version);
-        stage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png"));
+        stage.getIcons().add(new Image(new File( System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").toURI().toString()));
         Stage finalStage = stage;
         scene.setOnMousePressed(mouseEvent -> {
             // record a delta distance for the drag and drop operation.
@@ -52,11 +53,11 @@ public class Main extends Application {
         stage.show();
         // Stop Splashsccreen
         stage.setOnCloseRequest(we -> {
-            try {
-                Runtime.getRuntime().exec("cmd /c taskkill /f /im java.exe");
+        /*    try {
+                //Runtime.getRuntime().exec("cmd /c taskkill /f /im java.exe");
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
         });
 
         task.kill();

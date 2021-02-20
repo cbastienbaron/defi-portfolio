@@ -10,6 +10,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -48,23 +49,41 @@ public class SettingsController {
     public String[] plotCurrency = new String[]{"Coin", "Fiat"};
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
 
+    public  String USER_HOME_PATH = System.getProperty("user.home");
+    public  String BINARY_FILE_NAME = getPlatform() == "win" ? "defid.exe" : "defid";
+    public  String BINARY_FILE_PATH = getPlatform() == "win" ?
+            (System.getenv("LOCALAPPDATA")+ "/Programs/defi-app/resources/binary/win/"+BINARY_FILE_NAME).replace("\\","/") : //WIN PATH
+            getPlatform() == "mac" ?
+                    USER_HOME_PATH+ "../.."+ "/Applications/defi-app.app/Contents/Resources/binary/mac/"+ BINARY_FILE_NAME : //MAC PATH
+                    ""; //LINUX PATH;
+    public  String COOKIE_FILE_PATH = getPlatform() == "win" ?
+            System.getenv("APPDATA")+ "/DeFi Blockchain/.cookie" : //WIN PATH
+            getPlatform() == "mac" ? USER_HOME_PATH+ "/Library/Application Support/DeFi/.cookie" : //MAC PATH
+                    ""; //LINUX PATH;
+    public  String DEFI_PORTFOLIO_HOME = getPlatform() == "win" ?
+            System.getenv("APPDATA")+ "/defi-portfolio/" : //WIN PATH
+            getPlatform() == "mac" ? USER_HOME_PATH+ "/Library/Application Support/defi-portfolio/" : //MAC PATH
+                    ""; //LINUX PATH;
+
+    public  String SETTING_FILE_PATH = DEFI_PORTFOLIO_HOME+ "settings.csv";
     //All relevant paths and files
-    public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
-    public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
-    public String strPathDefid = System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
     public String[] languages = new String[]{"English","Deutsch"};
     public String[] currencies = new String[]{"EUR", "USD", "CHF"};
     public String[] decSeperators = new String[]{",", "."};
     public String[] csvSeperators = new String[]{",", ";"};
-    public String pathSettingsFile = System.getenv("APPDATA") + "\\defi-portfolio\\settings.csv";
     public Logger logger = Logger.getLogger("Logger");
 
     private SettingsController() throws IOException {
         FileHandler fh;
+
+        File directory = new File(DEFI_PORTFOLIO_HOME);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
         // This block configure the logger with handler and formatter
-        fh = new FileHandler(strPathAppData+"\\log.txt");
+        fh = new FileHandler(DEFI_PORTFOLIO_HOME+"log.txt");
         this.logger.addHandler(fh);
         SimpleFormatter formatter = new SimpleFormatter();
         fh.setFormatter(formatter);
@@ -99,10 +118,23 @@ public class SettingsController {
         return OBJ;
     }
 
+    private String getPlatform() {
+        String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+        if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
+            return "mac";
+        } else if (OS.indexOf("win") >= 0) {
+            return "win";
+        } else if (OS.indexOf("nux") >= 0) {
+            return "linux";
+        } else {
+            return "win";
+        }
+    }
+
     public void loadSettings() throws IOException {
-        File f = new File(pathSettingsFile);
+        File f = new File(SETTING_FILE_PATH);
         if (f.exists() && !f.isDirectory()) {
-            BufferedReader csvReader = new BufferedReader(new FileReader(pathSettingsFile));
+            BufferedReader csvReader = new BufferedReader(new FileReader(SETTING_FILE_PATH));
             String row;
             while ((row = csvReader.readLine()) != null) {
                 String[] data = row.split(",");
@@ -136,7 +168,7 @@ public class SettingsController {
 
         FileWriter csvWriter;
         try {
-            csvWriter = new FileWriter(pathSettingsFile);
+            csvWriter = new FileWriter(SETTING_FILE_PATH);
 
             csvWriter.append(this.selectedLanguage.getValue());
             csvWriter.append(",");

@@ -53,7 +53,8 @@ public class TransactionController {
 
     public void startServer() {
         try {
-            Runtime.getRuntime().exec("cmd /c start " + this.settingsController.strPathDefid.replace(" ","\" \""));
+           Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH);
+
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
@@ -220,7 +221,7 @@ public class TransactionController {
         this.frameUpdate = new JFrame();
         this.frameUpdate.setLayout(null);
         this.frameUpdate.setIconImage(new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").getImage());
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\ajaxloader.gif");
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/ajaxloader.gif");
         this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), icon, JLabel.CENTER);
         this.jl.setSize(400, 100);
         this.jl.setLocation(0, 0);
