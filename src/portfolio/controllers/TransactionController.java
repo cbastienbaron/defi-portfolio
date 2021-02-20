@@ -53,8 +53,18 @@ public class TransactionController {
 
     public void startServer() {
         try {
-           Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH);
-
+            if(!checkRpc()) {
+                switch(this.settingsController.getPlatform()){
+                    case "mac":
+                        Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + this.settingsController.BINARY_FILE_PATH);
+                        break;
+                    case "win":
+                        Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH);
+                        break;
+                    case "nux":
+                        break;
+                }
+            }
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }

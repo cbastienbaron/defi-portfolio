@@ -54,7 +54,7 @@ public class SettingsController {
     public  String BINARY_FILE_PATH = getPlatform() == "win" ?
             (System.getenv("LOCALAPPDATA")+ "/Programs/defi-app/resources/binary/win/"+BINARY_FILE_NAME).replace("\\","/") : //WIN PATH
             getPlatform() == "mac" ?
-                    USER_HOME_PATH+ "../.."+ "/Applications/defi-app.app/Contents/Resources/binary/mac/"+ BINARY_FILE_NAME : //MAC PATH
+                    USER_HOME_PATH+ "/../.."+ "/Applications/defi-app.app/Contents/Resources/binary/mac/"+ BINARY_FILE_NAME : //MAC PATH
                     ""; //LINUX PATH;
     public  String COOKIE_FILE_PATH = getPlatform() == "win" ?
             System.getenv("APPDATA")+ "/DeFi Blockchain/.cookie" : //WIN PATH
@@ -118,7 +118,7 @@ public class SettingsController {
         return OBJ;
     }
 
-    private String getPlatform() {
+    public String getPlatform() {
         String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
         if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
             return "mac";

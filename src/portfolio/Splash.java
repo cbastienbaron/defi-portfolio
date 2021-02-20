@@ -3,15 +3,20 @@ import javafx.concurrent.Task;
 import javax.swing.*;
 
 public class Splash extends Task{
-    JFrame f;
+    static JFrame f;
+    static boolean isKilled = false;
     public Splash(){
 
     }
     public void kill(){
-        this.f.setVisible(false);
+        isKilled = true;
+        if(this.f != null) {
+            this.f.setVisible(false);
+        }
     }
     @Override
     public Void call() {
+        if(isKilled) return null;
         this.f = new JFrame();
         Icon imgIcon = new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/defi-flag.gif");
         JLabel label = new JLabel(imgIcon);
@@ -21,7 +26,7 @@ public class Splash extends Task{
         f.setLocationRelativeTo(null);
         f.setIconImage(new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").getImage());
         f.setAlwaysOnTop(true);
-        f.setVisible(true);
+        f.setVisible(!isKilled);
         return null;
     }
 }
