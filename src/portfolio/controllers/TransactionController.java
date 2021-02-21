@@ -1,14 +1,18 @@
 package portfolio.controllers;
 
+import com.sun.javafx.geom.Arc2D;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import portfolio.Main;
 import portfolio.models.AddressModel;
 import portfolio.models.PortfolioModel;
 import portfolio.models.TransactionModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
@@ -250,8 +254,24 @@ public class TransactionController {
         }
         this.frameUpdate.setVisible(true);
         this.frameUpdate.toFront();
-    }
 
+        this.frameUpdate.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mouseClickPoint = e.getPoint(); // update the position
+            }
+
+        });
+        this.frameUpdate.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Point newPoint = e.getLocationOnScreen();
+                newPoint.translate(-mouseClickPoint.x, -mouseClickPoint.y); // Moves the point by given values from its location
+                frameUpdate.setLocation(newPoint); // set the new location
+            }
+        });
+    }
+    private Point mouseClickPoint;
     private JSONObject getRpcResponse(String requestJson) {
         try {
 
