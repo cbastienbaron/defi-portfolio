@@ -38,12 +38,30 @@ public class HelpView implements Initializable {
     }
 
     public void btnMailToCallback() throws IOException, URISyntaxException {
-        Desktop desktop;
-        if (Desktop.isDesktopSupported()
-                && (desktop = Desktop.getDesktop()).isSupported(Desktop.Action.MAIL)) {
-            URI mailto = new URI("mailto:defiportfoliomanagement@gmail.com?subject=DeFi-Portfolio-"+SettingsController.getInstance().Version);
-            desktop.mail(mailto);
+//        Desktop desktop;
+//        if (Desktop.isDesktopSupported()
+//                && (desktop = Desktop.getDesktop()).isSupported(Desktop.Action.MAIL)) {
+//
+//            URI mailto = new URI("mailto:defiportfoliomanagement@gmail.com?subject=DeFi-Portfolio-"+SettingsController.getInstance().Version);
+//            desktop.mail(mailto);
+//        }
+
+        String mailto = "mailto:defiportfoliomanagement@gmail.com?subject=DeFi-Portfolio-"+SettingsController.getInstance().Version;
+
+        //Run-Befehl je nach Betriebssystem erzeugen
+        String cmd = "";
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")){
+            cmd = "cmd.exe /c start \"\" \"" + mailto + "\"";
         }
+        else if (os.contains("osx")){
+            cmd = "open " + mailto;
+        }
+        else if (os.contains("nix") || os.contains("aix") || os.contains("nux")){
+            cmd = "xdg-open " + mailto;
+        }
+        //Mail-Client mit Parametern starten
+        Runtime.getRuntime().exec(cmd);
     }
     public void btnCopyCallback(){
         String myString = "defiportfoliomanagement@gmail.com";

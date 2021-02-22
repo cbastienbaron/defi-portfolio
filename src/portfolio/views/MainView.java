@@ -1,5 +1,6 @@
 package portfolio.views;
 
+import com.sun.deploy.util.SystemUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -605,7 +606,16 @@ public class MainView implements Initializable {
                     hyperlink.setText(item);
                     hyperlink.setOnAction((event) -> {
                         try {
-                            Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHashValue()).toURI());
+                            if ( mainViewController.settingsController.getPlatform() == "linux") {
+                                // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
+                                if (Runtime.getRuntime().exec(new String[] { "which", "xdg-open" }).getInputStream().read() != -1) {
+                                    Runtime.getRuntime().exec(new String[] { "xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHashValue()});
+                                } else {
+                                    System.out.println("xdg-open is not supported!");
+                                }
+                            } else {
+                                Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHashValue()).toURI());
+                            }
                         } catch (IOException | URISyntaxException e) {
                             e.printStackTrace();
                         }
@@ -632,7 +642,16 @@ public class MainView implements Initializable {
                     hyperlink.setText(item);
                     hyperlink.setOnAction((event) -> {
                         try {
-                            Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/address/" + tempParam.getOwnerValue()).toURI());
+                            if ( mainViewController.settingsController.getPlatform() == "linux") {
+                                // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
+                                if (Runtime.getRuntime().exec(new String[] { "which", "xdg-open" }).getInputStream().read() != -1) {
+                                    Runtime.getRuntime().exec(new String[] { "xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/address/" + tempParam.getOwnerValue()});
+                                } else {
+                                    System.out.println("xdg-open is not supported!");
+                                }
+                            } else {
+                                Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/address/" + tempParam.getOwnerValue()).toURI());
+                            }
                         } catch (IOException | URISyntaxException e) {
                             e.printStackTrace();
                         }
@@ -659,7 +678,16 @@ public class MainView implements Initializable {
                     hyperlink.setText(item.toString());
                     hyperlink.setOnAction((event) -> {
                         try {
-                            Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHeightValue()).toURI());
+                            if ( mainViewController.settingsController.getPlatform() == "linux") {
+                                // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
+                                if (Runtime.getRuntime().exec(new String[] { "which", "xdg-open" }).getInputStream().read() != -1) {
+                                    Runtime.getRuntime().exec(new String[] { "xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/block/" +tempParam.getBlockHeightValue()});
+                                } else {
+                                    System.out.println("xdg-open is not supported!");
+                                }
+                            } else {
+                                Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHeightValue()).toURI());
+                            }
                         } catch (IOException | URISyntaxException e) {
                             e.printStackTrace();
                         }
@@ -693,7 +721,16 @@ public class MainView implements Initializable {
                         hyperlink.setText(item);
                         hyperlink.setOnAction((event) -> {
                             try {
-                                Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/tx/" + tempParam.getTxIDValue()).toURI());
+                                if ( mainViewController.settingsController.getPlatform() == "linux") {
+                                    // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
+                                    if (Runtime.getRuntime().exec(new String[] { "which", "xdg-open" }).getInputStream().read() != -1) {
+                                        Runtime.getRuntime().exec(new String[] { "xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/tx/" +tempParam.getTxIDValue()});
+                                    } else {
+                                        System.out.println("xdg-open is not supported!");
+                                    }
+                                } else {
+                                    Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/tx/" + tempParam.getTxIDValue()).toURI());
+                                }
                             } catch (IOException | URISyntaxException e) {
                                 e.printStackTrace();
                             }

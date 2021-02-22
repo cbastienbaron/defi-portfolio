@@ -50,6 +50,6 @@
   "InitializingData": "Dateninitialisierung...",
   "PreparingData": "Datenaufbereitung...",
   "SaveData": "Datenspeicherung...",
-  "UpdateData": "Datenaktualisierung: ",
+  "UpdateData": "Daten update: ",
   "TransactionHash": "Transaktions Hash"
 }
