@@ -68,6 +68,7 @@ public class TransactionController {
                     Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
                     break;
                 case "nux":
+                    Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
                     break;
             }
         } catch (IOException e) {
