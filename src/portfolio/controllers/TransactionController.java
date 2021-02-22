@@ -512,8 +512,8 @@ public class TransactionController {
                     sb.append("\n");
                     jl.setText(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
                     i++;
-
                     writer.write(sb.toString());
+                    sb = null;
                 }
                 writer.close();
                 this.frameUpdate.dispose();

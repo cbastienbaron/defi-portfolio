@@ -39,7 +39,6 @@ public class MainViewController {
     //View
     public MainView mainView;
     public JFrame frameUpdate;
-    public JFrame frameDefid;
 
     //Table and plot lists
     public List<PoolPairModel> poolPairModelList = new ArrayList<>();
@@ -574,6 +573,10 @@ public class MainViewController {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("CSV files", "*.csv")
         );
+        fileChooser.setInitialDirectory(new File(this.settingsController.lastExportPath));
+        Date date = new Date(System.currentTimeMillis());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        fileChooser.setInitialFileName(dateFormat.format(date)+"_Portfolio_Export_RawData");
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {
@@ -598,6 +601,10 @@ public class MainViewController {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("CSV files", "*.csv")
         );
+        fileChooser.setInitialDirectory(new File(this.settingsController.lastExportPath));
+        Date date = new Date(System.currentTimeMillis());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        fileChooser.setInitialFileName(dateFormat.format(date)+"_Portfolio_Export_"+this.mainView.tabPane.getSelectionModel().getSelectedItem().getText());
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {

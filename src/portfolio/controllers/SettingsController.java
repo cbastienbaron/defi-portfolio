@@ -11,13 +11,14 @@ import org.json.simple.parser.ParseException;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 
 public class SettingsController {
-    public String Version = "V1.1";
+    public String Version = "V1.2";
 
     private static SettingsController OBJ = null;
 
@@ -43,6 +44,7 @@ public class SettingsController {
     public ObjectProperty<LocalDate> dateTo = new SimpleObjectProperty();
     public ObjectProperty<JSONObject> translationList = new SimpleObjectProperty();
     public String selectedIntervallInt = "Daily";
+    public boolean showDisclaim = true;
 
     //Combo box filling
     public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
@@ -79,6 +81,7 @@ public class SettingsController {
     public String[] csvSeperators = new String[]{",", ";"};
     public Logger logger = Logger.getLogger("Logger");
 
+    public String lastExportPath =USER_HOME_PATH;
     private SettingsController() throws IOException {
         FileHandler fh;
 
@@ -138,32 +141,28 @@ public class SettingsController {
     public void loadSettings() throws IOException {
         File f = new File(SETTING_FILE_PATH);
         if (f.exists() && !f.isDirectory()) {
-            BufferedReader csvReader = new BufferedReader(new FileReader(SETTING_FILE_PATH));
-            String row;
-            while ((row = csvReader.readLine()) != null) {
-                String[] data = row.split(",");
-                this.selectedLanguage.setValue(data[0]);
-                this.selectedFiatCurrency.setValue(data[1]);
-                switch (data[2]) {
-                    case "comma":
-                        this.selectedDecimal.setValue(",");
-                        break;
-                    case "dot":
-                        this.selectedDecimal.setValue(".");
-                        break;
-                }
-                switch (data[3]) {
-                    case "comma":
-                        this.selectedSeperator.setValue(",");
-                        break;
-                    case "semicolon":
-                        this.selectedSeperator.setValue(".");
-                        break;
-                }
-                this.selectedCoin.setValue(data[4]);
-                this.selectedPlotCurrency.setValue(data[5]);
-                this.dateFrom.setValue(LocalDate.parse(data[6]));
-                if(data.length>7) this.selectedStyleMode.setValue(data[7]);
+            File configFile = new File(SETTING_FILE_PATH);
+            Properties configProps = new Properties();
+            try (FileInputStream i = new FileInputStream(configFile)) {
+                configProps.load(i);
+            }
+
+            try{
+
+            this.selectedLanguage.setValue(configProps.getProperty("SelectedLanguage"));
+            this.selectedFiatCurrency.setValue(configProps.getProperty("SelectedFiatCurrency"));
+            this.selectedDecimal.setValue(configProps.getProperty("SelectedDecimal"));
+            this.selectedSeperator.setValue(configProps.getProperty("SelectedSeperator"));
+            this.selectedCoin.setValue(configProps.getProperty("SelectedCoin"));
+            this.selectedPlotCurrency.setValue(configProps.getProperty("SelectedPlotCurrency"));
+            this.selectedStyleMode.setValue(configProps.getProperty("SelectedStyleMode"));
+            this.dateFrom.setValue(LocalDate.parse(configProps.getProperty("SelectedDate")));
+            this.lastExportPath =configProps.getProperty("LastUsedExportPath");
+            this.showDisclaim = configProps.getProperty("ShowDisclaim").equals("true");
+
+            }catch (Exception e) {
+                e.printStackTrace();
+                saveSettings();
             }
         }
     }
@@ -173,38 +172,16 @@ public class SettingsController {
         FileWriter csvWriter;
         try {
             csvWriter = new FileWriter(SETTING_FILE_PATH);
-
-            csvWriter.append(this.selectedLanguage.getValue());
-            csvWriter.append(",");
-            csvWriter.append(this.selectedFiatCurrency.getValue());
-            csvWriter.append(",");
-
-            switch (this.selectedDecimal.getValue()) {
-                case ".":
-                    csvWriter.append("dot");
-                    break;
-                case ",":
-                    csvWriter.append("comma");
-                    break;
-            }
-            csvWriter.append(",");
-            switch (this.selectedSeperator.getValue()) {
-                case ".":
-                    csvWriter.append("dot");
-                    break;
-                case ";":
-                    csvWriter.append("semicolon");
-                    break;
-            }
-            csvWriter.append(",");
-
-            csvWriter.append(this.selectedCoin.getValue());
-            csvWriter.append(",");
-            csvWriter.append(this.selectedPlotCurrency.getValue());
-            csvWriter.append(",");
-            csvWriter.append(this.dateFrom.getValue().toString());
-            csvWriter.append(",");
-            csvWriter.append(this.selectedStyleMode.getValue());
+            csvWriter.append("SelectedLanguage="+this.selectedLanguage.getValue()).append("\n");
+            csvWriter.append("SelectedFiatCurrency="+this.selectedFiatCurrency.getValue()).append("\n");
+            csvWriter.append("SelectedDecimal="+this.selectedDecimal.getValue()).append("\n");
+            csvWriter.append("SelectedSeperator="+this.selectedSeperator.getValue()).append("\n");
+            csvWriter.append("SelectedCoin="+this.selectedCoin.getValue());
+            csvWriter.append("SelectedPlotCurrency="+this.selectedPlotCurrency.getValue()).append("\n");
+            csvWriter.append("SelectedStyleMode="+this.selectedStyleMode.getValue()).append("\n");
+            csvWriter.append("SelectedDate="+this.dateFrom.getValue()).append("\n");
+            csvWriter.append("LastUsedExportPath="+this.lastExportPath).append("\n");
+            csvWriter.append("ShowDisclaim="+this.showDisclaim).append("\n");
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {

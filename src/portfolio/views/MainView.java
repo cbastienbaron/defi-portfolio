@@ -295,13 +295,6 @@ public class MainView implements Initializable {
         }
     }
 
-    public void minimize(ActionEvent actionEvent) {
-    }
-
-    public void maximizeRestore(MouseEvent mouseEvent) {
-    }
-
-    // records relative x and y co-ordinates.
     static class Delta {
         double x, y;
     }

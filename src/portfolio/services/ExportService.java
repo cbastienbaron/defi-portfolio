@@ -10,8 +10,7 @@ import portfolio.controllers.TransactionController;
 import portfolio.models.PoolPairModel;
 import portfolio.models.TransactionModel;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,40 +23,48 @@ public class ExportService {
     }
 
     public boolean exportTransactionToExcel(List<TransactionModel> transactions, String exportPath, Locale localeDecimal, String exportSplitter) {
+        File exportFile = new File(exportPath);
+        this.mainViewController.settingsController.lastExportPath = exportFile.getParent();
+        this.mainViewController.settingsController.saveSettings();
+        if(exportFile.exists()) exportFile.delete();
+
+        PrintWriter writer = null;
         try {
-            PrintWriter writer = new PrintWriter(exportPath);
-            StringBuilder sb = new StringBuilder();
-
-            for (TableColumn column : this.mainViewController.mainView.rawDataTable.getColumns()
-            ) {
-                sb.append(column.getText()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
-            }
-
-            sb.setLength(sb.length() - 1);
-            sb.append("\n");
-
-            for (TransactionModel transaction : transactions) {
-                sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.getBlockTimeValue())).append(exportSplitter);
-                sb.append(transaction.getTypeValue()).append(exportSplitter);
-                sb.append(String.format(localeDecimal, "%.8f", transaction.getCryptoValueValue())).append(exportSplitter);
-                sb.append(transaction.getCryptoCurrencyValue()).append(exportSplitter);
-                sb.append(String.format(localeDecimal, "%.8f", transaction.getFiatValueValue())).append(exportSplitter);
-                sb.append(transaction.getFiatCurrencyValue()).append(exportSplitter);
-                sb.append(transaction.getPoolIDValue()).append(exportSplitter);
-                sb.append(transaction.getBlockHeightValue()).append(exportSplitter);
-                sb.append(transaction.getBlockHashValue()).append(exportSplitter);
-                sb.append(transaction.getOwnerValue()).append(exportSplitter);
-                sb.append(transaction.getTxIDValue());
-                sb.append("\n");
-            }
-            writer.write(sb.toString());
-            writer.close();
-
-            return true;
-
-        } catch (FileNotFoundException e) {
-            return false;
+            writer = new PrintWriter(new FileWriter(exportPath, true));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        StringBuilder sb = new StringBuilder();
+
+        for (TableColumn column : this.mainViewController.mainView.rawDataTable.getColumns()
+        ) {
+            sb.append(column.getText()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+        }
+
+        sb.setLength(sb.length() - 1);
+        sb.append("\n");
+        writer.write(sb.toString());
+
+        for (TransactionModel transaction : transactions) {
+            sb = new StringBuilder();
+            sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.getBlockTimeValue())).append(exportSplitter);
+            sb.append(transaction.getTypeValue()).append(exportSplitter);
+            sb.append(String.format(localeDecimal, "%.8f", transaction.getCryptoValueValue())).append(exportSplitter);
+            sb.append(transaction.getCryptoCurrencyValue()).append(exportSplitter);
+            sb.append(String.format(localeDecimal, "%.8f", transaction.getFiatValueValue())).append(exportSplitter);
+            sb.append(transaction.getFiatCurrencyValue()).append(exportSplitter);
+            sb.append(transaction.getPoolIDValue()).append(exportSplitter);
+            sb.append(transaction.getBlockHeightValue()).append(exportSplitter);
+            sb.append(transaction.getBlockHashValue()).append(exportSplitter);
+            sb.append(transaction.getOwnerValue()).append(exportSplitter);
+            sb.append(transaction.getTxIDValue());
+            sb.append("\n");
+            writer.write(sb.toString());
+            sb = null;
+        }
+        writer.close();
+        return true;
+
     }
 
     public boolean exportPoolPairToExcel(List<PoolPairModel> poolPairModelList, String exportPath, String source, MainView mainView) {
