@@ -1,5 +1,7 @@
 package portfolio.controllers;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -27,8 +29,8 @@ public class TransactionController {
 
     private URL url;
     private URLConnection conn;
-    private String strCookiePath;
-    private List<TransactionModel> transactionList;
+    private String strConfigPath;
+    private ObservableList<TransactionModel> transactionList;
     private String strTransactionData;
     private int localBlockCount;
     private SettingsController settingsController;
@@ -38,32 +40,31 @@ public class TransactionController {
     private JFrame frameUpdate;
     public JLabel jl;
 
-    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strCookiePath) {
+    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strConfigPath) {
         this.strTransactionData = transactionData;
         this.settingsController = settingsController;
         this.coinPriceController = coinPriceController;
         this.transactionList = getLocalTransactionList();
         this.localBlockCount = getLocalBlockCount();
-        this.strCookiePath = strCookiePath;
+        this.strConfigPath = strConfigPath;
     }
 
     public boolean checkRpc() {
-        return new File(this.strCookiePath).exists();
+        initCrpConnection();
+        return !getBlockCountRpc().equals("No connection");
     }
 
     public void startServer() {
         try {
-            if(!checkRpc()) {
-                switch(this.settingsController.getPlatform()){
-                    case "mac":
-                        Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + this.settingsController.BINARY_FILE_PATH);
-                        break;
-                    case "win":
-                        Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH);
-                        break;
-                    case "nux":
-                        break;
-                }
+            switch (this.settingsController.getPlatform()) {
+                case "mac":
+                    Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + this.settingsController.BINARY_FILE_PATH);
+                    break;
+                case "win":
+                    Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
+                    break;
+                case "nux":
+                    break;
             }
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
@@ -91,7 +92,7 @@ public class TransactionController {
         return portfolioList;
     }
 
-    public List<TransactionModel> getTransactionList() {
+    public  ObservableList<TransactionModel> getTransactionList() {
         return transactionList;
     }
 
@@ -99,36 +100,37 @@ public class TransactionController {
         try {
             String strCookieData = "";
 
-            if (checkRpc()) {
-
-                try {
-                    this.url = new URL("http://127.0.0.1:8554");
-                } catch (MalformedURLException e) {
-                    this.settingsController.logger.warning("Exception occured: " + e.toString());
-                }
-                this.conn = url.openConnection();
-
-                BufferedReader reader;
-                reader = new BufferedReader(new FileReader(
-                        strCookiePath));
-                String line = reader.readLine();
-                String[] kvpSplit = line.split(":");
-                if (Arrays.stream(kvpSplit).count() == 2) {
-                    strCookieData = kvpSplit[0] + ":" + kvpSplit[1];
-                }
-                reader.close();
-
-                String basicAuth = "Basic " + new String(Base64.getEncoder().encode((strCookieData.getBytes())));
-                conn.setRequestProperty("Authorization", basicAuth);
-                conn.setRequestProperty("Content-Type", "application/json-rpc");
-                conn.setDoOutput(true);
-                wr = new OutputStreamWriter(conn.getOutputStream());
+            BufferedReader reader;
+            reader = new BufferedReader(new FileReader(strConfigPath));
+            File configFile = new File(strConfigPath);
+            Properties configProps = new Properties();
+            try (FileInputStream i = new FileInputStream(configFile)) {
+                configProps.load(i);
             }
+            String rpcauth = configProps.getProperty("rpcauth");
+            String rpcuser = configProps.getProperty("rpcuser");
+            String rpcpassword = configProps.getProperty("rpcpassword");
+            String rpcbind = configProps.getProperty("rpcbind");
+            String rpcport = configProps.getProperty("rpcport");
+
+            String auth = rpcuser + ":" + rpcpassword;
+            reader.close();
+            try {
+                this.url = new URL("http://" + rpcbind + ":" + rpcport + "/");
+            } catch (MalformedURLException e) {
+                this.settingsController.logger.warning("Exception occured: " + e.toString());
+            }
+
+            this.conn = url.openConnection();
+            String basicAuth = "Basic " + new String(Base64.getEncoder().encode((auth.getBytes())));
+            conn.setRequestProperty("Authorization", basicAuth);
+            conn.setRequestProperty("Content-Type", "application/json-rpc");
+            conn.setDoOutput(true);
+            wr = new OutputStreamWriter(conn.getOutputStream());
+
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
-
-
     }
 
     public String getBlockCountRpc() {
@@ -204,7 +206,8 @@ public class TransactionController {
                         }
                     }
                 }
-                restBlockCount = blockCount - i * blockDepth;;
+                restBlockCount = blockCount - i * blockDepth;
+                ;
             }
 
             restBlockCount = restBlockCount - blockDepth;
@@ -235,9 +238,9 @@ public class TransactionController {
         this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), icon, JLabel.CENTER);
         this.jl.setSize(400, 100);
         this.jl.setLocation(0, 0);
-        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")){
+        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
             this.jl.setForeground(Color.WHITE);
-        }else{
+        } else {
             this.jl.setForeground(Color.BLACK);
         }
         this.frameUpdate.add(jl);
@@ -245,7 +248,7 @@ public class TransactionController {
         this.frameUpdate.setLocationRelativeTo(null);
         this.frameUpdate.setUndecorated(true);
 
-        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
             this.frameUpdate.getContentPane().setBackground(new Color(55, 62, 67));
         }
         this.frameUpdate.setVisible(true);
@@ -262,25 +265,24 @@ public class TransactionController {
                 wr.flush();
                 wr.close();
 
-               String jsonText="";
-                 try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                     jsonText = br.readLine();
+                String jsonText = "";
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                    jsonText = br.readLine();
 
-            }catch(Exception ex){
-                this.settingsController.logger.warning("Exception occured: " + ex.toString());
-            }
+                } catch (Exception ex) {
+                    this.settingsController.logger.warning("Exception occured: " + ex.toString());
+                }
                 Object obj = JSONValue.parse(jsonText);
                 return (JSONObject) obj;
+            }
+
+        } catch (Exception e) {
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
-
-    } catch(Exception e)
-    {
-        this.settingsController.logger.warning("Exception occured: " + e.toString());
+        return new JSONObject();
     }
-        return new   JSONObject();
-}
 
-    public List<TransactionModel> getLocalTransactionList() {
+    public ObservableList<TransactionModel> getLocalTransactionList() {
 
         File strPortfolioData = new File(this.strTransactionData);
         List<TransactionModel> transactionList = new ArrayList<>();
@@ -304,13 +306,13 @@ public class TransactionController {
                 }
 
                 reader.close();
-                return transactionList;
+                return FXCollections.observableArrayList(transactionList);
             } catch (IOException e) {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
         }
 
-        return transactionList;
+        return FXCollections.observableArrayList(transactionList);
     }
 
     public void addToPortfolioModel(TransactionModel transactionSplit) {
@@ -470,11 +472,10 @@ public class TransactionController {
         if (updateTransactionList.size() > 0) {
             try {
                 PrintWriter writer = new PrintWriter(new FileWriter(this.strTransactionData, true));
-                StringBuilder sb = new StringBuilder();
                 String exportSplitter = ";";
 
                 for (TransactionModel transactionModel : updateTransactionList) {
-
+                    StringBuilder sb = new StringBuilder();
                     sb.append(transactionModel.getBlockTimeValue()).append(exportSplitter);
                     sb.append(transactionModel.getOwnerValue()).append(exportSplitter);
                     sb.append(transactionModel.getTypeValue()).append(exportSplitter);
@@ -490,8 +491,9 @@ public class TransactionController {
                     sb.append("\n");
                     jl.setText(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
                     i++;
+
+                    writer.write(sb.toString());
                 }
-                writer.write(sb.toString());
                 writer.close();
                 this.frameUpdate.dispose();
                 this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).getBlockHeightValue();

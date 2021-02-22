@@ -35,29 +35,21 @@ public class Main extends Application {
         final Delta dragDelta = new Delta();
         //stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("DeFi-Portfolio " + SettingsController.getInstance().Version);
-        stage.getIcons().add(new Image(new File( System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").toURI().toString()));
-        Stage finalStage = stage;
-        scene.setOnMousePressed(mouseEvent -> {
-            // record a delta distance for the drag and drop operation.
-            dragDelta.x = finalStage.getX() - mouseEvent.getScreenX();
-            dragDelta.y = finalStage.getY() - mouseEvent.getScreenY();
-        });
-        scene.setOnMouseDragged(mouseEvent -> {
-            finalStage.setX(mouseEvent.getScreenX() + dragDelta.x);
-            finalStage.setY(mouseEvent.getScreenY() + dragDelta.y);
-        });
-        stage.setScene(scene);
 
+
+        stage.getIcons().add(new Image(new File( System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").toURI().toString()));
+        stage.setScene(scene);
         stage.setMinHeight(700);
         stage.setMinWidth(1200);
         stage.show();
         // Stop Splashsccreen
         stage.setOnCloseRequest(we -> {
-        /*    try {
-                //Runtime.getRuntime().exec("cmd /c taskkill /f /im java.exe");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
+            if(SettingsController.getInstance().getPlatform().equals("win")){
+                try {
+                    Runtime.getRuntime().exec("cmd /c taskkill /f /im java.exe");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }}
         });
         task.kill();
 

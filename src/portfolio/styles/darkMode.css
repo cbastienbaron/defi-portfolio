@@ -93,9 +93,6 @@
 }
     -fx-border-color: derive(#373e43, 35%);
     -fx-border-width: 1px;
-.combo-box-popup .list-view .list-cell {
-    -fx-text-fill: white;
-}
 
 .combo-box .cell:selected {
     -fx-text-fill: white;
@@ -119,4 +116,8 @@
 
 .button:hover{
     -fx-border-color: #FF00AF;
+}
+
+.circle:hover{
+    -fx-fill:blue;
 }

@@ -56,9 +56,9 @@ public class SettingsController {
             getPlatform() == "mac" ?
                     USER_HOME_PATH+ "/../.."+ "/Applications/defi-app.app/Contents/Resources/binary/mac/"+ BINARY_FILE_NAME : //MAC PATH
                     ""; //LINUX PATH;
-    public  String COOKIE_FILE_PATH = getPlatform() == "win" ?
-            System.getenv("APPDATA")+ "/DeFi Blockchain/.cookie" : //WIN PATH
-            getPlatform() == "mac" ? USER_HOME_PATH+ "/Library/Application Support/DeFi/.cookie" : //MAC PATH
+    public  String CONFIG_FILE_PATH = getPlatform() == "win" ?
+            USER_HOME_PATH+ "/.defi/defi.conf" : //WIN PATH
+            getPlatform() == "mac" ? USER_HOME_PATH+ "/Library/Application Support/DeFi/defi.conf" : //MAC PATH
                     ""; //LINUX PATH;
     public  String DEFI_PORTFOLIO_HOME = getPlatform() == "win" ?
             System.getenv("APPDATA")+ "/defi-portfolio/" : //WIN PATH

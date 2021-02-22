@@ -16,11 +16,13 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.awt.MenuBar;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -51,7 +53,7 @@ public class MainView implements Initializable {
     @FXML
     public Pane anchorPanelAnalyse, anchorPanelRawData;
     @FXML
-    public Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, lblProgressBar, strLastUpdate;
+    public Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, strLastUpdate;
     @FXML
     public ComboBox<String> cmbCoins, cmbIntervall, cmbFiat, cmbPlotCurrency, cmbCoinsCom, cmbIntervallCom, cmbFiatCom, cmbPlotCurrencyCom, cmbIntervallOver;
     @FXML
@@ -110,20 +112,11 @@ public class MainView implements Initializable {
     public TableColumn<PoolPairModel, Double> fiatColumn;
     @FXML
     public TableColumn<PoolPairModel, String> poolPairColumn;
-
-    public boolean init = true;
-    public ProgressBar progressBar;
+    @FXML
     public Label CurrentBlock;
     public Label CurrentBlockChain;
     public Label LastUpdate;
-    public Menu File;
-    public MenuItem Settings;
-    public Menu Help;
-    public MenuItem DonateItem;
-    public Menu Donate;
     public Tab Rewards;
-    public MenuItem HelpItem;
-    public MenuItem Close;
     public Tab Commissions;
     public Tab Overview;
     public Label StartDate;
@@ -132,7 +125,6 @@ public class MainView implements Initializable {
     public Label StartDateCom;
     public Label StartDateOver;
     public Label EndDateOver;
-    public Stage settingsStage, helpStage, donateStage;
 
     public MenuItem menuItemCopySelected = new MenuItem("Copy");
     public MenuItem menuItemCopyHeaderSelected = new MenuItem("Copy with header");
@@ -142,9 +134,14 @@ public class MainView implements Initializable {
     public MenuItem menuItemCopyHeaderSelectedPlot = new MenuItem("Copy with header");
     public MenuItem menuItemExportSelectedPlot = new MenuItem("Export selected to CSV");
     public MenuItem menuItemExportAllSelectedPlot = new MenuItem("Export all to CSV");
-    public MenuItem DeFiChain;
-    public MenuItem DeFiChainWiki;
 
+
+
+    public Stage settingsStage, helpStage, donateStage;
+    public boolean init = true;
+    public Button btnSettings;
+    public Button btnHelp;
+    public Button btnDonate;
     MainViewController mainViewController = new MainViewController();
 
     public MainView() {
@@ -297,6 +294,12 @@ public class MainView implements Initializable {
         }
     }
 
+    public void minimize(ActionEvent actionEvent) {
+    }
+
+    public void maximizeRestore(MouseEvent mouseEvent) {
+    }
+
     // records relative x and y co-ordinates.
     static class Delta {
         double x, y;
@@ -315,7 +318,7 @@ public class MainView implements Initializable {
         updateStylesheet();
 
         this.mainViewController.settingsController.selectedStyleMode.addListener(style -> updateStylesheet());
-
+        final Delta dragDelta = new Delta();
 
         this.btnUpdateDatabase.disableProperty().bindBidirectional(this.mainViewController.bDataBase);
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockLocally);
@@ -931,14 +934,9 @@ public class MainView implements Initializable {
         this.CurrentBlock.setText(this.mainViewController.settingsController.translationList.getValue().get("CurrentBlock").toString());
         this.CurrentBlockChain.setText(this.mainViewController.settingsController.translationList.getValue().get("CurrentBlockBC").toString());
         this.LastUpdate.setText(this.mainViewController.settingsController.translationList.getValue().get("LastUpdate").toString());
-        this.File.setText(this.mainViewController.settingsController.translationList.getValue().get("File").toString());
-        this.Settings.setText(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
-        this.Help.setText(this.mainViewController.settingsController.translationList.getValue().get("Help").toString());
-        this.DonateItem.setText(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
-        this.Donate.setText(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
+        this.btnSettings.setText(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
+        this.btnDonate.setText(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
         this.Rewards.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards").toString());
-        this.HelpItem.setText(this.mainViewController.settingsController.translationList.getValue().get("Account").toString());
-        this.Close.setText(this.mainViewController.settingsController.translationList.getValue().get("Close").toString());
         this.Commissions.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions").toString());
         this.Overview.setText(this.mainViewController.settingsController.translationList.getValue().get("Overview").toString());
         this.StartDate.setText(this.mainViewController.settingsController.translationList.getValue().get("StartDate").toString());
