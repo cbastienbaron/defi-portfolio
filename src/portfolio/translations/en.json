@@ -24,7 +24,6 @@
     "Commissions": "Commissions",
     "Overview": "Overview",
     "Total": "Total",
-    "UpdateData": "Update Data",
     "CurrentBlock": "Current Block locally:",
     "CurrentBlockBC": "Current Block Blockchain:",
     "LastUpdate": "Last update:",
@@ -52,5 +51,7 @@
     "PreparingData": "Preparing Data...",
     "SaveData": "Writing Data...",
     "UpdateData": "Update Data: ",
-    "TransactionHash": "Transaction Hash"
+    "TransactionHash": "Transaction Hash",
+    "ConnectNode": "Connect to Node",
+    "UpdateTooltip": "Start DeFi App or click \"Connect to Node\""
 }

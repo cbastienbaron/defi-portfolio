@@ -143,6 +143,8 @@ public class MainView implements Initializable {
     public Button btnSettings;
     public Button btnHelp;
     public Button btnDonate;
+    public Label connectionLabel;
+    public Button btnConnect;
     MainViewController mainViewController = new MainViewController();
 
     public MainView() {
@@ -315,6 +317,10 @@ public class MainView implements Initializable {
         }
     }
 
+    public void connectDefid(ActionEvent actionEvent) {
+        this.mainViewController.transactionController.startServer();
+    }
+
     static class Delta {
         double x, y;
     }
@@ -334,7 +340,9 @@ public class MainView implements Initializable {
         this.mainViewController.settingsController.selectedStyleMode.addListener(style -> updateStylesheet());
         final Delta dragDelta = new Delta();
 
+        this.btnConnect.disableProperty().bind(this.mainViewController.bDataBase.not());
         this.btnUpdateDatabase.disableProperty().bindBidirectional(this.mainViewController.bDataBase);
+        this.connectionLabel.visibleProperty().bindBidirectional(this.mainViewController.bDataBase);
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockLocally);
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockOnBlockchain);
         this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.strLastUpdate);
@@ -369,7 +377,6 @@ public class MainView implements Initializable {
                     fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Rewards")));
                 }
         );
-
 
         this.cmbIntervall.valueProperty().bindBidirectional(this.mainViewController.settingsController.selectedIntervall);
         this.cmbIntervall.valueProperty().addListener((ov, oldValue, newValue) -> {
@@ -1036,6 +1043,8 @@ public class MainView implements Initializable {
             this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
             this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
         }
+        this.btnConnect.setText(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
+        this.connectionLabel.getTooltip().setText(this.mainViewController.settingsController.translationList.getValue().get("UpdateTooltip").toString());
         this.blockTimeColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Date").toString());
         this.timeStampColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Date").toString());
         this.typeColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Operation").toString());

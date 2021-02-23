@@ -54,7 +54,7 @@ public class TransactionController {
     }
 
     public boolean checkRpc() {
-        initCrpConnection();
+        initRpcConnection();
         return !getBlockCountRpc().equals("No connection");
     }
 
@@ -78,7 +78,7 @@ public class TransactionController {
 
     public void closeServer() {
         try {
-            initCrpConnection();
+            initRpcConnection();
             getRpcResponse("{\"method\": \"stop\"}");
         } catch (Exception e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
@@ -97,13 +97,12 @@ public class TransactionController {
         return portfolioList;
     }
 
-    public  ObservableList<TransactionModel> getTransactionList() {
+    public ObservableList<TransactionModel> getTransactionList() {
         return transactionList;
     }
 
-    public void initCrpConnection() {
+    public void initRpcConnection() {
         try {
-            String strCookieData = "";
 
             BufferedReader reader;
             reader = new BufferedReader(new FileReader(strConfigPath));
@@ -142,9 +141,12 @@ public class TransactionController {
         try {
 
             JSONObject jsonObject = getRpcResponse("{\"method\": \"getblockcount\"}");
-
-            if (jsonObject.get("result") != null) {
-                return jsonObject.get("result").toString();
+            if (jsonObject != null) {
+                if (jsonObject.get("result") != null) {
+                    return jsonObject.get("result").toString();
+                } else {
+                    return "No connection";
+                }
             } else {
                 return "No connection";
             }
@@ -275,11 +277,13 @@ public class TransactionController {
             }
         });
     }
+
     private Point mouseClickPoint;
+
     private JSONObject getRpcResponse(String requestJson) {
         try {
 
-            initCrpConnection();
+            initRpcConnection();
 
             if (conn != null & wr != null) {
                 wr.write(requestJson);
@@ -287,14 +291,19 @@ public class TransactionController {
                 wr.close();
 
                 String jsonText = "";
+
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                     jsonText = br.readLine();
 
                 } catch (Exception ex) {
                     this.settingsController.logger.warning("Exception occured: " + ex.toString());
                 }
+
                 Object obj = JSONValue.parse(jsonText);
+
+
                 return (JSONObject) obj;
+
             }
 
         } catch (Exception e) {

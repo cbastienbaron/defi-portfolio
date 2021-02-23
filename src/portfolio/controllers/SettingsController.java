@@ -62,8 +62,8 @@ public class SettingsController {
                             ""; //LINUX PATH;
     public String CONFIG_FILE_PATH = getPlatform() == "win" ?
             USER_HOME_PATH + "/.defi/defi.conf" : //WIN PATH
-            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/DeFi/defi.conf" : //MAC PATH
-                    getPlatform() == "linux" ? USER_HOME_PATH + "/.defi/defi.conf" : //LINUX PATH;
+            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/DeFi/defi.conf": //MAC PATH
+                    getPlatform() == "linux" ? USER_HOME_PATH + "/.defi/defi.conf": //LINUX PATH
                             "";
     public String DEFI_PORTFOLIO_HOME = getPlatform() == "win" ?
             System.getenv("APPDATA") + "/defi-portfolio/" : //WIN PATH

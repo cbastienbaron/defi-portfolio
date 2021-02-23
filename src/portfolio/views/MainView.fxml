@@ -162,6 +162,35 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </GridPane.margin>
             </Button>
+            <Label fx:id="connectionLabel" prefHeight="90.0" prefWidth="191.0" GridPane.rowIndex="7">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+                <tooltip>
+                    <Tooltip text="Open defi-app or defid.exe to connect to the Node" />
+                </tooltip>
+            </Label>
+            <Button fx:id="btnConnect" alignment="CENTER" layoutX="15.0" layoutY="365.0" mnemonicParsing="false" onAction="#connectDefid" prefHeight="90.0" prefWidth="191.0" text="Connect to Node" GridPane.rowIndex="6">
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+               <graphic>
+                  <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../icons/defid.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </Button>
             </children>
         </GridPane>
       <padding>
