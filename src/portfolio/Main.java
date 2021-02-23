@@ -22,6 +22,11 @@ public class Main extends Application {
         Thread t = new Thread(task);
         t.start();
 
+        // ConnectionChecker
+        ConnectionChecker checker = new ConnectionChecker();
+        Thread check = new Thread(checker);
+        check.start();
+
         // Main Window
         try {
             root = FXMLLoader.load(getClass().getResource("views/MainView.fxml"));
@@ -54,8 +59,6 @@ public class Main extends Application {
         });
         task.kill();
 
-
-
         // Disclaimer anzeigen
         if(SettingsController.getInstance().showDisclaim) {
             Parent rootDisclaimer = FXMLLoader.load(getClass().getResource("views/DisclaimerView.fxml"));
@@ -87,6 +90,7 @@ public class Main extends Application {
     }
 
     static class Delta { double x, y; }
+
 
     public static void main(String[] args) {
         launch(args);

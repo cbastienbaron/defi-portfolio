@@ -34,7 +34,7 @@ public class MainViewController {
     public StringProperty strCurrentBlockOnBlockchain = new SimpleStringProperty("No connection");
     public StringProperty strLastUpdate = new SimpleStringProperty("-");
     public StringProperty strProgressbar = new SimpleStringProperty("");
-    public BooleanProperty bDataBase = new SimpleBooleanProperty(false);
+    public BooleanProperty bDataBase = new SimpleBooleanProperty(true);
 
     //View
     public MainView mainView;
@@ -53,15 +53,13 @@ public class MainViewController {
     public ExportService expService;
     public boolean updateSingleton = true;
 
-    public Timer timer = new Timer("Timer");
-
     public MainViewController() {
 
         this.settingsController.logger.info("Start DeFi-Portfolio");
+
         if(this.settingsController.selectedLaunchDefid.getValue().equals("Yes")){
             if(!this.transactionController.checkRpc())this.transactionController.startServer();
         }
-
 
         // init all relevant lists for tables and plots
         this.poolPairList = FXCollections.observableArrayList(this.poolPairModelList);
@@ -70,8 +68,6 @@ public class MainViewController {
         // get last block locally
         this.strCurrentBlockLocally.set(Integer.toString(transactionController.getLocalBlockCount()));
 
-        //start timer for getting last block on blockchain
-        startTimer();
         //Add listener to Fiat
         this.settingsController.selectedFiatCurrency.addListener(
                 (ov, t, t1) -> {
@@ -92,11 +88,11 @@ public class MainViewController {
     }
 
     public void startTimer() {
-        timer.scheduleAtFixedRate(new TimerController(this), 0, 5000L);
+        this.settingsController.timer.scheduleAtFixedRate(new TimerController(this), 0, 5000L);
     }
 
     public void stopTimer() {
-        timer.cancel();
+        this.settingsController.timer.cancel();
     }
 
     public void copySelectedRawDataToClipboard(List<TransactionModel> list, boolean withHeaders) {
@@ -276,7 +272,6 @@ public class MainViewController {
     }
 
     public void updateOverview() {
-
         this.poolPairModelList.clear();
         this.mainView.plotOverview.setLegendVisible(true);
         this.mainView.plotOverview.getData().clear();
@@ -304,7 +299,7 @@ public class MainViewController {
 
                 this.mainView.yAxis.setAutoRanging(false);
 
-                maxValue += overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble();
+                if(overviewSeries.getData().size() >0) maxValue += overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble();
                 this.mainView.yAxis.setUpperBound(maxValue * 1.1);
                 /*
                 if (maxValue < overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble()) {

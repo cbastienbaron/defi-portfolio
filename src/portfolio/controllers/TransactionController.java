@@ -54,11 +54,12 @@ public class TransactionController {
     }
 
     public boolean checkRpc() {
-        initRpcConnection();
+        if (new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + ".cookie").exists()) initRpcConnection();
         return !getBlockCountRpc().equals("No connection");
     }
 
     public void startServer() {
+        if (!new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + ".cookie").exists()){
         try {
             switch (this.settingsController.getPlatform()) {
                 case "mac":
@@ -73,6 +74,7 @@ public class TransactionController {
             }
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
+        }
         }
     }
 
@@ -103,37 +105,20 @@ public class TransactionController {
 
     public void initRpcConnection() {
         try {
-
-            BufferedReader reader;
-            reader = new BufferedReader(new FileReader(strConfigPath));
-            File configFile = new File(strConfigPath);
-            Properties configProps = new Properties();
-            try (FileInputStream i = new FileInputStream(configFile)) {
-                configProps.load(i);
-            }
-            String rpcauth = configProps.getProperty("rpcauth");
-            String rpcuser = configProps.getProperty("rpcuser");
-            String rpcpassword = configProps.getProperty("rpcpassword");
-            String rpcbind = configProps.getProperty("rpcbind");
-            String rpcport = configProps.getProperty("rpcport");
-
-            String auth = rpcuser + ":" + rpcpassword;
-            reader.close();
             try {
-                this.url = new URL("http://" + rpcbind + ":" + rpcport + "/");
+                this.url = new URL("http://" + this.settingsController.rpcbind + ":" + this.settingsController.rpcport + "/");
             } catch (MalformedURLException e) {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
-
             this.conn = url.openConnection();
-            String basicAuth = "Basic " + new String(Base64.getEncoder().encode((auth.getBytes())));
+            String basicAuth = "Basic " + new String(Base64.getEncoder().encode((this.settingsController.auth.getBytes())));
             conn.setRequestProperty("Authorization", basicAuth);
             conn.setRequestProperty("Content-Type", "application/json-rpc");
             conn.setDoOutput(true);
             wr = new OutputStreamWriter(conn.getOutputStream());
 
         } catch (IOException e) {
-            this.settingsController.logger.warning("Exception occured: " + e.toString());
+            //this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
     }
 
@@ -281,33 +266,35 @@ public class TransactionController {
     private Point mouseClickPoint;
 
     private JSONObject getRpcResponse(String requestJson) {
-        try {
+        if (new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + ".cookie").exists()) {
 
-            initRpcConnection();
+            try {
+                initRpcConnection();
 
-            if (conn != null & wr != null) {
-                wr.write(requestJson);
-                wr.flush();
-                wr.close();
+                if (conn != null & wr != null) {
+                    wr.write(requestJson);
+                    wr.flush();
+                    wr.close();
 
-                String jsonText = "";
+                    String jsonText = "";
 
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                    jsonText = br.readLine();
+                    try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                        jsonText = br.readLine();
 
-                } catch (Exception ex) {
-                    this.settingsController.logger.warning("Exception occured: " + ex.toString());
+                    } catch (Exception ex) {
+                        this.settingsController.logger.warning("Exception occured: " + ex.toString());
+                    }
+
+                    Object obj = JSONValue.parse(jsonText);
+
+
+                    return (JSONObject) obj;
+
                 }
 
-                Object obj = JSONValue.parse(jsonText);
-
-
-                return (JSONObject) obj;
-
+            } catch (Exception e) {
+                //this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
-
-        } catch (Exception e) {
-            this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
         return new JSONObject();
     }

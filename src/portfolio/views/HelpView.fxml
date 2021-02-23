@@ -22,7 +22,7 @@
                </ImageView>
             </graphic>
             <tooltip>
-               <Tooltip text="DeFiChain Home Page" />
+               <Tooltip text="DeFi-Portfolio GitHub" />
             </tooltip>
             <cursor>
                <Cursor fx:constant="HAND" />

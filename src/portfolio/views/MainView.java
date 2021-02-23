@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 import java.awt.MenuBar;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -319,6 +320,7 @@ public class MainView implements Initializable {
 
     public void connectDefid(ActionEvent actionEvent) {
         this.mainViewController.transactionController.startServer();
+        this.mainViewController.startTimer();
     }
 
     static class Delta {
@@ -341,6 +343,8 @@ public class MainView implements Initializable {
         final Delta dragDelta = new Delta();
 
         this.btnConnect.disableProperty().bind(this.mainViewController.bDataBase.not());
+
+
         this.btnUpdateDatabase.disableProperty().bindBidirectional(this.mainViewController.bDataBase);
         this.connectionLabel.visibleProperty().bindBidirectional(this.mainViewController.bDataBase);
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockLocally);

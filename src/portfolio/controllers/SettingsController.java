@@ -12,6 +12,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Timer;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -51,7 +52,7 @@ public class SettingsController {
     public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
     public String[] plotCurrency = new String[]{"Coin", "Fiat"};
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
-    public String[] launchDefid = new String[]{"No","Yes"};
+    public String[] launchDefid = new String[]{"No", "Yes"};
 
     public String USER_HOME_PATH = System.getProperty("user.home");
     public String BINARY_FILE_NAME = getPlatform() == "win" ? "defid.exe" : "defid";
@@ -64,8 +65,8 @@ public class SettingsController {
                             ""; //LINUX PATH;
     public String CONFIG_FILE_PATH = getPlatform() == "win" ?
             USER_HOME_PATH + "/.defi/defi.conf" : //WIN PATH
-            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/DeFi/defi.conf": //MAC PATH
-                    getPlatform() == "linux" ? USER_HOME_PATH + "/.defi/defi.conf": //LINUX PATH
+            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/DeFi/defi.conf" : //MAC PATH
+                    getPlatform() == "linux" ? USER_HOME_PATH + "/.defi/defi.conf" : //LINUX PATH
                             "";
     public String DEFI_PORTFOLIO_HOME = getPlatform() == "win" ?
             System.getenv("APPDATA") + "/defi-portfolio/" : //WIN PATH
@@ -82,6 +83,15 @@ public class SettingsController {
     public String[] decSeperators = new String[]{",", "."};
     public String[] csvSeperators = new String[]{",", ";"};
     public Logger logger = Logger.getLogger("Logger");
+    public String rpcauth;
+    public String rpcuser;
+    public String rpcpassword;
+    public String rpcbind;
+    public String rpcport;
+
+    public String auth;
+
+    public Timer timer = new Timer("Timer");
 
     public String lastExportPath = USER_HOME_PATH;
 
@@ -99,6 +109,7 @@ public class SettingsController {
         fh.setFormatter(formatter);
         this.loadSettings();
         updateLanguage();
+        getConfig();
     }
 
     public void updateLanguage() {
@@ -151,7 +162,6 @@ public class SettingsController {
             }
 
             try {
-
                 this.selectedLanguage.setValue(configProps.getProperty("SelectedLanguage"));
                 this.selectedFiatCurrency.setValue(configProps.getProperty("SelectedFiatCurrency"));
                 this.selectedDecimal.setValue(configProps.getProperty("SelectedDecimal"));
@@ -160,10 +170,9 @@ public class SettingsController {
                 this.selectedPlotCurrency.setValue(configProps.getProperty("SelectedPlotCurrency"));
                 this.selectedStyleMode.setValue(configProps.getProperty("SelectedStyleMode"));
                 this.dateFrom.setValue(LocalDate.parse(configProps.getProperty("SelectedDate")));
-                this.lastExportPath = configProps.getProperty("LastUsedExportPath");
+                if(!configProps.getProperty("LastUsedExportPath").equals(""))this.lastExportPath = configProps.getProperty("LastUsedExportPath");
                 this.showDisclaim = configProps.getProperty("ShowDisclaim").equals("true");
                 this.selectedLaunchDefid.setValue(configProps.getProperty("selectedLaunchDefid"));
-
             } catch (Exception e) {
                 e.printStackTrace();
                 saveSettings();
@@ -191,6 +200,31 @@ public class SettingsController {
             csvWriter.close();
         } catch (IOException e) {
             this.logger.warning("Exception occured: " + e.toString());
+        }
+    }
+
+    public void getConfig() {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(this.CONFIG_FILE_PATH));
+
+            File configFile = new File(this.CONFIG_FILE_PATH);
+            Properties configProps = new Properties();
+            try (FileInputStream i = new FileInputStream(configFile)) {
+                configProps.load(i);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            this.rpcauth = configProps.getProperty("rpcauth");
+            this.rpcuser = configProps.getProperty("rpcuser");
+            this.rpcpassword = configProps.getProperty("rpcpassword");
+            this.rpcbind = configProps.getProperty("rpcbind");
+            this.rpcport = configProps.getProperty("rpcport");
+
+            this.auth = this.rpcuser + ":" + this.rpcpassword;
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
