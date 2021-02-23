@@ -58,7 +58,10 @@ public class MainViewController {
     public MainViewController() {
 
         this.settingsController.logger.info("Start DeFi-Portfolio");
-        if(!this.transactionController.checkRpc())this.transactionController.startServer();
+        if(this.settingsController.selectedLaunchDefid.getValue().equals("Yes")){
+            if(!this.transactionController.checkRpc())this.transactionController.startServer();
+        }
+
 
         // init all relevant lists for tables and plots
         this.poolPairList = FXCollections.observableArrayList(this.poolPairModelList);

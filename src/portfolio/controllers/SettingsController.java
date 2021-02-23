@@ -35,6 +35,7 @@ public class SettingsController {
     public StringProperty selectedDecimal = new SimpleStringProperty(".");
     public StringProperty selectedSeperator = new SimpleStringProperty(",");
     public StringProperty selectedStyleMode = new SimpleStringProperty("Dark Mode");
+    public StringProperty selectedLaunchDefid = new SimpleStringProperty("No");
 
     public StringProperty selectedCoin = new SimpleStringProperty("BTC-DFI");
     public StringProperty selectedPlotCurrency = new SimpleStringProperty("Coin");
@@ -50,6 +51,7 @@ public class SettingsController {
     public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
     public String[] plotCurrency = new String[]{"Coin", "Fiat"};
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
+    public String[] launchDefid = new String[]{"No","Yes"};
 
     public String USER_HOME_PATH = System.getProperty("user.home");
     public String BINARY_FILE_NAME = getPlatform() == "win" ? "defid.exe" : "defid";
@@ -160,6 +162,7 @@ public class SettingsController {
                 this.dateFrom.setValue(LocalDate.parse(configProps.getProperty("SelectedDate")));
                 this.lastExportPath = configProps.getProperty("LastUsedExportPath");
                 this.showDisclaim = configProps.getProperty("ShowDisclaim").equals("true");
+                this.selectedLaunchDefid.setValue(configProps.getProperty("selectedLaunchDefid"));
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -183,6 +186,7 @@ public class SettingsController {
             csvWriter.append("SelectedDate=" + this.dateFrom.getValue()).append("\n");
             csvWriter.append("LastUsedExportPath=" + this.lastExportPath).append("\n");
             csvWriter.append("ShowDisclaim=" + this.showDisclaim).append("\n");
+            csvWriter.append("selectedLaunchDefid=" + this.selectedLaunchDefid.getValue()).append("\n");
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {
