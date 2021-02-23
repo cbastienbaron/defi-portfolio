@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import portfolio.controllers.SettingsController;
 
 import java.io.File;
@@ -13,7 +14,7 @@ import java.io.IOException;
 
 public class Main extends Application {
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws IOException {
 
         Parent root = null;
         // Splashscreen
@@ -53,6 +54,36 @@ public class Main extends Application {
         });
         task.kill();
 
+
+
+        // Disclaimer anzeigen
+        if(SettingsController.getInstance().showDisclaim) {
+            Parent rootDisclaimer = FXMLLoader.load(getClass().getResource("views/DisclaimerView.fxml"));
+            Scene sceneDisclaimer = new Scene(rootDisclaimer);
+            Stage stageDisclaimer = new Stage();
+            stageDisclaimer.setTitle("DeFi-Portfolio Disclaimer");
+            stageDisclaimer.setScene(sceneDisclaimer);
+            stageDisclaimer.initStyle(StageStyle.UNDECORATED);
+            sceneDisclaimer.setOnMousePressed(mouseEvent -> {
+                // record a delta distance for the drag and drop operation.
+                dragDelta.x = stageDisclaimer.getX() - mouseEvent.getScreenX();
+                dragDelta.y = stageDisclaimer.getY() - mouseEvent.getScreenY();
+            });
+            sceneDisclaimer.setOnMouseDragged(mouseEvent -> {
+                stageDisclaimer.setX(mouseEvent.getScreenX() + dragDelta.x);
+                stageDisclaimer.setY(mouseEvent.getScreenY() + dragDelta.y);
+            });
+            stageDisclaimer.show();
+            stageDisclaimer.setAlwaysOnTop(true);
+
+            if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
+                java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+                stageDisclaimer.getScene().getStylesheets().add(darkMode.toURI().toString());
+            } else {
+                java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+                stageDisclaimer.getScene().getStylesheets().add(lightMode.toURI().toString());
+            }
+        }
     }
 
     static class Delta { double x, y; }
