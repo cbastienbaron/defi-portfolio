@@ -1,5 +1,7 @@
 package portfolio.views;
 
+import com.sun.deploy.util.SystemUtils;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,11 +18,14 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.awt.MenuBar;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -51,7 +56,7 @@ public class MainView implements Initializable {
     @FXML
     public Pane anchorPanelAnalyse, anchorPanelRawData;
     @FXML
-    public Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, lblProgressBar, strLastUpdate;
+    public Label strCurrentBlockLocally, strCurrentBlockOnBlockchain, strLastUpdate;
     @FXML
     public ComboBox<String> cmbCoins, cmbIntervall, cmbFiat, cmbPlotCurrency, cmbCoinsCom, cmbIntervallCom, cmbFiatCom, cmbPlotCurrencyCom, cmbIntervallOver;
     @FXML
@@ -110,20 +115,11 @@ public class MainView implements Initializable {
     public TableColumn<PoolPairModel, Double> fiatColumn;
     @FXML
     public TableColumn<PoolPairModel, String> poolPairColumn;
-
-    public boolean init = true;
-    public ProgressBar progressBar;
+    @FXML
     public Label CurrentBlock;
     public Label CurrentBlockChain;
     public Label LastUpdate;
-    public Menu File;
-    public MenuItem Settings;
-    public Menu Help;
-    public MenuItem DonateItem;
-    public Menu Donate;
     public Tab Rewards;
-    public MenuItem HelpItem;
-    public MenuItem Close;
     public Tab Commissions;
     public Tab Overview;
     public Label StartDate;
@@ -132,7 +128,6 @@ public class MainView implements Initializable {
     public Label StartDateCom;
     public Label StartDateOver;
     public Label EndDateOver;
-    public Stage settingsStage, helpStage, donateStage;
 
     public MenuItem menuItemCopySelected = new MenuItem("Copy");
     public MenuItem menuItemCopyHeaderSelected = new MenuItem("Copy with header");
@@ -142,9 +137,15 @@ public class MainView implements Initializable {
     public MenuItem menuItemCopyHeaderSelectedPlot = new MenuItem("Copy with header");
     public MenuItem menuItemExportSelectedPlot = new MenuItem("Export selected to CSV");
     public MenuItem menuItemExportAllSelectedPlot = new MenuItem("Export all to CSV");
-    public MenuItem DeFiChain;
-    public MenuItem DeFiChainWiki;
 
+
+    public Stage settingsStage, helpStage, donateStage;
+    public boolean init = true;
+    public Button btnSettings;
+    public Button btnHelp;
+    public Button btnDonate;
+    public Label connectionLabel;
+    public Button btnConnect;
     MainViewController mainViewController = new MainViewController();
 
     public MainView() {
@@ -174,130 +175,154 @@ public class MainView implements Initializable {
         this.anchorPanelRawData.toFront();
     }
 
-    public void closePressed() {
-        System.exit(0);
-    }
-
     public void helpPressed() throws IOException {
-        if (helpStage == null) {
-            final Delta dragDelta = new Delta();
-            Parent root = FXMLLoader.load(getClass().getResource("HelpView.fxml"));
-            Scene scene = new Scene(root);
 
-            helpStage = new Stage();
-            helpStage.initStyle(StageStyle.UNDECORATED);
-            scene.setOnMousePressed(mouseEvent -> {
-                // record a delta distance for the drag and drop operation.
-                dragDelta.x = helpStage.getX() - mouseEvent.getScreenX();
-                dragDelta.y = helpStage.getY() - mouseEvent.getScreenY();
-            });
-            scene.setOnMouseDragged(mouseEvent -> {
-                helpStage.setX(mouseEvent.getScreenX() + dragDelta.x);
-                helpStage.setY(mouseEvent.getScreenY() + dragDelta.y);
-            });
-            helpStage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/help.png"));
-            helpStage.setTitle((this.mainViewController.settingsController.translationList.getValue().get("HelpTitle").toString()));
-            helpStage.setScene(scene);
-            helpStage.show();
-        } else {
-            helpStage.show();
-            helpStage.toFront();
-        }
+        if (helpStage != null) helpStage.close();
+        final Delta dragDelta = new Delta();
+        Parent root = FXMLLoader.load(getClass().getResource("HelpView.fxml"));
+        Scene scene = new Scene(root);
+
+        helpStage = new Stage();
+        helpStage.initStyle(StageStyle.UNDECORATED);
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = helpStage.getX() - mouseEvent.getScreenX();
+            dragDelta.y = helpStage.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            helpStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+            helpStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        helpStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/help.png").toURI().toString()));
+        helpStage.setTitle((this.mainViewController.settingsController.translationList.getValue().get("HelpTitle").toString()));
+        helpStage.setScene(scene);
+        ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {
+            double stageWidth = newValue.doubleValue();
+            helpStage.setX(mainAnchorPane.getScene().getWindow().getX() + mainAnchorPane.getScene().getWindow().getWidth() / 2 - stageWidth / 2);
+        };
+        ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
+            double stageHeight = newValue.doubleValue();
+            helpStage.setY(mainAnchorPane.getScene().getWindow().getY() + mainAnchorPane.getScene().getWindow().getHeight() / 2 - stageHeight / 2);
+        };
+
+        helpStage.widthProperty().addListener(widthListener);
+        helpStage.heightProperty().addListener(heightListener);
+
+        helpStage.setOnShown(e -> {
+            helpStage.widthProperty().removeListener(widthListener);
+            helpStage.heightProperty().removeListener(heightListener);
+        });
+        helpStage.show();
+
         java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
         java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            helpStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+            helpStage.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
-            helpStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+            helpStage.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
     }
 
     public void openAccountInformation() throws IOException {
-        if (donateStage == null) {
-            final Delta dragDelta = new Delta();
-            Parent root = FXMLLoader.load(getClass().getResource("DonateView.fxml"));
-            Scene scene = new Scene(root);
-            donateStage = new Stage();
-            donateStage.initStyle(StageStyle.UNDECORATED);
-            scene.setOnMousePressed(mouseEvent -> {
-                // record a delta distance for the drag and drop operation.
-                dragDelta.x = donateStage.getX() - mouseEvent.getScreenX();
-                dragDelta.y = donateStage.getY() - mouseEvent.getScreenY();
-            });
-            scene.setOnMouseDragged(mouseEvent -> {
-                donateStage.setX(mouseEvent.getScreenX() + dragDelta.x);
-                donateStage.setY(mouseEvent.getScreenY() + dragDelta.y);
-            });
-            donateStage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/donate.png"));
-            donateStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
-            donateStage.setScene(scene);
-            donateStage.show();
-        } else {
-            donateStage.show();
-            donateStage.toFront();
-        }
+        if (donateStage != null) donateStage.close();
+        final Delta dragDelta = new Delta();
+        Parent root = FXMLLoader.load(getClass().getResource("DonateView.fxml"));
+        Scene scene = new Scene(root);
+        donateStage = new Stage();
+        donateStage.initStyle(StageStyle.UNDECORATED);
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = donateStage.getX() - mouseEvent.getScreenX();
+            dragDelta.y = donateStage.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            donateStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+            donateStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        donateStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/donate.png").toURI().toString()));
+        donateStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
+        donateStage.setScene(scene);
+        ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {
+            double stageWidth = newValue.doubleValue();
+            donateStage.setX(mainAnchorPane.getScene().getWindow().getX() + mainAnchorPane.getScene().getWindow().getWidth() / 2 - stageWidth / 2);
+        };
+        ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
+            double stageHeight = newValue.doubleValue();
+            donateStage.setY(mainAnchorPane.getScene().getWindow().getY() + mainAnchorPane.getScene().getWindow().getHeight() / 2 - stageHeight / 2);
+        };
+
+        donateStage.widthProperty().addListener(widthListener);
+        donateStage.heightProperty().addListener(heightListener);
+
+        donateStage.setOnShown(e -> {
+            donateStage.widthProperty().removeListener(widthListener);
+            donateStage.heightProperty().removeListener(heightListener);
+        });
+        donateStage.show();
 
         java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
         java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            donateStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+            donateStage.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
-            donateStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+            donateStage.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
     }
 
     public void openSettingPressed() throws IOException {
-        if (settingsStage == null) {
-            final Delta dragDelta = new Delta();
-            Parent root = FXMLLoader.load(getClass().getResource("SettingsView.fxml"));
-            Scene scene = new Scene(root);
-            settingsStage = new Stage();
 
-            settingsStage.initStyle(StageStyle.UNDECORATED);
-            scene.setOnMousePressed(mouseEvent -> {
-                // record a delta distance for the drag and drop operation.
-                dragDelta.x = settingsStage.getX() - mouseEvent.getScreenX();
-                dragDelta.y = settingsStage.getY() - mouseEvent.getScreenY();
-            });
-            scene.setOnMouseDragged(mouseEvent -> {
-                settingsStage.setX(mouseEvent.getScreenX() + dragDelta.x);
-                settingsStage.setY(mouseEvent.getScreenY() + dragDelta.y);
-            });
-            settingsStage.getIcons().add(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png"));
-            settingsStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
-            settingsStage.setScene(scene);
-            settingsStage.show();
-        } else {
-            settingsStage.show();
-            settingsStage.toFront();
-        }
+        if (settingsStage != null) settingsStage.close();
+        final Delta dragDelta = new Delta();
+        Parent root = FXMLLoader.load(getClass().getResource("SettingsView.fxml"));
+        Scene scene = new Scene(root);
+        settingsStage = new Stage();
+        settingsStage.initStyle(StageStyle.UNDECORATED);
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = settingsStage.getX() - mouseEvent.getScreenX();
+            dragDelta.y = settingsStage.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            settingsStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+            settingsStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        settingsStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
+        settingsStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
+        settingsStage.setScene(scene);
+
+        ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {
+            double stageWidth = newValue.doubleValue();
+            settingsStage.setX(mainAnchorPane.getScene().getWindow().getX() + mainAnchorPane.getScene().getWindow().getWidth() / 2 - stageWidth / 2);
+        };
+        ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
+            double stageHeight = newValue.doubleValue();
+            settingsStage.setY(mainAnchorPane.getScene().getWindow().getY() + mainAnchorPane.getScene().getWindow().getHeight() / 2 - stageHeight / 2);
+        };
+
+        settingsStage.widthProperty().addListener(widthListener);
+        settingsStage.heightProperty().addListener(heightListener);
+
+        settingsStage.setOnShown(e -> {
+            settingsStage.widthProperty().removeListener(widthListener);
+            settingsStage.heightProperty().removeListener(heightListener);
+        });
+
+        settingsStage.show();
 
         java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
         java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            settingsStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+            settingsStage.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
-            settingsStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+            settingsStage.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
     }
 
-    public void defichain(ActionEvent actionEvent) {
-        try {
-            Desktop.getDesktop().browse(new URL("https://defichain.com/").toURI());
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
+    public void connectDefid(ActionEvent actionEvent) {
+        this.mainViewController.transactionController.startServer();
+        this.mainViewController.startTimer();
     }
 
-    public void defichainwiki(ActionEvent actionEvent) {
-        try {
-            Desktop.getDesktop().browse(new URL("https://defichain-wiki.com/wiki/Main_Page").toURI());
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // records relative x and y co-ordinates.
     static class Delta {
         double x, y;
     }
@@ -310,25 +335,30 @@ public class MainView implements Initializable {
         this.btnRawData.fire();
         updateLanguage();
 
-        coinImageRewards.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
-        coinImageCommissions.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
+        coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+        coinImageCommissions.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
         updateStylesheet();
 
         this.mainViewController.settingsController.selectedStyleMode.addListener(style -> updateStylesheet());
+        final Delta dragDelta = new Delta();
+
+        this.btnConnect.disableProperty().bind(this.mainViewController.bDataBase.not());
 
 
         this.btnUpdateDatabase.disableProperty().bindBidirectional(this.mainViewController.bDataBase);
+        this.connectionLabel.visibleProperty().bindBidirectional(this.mainViewController.bDataBase);
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockLocally);
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockOnBlockchain);
         this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.strLastUpdate);
         this.btnUpdateDatabase.setOnAction(e -> {
             mainViewController.btnUpdateDatabasePressed();
-            if (!this.init)  mainViewController.plotUpdate(this.tabPane.getSelectionModel().getSelectedItem().getText());
+            if (!this.init) mainViewController.plotUpdate(this.tabPane.getSelectionModel().getSelectedItem().getText());
         });
 
         tabPane.getSelectionModel().selectedItemProperty().addListener(
                 (ov, t, t1) -> {
-                    if (!this.init) mainViewController.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+                    if (!this.init)
+                        mainViewController.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
                     cmbCoins.setVisible(true);
                     cmbFiat.setVisible(true);
                     cmbPlotCurrency.setVisible(true);
@@ -351,7 +381,6 @@ public class MainView implements Initializable {
                     fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Rewards")));
                 }
         );
-
 
         this.cmbIntervall.valueProperty().bindBidirectional(this.mainViewController.settingsController.selectedIntervall);
         this.cmbIntervall.valueProperty().addListener((ov, oldValue, newValue) -> {
@@ -409,8 +438,8 @@ public class MainView implements Initializable {
 
             fiatColumn.setVisible(!tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Rewards")));
             this.mainViewController.settingsController.saveSettings();
-            coinImageRewards.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
-            coinImageCommissions.setImage(new Image("file:///" + System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
+            coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+            coinImageCommissions.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
         });
 
         this.cmbCoinsCom.getItems().addAll(this.mainViewController.settingsController.cryptoCurrencies);
@@ -602,7 +631,16 @@ public class MainView implements Initializable {
                     hyperlink.setText(item);
                     hyperlink.setOnAction((event) -> {
                         try {
-                            Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHashValue()).toURI());
+                            if (mainViewController.settingsController.getPlatform() == "linux") {
+                                // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
+                                if (Runtime.getRuntime().exec(new String[]{"which", "xdg-open"}).getInputStream().read() != -1) {
+                                    Runtime.getRuntime().exec(new String[]{"xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHashValue()});
+                                } else {
+                                    System.out.println("xdg-open is not supported!");
+                                }
+                            } else {
+                                Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHashValue()).toURI());
+                            }
                         } catch (IOException | URISyntaxException e) {
                             e.printStackTrace();
                         }
@@ -629,7 +667,16 @@ public class MainView implements Initializable {
                     hyperlink.setText(item);
                     hyperlink.setOnAction((event) -> {
                         try {
-                            Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/address/" + tempParam.getOwnerValue()).toURI());
+                            if (mainViewController.settingsController.getPlatform() == "linux") {
+                                // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
+                                if (Runtime.getRuntime().exec(new String[]{"which", "xdg-open"}).getInputStream().read() != -1) {
+                                    Runtime.getRuntime().exec(new String[]{"xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/address/" + tempParam.getOwnerValue()});
+                                } else {
+                                    System.out.println("xdg-open is not supported!");
+                                }
+                            } else {
+                                Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/address/" + tempParam.getOwnerValue()).toURI());
+                            }
                         } catch (IOException | URISyntaxException e) {
                             e.printStackTrace();
                         }
@@ -656,7 +703,16 @@ public class MainView implements Initializable {
                     hyperlink.setText(item.toString());
                     hyperlink.setOnAction((event) -> {
                         try {
-                            Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHeightValue()).toURI());
+                            if (mainViewController.settingsController.getPlatform() == "linux") {
+                                // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
+                                if (Runtime.getRuntime().exec(new String[]{"which", "xdg-open"}).getInputStream().read() != -1) {
+                                    Runtime.getRuntime().exec(new String[]{"xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHeightValue()});
+                                } else {
+                                    System.out.println("xdg-open is not supported!");
+                                }
+                            } else {
+                                Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHeightValue()).toURI());
+                            }
                         } catch (IOException | URISyntaxException e) {
                             e.printStackTrace();
                         }
@@ -690,7 +746,16 @@ public class MainView implements Initializable {
                         hyperlink.setText(item);
                         hyperlink.setOnAction((event) -> {
                             try {
-                                Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/tx/" + tempParam.getTxIDValue()).toURI());
+                                if (mainViewController.settingsController.getPlatform() == "linux") {
+                                    // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
+                                    if (Runtime.getRuntime().exec(new String[]{"which", "xdg-open"}).getInputStream().read() != -1) {
+                                        Runtime.getRuntime().exec(new String[]{"xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/tx/" + tempParam.getTxIDValue()});
+                                    } else {
+                                        System.out.println("xdg-open is not supported!");
+                                    }
+                                } else {
+                                    Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/tx/" + tempParam.getTxIDValue()).toURI());
+                                }
                             } catch (IOException | URISyntaxException e) {
                                 e.printStackTrace();
                             }
@@ -899,21 +964,21 @@ public class MainView implements Initializable {
         if (this.donateStage != null) this.donateStage.getScene().getStylesheets().clear();
 
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            this.mainAnchorPane.getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+            this.mainAnchorPane.getStylesheets().add(darkMode.toURI().toString());
             if (this.helpStage != null)
-                this.helpStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+                this.helpStage.getScene().getStylesheets().add(darkMode.toURI().toString());
             if (this.settingsStage != null)
-                this.settingsStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+                this.settingsStage.getScene().getStylesheets().add(darkMode.toURI().toString());
             if (this.donateStage != null)
-                this.donateStage.getScene().getStylesheets().add("file:///" + darkMode.getAbsolutePath().replace("\\", "/"));
+                this.donateStage.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
-            this.mainAnchorPane.getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+            this.mainAnchorPane.getStylesheets().add(lightMode.toURI().toString());
             if (this.helpStage != null)
-                this.helpStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+                this.helpStage.getScene().getStylesheets().add(lightMode.toURI().toString());
             if (this.settingsStage != null)
-                this.settingsStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+                this.settingsStage.getScene().getStylesheets().add(lightMode.toURI().toString());
             if (this.donateStage != null)
-                this.donateStage.getScene().getStylesheets().add("file:///" + lightMode.getAbsolutePath().replace("\\", "/"));
+                this.donateStage.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
     }
 
@@ -931,14 +996,9 @@ public class MainView implements Initializable {
         this.CurrentBlock.setText(this.mainViewController.settingsController.translationList.getValue().get("CurrentBlock").toString());
         this.CurrentBlockChain.setText(this.mainViewController.settingsController.translationList.getValue().get("CurrentBlockBC").toString());
         this.LastUpdate.setText(this.mainViewController.settingsController.translationList.getValue().get("LastUpdate").toString());
-        this.File.setText(this.mainViewController.settingsController.translationList.getValue().get("File").toString());
-        this.Settings.setText(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
-        this.Help.setText(this.mainViewController.settingsController.translationList.getValue().get("Help").toString());
-        this.DonateItem.setText(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
-        this.Donate.setText(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
+        this.btnSettings.setText(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
+        this.btnDonate.setText(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
         this.Rewards.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards").toString());
-        this.HelpItem.setText(this.mainViewController.settingsController.translationList.getValue().get("Account").toString());
-        this.Close.setText(this.mainViewController.settingsController.translationList.getValue().get("Close").toString());
         this.Commissions.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions").toString());
         this.Overview.setText(this.mainViewController.settingsController.translationList.getValue().get("Overview").toString());
         this.StartDate.setText(this.mainViewController.settingsController.translationList.getValue().get("StartDate").toString());
@@ -987,6 +1047,8 @@ public class MainView implements Initializable {
             this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
             this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
         }
+        this.btnConnect.setText(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
+        this.connectionLabel.getTooltip().setText(this.mainViewController.settingsController.translationList.getValue().get("UpdateTooltip").toString());
         this.blockTimeColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Date").toString());
         this.timeStampColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Date").toString());
         this.typeColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Operation").toString());
@@ -1002,7 +1064,6 @@ public class MainView implements Initializable {
         this.transactionColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("TransactionHash").toString());
         this.fiatColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Total").toString());
         this.mainViewController.donateController.strDonateText.setValue(this.mainViewController.settingsController.translationList.getValue().get("DonateLabel").toString());
-        this.mainViewController.donateController.strBtnClose.setValue(this.mainViewController.settingsController.translationList.getValue().get("Close").toString());
         this.mainViewController.helpController.strHelpText.setValue(this.mainViewController.settingsController.translationList.getValue().get("ContactUS").toString());
         this.mainViewController.helpController.strCloseText.setValue(this.mainViewController.settingsController.translationList.getValue().get("Close").toString());
         this.mainViewController.settingsController.selectedPlotType.setValue(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());

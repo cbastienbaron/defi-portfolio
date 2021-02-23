@@ -4,7 +4,7 @@
   "Close": "Schlie\u00dfen",
   "Help": "Hilfe",
   "Donate": "Spende",
-  "DonateLabel": "Falls euch das DeFi-Portfolio gefällt, dann würden wir uns über eine kleine Spende freuen :-)",
+  "DonateLabel": "Wenn dir DeFi-Portfolio gefällt und du weitere Entwicklungen unterstützen möchtest, dann würden wir uns über eine kleine Spende freuen :-)",
   "CopyLabel": "Kopieren",
   "Account": "Accountinformationen",
   "ContactUS": "Kontaktiere uns:",
@@ -50,6 +50,9 @@
   "InitializingData": "Dateninitialisierung...",
   "PreparingData": "Datenaufbereitung...",
   "SaveData": "Datenspeicherung...",
-  "UpdateData": "Datenaktualisierung: ",
-  "TransactionHash": "Transaktions Hash"
+  "UpdateData": "Daten Update: ",
+  "TransactionHash": "Transaktions Hash",
+  "ConnectNode": "Verbinden mit Node",
+  "UpdateTooltip": "Starte die DeFi App oder klick auf \"Verbinden mit Node\"",
+  "LaunchDefid": "Starte Defid bei Tool start"
 }

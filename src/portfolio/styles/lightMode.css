@@ -93,13 +93,6 @@
   -fx-background-insets: 0, 0 0 2px 0;
 }
 
-.combo-box-popup .list-view .list-cell {
-    -fx-text-fill: black;
-}
-.combo-box .cell:selected {
-    -fx-text-fill: black;
-}
-
 .tab-pane > .tab-header-area > .headers-region > .tab:selected >.tab-container >.tab-label {
   -fx-text-fill: black;
 }

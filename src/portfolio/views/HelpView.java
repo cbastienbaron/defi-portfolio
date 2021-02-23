@@ -1,5 +1,6 @@
 package portfolio.views;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,34 +24,64 @@ import java.util.ResourceBundle;
 
 public class HelpView implements Initializable {
 
-    public Button btnCopyHelp;
-    public Label Contact;
-    public Button btnWriteHelp;
     public Button btnClose;
     public AnchorPane anchorPane;
-    public Label Contact1;
     HelpController helpController = HelpController.getInstance();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Contact.textProperty().bindBidirectional (helpController.strHelpText);
-        btnClose.textProperty().bindBidirectional(helpController.strCloseText);
+        btnClose.getTooltip().textProperty().bindBidirectional(helpController.strCloseText);
     }
 
-    public void btnMailToCallback() throws IOException, URISyntaxException {
-        Desktop desktop;
-        if (Desktop.isDesktopSupported()
-                && (desktop = Desktop.getDesktop()).isSupported(Desktop.Action.MAIL)) {
-            URI mailto = new URI("mailto:defiportfoliomanagement@gmail.com?subject=DeFi-Portfolio-"+SettingsController.getInstance().Version);
-            desktop.mail(mailto);
+    public void btnMailToCallback() throws IOException {
+
+        String mailto = "mailto:defiportfoliomanagement@gmail.com?subject=DeFi-Portfolio-" + SettingsController.getInstance().Version;
+        String cmd = "";
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            cmd = "cmd.exe /c start \"\" \"" + mailto + "\"";
+        } else if (os.contains("osx")) {
+            cmd = "open " + mailto;
+        } else if (os.contains("nix") || os.contains("aix") || os.contains("nux")) {
+            cmd = "xdg-open " + mailto;
+        }
+        Runtime.getRuntime().exec(cmd);
+    }
+
+
+    public void defichain() {
+        try {
+            Desktop.getDesktop().browse(new URL("https://defichain.com/").toURI());
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
         }
     }
-    public void btnCopyCallback(){
-        String myString = "defiportfoliomanagement@gmail.com";
-        StringSelection stringSelection = new StringSelection(myString);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(stringSelection, null);
+
+    public void defichainwiki() {
+        try {
+            Desktop.getDesktop().browse(new URL("https://defichain-wiki.com/wiki/Main_Page").toURI());
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
+    public void github() {
+        try {
+            Desktop.getDesktop().browse(new URL("https://github.com/DeFi-PortfolioManagement/defi-portfolio/blob/master/README.md").toURI());
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void btnTelegram()  {
+
+        try {
+            Desktop.getDesktop().browse(new URL("https://t.me/DeFiChainPortfolio").toURI());
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     public void Close() {
         Stage stage = (Stage) btnClose.getScene().getWindow();

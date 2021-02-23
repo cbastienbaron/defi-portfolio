@@ -91,11 +91,6 @@
   -fx-background-color: #FF00AF, derive(#373e43, 35%);
   -fx-background-insets: 0, 0 0 2px 0;
 }
-    -fx-border-color: derive(#373e43, 35%);
-    -fx-border-width: 1px;
-.combo-box-popup .list-view .list-cell {
-    -fx-text-fill: white;
-}
 
 .combo-box .cell:selected {
     -fx-text-fill: white;
@@ -118,5 +113,10 @@
 }
 
 .button:hover{
+    -fx-font-weight: bold;
     -fx-border-color: #FF00AF;
+}
+
+.circle:hover{
+    -fx-fill:blue;
 }

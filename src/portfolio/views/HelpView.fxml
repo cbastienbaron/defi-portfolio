@@ -7,60 +7,165 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="160.0" prefWidth="391.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.HelpView">
-      <Button fx:id="btnCopyHelp" layoutX="186.0" layoutY="97.0" mnemonicParsing="false" onMouseClicked="#btnCopyCallback" prefHeight="32.0" prefWidth="36.0">
-         <graphic>
-            <ImageView fitHeight="23.0" fitWidth="24.0" onMouseClicked="#btnCopyCallback" pickOnBounds="true" preserveRatio="true">
-                  <Image url="@../../icons/copy.png" />
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </ImageView>
-         </graphic>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
+<AnchorPane fx:id="anchorPane" prefHeight="110.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.HelpView">
+   <HBox alignment="CENTER" layoutX="51.0" layoutY="86.0" prefHeight="167.0" prefWidth="525.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+         <Button fx:id="btnGitHub" layoutX="230.0" layoutY="25.0" mnemonicParsing="false" onMouseClicked="#github" prefHeight="62.0" prefWidth="90.0">
+            <graphic>
+               <ImageView fitHeight="34.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true">
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+                  <image>
+                     <Image url="@../../icons/logo.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+            <tooltip>
+               <Tooltip text="DeFi-Portfolio GitHub" />
+            </tooltip>
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
+            <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <font>
+               <Font size="24.0" />
+            </font>
+            <HBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </HBox.margin>
+         </Button>
+         <Button fx:id="btnTelegram" mnemonicParsing="false" onMouseClicked="#btnTelegram" prefHeight="62.0" prefWidth="79.0">
+            <graphic>
+               <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+                  <image>
+                     <Image url="@../../icons/telegram.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+            <tooltip>
+               <Tooltip text="Telegram" />
+            </tooltip>
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
+            <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <HBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </HBox.margin>
+         </Button>
+         <Button fx:id="btnMail" mnemonicParsing="false" onMouseClicked="#btnMailToCallback" prefHeight="62.0" prefWidth="79.0">
+            <graphic>
+               <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+                  <image>
+                     <Image url="@../../icons/mail.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+            <tooltip>
+               <Tooltip text="Mail" />
+            </tooltip>
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
+            <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <HBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </HBox.margin>
+         </Button>
+         <Button fx:id="btnDefiChain" mnemonicParsing="false" onMouseClicked="#defichain" prefHeight="62.0" prefWidth="79.0">
+            <graphic>
+               <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+                  <image>
+                     <Image url="@../../icons/dfi-icon.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+            <tooltip>
+               <Tooltip text="DeFiChain Home Page" />
+            </tooltip>
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
+            <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <font>
+               <Font size="24.0" />
+            </font>
+            <HBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </HBox.margin>
+         </Button>
+         <Button fx:id="btnDefiWiki" mnemonicParsing="false" onMouseClicked="#defichainwiki" prefHeight="62.0" prefWidth="104.0" text="Wiki">
+            <graphic>
+               <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+                  <image>
+                     <Image url="@../../icons/dfi-icon.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+            <tooltip>
+               <Tooltip text="DeFiChain Wiki" />
+            </tooltip>
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
+            <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <HBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </HBox.margin>
+         </Button>
+      
+         <Button fx:id="btnClose" mnemonicParsing="false" onMouseClicked="#Close" prefHeight="62.0" prefWidth="79.0">
+            <graphic>
+               <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+                  <image>
+                     <Image url="@../../icons/exit.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+            <tooltip>
+               <Tooltip text="Close" />
+            </tooltip>
+            <cursor>
+               <Cursor fx:constant="HAND" />
+            </cursor>
+            <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <HBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </HBox.margin>
+         </Button>
+      </children>
       <padding>
          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
       </padding>
-      </Button>
-      <Label fx:id="Contact" layoutX="122.0" layoutY="22.0" text="Contact us:">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
-   <ImageView fitHeight="92.0" fitWidth="83.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-      <Image url="@../../icons/mail.png" />
-   </ImageView>
-      <Button fx:id="btnWriteHelp" layoutX="243.0" layoutY="97.0" mnemonicParsing="false" onMouseClicked="#btnMailToCallback" prefHeight="32.0" prefWidth="37.0">
-         <graphic>
-            <ImageView fitHeight="23.0" fitWidth="27.0" onMouseClicked="#btnMailToCallback" pickOnBounds="true" preserveRatio="true">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-               <Image url="@../../icons/mailto.png" />
-            </ImageView>
-         </graphic>
-         <tooltip>
-            <Tooltip text="Mail" />
-         </tooltip>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      <padding>
-         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-      </padding>
-      </Button>
-
-   <Button fx:id="btnClose" layoutX="296.0" layoutY="97.0" mnemonicParsing="false" onMouseClicked="#Close" prefHeight="43.0" prefWidth="96.0" text="Close">
-      <padding>
-         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-      </padding></Button>
-   <Label fx:id="Contact1" layoutX="122.0" layoutY="56.0" text="defiportfoliomanagement@gmail.com">
-      <font>
-         <Font size="16.0" />
-      </font>
-   </Label>
+   </HBox>
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
    </padding>

@@ -24,9 +24,10 @@ public class SettingsView implements Initializable {
     public Label prefferedCurrency;
     public Label prefferedStyle;
     public Label labelDec;
+    public Label lblLaunchDefid;
     public AnchorPane anchorPane;
     @FXML
-    private ComboBox<String> cmbLanguage, cmbPrefCurrency,cmbDecSeperator,cmbCSVSeperator,cmbPrefferedStyle;
+    private ComboBox<String> cmbLanguage, cmbPrefCurrency,cmbDecSeperator,cmbCSVSeperator,cmbPrefferedStyle,cmbLaunchDefid;
     SettingsController settingsController = SettingsController.getInstance();
 
     public void btnSaveAndApplyPressed(){
@@ -38,11 +39,11 @@ public class SettingsView implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-         btnSaveAndApply.setText(this.settingsController.translationList.getValue().get("Close").toString());
          labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
          CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
          prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
         labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
+        lblLaunchDefid.setText(this.settingsController.translationList.getValue().get("LaunchDefid").toString());
         this.cmbLanguage.getItems().addAll(this.settingsController.languages);
         this.cmbLanguage.valueProperty().bindBidirectional(this.settingsController.selectedLanguage);
 
@@ -58,14 +59,17 @@ public class SettingsView implements Initializable {
         this.cmbPrefferedStyle.getItems().addAll(this.settingsController.styleModes);
         this.cmbPrefferedStyle.valueProperty().bindBidirectional(this.settingsController.selectedStyleMode);
 
+        this.cmbLaunchDefid.getItems().addAll(this.settingsController.launchDefid);
+        this.cmbLaunchDefid.valueProperty().bindBidirectional(this.settingsController.selectedLaunchDefid);
+
     }
 
     public void changeLanguage() {
-        this.btnSaveAndApply.textProperty().setValue(this.settingsController.translationList.getValue().get("Close").toString());
         this.labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
         this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
         this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
         labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
+        this.lblLaunchDefid.setText(this.settingsController.translationList.get().get("LaunchDefid").toString());
     }
 
 }

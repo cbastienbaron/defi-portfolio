@@ -1,14 +1,20 @@
 package portfolio.controllers;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import com.sun.javafx.geom.Arc2D;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import portfolio.Main;
 import portfolio.models.AddressModel;
 import portfolio.models.PortfolioModel;
 import portfolio.models.TransactionModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
@@ -27,8 +33,8 @@ public class TransactionController {
 
     private URL url;
     private URLConnection conn;
-    private String strCookiePath;
-    private List<TransactionModel> transactionList;
+    private String strConfigPath;
+    private ObservableList<TransactionModel> transactionList;
     private String strTransactionData;
     private int localBlockCount;
     private SettingsController settingsController;
@@ -38,30 +44,43 @@ public class TransactionController {
     private JFrame frameUpdate;
     public JLabel jl;
 
-    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strCookiePath) {
+    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strConfigPath) {
         this.strTransactionData = transactionData;
         this.settingsController = settingsController;
         this.coinPriceController = coinPriceController;
         this.transactionList = getLocalTransactionList();
         this.localBlockCount = getLocalBlockCount();
-        this.strCookiePath = strCookiePath;
+        this.strConfigPath = strConfigPath;
     }
 
     public boolean checkRpc() {
-        return new File(this.strCookiePath).exists();
+        if (new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + ".cookie").exists()) initRpcConnection();
+        return !getBlockCountRpc().equals("No connection");
     }
 
     public void startServer() {
+        if (!new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + ".cookie").exists()){
         try {
-            Runtime.getRuntime().exec("cmd /c start " + this.settingsController.strPathDefid.replace(" ","\" \""));
+            switch (this.settingsController.getPlatform()) {
+                case "mac":
+                    Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + this.settingsController.BINARY_FILE_PATH);
+                    break;
+                case "win":
+                    Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
+                    break;
+                case "nux":
+                    Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
+                    break;
+            }
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
+        }
         }
     }
 
     public void closeServer() {
         try {
-            initCrpConnection();
+            initRpcConnection();
             getRpcResponse("{\"method\": \"stop\"}");
         } catch (Exception e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
@@ -80,53 +99,39 @@ public class TransactionController {
         return portfolioList;
     }
 
-    public List<TransactionModel> getTransactionList() {
+    public ObservableList<TransactionModel> getTransactionList() {
         return transactionList;
     }
 
-    public void initCrpConnection() {
+    public void initRpcConnection() {
         try {
-            String strCookieData = "";
-
-            if (checkRpc()) {
-
-                try {
-                    this.url = new URL("http://127.0.0.1:8554");
-                } catch (MalformedURLException e) {
-                    this.settingsController.logger.warning("Exception occured: " + e.toString());
-                }
-                this.conn = url.openConnection();
-
-                BufferedReader reader;
-                reader = new BufferedReader(new FileReader(
-                        strCookiePath));
-                String line = reader.readLine();
-                String[] kvpSplit = line.split(":");
-                if (Arrays.stream(kvpSplit).count() == 2) {
-                    strCookieData = kvpSplit[0] + ":" + kvpSplit[1];
-                }
-                reader.close();
-
-                String basicAuth = "Basic " + new String(Base64.getEncoder().encode((strCookieData.getBytes())));
-                conn.setRequestProperty("Authorization", basicAuth);
-                conn.setRequestProperty("Content-Type", "application/json-rpc");
-                conn.setDoOutput(true);
-                wr = new OutputStreamWriter(conn.getOutputStream());
+            try {
+                this.url = new URL("http://" + this.settingsController.rpcbind + ":" + this.settingsController.rpcport + "/");
+            } catch (MalformedURLException e) {
+                this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
+            this.conn = url.openConnection();
+            String basicAuth = "Basic " + new String(Base64.getEncoder().encode((this.settingsController.auth.getBytes())));
+            conn.setRequestProperty("Authorization", basicAuth);
+            conn.setRequestProperty("Content-Type", "application/json-rpc");
+            conn.setDoOutput(true);
+            wr = new OutputStreamWriter(conn.getOutputStream());
+
         } catch (IOException e) {
-            this.settingsController.logger.warning("Exception occured: " + e.toString());
+            //this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
-
-
     }
 
     public String getBlockCountRpc() {
         try {
 
             JSONObject jsonObject = getRpcResponse("{\"method\": \"getblockcount\"}");
-
-            if (jsonObject.get("result") != null) {
-                return jsonObject.get("result").toString();
+            if (jsonObject != null) {
+                if (jsonObject.get("result") != null) {
+                    return jsonObject.get("result").toString();
+                } else {
+                    return "No connection";
+                }
             } else {
                 return "No connection";
             }
@@ -193,7 +198,8 @@ public class TransactionController {
                         }
                     }
                 }
-                restBlockCount = blockCount - i * blockDepth;;
+                restBlockCount = blockCount - i * blockDepth;
+                ;
             }
 
             restBlockCount = restBlockCount - blockDepth;
@@ -220,13 +226,13 @@ public class TransactionController {
         this.frameUpdate = new JFrame();
         this.frameUpdate.setLayout(null);
         this.frameUpdate.setIconImage(new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").getImage());
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\ajaxloader.gif");
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/ajaxloader.gif");
         this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), icon, JLabel.CENTER);
         this.jl.setSize(400, 100);
         this.jl.setLocation(0, 0);
-        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")){
+        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
             this.jl.setForeground(Color.WHITE);
-        }else{
+        } else {
             this.jl.setForeground(Color.BLACK);
         }
         this.frameUpdate.add(jl);
@@ -234,42 +240,66 @@ public class TransactionController {
         this.frameUpdate.setLocationRelativeTo(null);
         this.frameUpdate.setUndecorated(true);
 
-        if(this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
             this.frameUpdate.getContentPane().setBackground(new Color(55, 62, 67));
         }
         this.frameUpdate.setVisible(true);
         this.frameUpdate.toFront();
+
+        this.frameUpdate.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mouseClickPoint = e.getPoint(); // update the position
+            }
+
+        });
+        this.frameUpdate.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Point newPoint = e.getLocationOnScreen();
+                newPoint.translate(-mouseClickPoint.x, -mouseClickPoint.y); // Moves the point by given values from its location
+                frameUpdate.setLocation(newPoint); // set the new location
+            }
+        });
     }
+
+    private Point mouseClickPoint;
 
     private JSONObject getRpcResponse(String requestJson) {
-        try {
+        if (new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + ".cookie").exists()) {
 
-            initCrpConnection();
+            try {
+                initRpcConnection();
 
-            if (conn != null & wr != null) {
-                wr.write(requestJson);
-                wr.flush();
-                wr.close();
+                if (conn != null & wr != null) {
+                    wr.write(requestJson);
+                    wr.flush();
+                    wr.close();
 
-               String jsonText="";
-                 try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                     jsonText = br.readLine();
+                    String jsonText = "";
 
-            }catch(Exception ex){
-                this.settingsController.logger.warning("Exception occured: " + ex.toString());
+                    try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                        jsonText = br.readLine();
+
+                    } catch (Exception ex) {
+                        this.settingsController.logger.warning("Exception occured: " + ex.toString());
+                    }
+
+                    Object obj = JSONValue.parse(jsonText);
+
+
+                    return (JSONObject) obj;
+
+                }
+
+            } catch (Exception e) {
+                //this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
-                Object obj = JSONValue.parse(jsonText);
-                return (JSONObject) obj;
         }
-
-    } catch(Exception e)
-    {
-        this.settingsController.logger.warning("Exception occured: " + e.toString());
+        return new JSONObject();
     }
-        return new   JSONObject();
-}
 
-    public List<TransactionModel> getLocalTransactionList() {
+    public ObservableList<TransactionModel> getLocalTransactionList() {
 
         File strPortfolioData = new File(this.strTransactionData);
         List<TransactionModel> transactionList = new ArrayList<>();
@@ -293,13 +323,13 @@ public class TransactionController {
                 }
 
                 reader.close();
-                return transactionList;
+                return FXCollections.observableArrayList(transactionList);
             } catch (IOException e) {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
         }
 
-        return transactionList;
+        return FXCollections.observableArrayList(transactionList);
     }
 
     public void addToPortfolioModel(TransactionModel transactionSplit) {
@@ -459,11 +489,10 @@ public class TransactionController {
         if (updateTransactionList.size() > 0) {
             try {
                 PrintWriter writer = new PrintWriter(new FileWriter(this.strTransactionData, true));
-                StringBuilder sb = new StringBuilder();
                 String exportSplitter = ";";
 
                 for (TransactionModel transactionModel : updateTransactionList) {
-
+                    StringBuilder sb = new StringBuilder();
                     sb.append(transactionModel.getBlockTimeValue()).append(exportSplitter);
                     sb.append(transactionModel.getOwnerValue()).append(exportSplitter);
                     sb.append(transactionModel.getTypeValue()).append(exportSplitter);
@@ -479,8 +508,9 @@ public class TransactionController {
                     sb.append("\n");
                     jl.setText(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
                     i++;
+                    writer.write(sb.toString());
+                    sb = null;
                 }
-                writer.write(sb.toString());
                 writer.close();
                 this.frameUpdate.dispose();
                 this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).getBlockHeightValue();

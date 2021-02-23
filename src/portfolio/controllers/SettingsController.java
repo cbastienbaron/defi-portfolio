@@ -10,13 +10,16 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.Timer;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 
 public class SettingsController {
-    public String Version = "V1.1";
+    public String Version = "V1.2";
 
     private static SettingsController OBJ = null;
 
@@ -32,7 +35,8 @@ public class SettingsController {
     public StringProperty selectedFiatCurrency = new SimpleStringProperty("EUR");
     public StringProperty selectedDecimal = new SimpleStringProperty(".");
     public StringProperty selectedSeperator = new SimpleStringProperty(",");
-    public StringProperty selectedStyleMode= new SimpleStringProperty("Light Mode");
+    public StringProperty selectedStyleMode = new SimpleStringProperty("Dark Mode");
+    public StringProperty selectedLaunchDefid = new SimpleStringProperty("No");
 
     public StringProperty selectedCoin = new SimpleStringProperty("BTC-DFI");
     public StringProperty selectedPlotCurrency = new SimpleStringProperty("Coin");
@@ -42,38 +46,74 @@ public class SettingsController {
     public ObjectProperty<LocalDate> dateTo = new SimpleObjectProperty();
     public ObjectProperty<JSONObject> translationList = new SimpleObjectProperty();
     public String selectedIntervallInt = "Daily";
+    public boolean showDisclaim = true;
 
     //Combo box filling
     public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
     public String[] plotCurrency = new String[]{"Coin", "Fiat"};
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
+    public String[] launchDefid = new String[]{"No", "Yes"};
 
+    public String USER_HOME_PATH = System.getProperty("user.home");
+    public String BINARY_FILE_NAME = getPlatform() == "win" ? "defid.exe" : "defid";
+    public String BINARY_FILE_PATH = getPlatform() == "win" ?
+            (System.getenv("LOCALAPPDATA") + "/Programs/defi-app/resources/binary/win/" + BINARY_FILE_NAME).replace("\\", "/") : //WIN PATH
+            getPlatform() == "mac" ?
+                    USER_HOME_PATH + "/../.." + "/Applications/defi-app.app/Contents/Resources/binary/mac/" + BINARY_FILE_NAME : //MAC PATH
+                    getPlatform() == "linux" ?
+                            USER_HOME_PATH + "/Applications/defi-app.app/Contents/Resources/binary/mac/" + BINARY_FILE_NAME : //Linux PATH
+                            ""; //LINUX PATH;
+    public String CONFIG_FILE_PATH = getPlatform() == "win" ?
+            USER_HOME_PATH + "/.defi/defi.conf" : //WIN PATH
+            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/DeFi/defi.conf" : //MAC PATH
+                    getPlatform() == "linux" ? USER_HOME_PATH + "/.defi/defi.conf" : //LINUX PATH
+                            "";
+    public String DEFI_PORTFOLIO_HOME = getPlatform() == "win" ?
+            System.getenv("APPDATA") + "/defi-portfolio/" : //WIN PATH
+            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/defi-portfolio/" : //MAC PATH
+                    getPlatform() == "linux" ? USER_HOME_PATH + "/.config/defi-portfolio/" : //LINUX PATH;
+                            "";
+
+    public String SETTING_FILE_PATH = DEFI_PORTFOLIO_HOME + "settings.csv";
     //All relevant paths and files
-    public String strCookiePath = System.getenv("APPDATA") + "\\DeFi Blockchain\\.cookie";
-    public String strPathAppData = System.getenv("APPDATA") + "\\defi-portfolio\\";
-    public String strPathDefid = System.getenv("LOCALAPPDATA") + "\\Programs\\defi-app\\resources\\binary\\win\\defid.exe";
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
-    public String[] languages = new String[]{"English","Deutsch"};
+    public String[] languages = new String[]{"English", "Deutsch"};
     public String[] currencies = new String[]{"EUR", "USD", "CHF"};
     public String[] decSeperators = new String[]{",", "."};
     public String[] csvSeperators = new String[]{",", ";"};
-    public String pathSettingsFile = System.getenv("APPDATA") + "\\defi-portfolio\\settings.csv";
     public Logger logger = Logger.getLogger("Logger");
+    public String rpcauth;
+    public String rpcuser;
+    public String rpcpassword;
+    public String rpcbind;
+    public String rpcport;
+
+    public String auth;
+
+    public Timer timer = new Timer("Timer");
+
+    public String lastExportPath = USER_HOME_PATH;
 
     private SettingsController() throws IOException {
         FileHandler fh;
-        // This block configure the logger with handler and formatter
-        fh = new FileHandler(strPathAppData+"\\log.txt");
+
+        File directory = new File(DEFI_PORTFOLIO_HOME);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+
+        fh = new FileHandler(DEFI_PORTFOLIO_HOME + "log.txt");
         this.logger.addHandler(fh);
         SimpleFormatter formatter = new SimpleFormatter();
         fh.setFormatter(formatter);
         this.loadSettings();
         updateLanguage();
+        getConfig();
     }
 
-    public void updateLanguage(){
-        //JSON parser object to parse read file
+    public void updateLanguage() {
+
         JSONParser jsonParser = new JSONParser();
 
         String fileName = System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/translations/";
@@ -99,35 +139,43 @@ public class SettingsController {
         return OBJ;
     }
 
+    public String getPlatform() {
+        String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+        if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
+            return "mac";
+        } else if (OS.indexOf("win") >= 0) {
+            return "win";
+        } else if (OS.indexOf("nux") >= 0) {
+            return "linux";
+        } else {
+            return "win";
+        }
+    }
+
     public void loadSettings() throws IOException {
-        File f = new File(pathSettingsFile);
+        File f = new File(SETTING_FILE_PATH);
         if (f.exists() && !f.isDirectory()) {
-            BufferedReader csvReader = new BufferedReader(new FileReader(pathSettingsFile));
-            String row;
-            while ((row = csvReader.readLine()) != null) {
-                String[] data = row.split(",");
-                this.selectedLanguage.setValue(data[0]);
-                this.selectedFiatCurrency.setValue(data[1]);
-                switch (data[2]) {
-                    case "comma":
-                        this.selectedDecimal.setValue(",");
-                        break;
-                    case "dot":
-                        this.selectedDecimal.setValue(".");
-                        break;
-                }
-                switch (data[3]) {
-                    case "comma":
-                        this.selectedSeperator.setValue(",");
-                        break;
-                    case "semicolon":
-                        this.selectedSeperator.setValue(".");
-                        break;
-                }
-                this.selectedCoin.setValue(data[4]);
-                this.selectedPlotCurrency.setValue(data[5]);
-                this.dateFrom.setValue(LocalDate.parse(data[6]));
-                if(data.length>7) this.selectedStyleMode.setValue(data[7]);
+            File configFile = new File(SETTING_FILE_PATH);
+            Properties configProps = new Properties();
+            try (FileInputStream i = new FileInputStream(configFile)) {
+                configProps.load(i);
+            }
+
+            try {
+                this.selectedLanguage.setValue(configProps.getProperty("SelectedLanguage"));
+                this.selectedFiatCurrency.setValue(configProps.getProperty("SelectedFiatCurrency"));
+                this.selectedDecimal.setValue(configProps.getProperty("SelectedDecimal"));
+                this.selectedSeperator.setValue(configProps.getProperty("SelectedSeperator"));
+                this.selectedCoin.setValue(configProps.getProperty("SelectedCoin"));
+                this.selectedPlotCurrency.setValue(configProps.getProperty("SelectedPlotCurrency"));
+                this.selectedStyleMode.setValue(configProps.getProperty("SelectedStyleMode"));
+                this.dateFrom.setValue(LocalDate.parse(configProps.getProperty("SelectedDate")));
+                if(!configProps.getProperty("LastUsedExportPath").equals(""))this.lastExportPath = configProps.getProperty("LastUsedExportPath");
+                this.showDisclaim = configProps.getProperty("ShowDisclaim").equals("true");
+                this.selectedLaunchDefid.setValue(configProps.getProperty("selectedLaunchDefid"));
+            } catch (Exception e) {
+                e.printStackTrace();
+                saveSettings();
             }
         }
     }
@@ -136,43 +184,47 @@ public class SettingsController {
 
         FileWriter csvWriter;
         try {
-            csvWriter = new FileWriter(pathSettingsFile);
-
-            csvWriter.append(this.selectedLanguage.getValue());
-            csvWriter.append(",");
-            csvWriter.append(this.selectedFiatCurrency.getValue());
-            csvWriter.append(",");
-
-            switch (this.selectedDecimal.getValue()) {
-                case ".":
-                    csvWriter.append("dot");
-                    break;
-                case ",":
-                    csvWriter.append("comma");
-                    break;
-            }
-            csvWriter.append(",");
-            switch (this.selectedSeperator.getValue()) {
-                case ".":
-                    csvWriter.append("dot");
-                    break;
-                case ";":
-                    csvWriter.append("semicolon");
-                    break;
-            }
-            csvWriter.append(",");
-
-            csvWriter.append(this.selectedCoin.getValue());
-            csvWriter.append(",");
-            csvWriter.append(this.selectedPlotCurrency.getValue());
-            csvWriter.append(",");
-            csvWriter.append(this.dateFrom.getValue().toString());
-            csvWriter.append(",");
-            csvWriter.append(this.selectedStyleMode.getValue());
+            csvWriter = new FileWriter(SETTING_FILE_PATH);
+            csvWriter.append("SelectedLanguage=" + this.selectedLanguage.getValue()).append("\n");
+            csvWriter.append("SelectedFiatCurrency=" + this.selectedFiatCurrency.getValue()).append("\n");
+            csvWriter.append("SelectedDecimal=" + this.selectedDecimal.getValue()).append("\n");
+            csvWriter.append("SelectedSeperator=" + this.selectedSeperator.getValue()).append("\n");
+            csvWriter.append("SelectedCoin=" + this.selectedCoin.getValue()).append("\n");
+            csvWriter.append("SelectedPlotCurrency=" + this.selectedPlotCurrency.getValue()).append("\n");
+            csvWriter.append("SelectedStyleMode=" + this.selectedStyleMode.getValue()).append("\n");
+            csvWriter.append("SelectedDate=" + this.dateFrom.getValue()).append("\n");
+            csvWriter.append("LastUsedExportPath=" + this.lastExportPath).append("\n");
+            csvWriter.append("ShowDisclaim=" + this.showDisclaim).append("\n");
+            csvWriter.append("selectedLaunchDefid=" + this.selectedLaunchDefid.getValue()).append("\n");
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {
-            this.logger.warning("Exception occured: "+e.toString());
+            this.logger.warning("Exception occured: " + e.toString());
+        }
+    }
+
+    public void getConfig() {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(this.CONFIG_FILE_PATH));
+
+            File configFile = new File(this.CONFIG_FILE_PATH);
+            Properties configProps = new Properties();
+            try (FileInputStream i = new FileInputStream(configFile)) {
+                configProps.load(i);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            this.rpcauth = configProps.getProperty("rpcauth");
+            this.rpcuser = configProps.getProperty("rpcuser");
+            this.rpcpassword = configProps.getProperty("rpcpassword");
+            this.rpcbind = configProps.getProperty("rpcbind");
+            this.rpcport = configProps.getProperty("rpcport");
+
+            this.auth = this.rpcuser + ":" + this.rpcpassword;
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

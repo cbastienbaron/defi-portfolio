@@ -20,10 +20,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -37,50 +34,40 @@ public class MainViewController {
     public StringProperty strCurrentBlockOnBlockchain = new SimpleStringProperty("No connection");
     public StringProperty strLastUpdate = new SimpleStringProperty("-");
     public StringProperty strProgressbar = new SimpleStringProperty("");
-    public BooleanProperty bDataBase = new SimpleBooleanProperty(false);
+    public BooleanProperty bDataBase = new SimpleBooleanProperty(true);
 
     //View
     public MainView mainView;
     public JFrame frameUpdate;
-    public JFrame frameDefid;
 
     //Table and plot lists
     public List<PoolPairModel> poolPairModelList = new ArrayList<>();
-    public ObservableList<TransactionModel> transactionList;
     public ObservableList<PoolPairModel> poolPairList;
 
     //Init all controller and services
     public SettingsController settingsController = SettingsController.getInstance();
     public DonateController donateController = DonateController.getInstance();
     public HelpController helpController = HelpController.getInstance();
-    public CoinPriceController coinPriceController = new CoinPriceController(this.settingsController.strPathAppData + this.settingsController.strCoinPriceData);
-    public TransactionController transactionController = new TransactionController(this.settingsController.strPathAppData + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.strCookiePath);
+    public CoinPriceController coinPriceController = new CoinPriceController(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strCoinPriceData);
+    public TransactionController transactionController = new TransactionController(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.CONFIG_FILE_PATH);
     public ExportService expService;
     public boolean updateSingleton = true;
-
-    public Timer timer = new Timer("Timer");
 
     public MainViewController() {
 
         this.settingsController.logger.info("Start DeFi-Portfolio");
-        this.transactionController.startServer();
 
-        // generate folder //defi-portfolio if no one exists
-        File directory = new File(this.settingsController.strPathAppData);
-        if (!directory.exists()) {
-            directory.mkdir();
+        if(this.settingsController.selectedLaunchDefid.getValue().equals("Yes")){
+            if(!this.transactionController.checkRpc())this.transactionController.startServer();
         }
 
         // init all relevant lists for tables and plots
-        this.transactionList = FXCollections.observableArrayList(this.transactionController.getTransactionList());
         this.poolPairList = FXCollections.observableArrayList(this.poolPairModelList);
         this.expService = new ExportService(this);
 
         // get last block locally
         this.strCurrentBlockLocally.set(Integer.toString(transactionController.getLocalBlockCount()));
 
-        //start timer for getting last block on blockchain
-        startTimer();
         //Add listener to Fiat
         this.settingsController.selectedFiatCurrency.addListener(
                 (ov, t, t1) -> {
@@ -95,20 +82,17 @@ public class MainViewController {
                             this.transactionController.addToPortfolioModel(transactionModel);
                         }
                     }
-                    this.transactionList.clear();
-                    this.transactionList.addAll(this.transactionController.getTransactionList());
-
                 }
         );
 
     }
 
     public void startTimer() {
-        timer.scheduleAtFixedRate(new TimerController(this), 0, 5000L);
+        this.settingsController.timer.scheduleAtFixedRate(new TimerController(this), 0, 5000L);
     }
 
     public void stopTimer() {
-        timer.cancel();
+        this.settingsController.timer.cancel();
     }
 
     public void copySelectedRawDataToClipboard(List<TransactionModel> list, boolean withHeaders) {
@@ -208,8 +192,7 @@ public class MainViewController {
     }
 
     public boolean updateTransactionData() {
-        if (this.transactionController.checkRpc()) {
-            if (new File(this.settingsController.strPathAppData + this.settingsController.strTransactionData).exists()) {
+            if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).exists()) {
                 int depth = Integer.parseInt(this.transactionController.getBlockCountRpc()) - this.transactionController.getLocalBlockCount();
                 this.transactionController.updateJFrame();
                 return this.transactionController.updateTransactionData(depth);
@@ -217,124 +200,29 @@ public class MainViewController {
                 this.transactionController.updateJFrame();
                 return this.transactionController.updateTransactionData(Integer.parseInt(this.transactionController.getBlockCountRpc())); // - this.transactionController.getAccountHistoryCountRpc());
             }
-        }
-
-        return false;
-    }
-
-    public boolean checkIfDeFiAppIsRunning() {
-        String line;
-        StringBuilder pidInfo = new StringBuilder();
-        Process p;
-
-        try {
-            p = Runtime.getRuntime().exec(System.getenv("windir").replace(" ", "\" \"") + "\\system32\\" + "tasklist.exe");
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            while ((line = input.readLine()) != null) {
-                pidInfo.append(line);
-            }
-
-            input.close();
-        } catch (IOException e) {
-            this.settingsController.logger.warning("Exception occured: " + e.toString());
-        }
-        return pidInfo.toString().contains("defi-app");
     }
 
     public void btnUpdateDatabasePressed() {
 
         if (this.updateSingleton) {
             this.updateSingleton = false;
-            if (!checkIfDeFiAppIsRunning()) {
-                if (updateTransactionData()) {
+            if (updateTransactionData()) {
 
-                    this.showUpdateWindow();
-                    this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
-                    this.strCurrentBlockOnBlockchain.set(this.transactionController.getBlockCountRpc());
-                    transactionList.clear();
-                    transactionList.addAll(this.transactionController.getTransactionList());
-                    Date date = new Date(System.currentTimeMillis());
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                    this.strLastUpdate.setValue(dateFormat.format(date));
-                    this.closeUpdateWindow();
-
-                } else {
-                    if (!this.transactionController.checkRpc()) {
-                        this.showDefidNotRunning();
-                        this.strCurrentBlockOnBlockchain.set(this.settingsController.translationList.getValue().get("NoConnection").toString());
-                    }
-                }
+                this.showUpdateWindow();
+                this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
+                this.strCurrentBlockOnBlockchain.set(this.transactionController.getBlockCountRpc());
+                Date date = new Date(System.currentTimeMillis());
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                this.strLastUpdate.setValue(dateFormat.format(date));
+                this.closeUpdateWindow();
 
             } else {
-                this.showDefiAppIsRunning();
+                if (!this.transactionController.checkRpc()) {
+                    this.strCurrentBlockOnBlockchain.set(this.settingsController.translationList.getValue().get("NoConnection").toString());
+                }
             }
         }
         this.updateSingleton = true;
-    }
-
-    public void showDefiAppIsRunning() {
-        JFrame frameDefid = new JFrame("DeFi-App running");
-        frameDefid.setLayout(null);
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\process.png");
-        JLabel jl = new JLabel("     The Defi-App is running! Please close it first.", icon, JLabel.CENTER);
-        jl.setSize(400, 100);
-        jl.setLocation(0, 0);
-        frameDefid.add(jl);
-        frameDefid.setSize(400, 125);
-        frameDefid.setLocationRelativeTo(null);
-        frameDefid.setUndecorated(true);
-
-        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            jl.setForeground(Color.WHITE);
-        } else {
-            jl.setForeground(Color.BLACK);
-        }
-        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            frameDefid.getContentPane().setBackground(new Color(55, 62, 67));
-        }
-
-        JButton b = new JButton("OK");
-        b.setBounds(160, 80, 80, 25);
-        b.addActionListener(e -> {
-            Component component = (Component) e.getSource();
-            JFrame frame = (JFrame) SwingUtilities.getRoot(component);
-            frame.dispose();
-        });
-        frameDefid.add(b);
-        frameDefid.setVisible(true);
-        frameDefid.toFront();
-    }
-
-    public void showDefidNotRunning() {
-        frameDefid = new JFrame("Launch defid.exe");
-        frameDefid.setLayout(null);
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\connected.png");
-        JLabel jl = new JLabel("     The defid.exe is not running! Please start it manually.", icon, JLabel.CENTER);
-        jl.setSize(400, 100);
-        jl.setLocation(0, 0);
-        frameDefid.add(jl);
-        frameDefid.setSize(400, 125);
-        frameDefid.setLocationRelativeTo(null);
-        frameDefid.setUndecorated(true);
-        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            jl.setForeground(Color.WHITE);
-        } else {
-            jl.setForeground(Color.BLACK);
-        }
-        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            frameDefid.getContentPane().setBackground(new Color(55, 62, 67));
-        }
-
-        JButton b = new JButton("OK");
-        b.setBounds(160, 80, 80, 25);
-        b.addActionListener(e -> {
-            Component component = (Component) e.getSource();
-            JFrame frame = (JFrame) SwingUtilities.getRoot(component);
-            frame.dispose();
-        });
-        frameDefid.add(b);
-        frameDefid.setVisible(true);
-        frameDefid.toFront();
     }
 
     public void showUpdateWindow() {
@@ -384,7 +272,6 @@ public class MainViewController {
     }
 
     public void updateOverview() {
-
         this.poolPairModelList.clear();
         this.mainView.plotOverview.setLegendVisible(true);
         this.mainView.plotOverview.getData().clear();
@@ -412,7 +299,7 @@ public class MainViewController {
 
                 this.mainView.yAxis.setAutoRanging(false);
 
-                maxValue += overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble();
+                if(overviewSeries.getData().size() >0) maxValue += overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble();
                 this.mainView.yAxis.setUpperBound(maxValue * 1.1);
                 /*
                 if (maxValue < overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble()) {
@@ -550,8 +437,8 @@ public class MainViewController {
             this.mainView.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
             this.mainView.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[0]);
         } else {
-            this.mainView.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue() + " ("+this.settingsController.selectedCoin.getValue().split("-")[1] + ")");
-            this.mainView.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue() + " (" +this.settingsController.selectedCoin.getValue().split("-")[0] + ")");
+            this.mainView.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue() + " (" + this.settingsController.selectedCoin.getValue().split("-")[1] + ")");
+            this.mainView.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedFiatCurrency.getValue() + " (" + this.settingsController.selectedCoin.getValue().split("-")[0] + ")");
         }
 
         if (this.transactionController.getPortfolioList().containsKey(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervallInt)) {
@@ -667,7 +554,7 @@ public class MainViewController {
     }
 
     public ObservableList<TransactionModel> getTransactionTable() {
-        return this.transactionList;
+        return this.transactionController.getTransactionList();
     }
 
     public ObservableList<PoolPairModel> getPlotData() {
@@ -684,6 +571,10 @@ public class MainViewController {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("CSV files", "*.csv")
         );
+        fileChooser.setInitialDirectory(new File(this.settingsController.lastExportPath));
+        Date date = new Date(System.currentTimeMillis());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        fileChooser.setInitialFileName(dateFormat.format(date)+"_Portfolio_Export_RawData");
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {
@@ -708,6 +599,10 @@ public class MainViewController {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("CSV files", "*.csv")
         );
+        fileChooser.setInitialDirectory(new File(this.settingsController.lastExportPath));
+        Date date = new Date(System.currentTimeMillis());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        fileChooser.setInitialFileName(dateFormat.format(date)+"_Portfolio_Export_"+this.mainView.tabPane.getSelectionModel().getSelectedItem().getText());
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {
