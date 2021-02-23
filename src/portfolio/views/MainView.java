@@ -1,6 +1,7 @@
 package portfolio.views;
 
 import com.sun.deploy.util.SystemUtils;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -137,7 +138,6 @@ public class MainView implements Initializable {
     public MenuItem menuItemExportAllSelectedPlot = new MenuItem("Export all to CSV");
 
 
-
     public Stage settingsStage, helpStage, donateStage;
     public boolean init = true;
     public Button btnSettings;
@@ -177,105 +177,145 @@ public class MainView implements Initializable {
     }
 
     public void helpPressed() throws IOException {
-        if (helpStage == null) {
-            final Delta dragDelta = new Delta();
-            Parent root = FXMLLoader.load(getClass().getResource("HelpView.fxml"));
-            Scene scene = new Scene(root);
 
-            helpStage = new Stage();
-            helpStage.initStyle(StageStyle.UNDECORATED);
-            scene.setOnMousePressed(mouseEvent -> {
-                // record a delta distance for the drag and drop operation.
-                dragDelta.x = helpStage.getX() - mouseEvent.getScreenX();
-                dragDelta.y = helpStage.getY() - mouseEvent.getScreenY();
-            });
-            scene.setOnMouseDragged(mouseEvent -> {
-                helpStage.setX(mouseEvent.getScreenX() + dragDelta.x);
-                helpStage.setY(mouseEvent.getScreenY() + dragDelta.y);
-            });
-            helpStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/help.png").toURI().toString()));
-            helpStage.setTitle((this.mainViewController.settingsController.translationList.getValue().get("HelpTitle").toString()));
-            helpStage.setScene(scene);
-            helpStage.show();
-        } else {
-            helpStage.show();
-            helpStage.toFront();
-        }
+        if (helpStage != null) helpStage.close();
+        final Delta dragDelta = new Delta();
+        Parent root = FXMLLoader.load(getClass().getResource("HelpView.fxml"));
+        Scene scene = new Scene(root);
+
+        helpStage = new Stage();
+        helpStage.initStyle(StageStyle.UNDECORATED);
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = helpStage.getX() - mouseEvent.getScreenX();
+            dragDelta.y = helpStage.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            helpStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+            helpStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        helpStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/help.png").toURI().toString()));
+        helpStage.setTitle((this.mainViewController.settingsController.translationList.getValue().get("HelpTitle").toString()));
+        helpStage.setScene(scene);
+        ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {
+            double stageWidth = newValue.doubleValue();
+            helpStage.setX(mainAnchorPane.getScene().getWindow().getX() + mainAnchorPane.getScene().getWindow().getWidth() / 2 - stageWidth / 2);
+        };
+        ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
+            double stageHeight = newValue.doubleValue();
+            helpStage.setY(mainAnchorPane.getScene().getWindow().getY() + mainAnchorPane.getScene().getWindow().getHeight() / 2 - stageHeight / 2);
+        };
+
+        helpStage.widthProperty().addListener(widthListener);
+        helpStage.heightProperty().addListener(heightListener);
+
+        helpStage.setOnShown(e -> {
+            helpStage.widthProperty().removeListener(widthListener);
+            helpStage.heightProperty().removeListener(heightListener);
+        });
+        helpStage.show();
+
         java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
         java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            helpStage.getScene().getStylesheets().add( darkMode.toURI().toString());
+            helpStage.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
             helpStage.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
     }
 
     public void openAccountInformation() throws IOException {
-        if (donateStage == null) {
-            final Delta dragDelta = new Delta();
-            Parent root = FXMLLoader.load(getClass().getResource("DonateView.fxml"));
-            Scene scene = new Scene(root);
-            donateStage = new Stage();
-            donateStage.initStyle(StageStyle.UNDECORATED);
-            scene.setOnMousePressed(mouseEvent -> {
-                // record a delta distance for the drag and drop operation.
-                dragDelta.x = donateStage.getX() - mouseEvent.getScreenX();
-                dragDelta.y = donateStage.getY() - mouseEvent.getScreenY();
-            });
-            scene.setOnMouseDragged(mouseEvent -> {
-                donateStage.setX(mouseEvent.getScreenX() + dragDelta.x);
-                donateStage.setY(mouseEvent.getScreenY() + dragDelta.y);
-            });
-            donateStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/donate.png").toURI().toString()));
-            donateStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
-            donateStage.setScene(scene);
-            donateStage.show();
-        } else {
-            donateStage.show();
-            donateStage.toFront();
-        }
+        if (donateStage != null) donateStage.close();
+        final Delta dragDelta = new Delta();
+        Parent root = FXMLLoader.load(getClass().getResource("DonateView.fxml"));
+        Scene scene = new Scene(root);
+        donateStage = new Stage();
+        donateStage.initStyle(StageStyle.UNDECORATED);
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = donateStage.getX() - mouseEvent.getScreenX();
+            dragDelta.y = donateStage.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            donateStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+            donateStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        donateStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/donate.png").toURI().toString()));
+        donateStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
+        donateStage.setScene(scene);
+        ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {
+            double stageWidth = newValue.doubleValue();
+            donateStage.setX(mainAnchorPane.getScene().getWindow().getX() + mainAnchorPane.getScene().getWindow().getWidth() / 2 - stageWidth / 2);
+        };
+        ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
+            double stageHeight = newValue.doubleValue();
+            donateStage.setY(mainAnchorPane.getScene().getWindow().getY() + mainAnchorPane.getScene().getWindow().getHeight() / 2 - stageHeight / 2);
+        };
+
+        donateStage.widthProperty().addListener(widthListener);
+        donateStage.heightProperty().addListener(heightListener);
+
+        donateStage.setOnShown(e -> {
+            donateStage.widthProperty().removeListener(widthListener);
+            donateStage.heightProperty().removeListener(heightListener);
+        });
+        donateStage.show();
 
         java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
         java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
             donateStage.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
-            donateStage.getScene().getStylesheets().add( lightMode.toURI().toString());
+            donateStage.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
     }
 
     public void openSettingPressed() throws IOException {
-        if (settingsStage == null) {
-            final Delta dragDelta = new Delta();
-            Parent root = FXMLLoader.load(getClass().getResource("SettingsView.fxml"));
-            Scene scene = new Scene(root);
-            settingsStage = new Stage();
 
-            settingsStage.initStyle(StageStyle.UNDECORATED);
-            scene.setOnMousePressed(mouseEvent -> {
-                // record a delta distance for the drag and drop operation.
-                dragDelta.x = settingsStage.getX() - mouseEvent.getScreenX();
-                dragDelta.y = settingsStage.getY() - mouseEvent.getScreenY();
-            });
-            scene.setOnMouseDragged(mouseEvent -> {
-                settingsStage.setX(mouseEvent.getScreenX() + dragDelta.x);
-                settingsStage.setY(mouseEvent.getScreenY() + dragDelta.y);
-            });
-            settingsStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
-            settingsStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
-            settingsStage.setScene(scene);
-            settingsStage.show();
-        } else {
-            settingsStage.show();
-            settingsStage.toFront();
-        }
+        if (settingsStage != null) settingsStage.close();
+        final Delta dragDelta = new Delta();
+        Parent root = FXMLLoader.load(getClass().getResource("SettingsView.fxml"));
+        Scene scene = new Scene(root);
+        settingsStage = new Stage();
+        settingsStage.initStyle(StageStyle.UNDECORATED);
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = settingsStage.getX() - mouseEvent.getScreenX();
+            dragDelta.y = settingsStage.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            settingsStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+            settingsStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        settingsStage.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
+        settingsStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
+        settingsStage.setScene(scene);
+
+        ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {
+            double stageWidth = newValue.doubleValue();
+            settingsStage.setX(mainAnchorPane.getScene().getWindow().getX() + mainAnchorPane.getScene().getWindow().getWidth() / 2 - stageWidth / 2);
+        };
+        ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
+            double stageHeight = newValue.doubleValue();
+            settingsStage.setY(mainAnchorPane.getScene().getWindow().getY() + mainAnchorPane.getScene().getWindow().getHeight() / 2 - stageHeight / 2);
+        };
+
+        settingsStage.widthProperty().addListener(widthListener);
+        settingsStage.heightProperty().addListener(heightListener);
+
+        settingsStage.setOnShown(e -> {
+            settingsStage.widthProperty().removeListener(widthListener);
+            settingsStage.heightProperty().removeListener(heightListener);
+        });
+
+        settingsStage.show();
 
         java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
         java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            settingsStage.getScene().getStylesheets().add( darkMode.toURI().toString());
+            settingsStage.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
-            settingsStage.getScene().getStylesheets().add( lightMode.toURI().toString());
+            settingsStage.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
     }
 
@@ -308,7 +348,7 @@ public class MainView implements Initializable {
         updateLanguage();
 
         coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
-        coinImageCommissions.setImage(new Image(new File( System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+        coinImageCommissions.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
         updateStylesheet();
 
         this.mainViewController.settingsController.selectedStyleMode.addListener(style -> updateStylesheet());
@@ -320,12 +360,13 @@ public class MainView implements Initializable {
         this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.strLastUpdate);
         this.btnUpdateDatabase.setOnAction(e -> {
             mainViewController.btnUpdateDatabasePressed();
-            if (!this.init)  mainViewController.plotUpdate(this.tabPane.getSelectionModel().getSelectedItem().getText());
+            if (!this.init) mainViewController.plotUpdate(this.tabPane.getSelectionModel().getSelectedItem().getText());
         });
 
         tabPane.getSelectionModel().selectedItemProperty().addListener(
                 (ov, t, t1) -> {
-                    if (!this.init) mainViewController.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
+                    if (!this.init)
+                        mainViewController.plotUpdate(tabPane.getSelectionModel().getSelectedItem().getText());
                     cmbCoins.setVisible(true);
                     cmbFiat.setVisible(true);
                     cmbPlotCurrency.setVisible(true);
@@ -599,10 +640,10 @@ public class MainView implements Initializable {
                     hyperlink.setText(item);
                     hyperlink.setOnAction((event) -> {
                         try {
-                            if ( mainViewController.settingsController.getPlatform() == "linux") {
+                            if (mainViewController.settingsController.getPlatform() == "linux") {
                                 // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
-                                if (Runtime.getRuntime().exec(new String[] { "which", "xdg-open" }).getInputStream().read() != -1) {
-                                    Runtime.getRuntime().exec(new String[] { "xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHashValue()});
+                                if (Runtime.getRuntime().exec(new String[]{"which", "xdg-open"}).getInputStream().read() != -1) {
+                                    Runtime.getRuntime().exec(new String[]{"xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHashValue()});
                                 } else {
                                     System.out.println("xdg-open is not supported!");
                                 }
@@ -635,10 +676,10 @@ public class MainView implements Initializable {
                     hyperlink.setText(item);
                     hyperlink.setOnAction((event) -> {
                         try {
-                            if ( mainViewController.settingsController.getPlatform() == "linux") {
+                            if (mainViewController.settingsController.getPlatform() == "linux") {
                                 // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
-                                if (Runtime.getRuntime().exec(new String[] { "which", "xdg-open" }).getInputStream().read() != -1) {
-                                    Runtime.getRuntime().exec(new String[] { "xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/address/" + tempParam.getOwnerValue()});
+                                if (Runtime.getRuntime().exec(new String[]{"which", "xdg-open"}).getInputStream().read() != -1) {
+                                    Runtime.getRuntime().exec(new String[]{"xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/address/" + tempParam.getOwnerValue()});
                                 } else {
                                     System.out.println("xdg-open is not supported!");
                                 }
@@ -671,10 +712,10 @@ public class MainView implements Initializable {
                     hyperlink.setText(item.toString());
                     hyperlink.setOnAction((event) -> {
                         try {
-                            if ( mainViewController.settingsController.getPlatform() == "linux") {
+                            if (mainViewController.settingsController.getPlatform() == "linux") {
                                 // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
-                                if (Runtime.getRuntime().exec(new String[] { "which", "xdg-open" }).getInputStream().read() != -1) {
-                                    Runtime.getRuntime().exec(new String[] { "xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/block/" +tempParam.getBlockHeightValue()});
+                                if (Runtime.getRuntime().exec(new String[]{"which", "xdg-open"}).getInputStream().read() != -1) {
+                                    Runtime.getRuntime().exec(new String[]{"xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.getBlockHeightValue()});
                                 } else {
                                     System.out.println("xdg-open is not supported!");
                                 }
@@ -714,10 +755,10 @@ public class MainView implements Initializable {
                         hyperlink.setText(item);
                         hyperlink.setOnAction((event) -> {
                             try {
-                                if ( mainViewController.settingsController.getPlatform() == "linux") {
+                                if (mainViewController.settingsController.getPlatform() == "linux") {
                                     // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
-                                    if (Runtime.getRuntime().exec(new String[] { "which", "xdg-open" }).getInputStream().read() != -1) {
-                                        Runtime.getRuntime().exec(new String[] { "xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/tx/" +tempParam.getTxIDValue()});
+                                    if (Runtime.getRuntime().exec(new String[]{"which", "xdg-open"}).getInputStream().read() != -1) {
+                                        Runtime.getRuntime().exec(new String[]{"xdg-open", "https://mainnet.defichain.io/#/DFI/mainnet/tx/" + tempParam.getTxIDValue()});
                                     } else {
                                         System.out.println("xdg-open is not supported!");
                                     }
@@ -932,17 +973,17 @@ public class MainView implements Initializable {
         if (this.donateStage != null) this.donateStage.getScene().getStylesheets().clear();
 
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            this.mainAnchorPane.getStylesheets().add( darkMode.toURI().toString());
+            this.mainAnchorPane.getStylesheets().add(darkMode.toURI().toString());
             if (this.helpStage != null)
-                this.helpStage.getScene().getStylesheets().add( darkMode.toURI().toString());
+                this.helpStage.getScene().getStylesheets().add(darkMode.toURI().toString());
             if (this.settingsStage != null)
                 this.settingsStage.getScene().getStylesheets().add(darkMode.toURI().toString());
             if (this.donateStage != null)
-                this.donateStage.getScene().getStylesheets().add( darkMode.toURI().toString());
+                this.donateStage.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
-            this.mainAnchorPane.getStylesheets().add( lightMode.toURI().toString());
+            this.mainAnchorPane.getStylesheets().add(lightMode.toURI().toString());
             if (this.helpStage != null)
-                this.helpStage.getScene().getStylesheets().add( lightMode.toURI().toString());
+                this.helpStage.getScene().getStylesheets().add(lightMode.toURI().toString());
             if (this.settingsStage != null)
                 this.settingsStage.getScene().getStylesheets().add(lightMode.toURI().toString());
             if (this.donateStage != null)
