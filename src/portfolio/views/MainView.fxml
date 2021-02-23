@@ -126,7 +126,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </GridPane.margin>
             </Button>
-            <Button fx:id="btnHelp" alignment="CENTER" layoutX="10.0" layoutY="225.0" mnemonicParsing="false" onAction="#helpPressed" prefHeight="90.0" prefWidth="191.0" GridPane.rowIndex="4">
+            <Button fx:id="btnHelp" alignment="CENTER" layoutX="10.0" layoutY="225.0" mnemonicParsing="false" onAction="#helpPressed" prefHeight="90.0" prefWidth="191.0" text="Help" GridPane.rowIndex="4">
                <cursor>
                   <Cursor fx:constant="DEFAULT" />
                </cursor>
@@ -242,6 +242,17 @@
                                                 </children>
                                             </HBox>
                                         </Pane>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                              </GridPane>
                                     </children>
                                 </AnchorPane>
                             </content>

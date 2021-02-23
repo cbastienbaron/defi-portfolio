@@ -113,6 +113,7 @@
 }
 
 .button:hover{
+    -fx-font-weight: bold;
     -fx-border-color: #FF00AF;
 }
 

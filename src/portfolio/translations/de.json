@@ -4,7 +4,7 @@
   "Close": "Schlie\u00dfen",
   "Help": "Hilfe",
   "Donate": "Spende",
-  "DonateLabel": "Falls euch das DeFi-Portfolio gefällt, dann würden wir uns über eine kleine Spende freuen :-)",
+  "DonateLabel": "Wenn dir DeFi-Portfolio gefällt und du weitere Entwicklungen unterstützen möchtest, dann würden wir uns über eine kleine Spende freuen :-)",
   "CopyLabel": "Kopieren",
   "Account": "Accountinformationen",
   "ContactUS": "Kontaktiere uns:",
@@ -50,6 +50,6 @@
   "InitializingData": "Dateninitialisierung...",
   "PreparingData": "Datenaufbereitung...",
   "SaveData": "Datenspeicherung...",
-  "UpdateData": "Daten update: ",
+  "UpdateData": "Daten Update: ",
   "TransactionHash": "Transaktions Hash"
 }

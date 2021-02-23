@@ -172,10 +172,6 @@ public class MainView implements Initializable {
         this.anchorPanelRawData.toFront();
     }
 
-    public void closePressed() {
-        System.exit(0);
-    }
-
     public void helpPressed() throws IOException {
 
         if (helpStage != null) helpStage.close();
@@ -316,22 +312,6 @@ public class MainView implements Initializable {
             settingsStage.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
             settingsStage.getScene().getStylesheets().add(lightMode.toURI().toString());
-        }
-    }
-
-    public void defichain(ActionEvent actionEvent) {
-        try {
-            Desktop.getDesktop().browse(new URL("https://defichain.com/").toURI());
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void defichainwiki(ActionEvent actionEvent) {
-        try {
-            Desktop.getDesktop().browse(new URL("https://defichain-wiki.com/wiki/Main_Page").toURI());
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
         }
     }
 
@@ -1071,7 +1051,6 @@ public class MainView implements Initializable {
         this.transactionColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("TransactionHash").toString());
         this.fiatColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Total").toString());
         this.mainViewController.donateController.strDonateText.setValue(this.mainViewController.settingsController.translationList.getValue().get("DonateLabel").toString());
-        this.mainViewController.donateController.strBtnClose.setValue(this.mainViewController.settingsController.translationList.getValue().get("Close").toString());
         this.mainViewController.helpController.strHelpText.setValue(this.mainViewController.settingsController.translationList.getValue().get("ContactUS").toString());
         this.mainViewController.helpController.strCloseText.setValue(this.mainViewController.settingsController.translationList.getValue().get("Close").toString());
         this.mainViewController.settingsController.selectedPlotType.setValue(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());

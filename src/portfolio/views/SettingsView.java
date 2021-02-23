@@ -38,7 +38,7 @@ public class SettingsView implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-         btnSaveAndApply.setText(this.settingsController.translationList.getValue().get("Close").toString());
+         //btnSaveAndApply.setText(this.settingsController.translationList.getValue().get("Close").toString());
          labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
          CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
          prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
