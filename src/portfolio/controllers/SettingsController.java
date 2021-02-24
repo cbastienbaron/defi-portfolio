@@ -1,9 +1,6 @@
 package portfolio.controllers;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -36,7 +33,6 @@ public class SettingsController {
     public StringProperty selectedDecimal = new SimpleStringProperty(".");
     public StringProperty selectedSeperator = new SimpleStringProperty(",");
     public StringProperty selectedStyleMode = new SimpleStringProperty("Dark Mode");
-    public StringProperty selectedLaunchDefid = new SimpleStringProperty("No");
 
     public StringProperty selectedCoin = new SimpleStringProperty("BTC-DFI");
     public StringProperty selectedPlotCurrency = new SimpleStringProperty("Coin");
@@ -47,12 +43,13 @@ public class SettingsController {
     public ObjectProperty<JSONObject> translationList = new SimpleObjectProperty();
     public String selectedIntervallInt = "Daily";
     public boolean showDisclaim = true;
+    public boolean selectedLaunchDefid = true;
 
     //Combo box filling
     public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
     public String[] plotCurrency = new String[]{"Coin", "Fiat"};
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
-    public String[] launchDefid = new String[]{"No", "Yes"};
+
 
     public String USER_HOME_PATH = System.getProperty("user.home");
     public String BINARY_FILE_NAME = getPlatform() == "win" ? "defid.exe" : "defid";
@@ -172,7 +169,9 @@ public class SettingsController {
                 this.dateFrom.setValue(LocalDate.parse(configProps.getProperty("SelectedDate")));
                 if(!configProps.getProperty("LastUsedExportPath").equals(""))this.lastExportPath = configProps.getProperty("LastUsedExportPath");
                 this.showDisclaim = configProps.getProperty("ShowDisclaim").equals("true");
-                this.selectedLaunchDefid.setValue(configProps.getProperty("selectedLaunchDefid"));
+                this.selectedLaunchDefid = configProps.getProperty("SelectedLaunchDefid").equals("true");
+
+
             } catch (Exception e) {
                 e.printStackTrace();
                 saveSettings();
@@ -195,7 +194,7 @@ public class SettingsController {
             csvWriter.append("SelectedDate=" + this.dateFrom.getValue()).append("\n");
             csvWriter.append("LastUsedExportPath=" + this.lastExportPath).append("\n");
             csvWriter.append("ShowDisclaim=" + this.showDisclaim).append("\n");
-            csvWriter.append("selectedLaunchDefid=" + this.selectedLaunchDefid.getValue()).append("\n");
+            csvWriter.append("SelectedLaunchDefid=" + this.selectedLaunchDefid).append("\n");
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {
