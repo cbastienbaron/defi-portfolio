@@ -57,7 +57,7 @@ public class MainViewController {
 
         this.settingsController.logger.info("Start DeFi-Portfolio");
 
-        if(this.settingsController.selectedLaunchDefid.getValue().equals("Yes")){
+        if(this.settingsController.selectedLaunchDefid){
             if(!this.transactionController.checkRpc())this.transactionController.startServer();
         }
 

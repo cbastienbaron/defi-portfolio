@@ -53,5 +53,6 @@
     "UpdateData": "Update Data: ",
     "TransactionHash": "Transaction Hash",
     "ConnectNode": "Connect to Node",
-    "UpdateTooltip": "Start DeFi App or click \"Connect to Node\""
+    "UpdateTooltip": "Start DeFi App or click \"Connect to Node\"",
+    "LaunchDefid": "Launch Defid on tool start"
 }
