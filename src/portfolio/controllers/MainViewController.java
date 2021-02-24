@@ -192,6 +192,8 @@ public class MainViewController {
     }
 
     public boolean updateTransactionData() {
+        if(this.transactionController.getBlockCountRpc().equals("No connection")){
+
             if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).exists()) {
                 int depth = Integer.parseInt(this.transactionController.getBlockCountRpc()) - this.transactionController.getLocalBlockCount();
                 this.transactionController.updateJFrame();
@@ -200,6 +202,9 @@ public class MainViewController {
                 this.transactionController.updateJFrame();
                 return this.transactionController.updateTransactionData(Integer.parseInt(this.transactionController.getBlockCountRpc())); // - this.transactionController.getAccountHistoryCountRpc());
             }
+
+        }
+        return false;
     }
 
     public void btnUpdateDatabasePressed() {
