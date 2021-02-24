@@ -13,7 +13,7 @@ public class TimerController extends TimerTask {
     public void run() {
         Platform.runLater(() ->    {
             mainViewController.strCurrentBlockOnBlockchain.set(mainViewController.transactionController.getBlockCountRpc());
-            mainViewController.bDataBase.set(mainViewController.transactionController.getBlockCountRpc().equals("No connection"));
+            mainViewController.bDataBase.set(mainViewController.strCurrentBlockOnBlockchain.equals("No connection"));
                 }
 
         );
