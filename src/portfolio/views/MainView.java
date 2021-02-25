@@ -36,6 +36,8 @@ import java.util.*;
 
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
+import portfolio.controllers.SettingsController;
+import portfolio.controllers.TransactionController;
 import portfolio.models.PoolPairModel;
 import portfolio.models.TransactionModel;
 import portfolio.controllers.MainViewController;
@@ -319,9 +321,11 @@ public class MainView implements Initializable {
     }
 
     public void connectDefid(ActionEvent actionEvent) {
-        this.mainViewController.transactionController.startServer();
-        this.mainViewController.startTimer();
+        if (!mainViewController.transactionController.checkRpc()) {
+            this.mainViewController.transactionController.startServer();
+        }
     }
+
 
     static class Delta {
         double x, y;

@@ -43,7 +43,7 @@ public class SettingsController {
     public ObjectProperty<JSONObject> translationList = new SimpleObjectProperty();
     public String selectedIntervallInt = "Daily";
     public boolean showDisclaim = true;
-    public boolean selectedLaunchDefid = true;
+    public boolean selectedLaunchDefid = false;
 
     //Combo box filling
     public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
@@ -70,6 +70,10 @@ public class SettingsController {
             getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/defi-portfolio/" : //MAC PATH
                     getPlatform() == "linux" ? USER_HOME_PATH + "/.config/defi-portfolio/" : //LINUX PATH;
                             "";
+    public  String COOKIE_FILE_PATH = getPlatform() == "win" ?
+            System.getenv("APPDATA")+ "/DeFi Blockchain/.cookie" : //WIN PATH
+            getPlatform() == "mac" ? USER_HOME_PATH+ "/Library/Application Support/DeFi/.cookie" : //MAC PATH
+                    ""; //LINUX PATH;
 
     public String SETTING_FILE_PATH = DEFI_PORTFOLIO_HOME + "settings.csv";
     //All relevant paths and files
@@ -86,6 +90,8 @@ public class SettingsController {
     public String rpcbind;
     public String rpcport;
 
+    public boolean runTimer = true;
+    public boolean debouncer = false;
     public String auth;
 
     public Timer timer = new Timer("Timer");

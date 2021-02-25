@@ -26,7 +26,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
-import java.util.Timer;
 
 public class MainViewController {
 
@@ -85,14 +84,11 @@ public class MainViewController {
                 }
         );
 
+        startTimer();
     }
 
     public void startTimer() {
-        this.settingsController.timer.scheduleAtFixedRate(new TimerController(this), 0, 5000L);
-    }
-
-    public void stopTimer() {
-        this.settingsController.timer.cancel();
+        this.settingsController.timer.scheduleAtFixedRate(new TimerController(this), 0, 5000);
     }
 
     public void copySelectedRawDataToClipboard(List<TransactionModel> list, boolean withHeaders) {
@@ -192,7 +188,7 @@ public class MainViewController {
     }
 
     public boolean updateTransactionData() {
-        if(this.transactionController.getBlockCountRpc().equals("No connection")){
+        if(!this.transactionController.getBlockCountRpc().equals("No connection")){
 
             if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).exists()) {
                 int depth = Integer.parseInt(this.transactionController.getBlockCountRpc()) - this.transactionController.getLocalBlockCount();
@@ -576,7 +572,10 @@ public class MainViewController {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("CSV files", "*.csv")
         );
-        fileChooser.setInitialDirectory(new File(this.settingsController.lastExportPath));
+        if(new File(this.settingsController.lastExportPath).isDirectory()){
+                    fileChooser.setInitialDirectory(new File(this.settingsController.lastExportPath));
+        }
+
         Date date = new Date(System.currentTimeMillis());
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         fileChooser.setInitialFileName(dateFormat.format(date)+"_Portfolio_Export_RawData");

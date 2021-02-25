@@ -22,11 +22,6 @@ public class Main extends Application {
         Thread t = new Thread(task);
         t.start();
 
-        // ConnectionChecker
-        ConnectionChecker checker = new ConnectionChecker();
-        Thread check = new Thread(checker);
-        check.start();
-
         // Main Window
         try {
             root = FXMLLoader.load(getClass().getResource("views/MainView.fxml"));

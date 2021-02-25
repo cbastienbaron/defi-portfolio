@@ -21,6 +21,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -28,17 +29,15 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class TransactionController {
 
-    private URL url;
-    private URLConnection conn;
     private String strConfigPath;
     private ObservableList<TransactionModel> transactionList;
     private String strTransactionData;
     private int localBlockCount;
     private SettingsController settingsController;
-    private OutputStreamWriter wr;
     private CoinPriceController coinPriceController;
     private TreeMap<String, TreeMap<String, PortfolioModel>> portfolioList = new TreeMap<>();
     private JFrame frameUpdate;
@@ -54,33 +53,29 @@ public class TransactionController {
     }
 
     public boolean checkRpc() {
-        if (new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + ".cookie").exists()) initRpcConnection();
-        return !getBlockCountRpc().equals("No connection");
+        return new File(SettingsController.getInstance().COOKIE_FILE_PATH).exists();
     }
 
     public void startServer() {
-        if (!new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + ".cookie").exists()){
         try {
             switch (this.settingsController.getPlatform()) {
                 case "mac":
                     Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + this.settingsController.BINARY_FILE_PATH);
                     break;
                 case "win":
-                    Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
+                    Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH); // + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
                     break;
                 case "nux":
-                    Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
+                    Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH); // + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
                     break;
             }
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
-        }
     }
 
     public void closeServer() {
         try {
-            initRpcConnection();
             getRpcResponse("{\"method\": \"stop\"}");
         } catch (Exception e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
@@ -103,28 +98,8 @@ public class TransactionController {
         return transactionList;
     }
 
-    public void initRpcConnection() {
-        try {
-            try {
-                this.url = new URL("http://" + this.settingsController.rpcbind + ":" + this.settingsController.rpcport + "/");
-            } catch (MalformedURLException e) {
-                this.settingsController.logger.warning("Exception occured: " + e.toString());
-            }
-            this.conn = url.openConnection();
-            String basicAuth = "Basic " + new String(Base64.getEncoder().encode((this.settingsController.auth.getBytes())));
-            conn.setRequestProperty("Authorization", basicAuth);
-            conn.setRequestProperty("Content-Type", "application/json-rpc");
-            conn.setDoOutput(true);
-            wr = new OutputStreamWriter(conn.getOutputStream());
-
-        } catch (IOException e) {
-            //this.settingsController.logger.warning("Exception occured: " + e.toString());
-        }
-    }
-
     public String getBlockCountRpc() {
         try {
-
             JSONObject jsonObject = getRpcResponse("{\"method\": \"getblockcount\"}");
             if (jsonObject != null) {
                 if (jsonObject.get("result") != null) {
@@ -142,7 +117,6 @@ public class TransactionController {
     }
 
     public int getAccountHistoryCountRpc() {
-
         JSONObject jsonObject = getRpcResponse("{\"method\": \"accounthistorycount\",\"params\":[\"mine\"]}");
         return Integer.parseInt(jsonObject.get("result").toString());
     }
@@ -266,37 +240,56 @@ public class TransactionController {
     private Point mouseClickPoint;
 
     private JSONObject getRpcResponse(String requestJson) {
-        if (new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + ".cookie").exists()) {
 
-            try {
-                initRpcConnection();
+        try {
+            if(this.checkRpc()){
 
-                if (conn != null & wr != null) {
-                    wr.write(requestJson);
-                    wr.flush();
-                    wr.close();
+            //URL url = new URL("http://" + this.settingsController.rpcbind + ":" + this.settingsController.rpcport + "/");
+            URL url = new URL("http://127.0.0.1:8554");
 
-                    String jsonText = "";
-
-                    try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                        jsonText = br.readLine();
-
-                    } catch (Exception ex) {
-                        this.settingsController.logger.warning("Exception occured: " + ex.toString());
-                    }
-
-                    Object obj = JSONValue.parse(jsonText);
-
-
-                    return (JSONObject) obj;
-
-                }
-
-            } catch (Exception e) {
-                //this.settingsController.logger.warning("Exception occured: " + e.toString());
+            HttpURLConnection conn;
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout((int) TimeUnit.MINUTES.toMillis(0L));
+            conn.setReadTimeout((int)TimeUnit.MINUTES.toMillis(0L));
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            String strCookieData=""; // = "Basic " + new String(Base64.getEncoder().encode((this.settingsController.auth.getBytes())));
+            BufferedReader reader;
+            reader = new BufferedReader(new FileReader(
+                    SettingsController.getInstance().COOKIE_FILE_PATH));
+            String line = reader.readLine();
+            String[] kvpSplit = line.split(":");
+            if (Arrays.stream(kvpSplit).count() == 2) {
+                strCookieData = kvpSplit[0] + ":" + kvpSplit[1];
             }
+            reader.close();
+            String basicAuth = "Basic " + new String(Base64.getEncoder().encode((strCookieData.getBytes())));
+            conn.setRequestProperty("Authorization", basicAuth);
+            conn.setRequestProperty("Content-Type", "application/json-rpc");
+            conn.setDoOutput(true);
+            conn.getOutputStream().write(requestJson.getBytes(StandardCharsets.UTF_8));
+            conn.getOutputStream().close();
+            String jsonText = "";
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                    jsonText = br.readLine();
+                } catch (Exception ex) {
+                    this.settingsController.logger.warning("Exception occured: " + ex.toString());
+                }
+                SettingsController.getInstance().debouncer = true;
+                Object obj = JSONValue.parse(jsonText);
+                return (JSONObject) obj;
+            }
+
+            }
+        } catch (IOException ioException) {
+           SettingsController.getInstance().runTimer =!(ioException.getMessage().equals("Connection refused: connect") & SettingsController.getInstance().debouncer);
         }
+
+
         return new JSONObject();
+
     }
 
     public ObservableList<TransactionModel> getLocalTransactionList() {
