@@ -54,5 +54,5 @@
   "TransactionHash": "Transaktions Hash",
   "ConnectNode": "Verbinden mit Node",
   "UpdateTooltip": "Klick auf \"Verbinden mit Node\" (DeFi App muss geschlossen sein)",
-  "LaunchDefid": "Starte \"Verbindung mit Node\" beim Tool Start"
+  "LaunchDefid": "Starte \"Node\" beim Tool Start"
 }

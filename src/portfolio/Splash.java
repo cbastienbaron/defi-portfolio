@@ -1,9 +1,12 @@
 package portfolio;
 import javafx.concurrent.Task;
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Splash extends Task{
     static JFrame f;
+    public int posX,posY;
     static boolean isKilled = false;
     public Splash(){
 
@@ -27,6 +30,24 @@ public class Splash extends Task{
         f.setIconImage(new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").getImage());
         f.setAlwaysOnTop(true);
         f.setVisible(!isKilled);
+
+        f.addMouseListener(new MouseAdapter()
+        {
+            public void mousePressed(MouseEvent e)
+            {
+                posX=e.getX();
+                posY=e.getY();
+            }
+        });
+        f.addMouseMotionListener(new MouseAdapter()
+        {
+            public void mouseDragged(MouseEvent evt)
+            {
+                //sets frame position when mouse dragged
+                f.setLocation (evt.getXOnScreen()-posX,evt.getYOnScreen()-posY);
+
+            }
+        });
         return null;
     }
 }
