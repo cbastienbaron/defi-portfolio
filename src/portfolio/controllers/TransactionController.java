@@ -158,7 +158,7 @@ public class TransactionController {
             int restBlockCount = blockCount + blockDepth + 1;
             for (int i = 0; i < Math.ceil(depth / blockDepth); i = i + 1) {
                 this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
-                JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
+                JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
                 JSONArray transactionJson = (JSONArray) jsonObject.get("result");
                 for (Object transaction : transactionJson) {
                     JSONObject transactionJ = (JSONObject) transaction;
@@ -177,7 +177,7 @@ public class TransactionController {
             }
 
             restBlockCount = restBlockCount - blockDepth;
-            JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
+            JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
             JSONArray transactionJson = (JSONArray) jsonObject.get("result");
             for (Object transaction : transactionJson) {
                 JSONObject transactionJ = (JSONObject) transaction;
