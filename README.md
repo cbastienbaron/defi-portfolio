@@ -19,7 +19,7 @@ $DFI: dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V
 # Getting Started
 <b>Setup:</b>
   1. [Download](https://www.java.com/de/download/) the Java Runtime Environment (64 bit) and install it (important to use the 64 bit version).
-  2. [Download](https://github.com/DeFi-PortfolioManagement/defi-portfoliomanager/releases/latest/download/defi-portfolio.exe) the defi-portfolio-Setup-vX.X.X.exe 
+  2. [Download](https://github.com/DeFi-PortfolioManagement/defi-portfoliomanager/releases/latest/download/defi-portfolio-Setup-1.2.1.exe) the defi-portfolio-Setup-vX.X.X.exe 
   3. Install
   4. Run the Defi-Portfolio.exe
   5. The defid.exe will start. If you want to Update your data you will need. (You can also close and start it manually)
