@@ -349,13 +349,18 @@ public class MainView implements Initializable {
         this.btnConnect.disableProperty().bind(this.mainViewController.bDataBase.not());
 
 
-        this.btnUpdateDatabase.disableProperty().bindBidirectional(this.mainViewController.bDataBase);
-        this.connectionLabel.visibleProperty().bindBidirectional(this.mainViewController.bDataBase);
+        //this.btnUpdateDatabase.disableProperty().bindBidirectional(this.mainViewController.bDataBase);
+//        this.connectionLabel.visibleProperty().bindBidirectional(this.mainViewController.bDataBase);
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockLocally);
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockOnBlockchain);
         this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.strLastUpdate);
         this.btnUpdateDatabase.setOnAction(e -> {
-            mainViewController.btnUpdateDatabasePressed();
+
+            this.mainViewController.showConnectingWindow();
+            this.mainViewController.transactionController.startServer();
+            this.mainViewController.closeConnectingWindow();
+
+            this.mainViewController.btnUpdateDatabasePressed();
             if (!this.init) mainViewController.plotUpdate(this.tabPane.getSelectionModel().getSelectedItem().getText());
         });
 
@@ -1052,7 +1057,7 @@ public class MainView implements Initializable {
             this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
         }
         this.btnConnect.setText(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
-        this.connectionLabel.getTooltip().setText(this.mainViewController.settingsController.translationList.getValue().get("UpdateTooltip").toString());
+//        this.connectionLabel.getTooltip().setText(this.mainViewController.settingsController.translationList.getValue().get("UpdateTooltip").toString());
         this.blockTimeColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Date").toString());
         this.timeStampColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Date").toString());
         this.typeColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Operation").toString());

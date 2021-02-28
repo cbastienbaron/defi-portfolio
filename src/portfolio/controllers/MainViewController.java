@@ -253,6 +253,33 @@ public class MainViewController {
         this.frameUpdate.dispose();
     }
 
+    public void showConnectingWindow() {
+        this.frameUpdate = new JFrame("Connecting to Node");
+        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\updating.png");
+        JLabel jl = new JLabel("     Updating local files. Please wait...!", icon, JLabel.CENTER);
+        frameUpdate.add(jl);
+
+        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            jl.setForeground(Color.WHITE);
+        } else {
+            jl.setForeground(Color.BLACK);
+        }
+        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+            frameUpdate.getContentPane().setBackground(new Color(55, 62, 67));
+        }
+
+        frameUpdate.setSize(350, 125);
+        frameUpdate.setLocationRelativeTo(null);
+        frameUpdate.setUndecorated(true);
+        frameUpdate.setVisible(true);
+        frameUpdate.toFront();
+    }
+
+    public void closeConnectingWindow() {
+        this.frameUpdate.setVisible(false);
+        this.frameUpdate.dispose();
+    }
+
     public void plotUpdate(String openedTab) {
         switch (openedTab) {
             case "Overview":

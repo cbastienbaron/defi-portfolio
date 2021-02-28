@@ -57,6 +57,7 @@ public class TransactionController {
     }
 
     public void startServer() {
+
         try {
             switch (this.settingsController.getPlatform()) {
                 case "mac":
