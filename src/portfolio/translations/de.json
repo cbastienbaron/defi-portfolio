@@ -50,7 +50,7 @@
   "InitializingData": "Dateninitialisierung...",
   "PreparingData": "Datenaufbereitung...",
   "SaveData": "Datenspeicherung...",
-  "UpdateData": "Daten Update: ",
+  "UpdateData": "Daten Update ",
   "TransactionHash": "Transaktions Hash",
   "ConnectNode": "Verbinden mit Node",
   "UpdateTooltip": "Klick auf \"Verbinden mit Node\" (DeFi App muss geschlossen sein)",
