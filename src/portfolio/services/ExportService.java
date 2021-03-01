@@ -1,12 +1,8 @@
 package portfolio.services;
 
 import javafx.scene.control.TableColumn;
-import portfolio.Main;
 import portfolio.controllers.MainViewController;
 import portfolio.views.MainView;
-import portfolio.controllers.CoinPriceController;
-import portfolio.controllers.SettingsController;
-import portfolio.controllers.TransactionController;
 import portfolio.models.PoolPairModel;
 import portfolio.models.TransactionModel;
 

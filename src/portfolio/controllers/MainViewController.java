@@ -83,7 +83,6 @@ public class MainViewController {
                     }
                 }
         );
-
         startTimer();
     }
 
@@ -188,17 +187,15 @@ public class MainViewController {
     }
 
     public boolean updateTransactionData() {
-        if(!this.transactionController.getBlockCountRpc().equals("No connection")){
-
+        if(!this.transactionController.getBlockCount().equals("No connection")){
             if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).exists()) {
-                int depth = Integer.parseInt(this.transactionController.getBlockCountRpc()) - this.transactionController.getLocalBlockCount();
+                int depth = Integer.parseInt(this.transactionController.getBlockCount()) - this.transactionController.getLocalBlockCount();
                 this.transactionController.updateJFrame();
                 return this.transactionController.updateTransactionData(depth);
             } else {
                 this.transactionController.updateJFrame();
-                return this.transactionController.updateTransactionData(Integer.parseInt(this.transactionController.getBlockCountRpc())); // - this.transactionController.getAccountHistoryCountRpc());
+                return this.transactionController.updateTransactionData(Integer.parseInt(this.transactionController.getBlockCount())); // - this.transactionController.getAccountHistoryCountRpc());
             }
-
         }
         return false;
     }
@@ -208,10 +205,9 @@ public class MainViewController {
         if (this.updateSingleton) {
             this.updateSingleton = false;
             if (updateTransactionData()) {
-
                 this.showUpdateWindow();
                 this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
-                this.strCurrentBlockOnBlockchain.set(this.transactionController.getBlockCountRpc());
+                this.strCurrentBlockOnBlockchain.set(this.transactionController.getBlockCount());
                 Date date = new Date(System.currentTimeMillis());
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 this.strLastUpdate.setValue(dateFormat.format(date));

@@ -16,7 +16,7 @@ import java.util.logging.SimpleFormatter;
 
 
 public class SettingsController {
-    public String Version = "V1.2";
+    public String Version = "V1.3";
 
     private static SettingsController OBJ = null;
 
@@ -70,9 +70,9 @@ public class SettingsController {
             getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/defi-portfolio/" : //MAC PATH
                     getPlatform() == "linux" ? USER_HOME_PATH + "/.config/defi-portfolio/" : //LINUX PATH;
                             "";
-    public  String COOKIE_FILE_PATH = getPlatform() == "win" ?
-            System.getenv("APPDATA")+ "/DeFi Blockchain/.cookie" : //WIN PATH
-            getPlatform() == "mac" ? USER_HOME_PATH+ "/Library/Application Support/DeFi/.cookie" : //MAC PATH
+    public String COOKIE_FILE_PATH = getPlatform() == "win" ?
+            System.getenv("APPDATA") + "/DeFi Blockchain/.cookie" : //WIN PATH
+            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/DeFi/.cookie" : //MAC PATH
                     ""; //LINUX PATH;
 
     public String SETTING_FILE_PATH = DEFI_PORTFOLIO_HOME + "settings.csv";
@@ -81,7 +81,7 @@ public class SettingsController {
     public String strCoinPriceData = "coinPriceData.portfolio";
     public String[] languages = new String[]{"English", "Deutsch"};
     public String[] currencies = new String[]{"EUR", "USD", "CHF"};
-    public String[] decSeperators = new String[]{",", "."};
+    public String[] decSeperators = new String[]{".", ","};
     public String[] csvSeperators = new String[]{",", ";"};
     public Logger logger = Logger.getLogger("Logger");
     public String rpcauth;
@@ -173,7 +173,8 @@ public class SettingsController {
                 this.selectedPlotCurrency.setValue(configProps.getProperty("SelectedPlotCurrency"));
                 this.selectedStyleMode.setValue(configProps.getProperty("SelectedStyleMode"));
                 this.dateFrom.setValue(LocalDate.parse(configProps.getProperty("SelectedDate")));
-                if(!configProps.getProperty("LastUsedExportPath").equals(""))this.lastExportPath = configProps.getProperty("LastUsedExportPath");
+                if (!configProps.getProperty("LastUsedExportPath").equals(""))
+                    this.lastExportPath = configProps.getProperty("LastUsedExportPath");
                 this.showDisclaim = configProps.getProperty("ShowDisclaim").equals("true");
                 this.selectedLaunchDefid = configProps.getProperty("SelectedLaunchDefid").equals("true");
 
@@ -209,7 +210,7 @@ public class SettingsController {
     }
 
     public void getConfig() {
-        BufferedReader reader = null;
+        BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(this.CONFIG_FILE_PATH));
 
@@ -225,7 +226,6 @@ public class SettingsController {
             this.rpcpassword = configProps.getProperty("rpcpassword");
             this.rpcbind = configProps.getProperty("rpcbind");
             this.rpcport = configProps.getProperty("rpcport");
-
             this.auth = this.rpcuser + ":" + this.rpcpassword;
             reader.close();
         } catch (IOException e) {

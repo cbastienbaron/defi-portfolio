@@ -2,11 +2,9 @@ package portfolio.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import com.sun.javafx.geom.Arc2D;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import portfolio.Main;
 import portfolio.models.AddressModel;
 import portfolio.models.PortfolioModel;
 import portfolio.models.TransactionModel;
@@ -16,9 +14,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -57,8 +53,8 @@ public class TransactionController {
     }
 
     public void startServer() {
-
         try {
+            if(!this.checkRpc()){
             switch (this.settingsController.getPlatform()) {
                 case "mac":
                     Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + this.settingsController.BINARY_FILE_PATH);
@@ -70,12 +66,13 @@ public class TransactionController {
                     Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH); // + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
                     break;
             }
+            }
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
     }
 
-    public void closeServer() {
+    public void stopServer() {
         try {
             getRpcResponse("{\"method\": \"stop\"}");
         } catch (Exception e) {
@@ -97,6 +94,28 @@ public class TransactionController {
 
     public ObservableList<TransactionModel> getTransactionList() {
         return transactionList;
+    }
+
+    public String getBlockCount() {
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.defichain.io/v1/stats").openConnection();
+            String jsonText = "";
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                jsonText = br.readLine();
+            } catch (Exception ex) {
+                this.settingsController.logger.warning("Exception occured: " + ex.toString());
+            }
+            JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
+            if (obj.get("blockHeight") != null) {
+                return obj.get("blockHeight").toString();
+            } else {
+                return "No connection";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "No connection";
     }
 
     public String getBlockCountRpc() {
@@ -159,7 +178,7 @@ public class TransactionController {
             int restBlockCount = blockCount + blockDepth + 1;
             for (int i = 0; i < Math.ceil(depth / blockDepth); i = i + 1) {
                 this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
-                JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
+                JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
                 JSONArray transactionJson = (JSONArray) jsonObject.get("result");
                 for (Object transaction : transactionJson) {
                     JSONObject transactionJ = (JSONObject) transaction;
@@ -178,7 +197,7 @@ public class TransactionController {
             }
 
             restBlockCount = restBlockCount - blockDepth;
-            JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
+            JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
             JSONArray transactionJson = (JSONArray) jsonObject.get("result");
             for (Object transaction : transactionJson) {
                 JSONObject transactionJ = (JSONObject) transaction;
@@ -243,49 +262,49 @@ public class TransactionController {
     private JSONObject getRpcResponse(String requestJson) {
 
         try {
-            if(this.checkRpc()){
+            if (this.checkRpc()) {
 
-            //URL url = new URL("http://" + this.settingsController.rpcbind + ":" + this.settingsController.rpcport + "/");
-            URL url = new URL("http://127.0.0.1:8554");
+                //URL url = new URL("http://" + this.settingsController.rpcbind + ":" + this.settingsController.rpcport + "/");
+                URL url = new URL("http://127.0.0.1:8554");
 
-            HttpURLConnection conn;
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout((int) TimeUnit.MINUTES.toMillis(0L));
-            conn.setReadTimeout((int)TimeUnit.MINUTES.toMillis(0L));
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            String strCookieData=""; // = "Basic " + new String(Base64.getEncoder().encode((this.settingsController.auth.getBytes())));
-            BufferedReader reader;
-            reader = new BufferedReader(new FileReader(
-                    SettingsController.getInstance().COOKIE_FILE_PATH));
-            String line = reader.readLine();
-            String[] kvpSplit = line.split(":");
-            if (Arrays.stream(kvpSplit).count() == 2) {
-                strCookieData = kvpSplit[0] + ":" + kvpSplit[1];
-            }
-            reader.close();
-            String basicAuth = "Basic " + new String(Base64.getEncoder().encode((strCookieData.getBytes())));
-            conn.setRequestProperty("Authorization", basicAuth);
-            conn.setRequestProperty("Content-Type", "application/json-rpc");
-            conn.setDoOutput(true);
-            conn.getOutputStream().write(requestJson.getBytes(StandardCharsets.UTF_8));
-            conn.getOutputStream().close();
-            String jsonText = "";
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                    jsonText = br.readLine();
-                } catch (Exception ex) {
-                    this.settingsController.logger.warning("Exception occured: " + ex.toString());
+                HttpURLConnection conn;
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout((int) TimeUnit.MINUTES.toMillis(0L));
+                conn.setReadTimeout((int) TimeUnit.MINUTES.toMillis(0L));
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+                String strCookieData = ""; // = "Basic " + new String(Base64.getEncoder().encode((this.settingsController.auth.getBytes())));
+                BufferedReader reader;
+                reader = new BufferedReader(new FileReader(
+                        SettingsController.getInstance().COOKIE_FILE_PATH));
+                String line = reader.readLine();
+                String[] kvpSplit = line.split(":");
+                if (Arrays.stream(kvpSplit).count() == 2) {
+                    strCookieData = kvpSplit[0] + ":" + kvpSplit[1];
                 }
-                SettingsController.getInstance().debouncer = true;
-                Object obj = JSONValue.parse(jsonText);
-                return (JSONObject) obj;
-            }
+                reader.close();
+                String basicAuth = "Basic " + new String(Base64.getEncoder().encode((strCookieData.getBytes())));
+                conn.setRequestProperty("Authorization", basicAuth);
+                conn.setRequestProperty("Content-Type", "application/json-rpc");
+                conn.setDoOutput(true);
+                conn.getOutputStream().write(requestJson.getBytes(StandardCharsets.UTF_8));
+                conn.getOutputStream().close();
+                String jsonText = "";
+                int responseCode = conn.getResponseCode();
+                if (responseCode == 200) {
+                    try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                        jsonText = br.readLine();
+                    } catch (Exception ex) {
+                        this.settingsController.logger.warning("Exception occured: " + ex.toString());
+                    }
+                    SettingsController.getInstance().debouncer = true;
+                    Object obj = JSONValue.parse(jsonText);
+                    return (JSONObject) obj;
+                }
 
             }
         } catch (IOException ioException) {
-           SettingsController.getInstance().runTimer =!(ioException.getMessage().equals("Connection refused: connect") & SettingsController.getInstance().debouncer);
+            SettingsController.getInstance().runTimer = !(ioException.getMessage().equals("Connection refused: connect") & SettingsController.getInstance().debouncer);
         }
 
 
@@ -467,6 +486,9 @@ public class TransactionController {
 
     public boolean updateTransactionData(int depth) {
 
+        jl.setText(this.settingsController.translationList.getValue().get("ConnectNode").toString());
+        startServer();
+        //TODO Wait till data
         List<TransactionModel> transactionListNew = getListAccountHistoryRpc(depth);
         List<TransactionModel> updateTransactionList = new ArrayList<>();
 
@@ -508,6 +530,7 @@ public class TransactionController {
                 writer.close();
                 this.frameUpdate.dispose();
                 this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).getBlockHeightValue();
+                stopServer();
                 return true;
             } catch (IOException e) {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());

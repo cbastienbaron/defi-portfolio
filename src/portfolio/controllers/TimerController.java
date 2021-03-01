@@ -14,9 +14,8 @@ public class TimerController extends TimerTask {
     @Override
     public void run() {
         Platform.runLater(() -> {
-
                     if (SettingsController.getInstance().runTimer) {
-                        mainViewController.strCurrentBlockOnBlockchain.set(mainViewController.transactionController.getBlockCountRpc());
+                        mainViewController.strCurrentBlockOnBlockchain.set(mainViewController.transactionController.getBlockCount());
                         mainViewController.bDataBase.set(mainViewController.strCurrentBlockOnBlockchain.getValue().equals("No connection"));
                     }
                 }

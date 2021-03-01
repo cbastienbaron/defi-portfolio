@@ -355,11 +355,6 @@ public class MainView implements Initializable {
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockOnBlockchain);
         this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.strLastUpdate);
         this.btnUpdateDatabase.setOnAction(e -> {
-
-            this.mainViewController.showConnectingWindow();
-            this.mainViewController.transactionController.startServer();
-            this.mainViewController.closeConnectingWindow();
-
             this.mainViewController.btnUpdateDatabasePressed();
             if (!this.init) mainViewController.plotUpdate(this.tabPane.getSelectionModel().getSelectedItem().getText());
         });
