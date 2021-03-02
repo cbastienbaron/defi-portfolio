@@ -73,7 +73,6 @@ public class HelpView implements Initializable {
     }
 
     public void btnTelegram()  {
-
         try {
             Desktop.getDesktop().browse(new URL("https://t.me/DeFiChainPortfolio").toURI());
         } catch (IOException | URISyntaxException e) {
@@ -88,6 +87,13 @@ public class HelpView implements Initializable {
         stage.close();
     }
 
+    public void defichainexplained() {
+        try {
+            Desktop.getDesktop().browse(new URL("https://defichain-explained.com/").toURI());
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 

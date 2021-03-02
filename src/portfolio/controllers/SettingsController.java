@@ -62,17 +62,17 @@ public class SettingsController {
                             ""; //LINUX PATH;
     public String CONFIG_FILE_PATH = getPlatform() == "win" ?
             USER_HOME_PATH + "/.defi/defi.conf" : //WIN PATH
-            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/DeFi/defi.conf" : //MAC PATH
+            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application\\ Support/DeFi/defi.conf" : //MAC PATH
                     getPlatform() == "linux" ? USER_HOME_PATH + "/.defi/defi.conf" : //LINUX PATH
                             "";
     public String DEFI_PORTFOLIO_HOME = getPlatform() == "win" ?
             System.getenv("APPDATA") + "/defi-portfolio/" : //WIN PATH
-            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/defi-portfolio/" : //MAC PATH
+            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application\\ Support/defi-portfolio/" : //MAC PATH
                     getPlatform() == "linux" ? USER_HOME_PATH + "/.config/defi-portfolio/" : //LINUX PATH;
                             "";
     public String COOKIE_FILE_PATH = getPlatform() == "win" ?
             System.getenv("APPDATA") + "/DeFi Blockchain/.cookie" : //WIN PATH
-            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/DeFi/.cookie" : //MAC PATH
+            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application\\ Support/DeFi/.cookie" : //MAC PATH
                     ""; //LINUX PATH;
 
     public String SETTING_FILE_PATH = DEFI_PORTFOLIO_HOME + "settings.csv";

@@ -1,174 +1,192 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Tooltip?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="110.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.HelpView">
-   <HBox alignment="CENTER" layoutX="51.0" layoutY="86.0" prefHeight="167.0" prefWidth="525.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane fx:id="anchorPane" prefHeight="125.0" prefWidth="781.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.HelpView">
+   <VBox layoutX="20.0" layoutY="-46.0" prefHeight="205.0" prefWidth="761.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
       <children>
-         <Button fx:id="btnGitHub" layoutX="230.0" layoutY="25.0" mnemonicParsing="false" onMouseClicked="#github" prefHeight="62.0" prefWidth="90.0">
-            <graphic>
-               <ImageView fitHeight="34.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true">
+         <HBox alignment="CENTER" prefHeight="188.0" prefWidth="761.0">
+            <children>
+               <Button fx:id="btnGitHub" contentDisplay="TOP" layoutX="230.0" layoutY="25.0" mnemonicParsing="false" onMouseClicked="#github" prefHeight="80.0" prefWidth="90.0" text="GitHub">
+                  <graphic>
+                     <ImageView fitHeight="34.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true">
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                        <image>
+                           <Image url="@../../icons/logo.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+                  <tooltip>
+                     <Tooltip text="DeFi-Portfolio GitHub" />
+                  </tooltip>
                   <cursor>
                      <Cursor fx:constant="HAND" />
                   </cursor>
-                  <image>
-                     <Image url="@../../icons/logo.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-            <tooltip>
-               <Tooltip text="DeFi-Portfolio GitHub" />
-            </tooltip>
-            <cursor>
-               <Cursor fx:constant="HAND" />
-            </cursor>
-            <padding>
-               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-            </padding>
-            <font>
-               <Font size="24.0" />
-            </font>
-            <HBox.margin>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </HBox.margin>
-         </Button>
-         <Button fx:id="btnTelegram" mnemonicParsing="false" onMouseClicked="#btnTelegram" prefHeight="62.0" prefWidth="79.0">
-            <graphic>
-               <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                  <padding>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </padding>
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </HBox.margin>
+               </Button>
+               <Button fx:id="btnTelegram" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#btnTelegram" prefHeight="80.0" prefWidth="90.0" text="Telegram">
+                  <graphic>
+                     <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                        <image>
+                           <Image url="@../../icons/telegram.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+                  <tooltip>
+                     <Tooltip text="Telegram" />
+                  </tooltip>
                   <cursor>
                      <Cursor fx:constant="HAND" />
                   </cursor>
-                  <image>
-                     <Image url="@../../icons/telegram.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-            <tooltip>
-               <Tooltip text="Telegram" />
-            </tooltip>
-            <cursor>
-               <Cursor fx:constant="HAND" />
-            </cursor>
-            <padding>
-               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-            </padding>
-            <HBox.margin>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </HBox.margin>
-         </Button>
-         <Button fx:id="btnMail" mnemonicParsing="false" onMouseClicked="#btnMailToCallback" prefHeight="62.0" prefWidth="79.0">
-            <graphic>
-               <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                  <padding>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </padding>
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </HBox.margin>
+               </Button>
+               <Button fx:id="btnMail" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#btnMailToCallback" prefHeight="80.0" prefWidth="90.0" text="Mail">
+                  <graphic>
+                     <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                        <image>
+                           <Image url="@../../icons/mail.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+                  <tooltip>
+                     <Tooltip text="Mail" />
+                  </tooltip>
                   <cursor>
                      <Cursor fx:constant="HAND" />
                   </cursor>
-                  <image>
-                     <Image url="@../../icons/mail.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-            <tooltip>
-               <Tooltip text="Mail" />
-            </tooltip>
-            <cursor>
-               <Cursor fx:constant="HAND" />
-            </cursor>
-            <padding>
-               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-            </padding>
-            <HBox.margin>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </HBox.margin>
-         </Button>
-         <Button fx:id="btnDefiChain" mnemonicParsing="false" onMouseClicked="#defichain" prefHeight="62.0" prefWidth="79.0">
-            <graphic>
-               <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                  <padding>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </padding>
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </HBox.margin>
+               </Button>
+               <Button fx:id="btnDefiChain" alignment="BOTTOM_CENTER" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#defichain" prefHeight="80.0" prefWidth="90.0" text="DeFiChain">
+                  <graphic>
+                     <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                        <image>
+                           <Image url="@../../icons/dfi-icon.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+                  <tooltip>
+                     <Tooltip text="DeFiChain Home Page" />
+                  </tooltip>
                   <cursor>
                      <Cursor fx:constant="HAND" />
                   </cursor>
-                  <image>
-                     <Image url="@../../icons/dfi-icon.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-            <tooltip>
-               <Tooltip text="DeFiChain Home Page" />
-            </tooltip>
-            <cursor>
-               <Cursor fx:constant="HAND" />
-            </cursor>
-            <padding>
-               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-            </padding>
-            <font>
-               <Font size="24.0" />
-            </font>
-            <HBox.margin>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </HBox.margin>
-         </Button>
-         <Button fx:id="btnDefiWiki" mnemonicParsing="false" onMouseClicked="#defichainwiki" prefHeight="62.0" prefWidth="113.0" text="Wiki">
-            <graphic>
-               <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                  <padding>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </padding>
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </HBox.margin>
+               </Button>
+               <Button fx:id="btnDefiWiki" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#defichainwiki" prefHeight="54.0" prefWidth="90.0" text="Wiki">
+                  <graphic>
+                     <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                        <image>
+                           <Image url="@../../icons/dfi-icon.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+                  <tooltip>
+                     <Tooltip text="DeFiChain Wiki" />
+                  </tooltip>
                   <cursor>
                      <Cursor fx:constant="HAND" />
                   </cursor>
-                  <image>
-                     <Image url="@../../icons/dfi-icon.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-            <tooltip>
-               <Tooltip text="DeFiChain Wiki" />
-            </tooltip>
-            <cursor>
-               <Cursor fx:constant="HAND" />
-            </cursor>
-            <padding>
-               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-            </padding>
-            <HBox.margin>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </HBox.margin>
-         </Button>
-      
-         <Button fx:id="btnClose" mnemonicParsing="false" onMouseClicked="#Close" prefHeight="62.0" prefWidth="79.0">
-            <graphic>
-               <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                  <padding>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </padding>
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </HBox.margin>
+               </Button>
+               <Button fx:id="btnDefiExplained" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#defichainexplained" prefHeight="54.0" prefWidth="90.0" text="Explained">
+                  <graphic>
+                     <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                        <image>
+                           <Image url="@../../icons/dfi-icon.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+                  <tooltip>
+                     <Tooltip text="DeFiChain Explained" />
+                  </tooltip>
                   <cursor>
                      <Cursor fx:constant="HAND" />
                   </cursor>
-                  <image>
-                     <Image url="@../../icons/exit.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-            <tooltip>
-               <Tooltip text="Close" />
-            </tooltip>
-            <cursor>
-               <Cursor fx:constant="HAND" />
-            </cursor>
+                  <padding>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </padding>
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </HBox.margin>
+               </Button>
+            
+               <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#Close" prefHeight="80.0" prefWidth="90.0" text="Close">
+                  <graphic>
+                     <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                        <image>
+                           <Image url="@../../icons/exit.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+                  <tooltip>
+                     <Tooltip text="Close" />
+                  </tooltip>
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+                  <padding>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </padding>
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </HBox.margin>
+               </Button>
+            </children>
             <padding>
                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
-            <HBox.margin>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </HBox.margin>
-         </Button>
+         </HBox>
       </children>
-      <padding>
-         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-      </padding>
-   </HBox>
+   </VBox>
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
    </padding>

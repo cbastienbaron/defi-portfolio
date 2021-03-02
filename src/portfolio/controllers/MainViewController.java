@@ -187,7 +187,6 @@ public class MainViewController {
     }
 
     public boolean updateTransactionData() {
-        if(!this.transactionController.getBlockCount().equals("No connection")){
             if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).exists()) {
                 int depth = Integer.parseInt(this.transactionController.getBlockCount()) - this.transactionController.getLocalBlockCount();
                 this.transactionController.updateJFrame();
@@ -196,14 +195,13 @@ public class MainViewController {
                 this.transactionController.updateJFrame();
                 return this.transactionController.updateTransactionData(Integer.parseInt(this.transactionController.getBlockCount())); // - this.transactionController.getAccountHistoryCountRpc());
             }
-        }
-        return false;
     }
 
     public void btnUpdateDatabasePressed() {
 
         if (this.updateSingleton) {
-            this.updateSingleton = false;
+
+            this.bDataBase.setValue(this.updateSingleton = false);
             if (updateTransactionData()) {
                 this.showUpdateWindow();
                 this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
@@ -212,14 +210,9 @@ public class MainViewController {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 this.strLastUpdate.setValue(dateFormat.format(date));
                 this.closeUpdateWindow();
-
-            } else {
-                if (!this.transactionController.checkRpc()) {
-                    this.strCurrentBlockOnBlockchain.set(this.settingsController.translationList.getValue().get("NoConnection").toString());
-                }
             }
         }
-        this.updateSingleton = true;
+        this.bDataBase.setValue(this.updateSingleton = true);
     }
 
     public void showUpdateWindow() {
@@ -245,33 +238,6 @@ public class MainViewController {
     }
 
     public void closeUpdateWindow() {
-        this.frameUpdate.setVisible(false);
-        this.frameUpdate.dispose();
-    }
-
-    public void showConnectingWindow() {
-        this.frameUpdate = new JFrame("Connecting to Node");
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\updating.png");
-        JLabel jl = new JLabel("     Updating local files. Please wait...!", icon, JLabel.CENTER);
-        frameUpdate.add(jl);
-
-        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            jl.setForeground(Color.WHITE);
-        } else {
-            jl.setForeground(Color.BLACK);
-        }
-        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            frameUpdate.getContentPane().setBackground(new Color(55, 62, 67));
-        }
-
-        frameUpdate.setSize(350, 125);
-        frameUpdate.setLocationRelativeTo(null);
-        frameUpdate.setUndecorated(true);
-        frameUpdate.setVisible(true);
-        frameUpdate.toFront();
-    }
-
-    public void closeConnectingWindow() {
         this.frameUpdate.setVisible(false);
         this.frameUpdate.dispose();
     }
@@ -325,11 +291,7 @@ public class MainViewController {
 
                 if(overviewSeries.getData().size() >0) maxValue += overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble();
                 this.mainView.yAxis.setUpperBound(maxValue * 1.1);
-                /*
-                if (maxValue < overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble()) {
-                    this.mainView.yAxis.setUpperBound(overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble() * 1.10);
-                    maxValue = overviewSeries.getData().stream().mapToDouble(d -> (Double) d.getYValue()).max().getAsDouble();
-                }*/
+
                 this.mainView.plotOverview.getData().add(overviewSeries);
                 this.mainView.plotOverview.setCreateSymbols(true);
             }

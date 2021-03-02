@@ -49,7 +49,16 @@ public class TransactionController {
     }
 
     public boolean checkRpc() {
-        return new File(SettingsController.getInstance().COOKIE_FILE_PATH).exists();
+        JSONObject jsonObject= getRpcResponse("{\"method\": \"getrpcinfo\"}");
+        if (jsonObject != null) {
+            if (jsonObject.get("result") != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public void startServer() {
@@ -172,7 +181,6 @@ public class TransactionController {
         List<TransactionModel> transactionList = new ArrayList<>();
 
         try {
-
             int blockCount = Integer.parseInt(getBlockCountRpc());
             int blockDepth = 10000;
             int restBlockCount = blockCount + blockDepth + 1;
@@ -262,8 +270,6 @@ public class TransactionController {
     private JSONObject getRpcResponse(String requestJson) {
 
         try {
-            if (this.checkRpc()) {
-
                 //URL url = new URL("http://" + this.settingsController.rpcbind + ":" + this.settingsController.rpcport + "/");
                 URL url = new URL("http://127.0.0.1:8554");
 
@@ -300,9 +306,9 @@ public class TransactionController {
                     SettingsController.getInstance().debouncer = true;
                     Object obj = JSONValue.parse(jsonText);
                     return (JSONObject) obj;
-                }
 
             }
+
         } catch (IOException ioException) {
             SettingsController.getInstance().runTimer = !(ioException.getMessage().equals("Connection refused: connect") & SettingsController.getInstance().debouncer);
         }
@@ -488,7 +494,17 @@ public class TransactionController {
 
         jl.setText(this.settingsController.translationList.getValue().get("ConnectNode").toString());
         startServer();
-        //TODO Wait till data
+        int errorBouncer=0;
+            while (!checkRpc() & errorBouncer<60) {
+                System.out.println("Try to connect to Server");
+                try {
+                    Thread.sleep(2000L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                errorBouncer++;
+            }
+
         List<TransactionModel> transactionListNew = getListAccountHistoryRpc(depth);
         List<TransactionModel> updateTransactionList = new ArrayList<>();
 
