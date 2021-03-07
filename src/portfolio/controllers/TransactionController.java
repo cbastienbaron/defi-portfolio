@@ -71,8 +71,8 @@ public class TransactionController {
                 case "win":
                     Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH); // + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
                     break;
-                case "nux":
-                    Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH); // + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
+                case "linux":
+                    Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e "+this.settingsController.BINARY_FILE_PATH);
                     break;
             }
             }
