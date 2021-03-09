@@ -197,7 +197,6 @@ public class TransactionController {
                     JSONObject transactionJ = (JSONObject) transaction;
 
                     for (String amount : (transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")) {
-
                         if (transactionJ.get("poolID") != null) {
                             transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", this));
                         } else {
@@ -206,7 +205,6 @@ public class TransactionController {
                     }
                 }
                 restBlockCount = blockCount - i * blockDepth;
-                ;
             }
 
             restBlockCount = restBlockCount - blockDepth;
