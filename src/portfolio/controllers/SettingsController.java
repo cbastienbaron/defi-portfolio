@@ -65,7 +65,7 @@ public class SettingsController {
             getPlatform() == "mac" ?
                     USER_HOME_PATH + "/../.." + "/Applications/defi-app.app/Contents/Resources/binary/mac/" + BINARY_FILE_NAME : //MAC PATH
                     getPlatform() == "linux" ?
-                            System.getProperty("user.dir") + "/PortfolioDateien/" + BINARY_FILE_NAME : //Linux PATH
+                            System.getProperty("user.dir") + "/PortfolioData/" + BINARY_FILE_NAME : //Linux PATH
                             "";
     public String CONFIG_FILE_PATH = getPlatform() == "win" ?
             USER_HOME_PATH + "/.defi/defi.conf" : //WIN PATH
