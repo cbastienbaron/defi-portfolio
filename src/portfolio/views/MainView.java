@@ -1,6 +1,5 @@
 package portfolio.views;
 
-import com.sun.deploy.util.SystemUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.PieChart;
 import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -36,8 +36,7 @@ import java.util.*;
 
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
-import portfolio.controllers.SettingsController;
-import portfolio.controllers.TransactionController;
+import portfolio.controllers.CheckConnection;
 import portfolio.models.PoolPairModel;
 import portfolio.models.TransactionModel;
 import portfolio.controllers.MainViewController;
@@ -79,6 +78,8 @@ public class MainView implements Initializable {
     public TabPane tabPane = new TabPane();
     @FXML
     public LineChart<Number, Number> plotRewards, plotCommissions1, plotCommissions2;
+    @FXML
+    public PieChart plotPortfolio1, plotPortfolio2;
     @FXML
     public StackedAreaChart<Number, Number> plotOverview;
     @FXML
@@ -148,6 +149,9 @@ public class MainView implements Initializable {
     public Button btnDonate;
     public Label connectionLabel;
     public Button btnConnect;
+    public Tab Portfolio;
+    public PieChart PortfolioPie;
+    public PieChart PortfolioPieFiat;
     MainViewController mainViewController = new MainViewController();
 
     public MainView() {
@@ -355,8 +359,13 @@ public class MainView implements Initializable {
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockOnBlockchain);
         this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.strLastUpdate);
         this.btnUpdateDatabase.setOnAction(e -> {
-            this.mainViewController.btnUpdateDatabasePressed();
-            if (!this.init) mainViewController.plotUpdate(this.tabPane.getSelectionModel().getSelectedItem().getText());
+
+            this.mainViewController.settingsController.runCheckTimer = true;
+            Timer checkTimer=   new Timer("");
+            this.mainViewController.transactionController.updateJFrame();
+            this.mainViewController.transactionController.jl.setText(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
+            this.mainViewController.transactionController.startServer();
+            checkTimer.scheduleAtFixedRate(new CheckConnection(this.mainViewController),0, 2000L);
         });
 
         tabPane.getSelectionModel().selectedItemProperty().addListener(
@@ -603,7 +612,6 @@ public class MainView implements Initializable {
         plotTable.getSelectionModel().setSelectionMode(
                 SelectionMode.MULTIPLE
         );
-
         timeStampColumn.setCellValueFactory(param -> param.getValue().getBlockTime());
         crypto1Column.setCellValueFactory(param -> param.getValue().getCryptoValue1().asObject());
         crypto2Column.setCellValueFactory(param -> param.getValue().getCryptoValue2().asObject());

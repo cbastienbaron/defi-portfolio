@@ -35,10 +35,10 @@ public class SettingsView implements Initializable {
     @FXML
     public Button switchButton;
     @FXML
-    private ComboBox<String> cmbLanguage, cmbPrefCurrency,cmbDecSeperator,cmbCSVSeperator,cmbPrefferedStyle;
+    private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle;
     SettingsController settingsController = SettingsController.getInstance();
 
-    public void btnSaveAndApplyPressed(){
+    public void btnSaveAndApplyPressed() {
         this.settingsController.saveSettings();
         Stage stage = (Stage) btnSaveAndApply.getScene().getWindow();
         stage.close();
@@ -48,9 +48,9 @@ public class SettingsView implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
 
-         labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
-         CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
-         prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
+        labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
+        CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
+        prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
         labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
         lblLaunchDefid.setText(this.settingsController.translationList.getValue().get("LaunchDefid").toString());
         this.cmbLanguage.getItems().addAll(this.settingsController.languages);
@@ -71,8 +71,6 @@ public class SettingsView implements Initializable {
         this.SwitchButton();
     }
 
-
-
     public void changeLanguage() {
         this.labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
         this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
@@ -81,66 +79,67 @@ public class SettingsView implements Initializable {
         this.lblLaunchDefid.setText(this.settingsController.translationList.get().get("LaunchDefid").toString());
     }
 
-        private final Rectangle back = new Rectangle(35, 15, Color.RED);
-        private String buttonStyleOff = "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 0.2, 0.0, 0.0, 2); -fx-background-color: #d6cecc;";
-        private String buttonStyleOn = "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 0.2, 0.0, 0.0, 2); -fx-background-color: #FF00AF;"; //00893d
+    private final Rectangle back = new Rectangle(35, 15, Color.RED);
+    private String buttonStyleOff = "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 0.2, 0.0, 0.0, 2); -fx-background-color: #d6cecc;";
+    private String buttonStyleOn = "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 0.2, 0.0, 0.0, 2); -fx-background-color: #FF00AF;"; //00893d
 
-        private void init() {
-           stack.getChildren().addAll(back, switchButton);
-            stack.setMinSize(35, 15);
-            back.maxWidth(35);
-            back.minWidth(30);
-            back.maxHeight(15);
-            back.minHeight(10);
-            back.setArcHeight(back.getHeight());
-            back.setArcWidth(back.getHeight());
-            back.setFill(Color.valueOf("#d6cecc"));//Grau
-            Double r = 3.0;
-            switchButton.setShape(new Circle(r));
+    private void init() {
+        stack.getChildren().addAll(back, switchButton);
+        stack.setMinSize(35, 15);
+        back.maxWidth(35);
+        back.minWidth(30);
+        back.maxHeight(15);
+        back.minHeight(10);
+        back.setArcHeight(back.getHeight());
+        back.setArcWidth(back.getHeight());
+        back.setFill(Color.valueOf("#d6cecc"));//Grau
+        Double r = 3.0;
+        switchButton.setShape(new Circle(r));
 
-            switchButton.setMaxSize(20, 20);
-            switchButton.setMinSize(20, 20);
+        switchButton.setMaxSize(20, 20);
+        switchButton.setMinSize(20, 20);
 
-            if (this.settingsController.selectedLaunchDefid) {
-                switchButton.setStyle(buttonStyleOn);
-                back.setFill(Color.valueOf("#FF00AF"));//Weiß
-                stack.setAlignment(switchButton, Pos.CENTER_RIGHT);
-            } else {
-                switchButton.setStyle(buttonStyleOff);
-                back.setFill(Color.valueOf("#d6cecc"));//Rosa
-                stack.setAlignment(switchButton, Pos.CENTER_LEFT);
-
-            }
-        }
-
-        public void updateSwitchButton(){
-
-            if (this.settingsController.selectedLaunchDefid) {
-                switchButton.setStyle(buttonStyleOff);
-                back.setFill(Color.valueOf("#d6cecc"));//Weiß
-                stack.setAlignment(switchButton, Pos.CENTER_LEFT);
-                this.settingsController.selectedLaunchDefid = false;
-            } else {
-                switchButton.setStyle(buttonStyleOn);
-                back.setFill(Color.valueOf("#FF00AF"));//Rosa
-                stack.setAlignment(switchButton, Pos.CENTER_RIGHT);
-                this.settingsController.selectedLaunchDefid = true;
-
-            }
+        if (this.settingsController.selectedLaunchDefid) {
+            switchButton.setStyle(buttonStyleOn);
+            back.setFill(Color.valueOf("#FF00AF"));//Weiß
+            stack.setAlignment(switchButton, Pos.CENTER_RIGHT);
+        } else {
+            switchButton.setStyle(buttonStyleOff);
+            back.setFill(Color.valueOf("#d6cecc"));//Rosa
+            stack.setAlignment(switchButton, Pos.CENTER_LEFT);
 
         }
+    }
+
+    public void updateSwitchButton() {
+
+        if (this.settingsController.selectedLaunchDefid) {
+            switchButton.setStyle(buttonStyleOff);
+            back.setFill(Color.valueOf("#d6cecc"));//Weiß
+            stack.setAlignment(switchButton, Pos.CENTER_LEFT);
+            this.settingsController.selectedLaunchDefid = false;
+        } else {
+            switchButton.setStyle(buttonStyleOn);
+            back.setFill(Color.valueOf("#FF00AF"));//Rosa
+            stack.setAlignment(switchButton, Pos.CENTER_RIGHT);
+            this.settingsController.selectedLaunchDefid = true;
+
+        }
+
+    }
+
     public void SwitchButton() {
-            init();
-            EventHandler<Event> click = new EventHandler<Event>() {
-                @Override
-                public void handle(Event e) {
-                    updateSwitchButton();
-                }
-            };
+        init();
+        EventHandler<Event> click = new EventHandler<Event>() {
+            @Override
+            public void handle(Event e) {
+                updateSwitchButton();
+            }
+        };
         switchButton.setFocusTraversable(false);
         switchButton.setOnMouseClicked(click);
         stack.setOnMouseClicked(click);
-        }
+    }
 
 }
 

@@ -1,6 +1,7 @@
 package portfolio.controllers;
 
 import javafx.beans.property.*;
+import javafx.concurrent.Task;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -46,6 +47,7 @@ public class SettingsController {
     public ObjectProperty<LocalDate> dateFrom = new SimpleObjectProperty();
     public ObjectProperty<LocalDate> dateTo = new SimpleObjectProperty();
     public ObjectProperty<JSONObject> translationList = new SimpleObjectProperty();
+    public Task task;
     public String selectedIntervallInt = "Daily";
     public boolean showDisclaim = true;
     public boolean selectedLaunchDefid = false;
@@ -64,23 +66,19 @@ public class SettingsController {
                     USER_HOME_PATH + "/../.." + "/Applications/defi-app.app/Contents/Resources/binary/mac/" + BINARY_FILE_NAME : //MAC PATH
                     getPlatform() == "linux" ?
                             System.getProperty("user.dir") + "/PortfolioDateien/" + BINARY_FILE_NAME : //Linux PATH
-                            ""; //LINUX PATH;
+                            "";
     public String CONFIG_FILE_PATH = getPlatform() == "win" ?
             USER_HOME_PATH + "/.defi/defi.conf" : //WIN PATH
-            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application\\ Support/DeFi/defi.conf" : //MAC PATH
+            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/DeFi/defi.conf" : //MAC PATH
                     getPlatform() == "linux" ? USER_HOME_PATH + "/.defi/defi.conf" : //LINUX PATH
                             "";
     public String DEFI_PORTFOLIO_HOME = getPlatform() == "win" ?
             System.getenv("APPDATA") + "/defi-portfolio/" : //WIN PATH
-            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application\\ Support/defi-portfolio/" : //MAC PATH
-                    getPlatform() == "linux" ? System.getProperty("user.dir") + "/PortfolioDateien/" : //LINUX PATH;
+            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/defi-portfolio/" : //MAC PATH
+                    getPlatform() == "linux" ? System.getProperty("user.dir") + "/PortfolioData/" : //LINUX PATH;
                             "";
-    public String COOKIE_FILE_PATH = getPlatform() == "win" ?
-            System.getenv("APPDATA") + "/DeFi Blockchain/.cookie" : //WIN PATH
-            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application\\ Support/DeFi/.cookie" : //MAC PATH
-                    getPlatform() == "linux" ? USER_HOME_PATH + "/.defi/bla.cookie"  : //LINUX PATH;
-                    ""; //LINUX PATH;
-
+    public String PORTFOLIO_CONFIG_FILE_PATH = System.getProperty("user.dir") + "/PortfolioData/defi.conf";
+        
     public String SETTING_FILE_PATH = DEFI_PORTFOLIO_HOME + "settings.csv";
     //All relevant paths and files
     public String strTransactionData = "transactionData.portfolio";
@@ -103,6 +101,8 @@ public class SettingsController {
     public Timer timer = new Timer("Timer");
 
     public String lastExportPath = USER_HOME_PATH;
+    public boolean runCheckTimer;
+    public int errorBouncer=0;
 
     private SettingsController() throws IOException {
         FileHandler fh;
@@ -216,19 +216,17 @@ public class SettingsController {
     }
 
     public void getConfig() {
-        long startTime = System.currentTimeMillis();
 
         // copy config file
         try {
             File pathConfig = new File(this.CONFIG_FILE_PATH);
-            File pathPortfoliohDataConfig = new File(this.DEFI_PORTFOLIO_HOME+"\\defi.conf");
-
+            File pathPortfoliohDataConfig = new File(this.PORTFOLIO_CONFIG_FILE_PATH);
             Files.copy(pathConfig.toPath(), pathPortfoliohDataConfig.toPath());
         }
         catch(Exception e){
         }
         // adapt port
-        Path path = Paths.get(this.DEFI_PORTFOLIO_HOME+"\\defi.conf");
+        Path path = Paths.get(this.PORTFOLIO_CONFIG_FILE_PATH);
         Charset charset = StandardCharsets.UTF_8;
         try {
             String content = new String(Files.readAllBytes(path), charset);
@@ -236,12 +234,11 @@ public class SettingsController {
             Files.write(path, content.getBytes(charset));
         }catch(Exception e){
         }
-        long endTime = System.currentTimeMillis();
-        System.out.println(endTime- startTime);
+
         // Load config
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader(this.DEFI_PORTFOLIO_HOME+"\\defi.conf"));
+            reader = new BufferedReader(new FileReader(this.PORTFOLIO_CONFIG_FILE_PATH));
 
             File configFile = new File(this.CONFIG_FILE_PATH);
             Properties configProps = new Properties();

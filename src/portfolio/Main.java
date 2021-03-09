@@ -17,33 +17,27 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
 
         Parent root = null;
-        // Splashscreen
-        Splash task = new Splash();
-        Thread t = new Thread(task);
-        t.start();
-
         // Main Window
         try {
             root = FXMLLoader.load(getClass().getResource("views/MainView.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         assert root != null;
         Scene scene = new Scene(root);
         stage = new Stage();
 
         final Delta dragDelta = new Delta();
-        //stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("DeFi-Portfolio " + SettingsController.getInstance().Version);
-
-
         stage.getIcons().add(new Image(new File( System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").toURI().toString()));
         stage.setScene(scene);
         stage.setMinHeight(700);
         stage.setMinWidth(1200);
         stage.show();
         // Stop Splashsccreen
+        File file = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME+"splash.portfolio");
+        if(file.exists())file.delete();
+
         stage.setOnCloseRequest(we -> {
             if(SettingsController.getInstance().getPlatform().equals("win")){
                 try {
@@ -52,7 +46,6 @@ public class Main extends Application {
                     e.printStackTrace();
                 }}
         });
-        task.kill();
 
         // Disclaimer anzeigen
         if(SettingsController.getInstance().showDisclaim) {
@@ -85,7 +78,6 @@ public class Main extends Application {
     }
 
     static class Delta { double x, y; }
-
 
     public static void main(String[] args) {
         launch(args);

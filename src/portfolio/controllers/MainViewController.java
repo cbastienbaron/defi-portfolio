@@ -4,6 +4,8 @@ import javafx.animation.PauseTransition;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.Tooltip;
@@ -55,7 +57,6 @@ public class MainViewController {
     public MainViewController() {
 
         this.settingsController.logger.info("Start DeFi-Portfolio");
-
         if(this.settingsController.selectedLaunchDefid){
             if(!this.transactionController.checkRpc())this.transactionController.startServer();
         }
@@ -83,6 +84,8 @@ public class MainViewController {
                     }
                 }
         );
+
+       double a =  this.transactionController.getTotalCoinAmount(transactionController.getTransactionList(),"DFI");
         startTimer();
     }
 
@@ -106,17 +109,17 @@ public class MainViewController {
             sb.append("\n");
         }
         for (TransactionModel transaction : list) {
-            sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTime().getValue())).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.getType().getValue()).append(this.settingsController.selectedSeperator.getValue());
-            String[] CoinsAndAmounts = this.transactionController.splitCoinsAndAmounts(transaction.getAmount().getValue());
+            sb.append(this.transactionController.convertTimeStampToString(transaction.getBlockTimeValue())).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getTypeValue()).append(this.settingsController.selectedSeperator.getValue());
+            String[] CoinsAndAmounts = this.transactionController.splitCoinsAndAmounts(transaction.getAmountValue());
             sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]))).append(this.settingsController.selectedSeperator.getValue());
             sb.append(CoinsAndAmounts[1]).append(this.settingsController.selectedSeperator.getValue());
             sb.append(String.format(localeDecimal, "%.8f", transaction.getFiatValueValue())).append(this.settingsController.selectedSeperator.getValue());
             sb.append(this.settingsController.selectedFiatCurrency.getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.getPoolID().getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.getBlockHeight().getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.getBlockHash().getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.getOwner().getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getPoolIDValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getBlockHeightValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getBlockHashValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(transaction.getOwnerValue()).append(this.settingsController.selectedSeperator.getValue());
             sb.append(transaction.getTxIDValue());
             sb.append("\n");
         }
@@ -154,7 +157,7 @@ public class MainViewController {
             switch (this.mainView.tabPane.getSelectionModel().getSelectedItem().getText()) {
                 case "Overview":
                 case "Übersicht":
-                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(poolPair.getBlockTime()).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(String.format(localeDecimal, "%.8f", poolPair.getFiatValue().getValue())).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
                     sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue2().getValue()));
@@ -189,11 +192,9 @@ public class MainViewController {
     public boolean updateTransactionData() {
             if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).exists()) {
                 int depth = Integer.parseInt(this.transactionController.getBlockCount()) - this.transactionController.getLocalBlockCount();
-                this.transactionController.updateJFrame();
-                return this.transactionController.updateTransactionData(depth);
+                return  transactionController.updateTransactionData(depth);
             } else {
-                this.transactionController.updateJFrame();
-                return this.transactionController.updateTransactionData(Integer.parseInt(this.transactionController.getBlockCount())); // - this.transactionController.getAccountHistoryCountRpc());
+                      return  transactionController.updateTransactionData(Integer.parseInt(transactionController.getBlockCount())); // - this.transactionController.getAccountHistoryCountRpc());
             }
     }
 
@@ -203,47 +204,21 @@ public class MainViewController {
 
             this.bDataBase.setValue(this.updateSingleton = false);
             if (updateTransactionData()) {
-                this.showUpdateWindow();
                 this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
                 this.strCurrentBlockOnBlockchain.set(this.transactionController.getBlockCount());
                 Date date = new Date(System.currentTimeMillis());
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 this.strLastUpdate.setValue(dateFormat.format(date));
-                this.closeUpdateWindow();
             }
         }
         this.bDataBase.setValue(this.updateSingleton = true);
     }
 
-    public void showUpdateWindow() {
-        this.frameUpdate = new JFrame("Loading Database");
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "\\defi-portfolio\\src\\icons\\updating.png");
-        JLabel jl = new JLabel("     Updating local files. Please wait...!", icon, JLabel.CENTER);
-        frameUpdate.add(jl);
-
-        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            jl.setForeground(Color.WHITE);
-        } else {
-            jl.setForeground(Color.BLACK);
-        }
-        if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
-            frameUpdate.getContentPane().setBackground(new Color(55, 62, 67));
-        }
-
-        frameUpdate.setSize(350, 125);
-        frameUpdate.setLocationRelativeTo(null);
-        frameUpdate.setUndecorated(true);
-        frameUpdate.setVisible(true);
-        frameUpdate.toFront();
-    }
-
-    public void closeUpdateWindow() {
-        this.frameUpdate.setVisible(false);
-        this.frameUpdate.dispose();
-    }
-
     public void plotUpdate(String openedTab) {
         switch (openedTab) {
+            case "Portfolio":
+                updatePortfolio();
+                break;
             case "Overview":
             case "Übersicht":
                 updateOverview();
@@ -260,6 +235,33 @@ public class MainViewController {
                 break;
         }
     }
+
+    private void updatePortfolio() {
+
+
+
+        this.poolPairModelList.clear();
+        this.poolPairList.clear();
+
+        ObservableList<PieChart.Data> pieChartData =                FXCollections.observableArrayList();
+
+
+
+        for (String transaction :  this.transactionController.getPortfolioList().keySet()) {
+
+            for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervallInt).entrySet()) {
+                pieChartData.add( new PieChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value()));
+                   // this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue()));
+            }
+            this.mainView.plotPortfolio2.setData(pieChartData);
+            this.mainView.plotPortfolio2.setTitle("Fiat Portfolio");
+
+            this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
+            this.poolPairList.clear();
+            this.poolPairList.addAll(this.poolPairModelList);
+        }
+        }
+
 
     public void updateOverview() {
         this.poolPairModelList.clear();
@@ -588,7 +590,9 @@ public class MainViewController {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("CSV files", "*.csv")
         );
-        fileChooser.setInitialDirectory(new File(this.settingsController.lastExportPath));
+        if(new File(this.settingsController.lastExportPath).isDirectory()){
+            fileChooser.setInitialDirectory(new File(this.settingsController.lastExportPath));
+        }
         Date date = new Date(System.currentTimeMillis());
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         fileChooser.setInitialFileName(dateFormat.format(date)+"_Portfolio_Export_"+this.mainView.tabPane.getSelectionModel().getSelectedItem().getText());
