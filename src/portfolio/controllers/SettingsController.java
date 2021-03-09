@@ -6,6 +6,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Properties;
@@ -58,7 +63,7 @@ public class SettingsController {
             getPlatform() == "mac" ?
                     USER_HOME_PATH + "/../.." + "/Applications/defi-app.app/Contents/Resources/binary/mac/" + BINARY_FILE_NAME : //MAC PATH
                     getPlatform() == "linux" ?
-                            USER_HOME_PATH + "/.config/defi-portfolio/" + BINARY_FILE_NAME : //Linux PATH
+                            System.getProperty("user.dir") + "/PortfolioDateien/" + BINARY_FILE_NAME : //Linux PATH
                             ""; //LINUX PATH;
     public String CONFIG_FILE_PATH = getPlatform() == "win" ?
             USER_HOME_PATH + "/.defi/defi.conf" : //WIN PATH
@@ -211,9 +216,32 @@ public class SettingsController {
     }
 
     public void getConfig() {
+        long startTime = System.currentTimeMillis();
+
+        // copy config file
+        try {
+            File pathConfig = new File(this.CONFIG_FILE_PATH);
+            File pathPortfoliohDataConfig = new File(this.DEFI_PORTFOLIO_HOME+"\\defi.conf");
+
+            Files.copy(pathConfig.toPath(), pathPortfoliohDataConfig.toPath());
+        }
+        catch(Exception e){
+        }
+        // adapt port
+        Path path = Paths.get(this.DEFI_PORTFOLIO_HOME+"\\defi.conf");
+        Charset charset = StandardCharsets.UTF_8;
+        try {
+            String content = new String(Files.readAllBytes(path), charset);
+            content = content.replaceAll("8555", "8554");
+            Files.write(path, content.getBytes(charset));
+        }catch(Exception e){
+        }
+        long endTime = System.currentTimeMillis();
+        System.out.println(endTime- startTime);
+        // Load config
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader(this.CONFIG_FILE_PATH));
+            reader = new BufferedReader(new FileReader(this.DEFI_PORTFOLIO_HOME+"\\defi.conf"));
 
             File configFile = new File(this.CONFIG_FILE_PATH);
             Properties configProps = new Properties();

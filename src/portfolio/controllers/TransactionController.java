@@ -279,17 +279,17 @@ public class TransactionController {
                 conn.setReadTimeout((int) TimeUnit.MINUTES.toMillis(0L));
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
-                String strCookieData = ""; // = "Basic " + new String(Base64.getEncoder().encode((this.settingsController.auth.getBytes())));
-                BufferedReader reader;
-                reader = new BufferedReader(new FileReader(
-                        SettingsController.getInstance().COOKIE_FILE_PATH));
-                String line = reader.readLine();
-                String[] kvpSplit = line.split(":");
-                if (Arrays.stream(kvpSplit).count() == 2) {
-                    strCookieData = kvpSplit[0] + ":" + kvpSplit[1];
-                }
-                reader.close();
-                String basicAuth = "Basic " + new String(Base64.getEncoder().encode((strCookieData.getBytes())));
+//                String strCookieData = ""; // = "Basic " + new String(Base64.getEncoder().encode((this.settingsController.auth.getBytes())));
+//                BufferedReader reader;
+//                reader = new BufferedReader(new FileReader(
+//                        SettingsController.getInstance().CONFIG_FILE_PATH));
+//                String line = reader.readLine();
+//                String[] kvpSplit = line.split(":");
+//                if (Arrays.stream(kvpSplit).count() == 2) {
+//                    strCookieData = kvpSplit[0] + ":" + kvpSplit[1];
+//                }
+//                reader.close();
+                String basicAuth = "Basic " + this.settingsController.rpcauth;
                 conn.setRequestProperty("Authorization", basicAuth);
                 conn.setRequestProperty("Content-Type", "application/json-rpc");
                 conn.setDoOutput(true);
