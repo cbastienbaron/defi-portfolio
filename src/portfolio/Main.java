@@ -35,7 +35,7 @@ public class Main extends Application {
         stage.setMinWidth(1200);
         stage.show();
         // Stop Splashsccreen
-        File file = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME+"splash.portfolio");
+        File file = new File(System.getProperty("user.dir")+"/PortfolioData/" +"splash.portfolio");
         if(file.exists())file.delete();
 
         stage.setOnCloseRequest(we -> {

@@ -362,20 +362,29 @@ public class MainView implements Initializable {
         this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.strLastUpdate);
         this.btnUpdateDatabase.setOnAction(e -> {
 
+            this.mainViewController.transactionController.startServer();
             this.mainViewController.settingsController.runCheckTimer = true;
             Timer checkTimer=   new Timer("");
-            this.mainViewController.transactionController.updateJFrame();
             if(SettingsController.getInstance().getPlatform().equals("mac")){
                 try {
                     FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
                     myWriter.write(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
                     myWriter.close();
+                    try {
+                        Process ps = null;
+                        SettingsController.getInstance().logger.warning("Test.");
+                        ps = Runtime.getRuntime().exec("java -jar UpdateData.jar "+this.mainViewController.settingsController.selectedStyleMode);
+                    SettingsController.getInstance().logger.warning("Test2.");
+                    } catch (IOException r) {
+                        r.printStackTrace();
+                    }
                 } catch (IOException h) {
                     SettingsController.getInstance().logger.warning("Could not write to update.portfolio."); }
             }else{
+                this.mainViewController.transactionController.updateJFrame();
                 this.mainViewController.transactionController.jl.setText(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
             }
-             this.mainViewController.transactionController.startServer();
+
             checkTimer.scheduleAtFixedRate(new CheckConnection(this.mainViewController),0, 2000L);
         });
 

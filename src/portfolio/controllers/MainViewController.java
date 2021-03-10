@@ -204,14 +204,6 @@ public class MainViewController {
 
         if (this.updateSingleton) {
             this.bDataBase.setValue(this.updateSingleton = false);
-
-            File myObj = new File(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
-            try {
-                myObj.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
             if (updateTransactionData()) {
                 this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
                 this.strCurrentBlockOnBlockchain.set(this.transactionController.getBlockCount());
@@ -219,7 +211,7 @@ public class MainViewController {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 this.strLastUpdate.setValue(dateFormat.format(date));
             }
-            myObj.delete();
+            if(new File(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio").exists())new File(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio").delete();
         }
         this.bDataBase.setValue(this.updateSingleton = true);
     }
