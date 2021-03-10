@@ -23,6 +23,8 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -201,8 +203,15 @@ public class MainViewController {
     public void btnUpdateDatabasePressed() {
 
         if (this.updateSingleton) {
-
             this.bDataBase.setValue(this.updateSingleton = false);
+
+            File myObj = new File(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+            try {
+                myObj.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             if (updateTransactionData()) {
                 this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
                 this.strCurrentBlockOnBlockchain.set(this.transactionController.getBlockCount());
@@ -210,6 +219,7 @@ public class MainViewController {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 this.strLastUpdate.setValue(dateFormat.format(date));
             }
+            myObj.delete();
         }
         this.bDataBase.setValue(this.updateSingleton = true);
     }

@@ -190,7 +190,16 @@ public class TransactionController {
             int blockDepth = 10000;
             int restBlockCount = blockCount + blockDepth + 1;
             for (int i = 0; i < Math.ceil(depth / blockDepth); i = i + 1) {
-                this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
+                if(this.settingsController.getPlatform().equals("mac")){
+                    try {
+                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+                        myWriter.write(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
+                        myWriter.close();
+                    } catch (IOException e) {
+                        this.settingsController.logger.warning("Could not write to update.portfolio."); }
+                }else{
+                    this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
+                }
                 JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
                 JSONArray transactionJson = (JSONArray) jsonObject.get("result");
                 for (Object transaction : transactionJson) {
@@ -524,7 +533,17 @@ public class TransactionController {
                     //
                 if (transactionListNew.get(i).getTypeValue().equals("Rewards") | transactionListNew.get(i).getTypeValue().equals("Commission"))
                         addToPortfolioModel(transactionListNew.get(i));
-                jl.setText(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
+
+                if(this.settingsController.getPlatform().equals("mac")){
+                    try {
+                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+                        myWriter.write(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
+                        myWriter.close();
+                    } catch (IOException e) {
+                        this.settingsController.logger.warning("Could not write to update.portfolio."); }
+                }else{
+                    jl.setText(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
+                }
             }
         }
         int i = 1;
@@ -548,8 +567,17 @@ public class TransactionController {
                         sb.append(transactionModel.getTxIDValue());
 
                     sb.append("\n");
-                    jl.setText(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
-                    i++;
+                    if(this.settingsController.getPlatform().equals("mac")){
+                        try {
+                            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+                            myWriter.write(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
+                            myWriter.close();
+                        } catch (IOException e) {
+                            this.settingsController.logger.warning("Could not write to update.portfolio."); }
+                    }else{
+                        jl.setText(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
+                    }
+                     i++;
                     writer.write(sb.toString());
                     sb = null;
                 }

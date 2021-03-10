@@ -27,6 +27,7 @@ import java.awt.*;
 import java.awt.MenuBar;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -37,6 +38,7 @@ import java.util.*;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import portfolio.controllers.CheckConnection;
+import portfolio.controllers.SettingsController;
 import portfolio.models.PoolPairModel;
 import portfolio.models.TransactionModel;
 import portfolio.controllers.MainViewController;
@@ -363,8 +365,17 @@ public class MainView implements Initializable {
             this.mainViewController.settingsController.runCheckTimer = true;
             Timer checkTimer=   new Timer("");
             this.mainViewController.transactionController.updateJFrame();
-            this.mainViewController.transactionController.jl.setText(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
-            this.mainViewController.transactionController.startServer();
+            if(SettingsController.getInstance().getPlatform().equals("mac")){
+                try {
+                    FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+                    myWriter.write(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
+                    myWriter.close();
+                } catch (IOException h) {
+                    SettingsController.getInstance().logger.warning("Could not write to update.portfolio."); }
+            }else{
+                this.mainViewController.transactionController.jl.setText(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
+            }
+             this.mainViewController.transactionController.startServer();
             checkTimer.scheduleAtFixedRate(new CheckConnection(this.mainViewController),0, 2000L);
         });
 
