@@ -2,6 +2,8 @@
 
 Use DeFi-Portfolio to export, analyse and visualize your transactions, rewards and commissions of your liquidity mining pools or DEX transactionsto interact with DeFiChain. 
 
+-> https://t.me/DeFiChainPortfolio
+
 # Documentation
 
 - [Getting started](#getting-started)
