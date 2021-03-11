@@ -372,9 +372,7 @@ public class MainView implements Initializable {
                     myWriter.close();
                     try {
                         Process ps = null;
-                        SettingsController.getInstance().logger.warning("Test.");
-                        ps = Runtime.getRuntime().exec("java -jar UpdateData.jar "+this.mainViewController.settingsController.selectedStyleMode);
-                    SettingsController.getInstance().logger.warning("Test2.");
+                        ps = Runtime.getRuntime().exec("java -jar UpdateData.jar "+this.mainViewController.settingsController.selectedStyleMode.getValue());
                     } catch (IOException r) {
                         r.printStackTrace();
                     }
@@ -384,7 +382,6 @@ public class MainView implements Initializable {
                 this.mainViewController.transactionController.updateJFrame();
                 this.mainViewController.transactionController.jl.setText(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
             }
-
             checkTimer.scheduleAtFixedRate(new CheckConnection(this.mainViewController),0, 2000L);
         });
 

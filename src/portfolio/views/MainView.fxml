@@ -181,7 +181,6 @@
                </GridPane.margin>
             </Button>
             <Label id="strCurrentBlockLocally" fx:id="UpdateText" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="565.0" prefHeight="70.0" prefWidth="187.0" GridPane.rowIndex="6" />
-            <Label fx:id="updateLabel" text="Test" GridPane.rowIndex="6" />
             </children>
         </GridPane>
       <padding>
