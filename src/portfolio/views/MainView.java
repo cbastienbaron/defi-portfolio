@@ -372,7 +372,7 @@ public class MainView implements Initializable {
                     myWriter.close();
                     try {
                         Process ps = null;
-                        ps = Runtime.getRuntime().exec("java -jar UpdateData.jar "+this.mainViewController.settingsController.selectedStyleMode.getValue());
+                        ps = Runtime.getRuntime().exec("java -jar UpdateData.jar "+this.mainViewController.settingsController.selectedStyleMode.getValue().replace(" ", "") );
                     } catch (IOException r) {
                         r.printStackTrace();
                     }
