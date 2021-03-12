@@ -71,7 +71,11 @@ public class TransactionController {
             if (!this.checkRpc()) {
                 switch (this.settingsController.getPlatform()) {
                     case "mac":
-                        Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"defi.sh");
+                        myWriter.write(this.settingsController.BINARY_FILE_PATH+ " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        myWriter.close();
+
+                        Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir") + "/PortfolioData/./"+"defi.sh");
                         break;
                     case "win":
                         Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH); // + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
@@ -523,7 +527,7 @@ public class TransactionController {
 
         List<TransactionModel> transactionListNew = getListAccountHistoryRpc(depth);
         List<TransactionModel> updateTransactionList = new ArrayList<>();
-
+int counter =0;
         for (int i = transactionListNew.size() - 1; i >= 0; i--) {
             if (transactionListNew.get(i).getBlockHeightValue() > this.localBlockCount) {
                 this.transactionList.add(transactionListNew.get(i));
@@ -536,14 +540,18 @@ public class TransactionController {
 
                 if(this.settingsController.getPlatform().equals("mac")){
                     try {
+                        if(counter >1000){
                         FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
                         myWriter.write(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
                         myWriter.close();
+                        counter=0;
+                        }
                     } catch (IOException e) {
                         this.settingsController.logger.warning("Could not write to update.portfolio."); }
                 }else{
                     jl.setText(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
                 }
+                counter++;
             }
         }
         int i = 1;
@@ -551,7 +559,7 @@ public class TransactionController {
             try {
                 PrintWriter writer = new PrintWriter(new FileWriter(this.strTransactionData, true));
                 String exportSplitter = ";";
-
+                counter=0;
                 for (TransactionModel transactionModel : updateTransactionList) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(transactionModel.getBlockTimeValue()).append(exportSplitter);
@@ -569,9 +577,12 @@ public class TransactionController {
                     sb.append("\n");
                     if(this.settingsController.getPlatform().equals("mac")){
                         try {
+                            if(counter >1000){
                             FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
                             myWriter.write(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
                             myWriter.close();
+                            counter=0;
+                            }
                         } catch (IOException e) {
                             this.settingsController.logger.warning("Could not write to update.portfolio."); }
                     }else{
@@ -582,7 +593,7 @@ public class TransactionController {
                     sb = null;
                 }
                 writer.close();
-                this.frameUpdate.dispose();
+                if(!this.settingsController.getPlatform().equals("mac"))this.frameUpdate.dispose();
                 this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).getBlockHeightValue();
                 stopServer();
                 return true;
@@ -590,7 +601,7 @@ public class TransactionController {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
         }
-        this.frameUpdate.dispose();
+        if(!this.settingsController.getPlatform().equals("mac"))this.frameUpdate.dispose();
         return false;
     }
 

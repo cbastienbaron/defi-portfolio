@@ -196,7 +196,7 @@ public class MainViewController {
                 int depth = Integer.parseInt(this.transactionController.getBlockCount()) - this.transactionController.getLocalBlockCount();
                 return  transactionController.updateTransactionData(depth);
             } else {
-                      return  transactionController.updateTransactionData(Integer.parseInt(transactionController.getBlockCount())); // - this.transactionController.getAccountHistoryCountRpc());
+                return  transactionController.updateTransactionData(Integer.parseInt(transactionController.getBlockCount())); // - this.transactionController.getAccountHistoryCountRpc());
             }
     }
 
@@ -211,7 +211,8 @@ public class MainViewController {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 this.strLastUpdate.setValue(dateFormat.format(date));
             }
-            if(new File(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio").exists())new File(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio").delete();
+            File file = new File(System.getProperty("user.dir")+"/PortfolioData/" +"update.portfolio");
+            if(file.exists())file.delete();
         }
         this.bDataBase.setValue(this.updateSingleton = true);
     }
