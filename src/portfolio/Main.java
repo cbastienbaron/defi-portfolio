@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import portfolio.controllers.SettingsController;
+import portfolio.controllers.TransactionController;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +40,7 @@ public class Main extends Application {
         if(file.exists())file.delete();
 
         stage.setOnCloseRequest(we -> {
+            TransactionController.getInstance().stopServer();
             if(SettingsController.getInstance().getPlatform().equals("win")){
                 try {
                     Runtime.getRuntime().exec("cmd /c taskkill /f /im java.exe");
