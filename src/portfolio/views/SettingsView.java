@@ -29,11 +29,17 @@ public class SettingsView implements Initializable {
     public Label prefferedStyle;
     public Label labelDec;
     public Label lblLaunchDefid;
+    public Label lblLaunchSync;
     public AnchorPane anchorPane;
     @FXML
     public StackPane stack;
+
+    @FXML
+    public StackPane stackSync;
     @FXML
     public Button switchButton;
+    @FXML
+    public Button switchButtonSync;
     @FXML
     private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle;
     SettingsController settingsController = SettingsController.getInstance();
@@ -47,12 +53,12 @@ public class SettingsView implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-
-        labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
-        CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
-        prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
-        labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
-        lblLaunchDefid.setText(this.settingsController.translationList.getValue().get("LaunchDefid").toString());
+        this.labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
+        this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
+        this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
+        this.labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
+        this.lblLaunchDefid.setText(this.settingsController.translationList.getValue().get("LaunchDefid").toString());
+        this.lblLaunchSync.setText(this.settingsController.translationList.getValue().get("LaunchSync").toString());
         this.cmbLanguage.getItems().addAll(this.settingsController.languages);
         this.cmbLanguage.valueProperty().bindBidirectional(this.settingsController.selectedLanguage);
 
@@ -69,17 +75,20 @@ public class SettingsView implements Initializable {
         this.cmbPrefferedStyle.valueProperty().bindBidirectional(this.settingsController.selectedStyleMode);
 
         this.SwitchButton();
+        this.SwitchButtonSync();
     }
 
     public void changeLanguage() {
         this.labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
         this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
         this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
-        labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
+        this.labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
         this.lblLaunchDefid.setText(this.settingsController.translationList.get().get("LaunchDefid").toString());
+        this.lblLaunchSync.setText(this.settingsController.translationList.getValue().get("LaunchSync").toString());
     }
 
     private final Rectangle back = new Rectangle(35, 15, Color.RED);
+    private final Rectangle backSync = new Rectangle(35, 15, Color.RED);
     private String buttonStyleOff = "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 0.2, 0.0, 0.0, 2); -fx-background-color: #d6cecc;";
     private String buttonStyleOn = "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 0.2, 0.0, 0.0, 2); -fx-background-color: #FF00AF;"; //00893d
 
@@ -111,6 +120,34 @@ public class SettingsView implements Initializable {
         }
     }
 
+    private void initSync() {
+        stackSync.getChildren().addAll(backSync, switchButtonSync);
+        stackSync.setMinSize(35, 15);
+        backSync.maxWidth(35);
+        backSync.minWidth(30);
+        backSync.maxHeight(15);
+        backSync.minHeight(10);
+        backSync.setArcHeight(backSync.getHeight());
+        backSync.setArcWidth(backSync.getHeight());
+        backSync.setFill(Color.valueOf("#d6cecc"));//Grau
+        Double r = 3.0;
+        switchButtonSync.setShape(new Circle(r));
+
+        switchButtonSync.setMaxSize(20, 20);
+        switchButtonSync.setMinSize(20, 20);
+
+        if (this.settingsController.selectedLaunchSync) {
+            switchButtonSync.setStyle(buttonStyleOn);
+            backSync.setFill(Color.valueOf("#FF00AF"));//Weiß
+            stackSync.setAlignment(switchButtonSync, Pos.CENTER_RIGHT);
+        } else {
+            switchButtonSync.setStyle(buttonStyleOff);
+            backSync.setFill(Color.valueOf("#d6cecc"));//Rosa
+            stackSync.setAlignment(switchButtonSync, Pos.CENTER_LEFT);
+
+        }
+    }
+
     public void updateSwitchButton() {
 
         if (this.settingsController.selectedLaunchDefid) {
@@ -123,7 +160,22 @@ public class SettingsView implements Initializable {
             back.setFill(Color.valueOf("#FF00AF"));//Rosa
             stack.setAlignment(switchButton, Pos.CENTER_RIGHT);
             this.settingsController.selectedLaunchDefid = true;
+        }
 
+    }
+
+    public void updateSwitchButtonSync() {
+
+        if (this.settingsController.selectedLaunchSync) {
+            switchButtonSync.setStyle(buttonStyleOff);
+            backSync.setFill(Color.valueOf("#d6cecc"));//Weiß
+            stackSync.setAlignment(switchButtonSync, Pos.CENTER_LEFT);
+            this.settingsController.selectedLaunchSync = false;
+        } else {
+            switchButtonSync.setStyle(buttonStyleOn);
+            backSync.setFill(Color.valueOf("#FF00AF"));//Rosa
+            stackSync.setAlignment(switchButtonSync, Pos.CENTER_RIGHT);
+            this.settingsController.selectedLaunchSync = true;
         }
 
     }
@@ -139,6 +191,20 @@ public class SettingsView implements Initializable {
         switchButton.setFocusTraversable(false);
         switchButton.setOnMouseClicked(click);
         stack.setOnMouseClicked(click);
+    }
+
+
+    private void SwitchButtonSync() {
+        initSync();
+        EventHandler<Event> click = new EventHandler<Event>() {
+            @Override
+            public void handle(Event e) {
+                updateSwitchButtonSync();
+            }
+        };
+        switchButtonSync.setFocusTraversable(false);
+        switchButtonSync.setOnMouseClicked(click);
+        stackSync.setOnMouseClicked(click);
     }
 
 }

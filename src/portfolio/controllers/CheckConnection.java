@@ -30,7 +30,7 @@ public class CheckConnection extends TimerTask {
                             }
                         } else {
 
-                            if (this.mainViewController.settingsController.selectedLaunchSync) {
+                            if (!this.mainViewController.settingsController.selectedLaunchSync) {
                                 SettingsController.getInstance().runCheckTimer = false;
                                 SettingsController.getInstance().errorBouncer = 0;
                                 this.mainViewController.btnUpdateDatabasePressed();
@@ -50,7 +50,7 @@ public class CheckConnection extends TimerTask {
                                 }else{
                                     TransactionController.getInstance().jl.setText(SettingsController.getInstance().translationList.getValue().get("SyncData").toString() +"("+currentBlockCount+"/"+maxBlockCount+")");
                                 }
-                                this.mainViewController.settingsController.selectedLaunchSync = currentBlockCount>=maxBlockCount;
+                                this.mainViewController.settingsController.selectedLaunchSync = currentBlockCount<maxBlockCount;
                             }
                         }
                     }

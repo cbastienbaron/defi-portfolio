@@ -39,7 +39,6 @@ public class SettingsController {
     public StringProperty selectedDecimal = new SimpleStringProperty(".");
     public StringProperty selectedSeperator = new SimpleStringProperty(",");
     public StringProperty selectedStyleMode = new SimpleStringProperty("Dark Mode");
-    public StringProperty selectedWaitSync = new SimpleStringProperty("Ask");
     public StringProperty selectedCoin = new SimpleStringProperty("BTC-DFI");
     public StringProperty selectedPlotCurrency = new SimpleStringProperty("Coin");
     public StringProperty selectedPlotType = new SimpleStringProperty();
@@ -96,7 +95,6 @@ public class SettingsController {
 
     public boolean runTimer = true;
     public boolean debouncer = false;
-    public boolean waitSync = false;
     public String auth;
 
     public Timer timer = new Timer("Timer");

@@ -35,7 +35,7 @@
   "Yearly": "J\u00e4hrlich",
   "Individual": "Individuell",
   "Cumulated": "Kumuliert",
-  "Copy":"Kopieren",
+  "Copy": "Kopieren",
   "CopyHeader": "Kopieren mit Header",
   "ExportSelected": "Ausgew\u00e4hltes exportieren (CSV)",
   "ExportAll": "Alles exportieren (CSV)",
@@ -56,9 +56,5 @@
   "UpdateTooltip": "Klick auf \"Verbinden mit Node\" (DeFi App muss geschlossen sein)",
   "LaunchDefid": "Starte \"Node\" beim Tool Start",
   "SyncData": "Synchronisiere Daten: ",
-  "UpdateNow": "Ohne Sync",
-  "UpdateSync": "Mit Sync",
-  "Cancel": "Abbrechen",
-  "UpdateQuestion": "Zuerst synchronisieren oder jetzt aktualisieren??",
-  "UpdateText": "In den Einstellungen kann man seine Auswahl speichern (oder man wird jedes mal gefragt)"
+  "LaunchSync": "Sync vor Update?"
 }

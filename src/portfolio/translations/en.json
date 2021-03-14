@@ -56,9 +56,5 @@
     "UpdateTooltip": "Click \"Connect to Node\" (DeFi App must be closed)",
     "LaunchDefid": "Launch \"Node\" on tool start",
     "SyncData": "Synchronise Data: ",
-    "UpdateNow": "No Sync",
-    "UpdateSync": "With Sync",
-    "Cancel": "Cancel",
-    "UpdateQuestion": "Synchronise first or update now?",
-    "UpdateText": "In settings you can safe your decission (or asked every time)"
+    "LaunchSync": "Sync before Update?"
 }
