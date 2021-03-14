@@ -6,17 +6,18 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="108.0" prefWidth="716.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.HelpView">
-   <HBox alignment="CENTER" fillHeight="false" prefHeight="139.0" prefWidth="760.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane fx:id="anchorPane" prefHeight="147.0" prefWidth="716.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.UpdateView">
+   <VBox prefHeight="200.0" prefWidth="100.0" />
+   <HBox alignment="CENTER" fillHeight="false" layoutX="10.0" layoutY="10.0" prefHeight="170.0" prefWidth="706.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-         <Button fx:id="btnGitHub" contentDisplay="TOP" layoutX="230.0" layoutY="25.0" mnemonicParsing="false" onMouseClicked="#github" prefHeight="80.0" prefWidth="90.0" text="GitHub">
+         <Button fx:id="btnGitHub" layoutX="230.0" layoutY="25.0" mnemonicParsing="false" onMouseClicked="#github" prefHeight="80.0" prefWidth="148.0" text="Update data">
             <graphic>
                <ImageView fitHeight="34.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true">
                   <cursor>
                      <Cursor fx:constant="HAND" />
                   </cursor>
                   <image>
-                     <Image url="@../../icons/logo.png" />
+                     <Image url="@../../icons/databaseprocess.png" />
                   </image>
                </ImageView>
             </graphic>
@@ -81,7 +82,7 @@
                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </HBox.margin>
          </Button>
-         <Button fx:id="btnDefiChain" alignment="BOTTOM_CENTER" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#defichain" prefHeight="80.0" prefWidth="90.0" text="DeFiChain">
+         <Button fx:id="btnDefiChain" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#defichain" prefHeight="131.0" prefWidth="84.0" text="DeFiChain" textAlignment="CENTER">
             <graphic>
                <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
                   <cursor>
@@ -105,7 +106,7 @@
                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </HBox.margin>
          </Button>
-         <Button fx:id="btnDefiWiki" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#defichainwiki" prefHeight="54.0" prefWidth="90.0" text="Wiki">
+         <Button fx:id="btnDefiWiki" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onMouseClicked="#defichainwiki" prefHeight="107.0" prefWidth="79.0" text="DeFiChain Wiki" textAlignment="CENTER" wrapText="true">
             <graphic>
                <ImageView fitHeight="55.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
                   <cursor>
@@ -179,9 +180,6 @@
             </HBox.margin>
          </Button>
       </children>
-      <padding>
-         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-      </padding>
    </HBox>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

@@ -51,8 +51,8 @@ public class MainViewController {
     public SettingsController settingsController = SettingsController.getInstance();
     public DonateController donateController = DonateController.getInstance();
     public HelpController helpController = HelpController.getInstance();
-    public CoinPriceController coinPriceController = new CoinPriceController(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strCoinPriceData);
-    public TransactionController transactionController = new TransactionController(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.CONFIG_FILE_PATH);
+    public CoinPriceController coinPriceController = CoinPriceController.getInstance();
+    public TransactionController transactionController =TransactionController.getInstance(); //new TransactionController(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.CONFIG_FILE_PATH);
     public ExportService expService;
     public boolean updateSingleton = true;
 
@@ -66,7 +66,7 @@ public class MainViewController {
         // init all relevant lists for tables and plots
         this.poolPairList = FXCollections.observableArrayList(this.poolPairModelList);
         this.expService = new ExportService(this);
-
+        this.coinPriceController.updateCoinPriceData();
         // get last block locally
         this.strCurrentBlockLocally.set(Integer.toString(transactionController.getLocalBlockCount()));
 

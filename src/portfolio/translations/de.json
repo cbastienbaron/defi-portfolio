@@ -54,5 +54,11 @@
   "TransactionHash": "Transaktions Hash",
   "ConnectNode": "Verbinden mit Node...",
   "UpdateTooltip": "Klick auf \"Verbinden mit Node\" (DeFi App muss geschlossen sein)",
-  "LaunchDefid": "Starte \"Node\" beim Tool Start"
+  "LaunchDefid": "Starte \"Node\" beim Tool Start",
+  "SyncData": "Synchronisiere Daten: ",
+  "UpdateNow": "Ohne Sync",
+  "UpdateSync": "Mit Sync",
+  "Cancel": "Abbrechen",
+  "UpdateQuestion": "Zuerst synchronisieren oder jetzt aktualisieren??",
+  "UpdateText": "In den Einstellungen kann man seine Auswahl speichern (oder man wird jedes mal gefragt)"
 }

@@ -354,35 +354,66 @@ public class MainView implements Initializable {
 
         this.btnConnect.disableProperty().bind(this.mainViewController.bDataBase.not());
 
-
-        //this.btnUpdateDatabase.disableProperty().bindBidirectional(this.mainViewController.bDataBase);
-//        this.connectionLabel.visibleProperty().bindBidirectional(this.mainViewController.bDataBase);
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockLocally);
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockOnBlockchain);
         this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.strLastUpdate);
         this.btnUpdateDatabase.setOnAction(e -> {
 
+            if (this.mainViewController.settingsController.selectedWaitSync.getValue().equals("Ask") | this.mainViewController.settingsController.selectedWaitSync.getValue().equals("Yes")) {
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle(this.mainViewController.settingsController.translationList.getValue().get("UpdateData").toString());
+                alert.setHeaderText(this.mainViewController.settingsController.translationList.getValue().get("UpdateQuestion").toString());
+                alert.setContentText(this.mainViewController.settingsController.translationList.getValue().get("UpdateText").toString());
+
+                ButtonType buttonUpdate = new ButtonType(this.mainViewController.settingsController.translationList.getValue().get("UpdateNow").toString());
+                ButtonType buttonUpdateSync = new ButtonType(this.mainViewController.settingsController.translationList.getValue().get("UpdateSync").toString());
+                ButtonType buttonTypeCancel = new ButtonType(this.mainViewController.settingsController.translationList.getValue().get("Cancel").toString(), ButtonBar.ButtonData.CANCEL_CLOSE);
+                alert.getButtonTypes().setAll(buttonUpdateSync, buttonUpdate, buttonTypeCancel);
+                DialogPane dialogPane = alert.getDialogPane();
+
+                ((Stage) dialogPane.getScene().getWindow()).initStyle(StageStyle.UNDECORATED);
+                ((Stage) dialogPane.getScene().getWindow()).getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/databaseprocess.png").toURI().toString()));
+
+                File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+                File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+                if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
+                    dialogPane.getStylesheets().add(darkMode.toURI().toString());
+                } else {
+                    dialogPane.getStylesheets().add(lightMode.toURI().toString());
+                }
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if (result.get() == buttonUpdateSync) {
+                    this.mainViewController.settingsController.selectedLaunchSync = false;
+                } else if (result.get() == buttonUpdate) {
+                    this.mainViewController.settingsController.selectedLaunchSync = true;
+                } else {
+                    return;
+                }
+            }
             this.mainViewController.transactionController.startServer();
             this.mainViewController.settingsController.runCheckTimer = true;
-            Timer checkTimer=   new Timer("");
-            if(SettingsController.getInstance().getPlatform().equals("mac")){
+            Timer checkTimer = new Timer("");
+            if (SettingsController.getInstance().getPlatform().equals("mac")) {
                 try {
-                    FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+                    FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
                     myWriter.write(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
                     myWriter.close();
                     try {
                         Process ps = null;
-                        ps = Runtime.getRuntime().exec("java -jar UpdateData.jar "+this.mainViewController.settingsController.selectedStyleMode.getValue().replace(" ", "") );
+                        ps = Runtime.getRuntime().exec("java -jar UpdateData.jar " + this.mainViewController.settingsController.selectedStyleMode.getValue().replace(" ", ""));
                     } catch (IOException r) {
                         r.printStackTrace();
                     }
                 } catch (IOException h) {
-                    SettingsController.getInstance().logger.warning("Could not write to update.portfolio."); }
-            }else{
+                    SettingsController.getInstance().logger.warning("Could not write to update.portfolio.");
+                }
+            } else {
                 this.mainViewController.transactionController.updateJFrame();
                 this.mainViewController.transactionController.jl.setText(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
             }
-            checkTimer.scheduleAtFixedRate(new CheckConnection(this.mainViewController),0, 2000L);
+            checkTimer.scheduleAtFixedRate(new CheckConnection(this.mainViewController), 0, 10000);
         });
 
         tabPane.getSelectionModel().selectedItemProperty().addListener(

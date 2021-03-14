@@ -33,25 +33,31 @@ import java.util.concurrent.TimeUnit;
 
 public class TransactionController {
 
-    private String strConfigPath;
+    private static TransactionController OBJ = null;
+
+    static {
+            OBJ = new TransactionController();
+    }
+
+    private SettingsController settingsController = SettingsController.getInstance();
+    private CoinPriceController coinPriceController = CoinPriceController.getInstance();
+    private String strTransactionData= SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strTransactionData;
     private ObservableList<TransactionModel> transactionList;
-    private String strTransactionData;
     private int localBlockCount;
-    private SettingsController settingsController;
-    private CoinPriceController coinPriceController;
     private TreeMap<String, TreeMap<String, PortfolioModel>> portfolioList = new TreeMap<>();
     private TreeMap<String, Double> balanceList = new TreeMap<>();
     private JFrame frameUpdate;
     public JLabel jl;
 
-    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strConfigPath) {
-        this.strTransactionData = transactionData;
-        this.settingsController = settingsController;
-        this.coinPriceController = coinPriceController;
-        this.transactionList = getLocalTransactionList();
-        this.localBlockCount = getLocalBlockCount();
-        this.strConfigPath = strConfigPath;
+    public TransactionController(){
+        this.transactionList=getLocalTransactionList();
+        this.localBlockCount=getLocalBlockCount();
     }
+
+    public static TransactionController getInstance() {
+        return OBJ;
+    }
+
 
     public boolean checkRpc() {
         JSONObject jsonObject = getRpcResponse("{\"method\": \"getrpcinfo\"}");
@@ -348,8 +354,8 @@ public class TransactionController {
                     TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], transactionSplit[3], transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], this);
                     transactionList.add(transAction);
 
-                    if (!(transAction.getTypeValue().equals("UtxosToAccount") | transAction.getTypeValue().equals("AccountToUtxos")))
-                        addBalanceModel(transAction);
+                    //if (!(transAction.getTypeValue().equals("UtxosToAccount") | transAction.getTypeValue().equals("AccountToUtxos")))
+                       // addBalanceModel(transAction);
                     if (transAction.getTypeValue().equals("Rewards") | transAction.getTypeValue().equals("Commission"))
                         addToPortfolioModel(transAction);
                     line = reader.readLine();
