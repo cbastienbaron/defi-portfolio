@@ -58,6 +58,6 @@
     "LaunchDefid": "Launch \"Node\" on tool start",
     "SyncData": "Synchronise Data: ",
     "LaunchSync": "Sync before Update?",
-    "DeleteLabel": "Delete local Portfolio data",
+    "DeleteLabel": "Delete local Portfolio data (requires tool restart)",
     "DeleteButton": "Delete"
 }

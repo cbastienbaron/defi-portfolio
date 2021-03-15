@@ -18,7 +18,7 @@
    <Label fx:id="prefferedCurrency" layoutX="121.0" layoutY="63.0" text="Preferred Currency" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
    <ComboBox fx:id="cmbLanguage" layoutX="218.0" layoutY="17.0" onAction="#changeLanguage" prefWidth="150.0" />
    <ComboBox fx:id="cmbPrefCurrency" layoutX="218.0" layoutY="59.0" prefWidth="150.0" />
-   <Label fx:id="prefferedStyle" alignment="CENTER_RIGHT" layoutX="115.0" layoutY="107.0" prefHeight="17.0" prefWidth="55.0" text="Design" textAlignment="RIGHT" AnchorPane.rightAnchor="227.0" />
+   <Label fx:id="prefferedStyle" alignment="CENTER_RIGHT" layoutX="115.0" layoutY="107.0" prefHeight="17.0" prefWidth="55.0" text="Design" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
    <ComboBox fx:id="cmbPrefferedStyle" layoutX="218.0" layoutY="103.0" prefWidth="150.0" />
    <Button fx:id="btnSaveAndApply" layoutX="303.0" layoutY="264.0" mnemonicParsing="false" onMouseClicked="#btnSaveAndApplyPressed" prefHeight="40.0" prefWidth="55.0">
       <graphic>
@@ -35,14 +35,14 @@
          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
       </padding>
    </Button>
-   <Label fx:id="lblLaunchDefid" layoutX="10.0" layoutY="158.0" text="Starte &quot;Node&quot; beim Tool Start" textAlignment="RIGHT" AnchorPane.rightAnchor="229.0" />
+   <Label fx:id="lblLaunchDefid" layoutX="10.0" layoutY="158.0" text="Starte &quot;Node&quot; beim Tool Start" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
    <StackPane fx:id="stack" layoutX="230.0" layoutY="145.0" prefHeight="41.0" prefWidth="55.0" />
    <Button fx:id="switchButton" layoutX="304.0" layoutY="153.0" mnemonicParsing="false" text="Button" />
-   <Label fx:id="lblLaunchSync" layoutX="52.0" layoutY="199.0" prefHeight="17.0" prefWidth="116.0" text="Sync before Update?" textAlignment="RIGHT" AnchorPane.rightAnchor="229.0" />
+   <Label fx:id="lblLaunchSync" layoutX="52.0" layoutY="199.0" prefHeight="17.0" prefWidth="116.0" text="Sync before Update?" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
    <Button fx:id="switchButtonSync" layoutX="304.0" layoutY="195.0" mnemonicParsing="false" text="Button" />
    <StackPane fx:id="stackSync" layoutX="230.0" layoutY="187.0" prefHeight="41.0" prefWidth="55.0" />
-   <Label fx:id="lblDeleteData" layoutX="11.0" layoutY="236.0" text="Lösche lokale Portfolio-Daten" textAlignment="RIGHT" AnchorPane.rightAnchor="229.0" />
-   <Button fx:id="btnDeleteData" layoutX="218.0" layoutY="232.0" mnemonicParsing="false" onAction="#btnDeletePressed" text="Löschen" />
+   <Label fx:id="lblDeleteData" layoutX="11.0" layoutY="236.0" prefHeight="34.0" prefWidth="157.0" text="Lösche lokale Portfolio-Daten (Tool Neustart erforderlich)" textAlignment="RIGHT" wrapText="true" AnchorPane.rightAnchor="209.0" />
+   <Button fx:id="btnDeleteData" layoutX="218.0" layoutY="237.0" mnemonicParsing="false" onAction="#btnDeletePressed" text="Löschen" />
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
    </padding>

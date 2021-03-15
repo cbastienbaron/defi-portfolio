@@ -68,6 +68,7 @@ public class SettingsView implements Initializable {
         if(result == true){
             TransactionController.getInstance().clearTransactionList();
             TransactionController.getInstance().clearPortfolioList();
+            MainViewController.getInstance().poolPairList.clear();
             MainViewController.getInstance().plotUpdate(MainViewController.getInstance().mainView.tabPane.getSelectionModel().getSelectedItem().getText());
             MainViewController.getInstance().strCurrentBlockLocally.set("0");
         }else{

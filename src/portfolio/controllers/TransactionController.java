@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class TransactionController {
 
@@ -52,7 +53,7 @@ public class TransactionController {
     }
 
     public void clearTransactionList(){
-        this.transactionList.clear();
+        transactionList.clear();
     }
 
     public static TransactionController getInstance() {
@@ -504,9 +505,12 @@ public class TransactionController {
     }
 
     public int getLocalBlockCount() {
+       if(!new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "/transactionData.portfolio").exists()){
+           return 0;
+       }
         if (transactionList.size() > 0) {
 
-            return this.transactionList.get(transactionList.size() - 1).getBlockHeightValue();
+            return transactionList.get(transactionList.size() - 1).getBlockHeightValue();
         } else {
             return 0;
         }
