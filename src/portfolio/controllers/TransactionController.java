@@ -1,8 +1,5 @@
 package portfolio.controllers;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -10,7 +7,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import portfolio.models.AddressModel;
-import portfolio.models.BalanceModel;
 import portfolio.models.PortfolioModel;
 import portfolio.models.TransactionModel;
 
@@ -30,7 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 public class TransactionController {
@@ -41,13 +36,13 @@ public class TransactionController {
             OBJ = new TransactionController();
     }
 
-    private SettingsController settingsController = SettingsController.getInstance();
-    private CoinPriceController coinPriceController = CoinPriceController.getInstance();
-    private String strTransactionData= SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strTransactionData;
-    private ObservableList<TransactionModel> transactionList;
+    private final SettingsController settingsController = SettingsController.getInstance();
+    private final CoinPriceController coinPriceController = CoinPriceController.getInstance();
+    private final String strTransactionData= SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strTransactionData;
+    private final ObservableList<TransactionModel> transactionList;
     private int localBlockCount;
-    private TreeMap<String, TreeMap<String, PortfolioModel>> portfolioList = new TreeMap<>();
-    private TreeMap<String, Double> balanceList = new TreeMap<>();
+    private final TreeMap<String, TreeMap<String, PortfolioModel>> portfolioList = new TreeMap<>();
+    private final TreeMap<String, Double> balanceList = new TreeMap<>();
     private JFrame frameUpdate;
     public JLabel jl;
 
@@ -68,11 +63,7 @@ public class TransactionController {
     public boolean checkRpc() {
         JSONObject jsonObject = getRpcResponse("{\"method\": \"getrpcinfo\"}");
         if (jsonObject != null) {
-            if (jsonObject.get("result") != null) {
-                return true;
-            } else {
-                return false;
-            }
+            return jsonObject.get("result") != null;
         } else {
             return false;
         }
@@ -402,26 +393,8 @@ public class TransactionController {
 
     public void addToPortfolioModel(TransactionModel transactionSplit) {
 
-        String pool = "BTC-DFI";
-        switch (transactionSplit.getPoolIDValue()) {
-            case "4":
-                pool = "ETH-DFI";
-                break;
-            case "5":
-                pool = "BTC-DFI";
-                break;
-            case "6":
-                pool = "USDT-DFI";
-                break;
-            case "8":
-                pool = "DOGE-DFI";
-                break;
-            case "10":
-                pool = "LTC-DFI";
-                break;
-            default:
-                break;
-        }
+       String pool = getPoolPairFromId(transactionSplit.getPoolIDValue());
+
         String[] intervallList = new String[]{"Daily", "Weekly", "Monthly", "Yearly"};
 
         for (String intervall : intervallList) {
@@ -577,6 +550,7 @@ int counter =0;
                 String exportSplitter = ";";
                 counter=0;
                 for (TransactionModel transactionModel : updateTransactionList) {
+                    counter++;
                     StringBuilder sb = new StringBuilder();
                     sb.append(transactionModel.getBlockTimeValue()).append(exportSplitter);
                     sb.append(transactionModel.getOwnerValue()).append(exportSplitter);
@@ -622,7 +596,7 @@ int counter =0;
     }
 
     public String getPoolPairFromId(String poolID) {
-        String pool = "DFI";
+        String pool;
         switch (poolID) {
             case "0":
                 pool = "DFI";
@@ -657,7 +631,14 @@ int counter =0;
             case "10":
                 pool = "LTC-DFI";
                 break;
+            case "11":
+                pool = "BCH";
+                break;
+            case "12":
+                pool = "BCH-DFI";
+                break;
             default:
+                pool = "-";
                 break;
         }
         return pool;
@@ -722,7 +703,7 @@ int counter =0;
 
     public String convertTimeStampWithoutTimeToString(long timeStamp) {
         Date date = new Date(timeStamp * 1000L);
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T23:59:00'");
         return dateFormat.format(date);
     }
 

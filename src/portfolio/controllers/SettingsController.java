@@ -1,7 +1,6 @@
 package portfolio.controllers;
 
 import javafx.beans.property.*;
-import javafx.concurrent.Task;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -52,29 +51,29 @@ public class SettingsController {
     public boolean selectedLaunchSync = false;
 
     //Combo box filling
-    public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "DOGE-DFI"};
+    public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI","BCH-DFI", "DOGE-DFI"};
     public String[] plotCurrency = new String[]{"Coin", "Fiat"};
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
 
 
     public String USER_HOME_PATH = System.getProperty("user.home");
-    public String BINARY_FILE_NAME = getPlatform() == "win" ? "defid.exe" : "defid";
-    public String BINARY_FILE_PATH = getPlatform() == "win" ?
+    public String BINARY_FILE_NAME = getPlatform().equals("win") ? "defid.exe" : "defid";
+    public String BINARY_FILE_PATH = getPlatform().equals("win") ?
             (System.getenv("LOCALAPPDATA") + "/Programs/defi-app/resources/binary/win/" + BINARY_FILE_NAME).replace("\\", "/") : //WIN PATH
-            getPlatform() == "mac" ?
+            getPlatform().equals("mac") ?
                     USER_HOME_PATH + "/../.." + "/Applications/defi-app.app/Contents/Resources/binary/mac/" + BINARY_FILE_NAME : //MAC PATH
-                    getPlatform() == "linux" ?
+                    getPlatform().equals("linux") ?
                             System.getProperty("user.dir") + "/PortfolioData/" + BINARY_FILE_NAME : //Linux PATH
                             "";
-    public String CONFIG_FILE_PATH = getPlatform() == "win" ?
+    public String CONFIG_FILE_PATH = getPlatform().equals("win") ?
             USER_HOME_PATH + "/.defi/defi.conf" : //WIN PATH
-            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/DeFi/defi.conf" : //MAC PATH
-                    getPlatform() == "linux" ? USER_HOME_PATH + "/.defi/defi.conf" : //LINUX PATH
+            getPlatform().equals("mac") ? USER_HOME_PATH + "/Library/Application Support/DeFi/defi.conf" : //MAC PATH
+                    getPlatform().equals("linux") ? USER_HOME_PATH + "/.defi/defi.conf" : //LINUX PATH
                             "";
-    public String DEFI_PORTFOLIO_HOME = getPlatform() == "win" ?
+    public String DEFI_PORTFOLIO_HOME = getPlatform().equals("win") ?
             System.getenv("APPDATA") + "/defi-portfolio/" : //WIN PATH
-            getPlatform() == "mac" ? USER_HOME_PATH + "/Library/Application Support/defi-portfolio/" : //MAC PATH
-                    getPlatform() == "linux" ? System.getProperty("user.dir") + "/PortfolioData/" : //LINUX PATH;
+            getPlatform().equals("mac") ? USER_HOME_PATH + "/Library/Application Support/defi-portfolio/" : //MAC PATH
+                    getPlatform().equals("linux") ? System.getProperty("user.dir") + "/PortfolioData/" : //LINUX PATH;
                             "";
     public String PORTFOLIO_CONFIG_FILE_PATH = System.getProperty("user.dir") + "/PortfolioData/defi.conf";
         
@@ -149,11 +148,11 @@ public class SettingsController {
 
     public String getPlatform() {
         String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-        if ((OS.indexOf("mac") >= 0) || (OS.indexOf("darwin") >= 0)) {
+        if ((OS.contains("mac")) || (OS.contains("darwin"))) {
             return "mac";
-        } else if (OS.indexOf("win") >= 0) {
+        } else if (OS.contains("win")) {
             return "win";
-        } else if (OS.indexOf("nux") >= 0) {
+        } else if (OS.contains("nux")) {
             return "linux";
         } else {
             return "win";
@@ -182,7 +181,11 @@ public class SettingsController {
                     this.lastExportPath = configProps.getProperty("LastUsedExportPath");
                 this.showDisclaim = configProps.getProperty("ShowDisclaim").equals("true");
                 this.selectedLaunchDefid = configProps.getProperty("SelectedLaunchDefid").equals("true");
-
+                if(configProps.getProperty("SelectedLaunchSync")!=null) {
+                    this.selectedLaunchSync = configProps.getProperty("SelectedLaunchSync").equals("true");
+                }else{
+                    this.selectedLaunchSync = false;
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -207,6 +210,7 @@ public class SettingsController {
             csvWriter.append("LastUsedExportPath=" + this.lastExportPath).append("\n");
             csvWriter.append("ShowDisclaim=" + this.showDisclaim).append("\n");
             csvWriter.append("SelectedLaunchDefid=" + this.selectedLaunchDefid).append("\n");
+            csvWriter.append("SelectedLaunchSync=" + this.selectedLaunchSync).append("\n");
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {

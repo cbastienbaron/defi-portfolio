@@ -39,6 +39,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import portfolio.controllers.CheckConnection;
 import portfolio.controllers.SettingsController;
+import portfolio.controllers.TransactionController;
 import portfolio.models.PoolPairModel;
 import portfolio.models.TransactionModel;
 import portfolio.controllers.MainViewController;
@@ -138,6 +139,7 @@ public class MainView implements Initializable {
     public MenuItem menuItemCopyHeaderSelected = new MenuItem("Copy with header");
     public MenuItem menuItemExportSelected = new MenuItem("Export selected to CSV");
     public MenuItem menuItemExportAllSelected = new MenuItem("Export all to CSV");
+    public MenuItem menuItemExportAllDailySelected = new MenuItem("Export all to CSV (Daily cumulated)");
     public MenuItem menuItemCopySelectedPlot = new MenuItem("Copy");
     public MenuItem menuItemCopyHeaderSelectedPlot = new MenuItem("Copy with header");
     public MenuItem menuItemExportSelectedPlot = new MenuItem("Export selected to CSV");
@@ -802,7 +804,7 @@ public class MainView implements Initializable {
         Callback<TableColumn<TransactionModel, String>, TableCell<TransactionModel, String>> cellFactory0
                 = (final TableColumn<TransactionModel, String> entry) -> new TableCell<TransactionModel, String>() {
 
-            Hyperlink hyperlink = new Hyperlink();
+            final Hyperlink hyperlink = new Hyperlink();
 
             @Override
             public void updateItem(String item, boolean empty) {
@@ -838,7 +840,7 @@ public class MainView implements Initializable {
         Callback<TableColumn<TransactionModel, String>, TableCell<TransactionModel, String>> cellFactory1
                 = (final TableColumn<TransactionModel, String> entry) -> new TableCell<TransactionModel, String>() {
 
-            Hyperlink hyperlink = new Hyperlink();
+            final Hyperlink hyperlink = new Hyperlink();
 
             @Override
             public void updateItem(String item, boolean empty) {
@@ -874,7 +876,7 @@ public class MainView implements Initializable {
         Callback<TableColumn<TransactionModel, Integer>, TableCell<TransactionModel, Integer>> cellFactory2
                 = (final TableColumn<TransactionModel, Integer> entry) -> new TableCell<TransactionModel, Integer>() {
 
-            Hyperlink hyperlink = new Hyperlink();
+            final Hyperlink hyperlink = new Hyperlink();
 
             @Override
             public void updateItem(Integer item, boolean empty) {
@@ -910,7 +912,7 @@ public class MainView implements Initializable {
         Callback<TableColumn<TransactionModel, String>, TableCell<TransactionModel, String>> cellFactory3
                 = (final TableColumn<TransactionModel, String> entry) -> new TableCell<TransactionModel, String>() {
 
-            Hyperlink hyperlink = new Hyperlink();
+            final Hyperlink hyperlink = new Hyperlink();
 
             @Override
             public void updateItem(String item, boolean empty) {
@@ -961,28 +963,7 @@ public class MainView implements Initializable {
                     setText(null);
                 } else {
 
-                    String pool = "-";
-
-                    switch (poolID) {
-                        case "4":
-                            pool = "ETH-DFI";
-                            break;
-                        case "5":
-                            pool = "BTC-DFI";
-                            break;
-                        case "6":
-                            pool = "USDT-DFI";
-                            break;
-                        case "8":
-                            pool = "DOGE-DFI";
-                            break;
-                        case "10":
-                            pool = "LTC-DFI";
-                            break;
-                        default:
-                            break;
-                    }
-
+                    String pool =TransactionController.getInstance().getPoolPairFromId(poolID);
                     setText(pool);
                 }
             }
@@ -1108,13 +1089,16 @@ public class MainView implements Initializable {
         //Init context menu of raw data table
         menuItemCopySelected.setOnAction(event -> mainViewController.copySelectedRawDataToClipboard(rawDataTable.selectionModelProperty().get().getSelectedItems(), false));
         menuItemCopyHeaderSelected.setOnAction(event -> mainViewController.copySelectedRawDataToClipboard(rawDataTable.selectionModelProperty().get().getSelectedItems(), true));
-        menuItemExportSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.selectionModelProperty().get().getSelectedItems()));
-        menuItemExportAllSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems()));
+        menuItemExportSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.selectionModelProperty().get().getSelectedItems(),false));
+        menuItemExportAllSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(),false));
+        menuItemExportAllDailySelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(),true));
 
         contextMenuRawData.getItems().add(menuItemCopySelected);
         contextMenuRawData.getItems().add(menuItemCopyHeaderSelected);
         contextMenuRawData.getItems().add(menuItemExportSelected);
         contextMenuRawData.getItems().add(menuItemExportAllSelected);
+        contextMenuRawData.getItems().add(menuItemExportAllDailySelected);
+
 
         this.rawDataTable.contextMenuProperty().set(contextMenuRawData);
     }
@@ -1172,6 +1156,7 @@ public class MainView implements Initializable {
         this.menuItemCopyHeaderSelected.setText(this.mainViewController.settingsController.translationList.getValue().get("CopyHeader").toString());
         this.menuItemExportSelected.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportSelected").toString());
         this.menuItemExportAllSelected.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportAll").toString());
+        this.menuItemExportAllDailySelected.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportAllDaily").toString());
         this.menuItemCopySelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("Copy").toString());
         this.menuItemCopyHeaderSelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("CopyHeader").toString());
         this.menuItemExportSelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportSelected").toString());

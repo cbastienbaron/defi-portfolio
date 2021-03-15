@@ -4,7 +4,6 @@ import javafx.animation.PauseTransition;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.TableColumn;
@@ -18,13 +17,10 @@ import portfolio.models.TransactionModel;
 import portfolio.services.ExportService;
 import portfolio.views.MainView;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,7 +37,6 @@ public class MainViewController {
 
     //View
     public MainView mainView;
-    public JFrame frameUpdate;
 
     //Table and plot lists
     public List<PoolPairModel> poolPairModelList = new ArrayList<>();
@@ -52,7 +47,7 @@ public class MainViewController {
     public DonateController donateController = DonateController.getInstance();
     public HelpController helpController = HelpController.getInstance();
     public CoinPriceController coinPriceController = CoinPriceController.getInstance();
-    public TransactionController transactionController =TransactionController.getInstance(); //new TransactionController(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData, this.settingsController, this.coinPriceController, this.settingsController.CONFIG_FILE_PATH);
+    public TransactionController transactionController =TransactionController.getInstance();
     public ExportService expService;
     public boolean updateSingleton = true;
 
@@ -95,8 +90,6 @@ public class MainViewController {
                     }
                 }
         );
-
-       double a =  this.transactionController.getTotalCoinAmount(transactionController.getTransactionList(),"DFI");
         startTimer();
     }
 
@@ -561,7 +554,7 @@ public class MainViewController {
         return this.poolPairList;
     }
 
-    public void exportTransactionToExcel(List<TransactionModel> list) {
+    public void exportTransactionToExcel(List<TransactionModel> list,boolean daily) {
 
         Locale localeDecimal = Locale.GERMAN;
         if (settingsController.selectedDecimal.getValue().equals(".")) {
@@ -581,7 +574,13 @@ public class MainViewController {
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {
-            boolean success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+            boolean success;
+            if(daily) {
+                 success = this.expService.exportTransactionToExcelDaily(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+            }else{
+                success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+                }
+
             if (success) {
                 this.strProgressbar.setValue("Excel successfully exported!");
                 PauseTransition pause = new PauseTransition(Duration.seconds(10));

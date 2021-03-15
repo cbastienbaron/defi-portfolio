@@ -39,6 +39,7 @@
     "CopyHeader": "Copy with header",
     "ExportSelected": "Export selected to CSV",
     "ExportAll": "Export all to CSV",
+    "ExportAllDaily": "Export all to CSV (Daily cumulated)",
     "OpenExplorer": "Open in DeFi Blockchain Explorer",
     "DonateTitle": "Donate",
     "HelpTitle": "Contact information",

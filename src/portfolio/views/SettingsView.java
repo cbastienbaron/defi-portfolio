@@ -118,8 +118,8 @@ public class SettingsView implements Initializable {
 
     private final Rectangle back = new Rectangle(35, 15, Color.RED);
     private final Rectangle backSync = new Rectangle(35, 15, Color.RED);
-    private String buttonStyleOff = "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 0.2, 0.0, 0.0, 2); -fx-background-color: #d6cecc;";
-    private String buttonStyleOn = "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 0.2, 0.0, 0.0, 2); -fx-background-color: #FF00AF;"; //00893d
+    private final String buttonStyleOff = "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 0.2, 0.0, 0.0, 2); -fx-background-color: #d6cecc;";
+    private final String buttonStyleOn = "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 0.2, 0.0, 0.0, 2); -fx-background-color: #FF00AF;"; //00893d
 
     private void init() {
         stack.getChildren().addAll(back, switchButton);
@@ -140,11 +140,11 @@ public class SettingsView implements Initializable {
         if (this.settingsController.selectedLaunchDefid) {
             switchButton.setStyle(buttonStyleOn);
             back.setFill(Color.valueOf("#FF00AF"));//Weiß
-            stack.setAlignment(switchButton, Pos.CENTER_RIGHT);
+            StackPane.setAlignment(switchButton, Pos.CENTER_RIGHT);
         } else {
             switchButton.setStyle(buttonStyleOff);
             back.setFill(Color.valueOf("#d6cecc"));//Rosa
-            stack.setAlignment(switchButton, Pos.CENTER_LEFT);
+            StackPane.setAlignment(switchButton, Pos.CENTER_LEFT);
 
         }
     }
@@ -168,11 +168,11 @@ public class SettingsView implements Initializable {
         if (this.settingsController.selectedLaunchSync) {
             switchButtonSync.setStyle(buttonStyleOn);
             backSync.setFill(Color.valueOf("#FF00AF"));//Weiß
-            stackSync.setAlignment(switchButtonSync, Pos.CENTER_RIGHT);
+            StackPane.setAlignment(switchButtonSync, Pos.CENTER_RIGHT);
         } else {
             switchButtonSync.setStyle(buttonStyleOff);
             backSync.setFill(Color.valueOf("#d6cecc"));//Rosa
-            stackSync.setAlignment(switchButtonSync, Pos.CENTER_LEFT);
+            StackPane.setAlignment(switchButtonSync, Pos.CENTER_LEFT);
 
         }
     }
@@ -182,12 +182,12 @@ public class SettingsView implements Initializable {
         if (this.settingsController.selectedLaunchDefid) {
             switchButton.setStyle(buttonStyleOff);
             back.setFill(Color.valueOf("#d6cecc"));//Weiß
-            stack.setAlignment(switchButton, Pos.CENTER_LEFT);
+            StackPane.setAlignment(switchButton, Pos.CENTER_LEFT);
             this.settingsController.selectedLaunchDefid = false;
         } else {
             switchButton.setStyle(buttonStyleOn);
             back.setFill(Color.valueOf("#FF00AF"));//Rosa
-            stack.setAlignment(switchButton, Pos.CENTER_RIGHT);
+            StackPane.setAlignment(switchButton, Pos.CENTER_RIGHT);
             this.settingsController.selectedLaunchDefid = true;
         }
 
@@ -198,12 +198,12 @@ public class SettingsView implements Initializable {
         if (this.settingsController.selectedLaunchSync) {
             switchButtonSync.setStyle(buttonStyleOff);
             backSync.setFill(Color.valueOf("#d6cecc"));//Weiß
-            stackSync.setAlignment(switchButtonSync, Pos.CENTER_LEFT);
+            StackPane.setAlignment(switchButtonSync, Pos.CENTER_LEFT);
             this.settingsController.selectedLaunchSync = false;
         } else {
             switchButtonSync.setStyle(buttonStyleOn);
             backSync.setFill(Color.valueOf("#FF00AF"));//Rosa
-            stackSync.setAlignment(switchButtonSync, Pos.CENTER_RIGHT);
+            StackPane.setAlignment(switchButtonSync, Pos.CENTER_RIGHT);
             this.settingsController.selectedLaunchSync = true;
         }
 
