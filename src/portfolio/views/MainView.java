@@ -154,7 +154,7 @@ public class MainView implements Initializable {
     public Tab Portfolio;
     public PieChart PortfolioPie;
     public PieChart PortfolioPieFiat;
-    MainViewController mainViewController = new MainViewController();
+    MainViewController mainViewController = MainViewController.getInstance();
 
     public MainView() {
     }

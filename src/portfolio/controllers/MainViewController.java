@@ -56,6 +56,15 @@ public class MainViewController {
     public ExportService expService;
     public boolean updateSingleton = true;
 
+    private static MainViewController OBJ = null;
+
+    static {
+        OBJ = new MainViewController();
+    }
+    public static MainViewController getInstance() {
+        return OBJ;
+    }
+
     public MainViewController() {
 
         this.settingsController.logger.info("Start DeFi-Portfolio");

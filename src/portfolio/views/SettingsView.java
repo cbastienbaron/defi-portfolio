@@ -8,9 +8,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ResourceBundle;
 
+import portfolio.controllers.MainViewController;
 import portfolio.controllers.SettingsController;
 
 import javafx.event.Event;
@@ -20,6 +24,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import portfolio.controllers.TransactionController;
 
 public class SettingsView implements Initializable {
     public Button btnSaveAndApply;
@@ -30,6 +35,7 @@ public class SettingsView implements Initializable {
     public Label labelDec;
     public Label lblLaunchDefid;
     public Label lblLaunchSync;
+    public Label lblDeleteData;
     public AnchorPane anchorPane;
     @FXML
     public StackPane stack;
@@ -41,6 +47,8 @@ public class SettingsView implements Initializable {
     @FXML
     public Button switchButtonSync;
     @FXML
+    public Button btnDeleteData;
+    @FXML
     private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle;
     SettingsController settingsController = SettingsController.getInstance();
 
@@ -50,29 +58,48 @@ public class SettingsView implements Initializable {
         stage.close();
     }
 
+    public void btnDeletePressed() {
+        boolean result = false;
+        try {
+            result = Files.deleteIfExists(new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "/transactionData.portfolio").toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(result == true){
+            TransactionController.getInstance().clearTransactionList();
+            TransactionController.getInstance().clearPortfolioList();
+            MainViewController.getInstance().plotUpdate(MainViewController.getInstance().mainView.tabPane.getSelectionModel().getSelectedItem().getText());
+            MainViewController.getInstance().strCurrentBlockLocally.set("0");
+        }else{
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         this.labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
-        this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
+      //  this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
         this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
-        this.labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
+      //  this.labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
         this.lblLaunchDefid.setText(this.settingsController.translationList.getValue().get("LaunchDefid").toString());
         this.lblLaunchSync.setText(this.settingsController.translationList.getValue().get("LaunchSync").toString());
         this.cmbLanguage.getItems().addAll(this.settingsController.languages);
         this.cmbLanguage.valueProperty().bindBidirectional(this.settingsController.selectedLanguage);
+        this.lblDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteLabel").toString());
+        this.btnDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteButton").toString());
 
         this.cmbPrefCurrency.getItems().addAll(this.settingsController.currencies);
         this.cmbPrefCurrency.valueProperty().bindBidirectional(this.settingsController.selectedFiatCurrency);
 
-        this.cmbDecSeperator.getItems().addAll(this.settingsController.decSeperators);
-        this.cmbDecSeperator.valueProperty().bindBidirectional(this.settingsController.selectedDecimal);
-
-        this.cmbCSVSeperator.getItems().addAll(this.settingsController.csvSeperators);
-        this.cmbCSVSeperator.valueProperty().bindBidirectional(this.settingsController.selectedSeperator);
+//        this.cmbDecSeperator.getItems().addAll(this.settingsController.decSeperators);
+//        this.cmbDecSeperator.valueProperty().bindBidirectional(this.settingsController.selectedDecimal);
+//
+//        this.cmbCSVSeperator.getItems().addAll(this.settingsController.csvSeperators);
+//        this.cmbCSVSeperator.valueProperty().bindBidirectional(this.settingsController.selectedSeperator);
 
         this.cmbPrefferedStyle.getItems().addAll(this.settingsController.styleModes);
         this.cmbPrefferedStyle.valueProperty().bindBidirectional(this.settingsController.selectedStyleMode);
+
 
         this.SwitchButton();
         this.SwitchButtonSync();
@@ -80,11 +107,13 @@ public class SettingsView implements Initializable {
 
     public void changeLanguage() {
         this.labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
-        this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
+   //     this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
         this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
-        this.labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
+  //      this.labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
         this.lblLaunchDefid.setText(this.settingsController.translationList.get().get("LaunchDefid").toString());
         this.lblLaunchSync.setText(this.settingsController.translationList.getValue().get("LaunchSync").toString());
+        this.lblDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteLabel").toString());
+        this.btnDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteButton").toString());
     }
 
     private final Rectangle back = new Rectangle(35, 15, Color.RED);

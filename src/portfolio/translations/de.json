@@ -56,5 +56,7 @@
   "UpdateTooltip": "Klick auf \"Verbinden mit Node\" (DeFi App muss geschlossen sein)",
   "LaunchDefid": "Starte \"Node\" beim Tool Start",
   "SyncData": "Synchronisiere Daten: ",
-  "LaunchSync": "Sync vor Update?"
+  "LaunchSync": "Sync vor Update?",
+  "DeleteLabel": "Lösche lokale Portfolio-Daten",
+  "DeleteButton": "Löschen"
 }

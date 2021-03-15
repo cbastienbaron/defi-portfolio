@@ -1,8 +1,10 @@
 package portfolio.controllers;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -52,6 +54,10 @@ public class TransactionController {
     public TransactionController(){
         this.transactionList=getLocalTransactionList();
         this.localBlockCount=getLocalBlockCount();
+    }
+
+    public void clearTransactionList(){
+        this.transactionList.clear();
     }
 
     public static TransactionController getInstance() {
@@ -114,6 +120,10 @@ public class TransactionController {
 
     public TreeMap<String, TreeMap<String, PortfolioModel>> getPortfolioList() {
         return portfolioList;
+    }
+
+    public void clearPortfolioList(){
+        this.portfolioList.clear();
     }
 
     public ObservableList<TransactionModel> getTransactionList() {
