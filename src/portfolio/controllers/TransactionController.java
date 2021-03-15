@@ -34,12 +34,12 @@ public class TransactionController {
     private static TransactionController OBJ = null;
 
     static {
-            OBJ = new TransactionController();
+        OBJ = new TransactionController();
     }
 
     private final SettingsController settingsController = SettingsController.getInstance();
     private final CoinPriceController coinPriceController = CoinPriceController.getInstance();
-    private final String strTransactionData= SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strTransactionData;
+    private final String strTransactionData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strTransactionData;
     private final ObservableList<TransactionModel> transactionList;
     private int localBlockCount;
     private final TreeMap<String, TreeMap<String, PortfolioModel>> portfolioList = new TreeMap<>();
@@ -47,9 +47,9 @@ public class TransactionController {
     private JFrame frameUpdate;
     public JLabel jl;
 
-    public TransactionController(){
-        this.transactionList=getLocalTransactionList();
-        this.localBlockCount=getLocalBlockCount();
+    public TransactionController() {
+        this.transactionList = getLocalTransactionList();
+        this.localBlockCount = getLocalBlockCount();
     }
 
     public void clearTransactionList(){
@@ -75,11 +75,11 @@ public class TransactionController {
             if (!this.checkRpc()) {
                 switch (this.settingsController.getPlatform()) {
                     case "mac":
-                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"defi.sh");
-                        myWriter.write(this.settingsController.BINARY_FILE_PATH+ " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "defi.sh");
+                        myWriter.write(this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
                         myWriter.close();
 
-                        Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir") + "/PortfolioData/./"+"defi.sh");
+                        Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir") + "/PortfolioData/./" + "defi.sh");
                         break;
                     case "win":
                         Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH); // + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
@@ -114,7 +114,7 @@ public class TransactionController {
         return portfolioList;
     }
 
-    public void clearPortfolioList(){
+    public void clearPortfolioList() {
         this.portfolioList.clear();
     }
 
@@ -202,14 +202,15 @@ public class TransactionController {
             int blockDepth = 10000;
             int restBlockCount = blockCount + blockDepth + 1;
             for (int i = 0; i < Math.ceil(depth / blockDepth); i = i + 1) {
-                if(this.settingsController.getPlatform().equals("mac")){
+                if (this.settingsController.getPlatform().equals("mac")) {
                     try {
-                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
                         myWriter.write(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
                         myWriter.close();
                     } catch (IOException e) {
-                        this.settingsController.logger.warning("Could not write to update.portfolio."); }
-                }else{
+                        this.settingsController.logger.warning("Could not write to update.portfolio.");
+                    }
+                } else {
                     this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
                 }
                 JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
@@ -357,7 +358,7 @@ public class TransactionController {
                     transactionList.add(transAction);
 
                     //if (!(transAction.getTypeValue().equals("UtxosToAccount") | transAction.getTypeValue().equals("AccountToUtxos")))
-                       // addBalanceModel(transAction);
+                    // addBalanceModel(transAction);
                     if (transAction.getTypeValue().equals("Rewards") | transAction.getTypeValue().equals("Commission"))
                         addToPortfolioModel(transAction);
                     line = reader.readLine();
@@ -394,7 +395,7 @@ public class TransactionController {
 
     public void addToPortfolioModel(TransactionModel transactionSplit) {
 
-       String pool = getPoolPairFromId(transactionSplit.getPoolIDValue());
+        String pool = getPoolPairFromId(transactionSplit.getPoolIDValue());
 
         String[] intervallList = new String[]{"Daily", "Weekly", "Monthly", "Yearly"};
 
@@ -520,28 +521,29 @@ public class TransactionController {
 
         List<TransactionModel> transactionListNew = getListAccountHistoryRpc(depth);
         List<TransactionModel> updateTransactionList = new ArrayList<>();
-int counter =0;
+        int counter = 0;
         for (int i = transactionListNew.size() - 1; i >= 0; i--) {
             if (transactionListNew.get(i).getBlockHeightValue() > this.localBlockCount) {
                 this.transactionList.add(transactionListNew.get(i));
                 updateTransactionList.add(transactionListNew.get(i));
                 //if (!transactionListNew.get(i).getTypeValue().equals("UtxosToAccount") | !transactionListNew.get(i).getTypeValue().equals("AccountToUtxos"))
-                    // addBalanceModel(transactionListNew.get(i));
-                    //
+                // addBalanceModel(transactionListNew.get(i));
+                //
                 if (transactionListNew.get(i).getTypeValue().equals("Rewards") | transactionListNew.get(i).getTypeValue().equals("Commission"))
-                        addToPortfolioModel(transactionListNew.get(i));
+                    addToPortfolioModel(transactionListNew.get(i));
 
-                if(this.settingsController.getPlatform().equals("mac")){
+                if (this.settingsController.getPlatform().equals("mac")) {
                     try {
-                        if(counter >1000){
-                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
-                        myWriter.write(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
-                        myWriter.close();
-                        counter=0;
+                        if (counter > 1000) {
+                            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+                            myWriter.write(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
+                            myWriter.close();
+                            counter = 0;
                         }
                     } catch (IOException e) {
-                        this.settingsController.logger.warning("Could not write to update.portfolio."); }
-                }else{
+                        this.settingsController.logger.warning("Could not write to update.portfolio.");
+                    }
+                } else {
                     jl.setText(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
                 }
                 counter++;
@@ -552,7 +554,7 @@ int counter =0;
             try {
                 PrintWriter writer = new PrintWriter(new FileWriter(this.strTransactionData, true));
                 String exportSplitter = ";";
-                counter=0;
+                counter = 0;
                 for (TransactionModel transactionModel : updateTransactionList) {
                     counter++;
                     StringBuilder sb = new StringBuilder();
@@ -569,25 +571,26 @@ int counter =0;
                         sb.append(transactionModel.getTxIDValue());
 
                     sb.append("\n");
-                    if(this.settingsController.getPlatform().equals("mac")){
+                    if (this.settingsController.getPlatform().equals("mac")) {
                         try {
-                            if(counter >1000){
-                            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
-                            myWriter.write(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
-                            myWriter.close();
-                            counter=0;
+                            if (counter > 1000) {
+                                FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+                                myWriter.write(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
+                                myWriter.close();
+                                counter = 0;
                             }
                         } catch (IOException e) {
-                            this.settingsController.logger.warning("Could not write to update.portfolio."); }
-                    }else{
+                            this.settingsController.logger.warning("Could not write to update.portfolio.");
+                        }
+                    } else {
                         jl.setText(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
                     }
-                     i++;
+                    i++;
                     writer.write(sb.toString());
                     sb = null;
                 }
                 writer.close();
-                if(!this.settingsController.getPlatform().equals("mac"))this.frameUpdate.dispose();
+                if (!this.settingsController.getPlatform().equals("mac")) this.frameUpdate.dispose();
                 this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).getBlockHeightValue();
                 stopServer();
                 return true;
@@ -595,7 +598,7 @@ int counter =0;
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
         }
-        if(!this.settingsController.getPlatform().equals("mac"))this.frameUpdate.dispose();
+        if (!this.settingsController.getPlatform().equals("mac")) this.frameUpdate.dispose();
         return false;
     }
 

@@ -17,6 +17,13 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
+        Process ps = null;
+        if(SettingsController.getInstance().getPlatform().equals("mac")){
+           ps = Runtime.getRuntime().exec("./jre/bin/java -Xdock:icon=icons.icns -jar JarStart.jar");
+        }else{
+            ps = Runtime.getRuntime().exec("./jre/bin/java -jar JarStart.jar");
+        }
+
         Parent root = null;
         // Main Window
         try {
