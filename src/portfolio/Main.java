@@ -1,6 +1,7 @@
 package portfolio;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,13 +17,6 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-
-        Process ps = null;
-        if(SettingsController.getInstance().getPlatform().equals("mac")){
-           ps = Runtime.getRuntime().exec("./jre/bin/java -Xdock:icon=icons.icns -jar JarStart.jar");
-        }else{
-            ps = Runtime.getRuntime().exec("./jre/bin/java -jar JarStart.jar");
-        }
 
         Parent root = null;
         // Main Window
@@ -48,12 +42,8 @@ public class Main extends Application {
 
         stage.setOnCloseRequest(we -> {
             TransactionController.getInstance().stopServer();
-            if(SettingsController.getInstance().getPlatform().equals("win")){
-                try {
-                    Runtime.getRuntime().exec("cmd /c taskkill /f /im java.exe");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }}
+            Platform.exit();
+            System.exit(0);
         });
 
         // Disclaimer anzeigen

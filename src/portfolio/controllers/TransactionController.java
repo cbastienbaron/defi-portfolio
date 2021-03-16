@@ -46,7 +46,7 @@ public class TransactionController {
     private final TreeMap<String, Double> balanceList = new TreeMap<>();
     private JFrame frameUpdate;
     public JLabel jl;
-
+    public Process defidProcess;
     public TransactionController() {
         this.transactionList = getLocalTransactionList();
         this.localBlockCount = getLocalBlockCount();
@@ -79,13 +79,13 @@ public class TransactionController {
                         myWriter.write(this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
                         myWriter.close();
 
-                        Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir") + "/PortfolioData/./" + "defi.sh");
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir") + "/PortfolioData/./" + "defi.sh");
                         break;
                     case "win":
-                        Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH); // + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
+                        defidProcess =Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH); // + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
                         break;
                     case "linux":
-                        Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        defidProcess =Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
                         break;
                 }
             }
@@ -97,6 +97,7 @@ public class TransactionController {
     public void stopServer() {
         try {
             getRpcResponse("{\"method\": \"stop\"}");
+            if(defidProcess!=null)defidProcess.destroy();
         } catch (Exception e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
