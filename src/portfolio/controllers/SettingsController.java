@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Properties;
@@ -51,7 +52,7 @@ public class SettingsController {
     public boolean selectedLaunchSync = false;
 
     //Combo box filling
-    public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI","BCH-DFI", "DOGE-DFI"};
+    public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "BCH-DFI", "DOGE-DFI"};
     public String[] plotCurrency = new String[]{"Coin", "Fiat"};
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
 
@@ -61,7 +62,7 @@ public class SettingsController {
     public String BINARY_FILE_PATH = getPlatform().equals("win") ?
             (System.getenv("LOCALAPPDATA") + "/Programs/defi-app/resources/binary/win/" + BINARY_FILE_NAME).replace("\\", "/") : //WIN PATH
             getPlatform().equals("mac") ?
-                    USER_HOME_PATH + "/../.." + "/Applications/defi-app.app/Contents/Resources/binary/mac/" + BINARY_FILE_NAME : //MAC PATH
+                    System.getProperty("user.dir") + "/PortfolioData/" + BINARY_FILE_NAME : //MAC PATH
                     getPlatform().equals("linux") ?
                             System.getProperty("user.dir") + "/PortfolioData/" + BINARY_FILE_NAME : //Linux PATH
                             "";
@@ -72,11 +73,11 @@ public class SettingsController {
                             "";
     public String DEFI_PORTFOLIO_HOME = getPlatform().equals("win") ?
             System.getenv("APPDATA") + "/defi-portfolio/" : //WIN PATH
-            getPlatform().equals("mac") ? USER_HOME_PATH + "/Library/Application Support/defi-portfolio/" : //MAC PATH
+            getPlatform().equals("mac") ? System.getProperty("user.dir") + "/PortfolioData/" : //MAC PATH
                     getPlatform().equals("linux") ? System.getProperty("user.dir") + "/PortfolioData/" : //LINUX PATH;
                             "";
     public String PORTFOLIO_CONFIG_FILE_PATH = System.getProperty("user.dir") + "/PortfolioData/defi.conf";
-        
+
     public String SETTING_FILE_PATH = DEFI_PORTFOLIO_HOME + "settings.csv";
     //All relevant paths and files
     public String strTransactionData = "transactionData.portfolio";
@@ -100,7 +101,7 @@ public class SettingsController {
 
     public String lastExportPath = USER_HOME_PATH;
     public boolean runCheckTimer;
-    public int errorBouncer=0;
+    public int errorBouncer = 0;
 
     private SettingsController() throws IOException {
         FileHandler fh;
@@ -181,9 +182,9 @@ public class SettingsController {
                     this.lastExportPath = configProps.getProperty("LastUsedExportPath");
                 this.showDisclaim = configProps.getProperty("ShowDisclaim").equals("true");
                 this.selectedLaunchDefid = configProps.getProperty("SelectedLaunchDefid").equals("true");
-                if(configProps.getProperty("SelectedLaunchSync")!=null) {
+                if (configProps.getProperty("SelectedLaunchSync") != null) {
                     this.selectedLaunchSync = configProps.getProperty("SelectedLaunchSync").equals("true");
-                }else{
+                } else {
                     this.selectedLaunchSync = false;
                 }
 
@@ -223,27 +224,36 @@ public class SettingsController {
         // copy config file
         try {
             File pathConfig = new File(this.CONFIG_FILE_PATH);
-            File pathPortfoliohDataConfig = new File(this.PORTFOLIO_CONFIG_FILE_PATH);
-            Files.copy(pathConfig.toPath(), pathPortfoliohDataConfig.toPath());
-        }
-        catch(Exception e){
+            if (pathConfig.exists()) {
+                File pathPortfoliohDataConfig = new File(this.PORTFOLIO_CONFIG_FILE_PATH);
+                Files.copy(pathConfig.toPath(), pathPortfoliohDataConfig.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (Exception e) {
         }
         // adapt port
         Path path = Paths.get(this.PORTFOLIO_CONFIG_FILE_PATH);
         Charset charset = StandardCharsets.UTF_8;
         try {
+            File configFile = new File(this.PORTFOLIO_CONFIG_FILE_PATH);
+            Properties configProps = new Properties();
+            try (FileInputStream i = new FileInputStream(configFile)) {
+                configProps.load(i);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            String rpcportConfig = configProps.getProperty("rpcport");
+            String rpcBindConfig = configProps.getProperty("rpcbind");
+            String rpcConnectConfig = configProps.getProperty("rpcconnect");
             String content = new String(Files.readAllBytes(path), charset);
-            content = content.replaceAll("8555", "8554");
+            if(rpcportConfig != null)content = content.replaceAll(rpcportConfig, "8554");
+            if(rpcBindConfig != null)content = content.replaceAll(rpcBindConfig, "127.0.0.1");
+            if(rpcConnectConfig != null)content = content.replaceAll(rpcConnectConfig, "127.0.0.1");
             Files.write(path, content.getBytes(charset));
-        }catch(Exception e){
+        } catch (Exception e) {
         }
 
-        // Load config
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(this.PORTFOLIO_CONFIG_FILE_PATH));
-
-            File configFile = new File(this.CONFIG_FILE_PATH);
+            File configFile = new File(this.PORTFOLIO_CONFIG_FILE_PATH);
             Properties configProps = new Properties();
             try (FileInputStream i = new FileInputStream(configFile)) {
                 configProps.load(i);
@@ -256,9 +266,6 @@ public class SettingsController {
             this.rpcbind = configProps.getProperty("rpcbind");
             this.rpcport = configProps.getProperty("rpcport");
             this.auth = this.rpcuser + ":" + this.rpcpassword;
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 }

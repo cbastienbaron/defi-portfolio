@@ -1,7 +1,6 @@
 package portfolio.controllers;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,7 +26,6 @@ import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 public class TransactionController {
 

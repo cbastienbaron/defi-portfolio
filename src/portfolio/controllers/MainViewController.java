@@ -207,8 +207,15 @@ public class MainViewController {
         if (this.updateSingleton) {
             this.bDataBase.setValue(this.updateSingleton = false);
             if (updateTransactionData()) {
-                this.strCurrentBlockLocally.set(Integer.toString(this.transactionController.getLocalBlockCount()));
-                this.strCurrentBlockOnBlockchain.set(this.transactionController.getBlockCount());
+
+                int localBlockCount =this.transactionController.getLocalBlockCount();
+                int blockCount = Integer.parseInt(this.transactionController.getBlockCount());
+                this.strCurrentBlockLocally.set(Integer.toString(localBlockCount));
+                if(localBlockCount >blockCount){
+                    this.strCurrentBlockOnBlockchain.set(Integer.toString(localBlockCount));
+                }else{
+                    this.strCurrentBlockOnBlockchain.set(Integer.toString(blockCount));
+                }
                 Date date = new Date(System.currentTimeMillis());
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 this.strLastUpdate.setValue(dateFormat.format(date));
