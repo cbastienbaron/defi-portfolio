@@ -59,13 +59,7 @@ public class SettingsController {
 
     public String USER_HOME_PATH = System.getProperty("user.home");
     public String BINARY_FILE_NAME = getPlatform().equals("win") ? "defid.exe" : "defid";
-    public String BINARY_FILE_PATH = getPlatform().equals("win") ?
-            (System.getenv("LOCALAPPDATA") + "/Programs/defi-app/resources/binary/win/" + BINARY_FILE_NAME).replace("\\", "/") : //WIN PATH
-            getPlatform().equals("mac") ?
-                    System.getProperty("user.dir") + "/PortfolioData/" + BINARY_FILE_NAME : //MAC PATH
-                    getPlatform().equals("linux") ?
-                            System.getProperty("user.dir") + "/PortfolioData/" + BINARY_FILE_NAME : //Linux PATH
-                            "";
+    public String BINARY_FILE_PATH = System.getProperty("user.dir") + "/PortfolioData/" + BINARY_FILE_NAME;
     public String CONFIG_FILE_PATH = getPlatform().equals("win") ?
             USER_HOME_PATH + "/.defi/defi.conf" : //WIN PATH
             getPlatform().equals("mac") ? USER_HOME_PATH + "/Library/Application Support/DeFi/defi.conf" : //MAC PATH
