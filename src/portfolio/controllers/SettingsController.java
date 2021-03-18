@@ -30,7 +30,7 @@ public class SettingsController {
         try {
             OBJ = new SettingsController();
         } catch (IOException e) {
-            e.printStackTrace();
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
     }
 
@@ -139,7 +139,7 @@ public class SettingsController {
             Object obj = jsonParser.parse(reader);
             this.translationList.setValue((JSONObject) obj);
         } catch (ParseException | IOException e) {
-            e.printStackTrace();
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
     }
 
@@ -189,7 +189,7 @@ public class SettingsController {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
                 saveSettings();
             }
         }
@@ -229,6 +229,7 @@ public class SettingsController {
                 Files.copy(pathConfig.toPath(), pathPortfoliohDataConfig.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
         } catch (Exception e) {
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
         // adapt port
         Path path = Paths.get(this.PORTFOLIO_CONFIG_FILE_PATH);
@@ -239,7 +240,7 @@ public class SettingsController {
             try (FileInputStream i = new FileInputStream(configFile)) {
                 configProps.load(i);
             } catch (IOException e) {
-                e.printStackTrace();
+                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
             }
 
             String rpcportConfig = configProps.getProperty("rpcport");
@@ -251,6 +252,7 @@ public class SettingsController {
             if(rpcConnectConfig != null)content = content.replaceAll(rpcConnectConfig, "127.0.0.1");
             Files.write(path, content.getBytes(charset));
         } catch (Exception e) {
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
 
             File configFile = new File(this.PORTFOLIO_CONFIG_FILE_PATH);
@@ -258,7 +260,7 @@ public class SettingsController {
             try (FileInputStream i = new FileInputStream(configFile)) {
                 configProps.load(i);
             } catch (IOException e) {
-                e.printStackTrace();
+                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
             }
             this.rpcauth = configProps.getProperty("rpcauth");
             this.rpcuser = configProps.getProperty("rpcuser");

@@ -137,7 +137,7 @@ public class TransactionController {
                 return "No connection";
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
 
         return "No connection";
@@ -350,7 +350,7 @@ public class TransactionController {
                 reader = new BufferedReader(new FileReader(
                         strPortfolioData));
                 String line = reader.readLine();
-
+                
                 while (line != null) {
                     String[] transactionSplit = line.split(";");
                     TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], transactionSplit[3], transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], this);
@@ -358,8 +358,10 @@ public class TransactionController {
 
                     //if (!(transAction.getTypeValue().equals("UtxosToAccount") | transAction.getTypeValue().equals("AccountToUtxos")))
                     // addBalanceModel(transAction);
-                    if (transAction.getTypeValue().equals("Rewards") | transAction.getTypeValue().equals("Commission"))
+                    if (transAction.getTypeValue().equals("Rewards") | transAction.getTypeValue().equals("Commission")){
                         addToPortfolioModel(transAction);
+                    }
+
                     line = reader.readLine();
                 }
 
@@ -369,7 +371,7 @@ public class TransactionController {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
         }
-
+        this.settingsController.logger.warning("Finish loading transactionData.portfolio");
         return FXCollections.observableArrayList(transactionList);
     }
 
@@ -589,9 +591,11 @@ public class TransactionController {
                     sb = null;
                 }
                 writer.close();
+                SettingsController.getInstance().logger.warning("Writer close");
                 if (!this.settingsController.getPlatform().equals("mac")) this.frameUpdate.dispose();
                 this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).getBlockHeightValue();
                 stopServer();
+                SettingsController.getInstance().logger.warning("Return Writer");
                 return true;
             } catch (IOException e) {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());

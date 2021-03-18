@@ -3,6 +3,7 @@ package portfolio.services;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.TableColumn;
 import portfolio.controllers.MainViewController;
+import portfolio.controllers.SettingsController;
 import portfolio.controllers.TransactionController;
 import portfolio.models.PortfolioModel;
 import portfolio.views.MainView;
@@ -33,7 +34,7 @@ public class ExportService {
         try {
             writer = new PrintWriter(new FileWriter(exportPath, true));
         } catch (IOException e) {
-            e.printStackTrace();
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
         StringBuilder sb = new StringBuilder();
 
@@ -78,7 +79,7 @@ public class ExportService {
         try {
             writer = new PrintWriter(new FileWriter(exportPath, true));
         } catch (IOException e) {
-            e.printStackTrace();
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
         StringBuilder sb = new StringBuilder();
 
@@ -233,6 +234,7 @@ public class ExportService {
             writer.close();
             return true;
         } catch (FileNotFoundException e) {
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
             return false;
         }
     }

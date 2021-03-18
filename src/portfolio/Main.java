@@ -23,7 +23,7 @@ public class Main extends Application {
         try {
             root = FXMLLoader.load(getClass().getResource("views/MainView.fxml"));
         } catch (IOException e) {
-            e.printStackTrace();
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
         assert root != null;
         Scene scene = new Scene(root);

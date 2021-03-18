@@ -96,12 +96,12 @@ public class CoinPriceController {
                         file.close();
                         this.coinPriceModel = coinPrice;
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
                     }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
     }
 
@@ -124,7 +124,7 @@ public class CoinPriceController {
                 file.close();
 
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
             }
         }
         return coinPrice;
