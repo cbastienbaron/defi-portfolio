@@ -350,7 +350,7 @@ public class TransactionController {
                 reader = new BufferedReader(new FileReader(
                         strPortfolioData));
                 String line = reader.readLine();
-                
+
                 while (line != null) {
                     String[] transactionSplit = line.split(";");
                     TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], transactionSplit[3], transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], this);
@@ -371,7 +371,6 @@ public class TransactionController {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
         }
-        this.settingsController.logger.warning("Finish loading transactionData.portfolio");
         return FXCollections.observableArrayList(transactionList);
     }
 
