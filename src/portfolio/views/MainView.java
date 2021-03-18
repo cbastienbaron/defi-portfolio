@@ -622,11 +622,7 @@ public class MainView implements Initializable {
 
                 bindBidirectional(this.mainViewController.settingsController.dateFrom);
 
-        this.dateFrom.setValue(LocalDate.now().
-
-                minusDays(30L));
         this.dateFrom.setDayCellFactory(picker -> new
-
                 DateCell() {
                     public void updateItem(LocalDate date, boolean empty) {
                         super.updateItem(date, empty);
@@ -635,11 +631,7 @@ public class MainView implements Initializable {
                     }
                 });
 
-        this.dateFromCom.setValue(LocalDate.now().
-
-                minusDays(30L));
         this.dateFromCom.setDayCellFactory(picker -> new
-
                 DateCell() {
                     public void updateItem(LocalDate date, boolean empty) {
                         super.updateItem(date, empty);
@@ -648,11 +640,7 @@ public class MainView implements Initializable {
                     }
                 });
 
-        this.dateFromOver.setValue(LocalDate.now().
-
-                minusDays(30L));
         this.dateFromOver.setDayCellFactory(picker -> new
-
                 DateCell() {
                     public void updateItem(LocalDate date, boolean empty) {
                         super.updateItem(date, empty);

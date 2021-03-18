@@ -590,11 +590,9 @@ public class TransactionController {
                     sb = null;
                 }
                 writer.close();
-                SettingsController.getInstance().logger.warning("Writer close");
                 if (!this.settingsController.getPlatform().equals("mac")) this.frameUpdate.dispose();
                 this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).getBlockHeightValue();
                 stopServer();
-                SettingsController.getInstance().logger.warning("Return Writer");
                 return true;
             } catch (IOException e) {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());

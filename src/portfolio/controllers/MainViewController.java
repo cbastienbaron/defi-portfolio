@@ -209,7 +209,6 @@ public class MainViewController {
             this.bDataBase.setValue(this.updateSingleton = false);
             if (updateTransactionData()) {
 
-                SettingsController.getInstance().logger.warning("Get Local Block");
                 int localBlockCount = this.transactionController.getLocalBlockCount();
                 int blockCount = Integer.parseInt(this.transactionController.getBlockCount());
                 this.strCurrentBlockLocally.set(Integer.toString(localBlockCount));
@@ -326,7 +325,6 @@ public class MainViewController {
                 }
             }
 
-            this.settingsController.logger.warning("Sort all Pool Pairs");
             this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
             this.poolPairList.clear();
             this.poolPairList.addAll(this.poolPairModelList);
