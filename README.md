@@ -7,7 +7,7 @@ Use DeFi-Portfolio to export, analyse and visualize your transactions, rewards a
 # Documentation
 
 - [Getting started](#getting-started)
-- [Functionality description:](#functionality-description)
+- [Further information:](#further-information)
 - [About Us](#about-us)
 
 # Donate
