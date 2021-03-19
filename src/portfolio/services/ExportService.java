@@ -135,7 +135,7 @@ public class ExportService {
 
             }else{
                 sb = new StringBuilder();
-                sb.append(this.mainViewController.transactionController.convertTimeStampWithoutTimeToString(transaction.getBlockTimeValue())).append(exportSplitter);
+                sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.getBlockTimeValue())).append(exportSplitter);
                 sb.append(transaction.getTypeValue()).append(exportSplitter);
                 sb.append(String.format(localeDecimal, "%.8f", transaction.getCryptoValueValue())).append(exportSplitter);
                 sb.append(transaction.getCryptoCurrencyValue()).append(exportSplitter);

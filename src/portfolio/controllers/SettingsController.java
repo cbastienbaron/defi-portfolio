@@ -49,7 +49,7 @@ public class SettingsController {
     public String selectedIntervallInt = "Daily";
     public boolean showDisclaim = true;
     public boolean selectedLaunchDefid = false;
-    public boolean selectedLaunchSync = false;
+    public boolean selectedLaunchSync = true;
 
     //Combo box filling
     public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "BCH-DFI", "DOGE-DFI"};

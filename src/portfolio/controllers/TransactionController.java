@@ -764,7 +764,7 @@ public class TransactionController {
 
     public String convertTimeStampWithoutTimeToString(long timeStamp) {
         Date date = new Date(timeStamp * 1000L);
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T23:59:00'");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T23:59:59'");
         return dateFormat.format(date);
     }
 
