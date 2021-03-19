@@ -20,9 +20,14 @@ public class DisclaimerView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        String strDisclaimer = "Disclaimer: \nThe content provided is for informational purposes only. \nWe do not guarantee the accuracy of the data. \n" +
-                "\nNote: To update the data the defi-app/ defi-wallet \nand the defid must be closed.";
-        lblDisclaimer.setText(strDisclaimer);
+        if(SettingsController.getInstance().selectedLanguage.getValue().equals("English")){
+            String strDisclaimer = "Disclaimer: \nThe content provided is for informational purposes only. \nWe do not guarantee the accuracy of the data.";
+            lblDisclaimer.setText(strDisclaimer);
+        }else
+        {
+            String strDisclaimer = "Haftungsausschluss: \nDie zur Verfügung gestellten Inhalte dienen nur zu Informationszwecken. \nWir übernehmen keine Garantie für die Richtigkeit der Daten.";
+            lblDisclaimer.setText(strDisclaimer);
+        }
     }
 
     public void btnClose() {
