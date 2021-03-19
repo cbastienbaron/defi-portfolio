@@ -30,46 +30,7 @@ $DFI: dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V
   8. After closing close the defid.exe. (If not then maybe you need a full resync the next time)
   
 # Functionality description:
-<b>Update Database:</b>
-
-Before you can analyse your rewards and commissions the database must be updated. With the update database button the transactions will be read out and saved locally (appdata).
-Note: The button update database will be enabled once the defid.exe has a connection to the blockchain.
-
-
-<img src="./src/screenshots/update_database.png" width="700" height="411"/>
-
-
-<b>Raw Data:</b>
-
-All transactions are shown here in tabular form. When clicking on Blockheight, Blockhash, Owner or Transaction-Hash the Blockchain Explorer will be opened with the respective value.
-The table can be exported as a csv file. To do this, right-click on the corresponding sub-functions.
-
-<img src="./src/screenshots/rawdata.png" width="700" height="411"/>
-
-
-<b>Analyse Data:</b>
-
-Here the rewards are displayed in graphical form. You can choose the start date and the end date. In addition, the interval (daily, weekly, monthly, yearly) can be selected and the pool share can be choosen. The plot can be switched between individual and cumulative view. The table can be exported as a csv file. To do this, right-click on the corresponding sub-functions.
-
-
-<img src="./src/screenshots/rewards.png" width="700" height="411"/>
-
-
-<img src="./src/screenshots/rewards_cumulated.png" width="700" height="411"/>
-
-
-Here the commissions are displayed in graphical form. The setting options are the same as for rewards. You can select the start date and the end date. In addition, the interval (daily, weekly, monthly, yearly) can be selected and the pool share can be choosen. The plot can be switched between individual and cumulative view. 
-
-<img src="./src/screenshots/comissions.png" width="700" height="411"/>
-
-Here the overview is displayed in graphical form. The rewards and commissions are combined in one plot. You can choose the start date and the end date.You can also select the interval (daily, weekly, monthly, yearly).
-
-<img src="./src/screenshots/overview.png" width="700" height="411"/>
-
-<b>Settings:</b>
-
-<img src="./src/screenshots/settings.png" width="500" height="311"/>
-
+The installation manual and the functionality description can be found in the DeFi-Wiki: https://defichain-wiki.com/wiki/DeFiChain-Portfolio
 
 # About Us
 Daniel Klaiber (https://t.me/danielklaiber) & (https://twitter.com/danielkolibri)
