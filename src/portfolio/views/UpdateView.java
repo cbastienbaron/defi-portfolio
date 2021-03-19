@@ -37,6 +37,8 @@ public class UpdateView implements Initializable {
         stage.close();
     }
 
+    public void github(MouseEvent mouseEvent) {
+    }
 }
 
 

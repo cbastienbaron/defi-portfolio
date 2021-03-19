@@ -34,18 +34,12 @@ public class SettingsView implements Initializable {
     public Label prefferedStyle;
     public Label labelDec;
     public Label lblLaunchDefid;
-    public Label lblLaunchSync;
     public Label lblDeleteData;
     public AnchorPane anchorPane;
     @FXML
     public StackPane stack;
-
-    @FXML
-    public StackPane stackSync;
     @FXML
     public Button switchButton;
-    @FXML
-    public Button switchButtonSync;
     @FXML
     public Button btnDeleteData;
     @FXML
@@ -83,7 +77,6 @@ public class SettingsView implements Initializable {
         this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
       //  this.labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
         this.lblLaunchDefid.setText(this.settingsController.translationList.getValue().get("LaunchDefid").toString());
-        this.lblLaunchSync.setText(this.settingsController.translationList.getValue().get("LaunchSync").toString());
         this.cmbLanguage.getItems().addAll(this.settingsController.languages);
         this.cmbLanguage.valueProperty().bindBidirectional(this.settingsController.selectedLanguage);
         this.lblDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteLabel").toString());
@@ -103,7 +96,6 @@ public class SettingsView implements Initializable {
 
 
         this.SwitchButton();
-        this.SwitchButtonSync();
     }
 
     public void changeLanguage() {
@@ -112,7 +104,6 @@ public class SettingsView implements Initializable {
         this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
   //      this.labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
         this.lblLaunchDefid.setText(this.settingsController.translationList.get().get("LaunchDefid").toString());
-        this.lblLaunchSync.setText(this.settingsController.translationList.getValue().get("LaunchSync").toString());
         this.lblDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteLabel").toString());
         this.btnDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteButton").toString());
     }
@@ -150,33 +141,6 @@ public class SettingsView implements Initializable {
         }
     }
 
-    private void initSync() {
-        stackSync.getChildren().addAll(backSync, switchButtonSync);
-        stackSync.setMinSize(35, 15);
-        backSync.maxWidth(35);
-        backSync.minWidth(30);
-        backSync.maxHeight(15);
-        backSync.minHeight(10);
-        backSync.setArcHeight(backSync.getHeight());
-        backSync.setArcWidth(backSync.getHeight());
-        backSync.setFill(Color.valueOf("#d6cecc"));//Grau
-        Double r = 3.0;
-        switchButtonSync.setShape(new Circle(r));
-
-        switchButtonSync.setMaxSize(20, 20);
-        switchButtonSync.setMinSize(20, 20);
-
-        if (this.settingsController.selectedLaunchSync) {
-            switchButtonSync.setStyle(buttonStyleOn);
-            backSync.setFill(Color.valueOf("#FF00AF"));//Weiß
-            StackPane.setAlignment(switchButtonSync, Pos.CENTER_RIGHT);
-        } else {
-            switchButtonSync.setStyle(buttonStyleOff);
-            backSync.setFill(Color.valueOf("#d6cecc"));//Rosa
-            StackPane.setAlignment(switchButtonSync, Pos.CENTER_LEFT);
-
-        }
-    }
 
     public void updateSwitchButton() {
 
@@ -194,22 +158,6 @@ public class SettingsView implements Initializable {
 
     }
 
-    public void updateSwitchButtonSync() {
-
-        if (this.settingsController.selectedLaunchSync) {
-            switchButtonSync.setStyle(buttonStyleOff);
-            backSync.setFill(Color.valueOf("#d6cecc"));//Weiß
-            StackPane.setAlignment(switchButtonSync, Pos.CENTER_LEFT);
-            this.settingsController.selectedLaunchSync = false;
-        } else {
-            switchButtonSync.setStyle(buttonStyleOn);
-            backSync.setFill(Color.valueOf("#FF00AF"));//Rosa
-            StackPane.setAlignment(switchButtonSync, Pos.CENTER_RIGHT);
-            this.settingsController.selectedLaunchSync = true;
-        }
-
-    }
-
     public void SwitchButton() {
         init();
         EventHandler<Event> click = new EventHandler<Event>() {
@@ -221,20 +169,6 @@ public class SettingsView implements Initializable {
         switchButton.setFocusTraversable(false);
         switchButton.setOnMouseClicked(click);
         stack.setOnMouseClicked(click);
-    }
-
-
-    private void SwitchButtonSync() {
-        initSync();
-        EventHandler<Event> click = new EventHandler<Event>() {
-            @Override
-            public void handle(Event e) {
-                updateSwitchButtonSync();
-            }
-        };
-        switchButtonSync.setFocusTraversable(false);
-        switchButtonSync.setOnMouseClicked(click);
-        stackSync.setOnMouseClicked(click);
     }
 
 }

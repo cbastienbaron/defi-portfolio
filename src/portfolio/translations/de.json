@@ -53,7 +53,7 @@
   "SaveData": "Datenspeicherung...",
   "UpdateData": "Daten Update ",
   "TransactionHash": "Transaktions Hash",
-  "ConnectNode": "Verbinden mit Node...",
+  "ConnectNode": "Verbinden mit Node... (defi-app/DeFi Wallet muss geschlossen sein)",
   "UpdateTooltip": "Klick auf \"Verbinden mit Node\" (DeFi App muss geschlossen sein)",
   "LaunchDefid": "Starte \"Node\" beim Tool Start",
   "SyncData": "Synchronisiere Daten: ",

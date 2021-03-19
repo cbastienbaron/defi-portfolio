@@ -127,6 +127,10 @@ public class ExportService {
 
                 }
                 exportList = new TreeMap<>();
+
+                String key = this.mainViewController.transactionController.getPoolPairFromId(transaction.getPoolIDValue()) + transaction.getCryptoCurrencyValue() + transaction.getTypeValue();
+                exportList.put(key,new TransactionModel(transaction.getBlockTimeValue(),transaction.getOwnerValue(),transaction.getTypeValue(),transaction.getAmountValue(),transaction.getBlockHashValue(),transaction.getBlockHeightValue(),transaction.getPoolIDValue(),transaction.getTxIDValue(),this.mainViewController.transactionController));
+
             }
 
             }else{
