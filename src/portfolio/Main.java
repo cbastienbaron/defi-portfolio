@@ -1,6 +1,7 @@
 package portfolio;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -8,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import portfolio.controllers.SettingsController;
+import portfolio.controllers.TransactionController;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,47 +19,32 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
 
         Parent root = null;
-        // Splashscreen
-        Splash task = new Splash();
-        Thread t = new Thread(task);
-        t.start();
-
-        // ConnectionChecker
-        ConnectionChecker checker = new ConnectionChecker();
-        Thread check = new Thread(checker);
-        check.start();
-
         // Main Window
         try {
             root = FXMLLoader.load(getClass().getResource("views/MainView.fxml"));
         } catch (IOException e) {
-            e.printStackTrace();
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
-
         assert root != null;
         Scene scene = new Scene(root);
         stage = new Stage();
 
         final Delta dragDelta = new Delta();
-        //stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("DeFi-Portfolio " + SettingsController.getInstance().Version);
-
-
         stage.getIcons().add(new Image(new File( System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").toURI().toString()));
         stage.setScene(scene);
         stage.setMinHeight(700);
         stage.setMinWidth(1200);
         stage.show();
         // Stop Splashsccreen
+        File file = new File(System.getProperty("user.dir")+"/PortfolioData/" +"splash.portfolio");
+        if(file.exists())file.delete();
+
         stage.setOnCloseRequest(we -> {
-            if(SettingsController.getInstance().getPlatform().equals("win")){
-                try {
-                    Runtime.getRuntime().exec("cmd /c taskkill /f /im java.exe");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }}
+            TransactionController.getInstance().stopServer();
+            Platform.exit();
+            System.exit(0);
         });
-        task.kill();
 
         // Disclaimer anzeigen
         if(SettingsController.getInstance().showDisclaim) {
@@ -90,7 +77,6 @@ public class Main extends Application {
     }
 
     static class Delta { double x, y; }
-
 
     public static void main(String[] args) {
         launch(args);

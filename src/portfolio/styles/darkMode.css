@@ -92,10 +92,6 @@
   -fx-background-insets: 0, 0 0 2px 0;
 }
 
-.combo-box .cell:selected {
-    -fx-text-fill: white;
-}
-
 .tab-pane > .tab-header-area > .headers-region > .tab:selected >.tab-container >.tab-label {
   -fx-text-fill: white;
 }

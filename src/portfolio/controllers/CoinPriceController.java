@@ -2,25 +2,32 @@ package portfolio.controllers;
 
 import com.litesoftwares.coingecko.CoinGeckoApiClient;
 import com.litesoftwares.coingecko.impl.CoinGeckoApiClientImpl;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import portfolio.models.CoinPriceModel;
 
 import java.io.*;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class CoinPriceController {
 
     private CoinPriceModel coinPriceModel;
-    String strCoinPriceData;
+    String strCoinPriceData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strCoinPriceData;
 
-    public CoinPriceController(String strCoinPriceData) {
-        this.strCoinPriceData = strCoinPriceData;
-        try {
-            updateCoinPriceData();
-        } catch (Exception e) {
-            e.printStackTrace();
+        private static CoinPriceController OBJ;
+
+        static {
+            OBJ = new CoinPriceController();
         }
+
+        public static CoinPriceController getInstance() {
+            return OBJ;
+        }
+    public CoinPriceController() {
+        getCoinPriceLocal(this.strCoinPriceData);
     }
 
     public void updateCoinPriceData() {
@@ -31,7 +38,7 @@ public class CoinPriceController {
         long currentTimeStamp = new Timestamp(System.currentTimeMillis()).getTime() / 1000L;
         try {
 
-            if (!new TransactionController("", null, null, "").getDate(Long.toString(currentTimeStamp), "Daily").equals(new TransactionController("", null, null, "").getDate(coinPrice.lastTimeStamp, "Daily"))) {
+            if (!TransactionController.getInstance().getDate(Long.toString(currentTimeStamp), "Daily").equals(TransactionController.getInstance().getDate(coinPrice.lastTimeStamp, "Daily"))) {
 
                 if (client.getCoinMarketChartRangeById("defichain", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices().size() > 0) {
 
@@ -89,12 +96,12 @@ public class CoinPriceController {
                         file.close();
                         this.coinPriceModel = coinPrice;
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
                     }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
     }
 
@@ -117,7 +124,7 @@ public class CoinPriceController {
                 file.close();
 
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
             }
         }
         return coinPrice;
@@ -125,11 +132,12 @@ public class CoinPriceController {
 
     public double getPriceFromTimeStamp(String coinFiatPair, Long timeStamp) {
         double price = 0;
-        for (int i = this.coinPriceModel.GetKeyMap().get(coinFiatPair).size() - 1; i >= 0; i--)
-            if (timeStamp > Long.parseLong(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(0))) {
-                return Double.parseDouble(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(1));
-            }
+        if( this.coinPriceModel.GetKeyMap().containsKey(coinFiatPair)){
+            for (int i = this.coinPriceModel.GetKeyMap().get(coinFiatPair).size() - 1; i >= 0; i--)
+                if (timeStamp > Long.parseLong(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(0))) {
+                    return Double.parseDouble(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(1));
+                }
+        }
         return price;
-
     }
 }

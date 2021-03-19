@@ -53,31 +53,30 @@ public class HelpView implements Initializable {
         try {
             Desktop.getDesktop().browse(new URL("https://defichain.com/").toURI());
         } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
     }
 
     public void defichainwiki() {
         try {
-            Desktop.getDesktop().browse(new URL("https://defichain-wiki.com/wiki/Main_Page").toURI());
+            Desktop.getDesktop().browse(new URL("https://defichain-wiki.com/wiki/DeFiChain-Portfolio").toURI());
         } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
     }
     public void github() {
         try {
             Desktop.getDesktop().browse(new URL("https://github.com/DeFi-PortfolioManagement/defi-portfolio/blob/master/README.md").toURI());
         } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
     }
 
     public void btnTelegram()  {
-
         try {
             Desktop.getDesktop().browse(new URL("https://t.me/DeFiChainPortfolio").toURI());
         } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
     }
 
@@ -88,6 +87,13 @@ public class HelpView implements Initializable {
         stage.close();
     }
 
+    public void defichainexplained() {
+        try {
+            Desktop.getDesktop().browse(new URL("https://defichain-explained.com/").toURI());
+        } catch (IOException | URISyntaxException e) {
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+        }
+    }
 }
 
 

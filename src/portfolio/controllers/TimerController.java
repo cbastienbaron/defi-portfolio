@@ -6,16 +6,18 @@ import java.util.TimerTask;
 
 public class TimerController extends TimerTask {
     MainViewController mainViewController;
- public TimerController(MainViewController mainViewController){
+
+    public TimerController(MainViewController mainViewController) {
         this.mainViewController = mainViewController;
     }
+
     @Override
     public void run() {
-        Platform.runLater(() ->    {
-            mainViewController.strCurrentBlockOnBlockchain.set(mainViewController.transactionController.getBlockCountRpc());
-            mainViewController.bDataBase.set(mainViewController.transactionController.getBlockCountRpc().equals("No connection"));
+        Platform.runLater(() -> {
+                    if (SettingsController.getInstance().runTimer) {
+                        mainViewController.strCurrentBlockOnBlockchain.set(mainViewController.transactionController.getBlockCount());
+                    }
                 }
-
         );
     }
 }

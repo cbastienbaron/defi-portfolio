@@ -2,11 +2,9 @@ package portfolio.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import com.sun.javafx.geom.Arc2D;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import portfolio.Main;
 import portfolio.models.AddressModel;
 import portfolio.models.PortfolioModel;
 import portfolio.models.TransactionModel;
@@ -16,11 +14,10 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -28,60 +25,82 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class TransactionController {
 
-    private URL url;
-    private URLConnection conn;
-    private String strConfigPath;
-    private ObservableList<TransactionModel> transactionList;
-    private String strTransactionData;
-    private int localBlockCount;
-    private SettingsController settingsController;
-    private OutputStreamWriter wr;
-    private CoinPriceController coinPriceController;
-    private TreeMap<String, TreeMap<String, PortfolioModel>> portfolioList = new TreeMap<>();
-    private JFrame frameUpdate;
-    public JLabel jl;
+    private static TransactionController OBJ = null;
 
-    public TransactionController(String transactionData, SettingsController settingsController, CoinPriceController coinPriceController, String strConfigPath) {
-        this.strTransactionData = transactionData;
-        this.settingsController = settingsController;
-        this.coinPriceController = coinPriceController;
-        this.transactionList = getLocalTransactionList();
-        this.localBlockCount = getLocalBlockCount();
-        this.strConfigPath = strConfigPath;
+    static {
+        OBJ = new TransactionController();
     }
 
+    private  SettingsController settingsController = SettingsController.getInstance();
+    private  CoinPriceController coinPriceController = CoinPriceController.getInstance();
+    private  String strTransactionData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strTransactionData;
+    private  ObservableList<TransactionModel> transactionList;
+    private int localBlockCount;
+    private final TreeMap<String, TreeMap<String, PortfolioModel>> portfolioList = new TreeMap<>();
+    private final TreeMap<String, Double> balanceList = new TreeMap<>();
+    private JFrame frameUpdate;
+    public JLabel jl;
+    public Process defidProcess;
+    private Boolean classSingleton=true;
+
+    public TransactionController() {
+        if(classSingleton){
+            classSingleton =false;
+            this.transactionList = getLocalTransactionList();
+            this.localBlockCount = getLocalBlockCount();
+        }
+        }
+
+    public void clearTransactionList(){
+        transactionList.clear();
+    }
+
+    public static TransactionController getInstance() {
+        return OBJ;
+    }
+
+
     public boolean checkRpc() {
-        if (new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + ".cookie").exists()) initRpcConnection();
-        return !getBlockCountRpc().equals("No connection");
+        JSONObject jsonObject = getRpcResponse("{\"method\": \"getrpcinfo\"}");
+        if (jsonObject != null) {
+            return jsonObject.get("result") != null;
+        } else {
+            return false;
+        }
     }
 
     public void startServer() {
-        if (!new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + ".cookie").exists()){
         try {
-            switch (this.settingsController.getPlatform()) {
-                case "mac":
-                    Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + this.settingsController.BINARY_FILE_PATH);
-                    break;
-                case "win":
-                    Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
-                    break;
-                case "nux":
-                    Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
-                    break;
+            if (!this.checkRpc()) {
+                switch (this.settingsController.getPlatform()) {
+                    case "mac":
+                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "defi.sh");
+                        myWriter.write(this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        myWriter.close();
+
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir") + "/PortfolioData/./" + "defi.sh");
+                        break;
+                    case "win":
+                        defidProcess =Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH); // + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
+                        break;
+                    case "linux":
+                        defidProcess =Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        break;
+                }
             }
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
-        }
     }
 
-    public void closeServer() {
+    public void stopServer() {
         try {
-            initRpcConnection();
             getRpcResponse("{\"method\": \"stop\"}");
+            if(defidProcess!=null)defidProcess.destroy();
         } catch (Exception e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
@@ -99,32 +118,38 @@ public class TransactionController {
         return portfolioList;
     }
 
+    public void clearPortfolioList() {
+        this.portfolioList.clear();
+    }
+
     public ObservableList<TransactionModel> getTransactionList() {
         return transactionList;
     }
 
-    public void initRpcConnection() {
+    public String getBlockCount() {
         try {
-            try {
-                this.url = new URL("http://" + this.settingsController.rpcbind + ":" + this.settingsController.rpcport + "/");
-            } catch (MalformedURLException e) {
-                this.settingsController.logger.warning("Exception occured: " + e.toString());
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.defichain.io/v1/stats").openConnection();
+            String jsonText = "";
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                jsonText = br.readLine();
+            } catch (Exception ex) {
+                this.settingsController.logger.warning("Exception occured: " + ex.toString());
             }
-            this.conn = url.openConnection();
-            String basicAuth = "Basic " + new String(Base64.getEncoder().encode((this.settingsController.auth.getBytes())));
-            conn.setRequestProperty("Authorization", basicAuth);
-            conn.setRequestProperty("Content-Type", "application/json-rpc");
-            conn.setDoOutput(true);
-            wr = new OutputStreamWriter(conn.getOutputStream());
-
+            JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
+            if (obj.get("blockHeight") != null) {
+                return obj.get("blockHeight").toString();
+            } else {
+                return "No connection";
+            }
         } catch (IOException e) {
-            //this.settingsController.logger.warning("Exception occured: " + e.toString());
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
+
+        return "No connection";
     }
 
     public String getBlockCountRpc() {
         try {
-
             JSONObject jsonObject = getRpcResponse("{\"method\": \"getblockcount\"}");
             if (jsonObject != null) {
                 if (jsonObject.get("result") != null) {
@@ -142,7 +167,6 @@ public class TransactionController {
     }
 
     public int getAccountHistoryCountRpc() {
-
         JSONObject jsonObject = getRpcResponse("{\"method\": \"accounthistorycount\",\"params\":[\"mine\"]}");
         return Integer.parseInt(jsonObject.get("result").toString());
     }
@@ -178,19 +202,27 @@ public class TransactionController {
         List<TransactionModel> transactionList = new ArrayList<>();
 
         try {
-
             int blockCount = Integer.parseInt(getBlockCountRpc());
             int blockDepth = 10000;
             int restBlockCount = blockCount + blockDepth + 1;
             for (int i = 0; i < Math.ceil(depth / blockDepth); i = i + 1) {
-                this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
-                JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
+                if (this.settingsController.getPlatform().equals("mac")) {
+                    try {
+                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+                        myWriter.write(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
+                        myWriter.close();
+                    } catch (IOException e) {
+                        this.settingsController.logger.warning("Could not write to update.portfolio.");
+                    }
+                } else {
+                    this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
+                }
+                JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
                 JSONArray transactionJson = (JSONArray) jsonObject.get("result");
                 for (Object transaction : transactionJson) {
                     JSONObject transactionJ = (JSONObject) transaction;
 
                     for (String amount : (transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")) {
-
                         if (transactionJ.get("poolID") != null) {
                             transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", this));
                         } else {
@@ -199,11 +231,10 @@ public class TransactionController {
                     }
                 }
                 restBlockCount = blockCount - i * blockDepth;
-                ;
             }
 
             restBlockCount = restBlockCount - blockDepth;
-            JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
+            JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
             JSONArray transactionJson = (JSONArray) jsonObject.get("result");
             for (Object transaction : transactionJson) {
                 JSONObject transactionJ = (JSONObject) transaction;
@@ -226,8 +257,12 @@ public class TransactionController {
         this.frameUpdate = new JFrame();
         this.frameUpdate.setLayout(null);
         this.frameUpdate.setIconImage(new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").getImage());
-        ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/ajaxloader.gif");
-        this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), icon, JLabel.CENTER);
+        if (this.settingsController.getPlatform().equals("mac")) {
+            this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), JLabel.CENTER);
+        } else {
+            ImageIcon icon = new ImageIcon(System.getProperty("user.dir") + "/defi-portfolio/src/icons/ajaxloader.gif");
+            this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), icon, JLabel.CENTER);
+        }
         this.jl.setSize(400, 100);
         this.jl.setLocation(0, 0);
         if (this.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
@@ -266,37 +301,45 @@ public class TransactionController {
     private Point mouseClickPoint;
 
     private JSONObject getRpcResponse(String requestJson) {
-        if (new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + ".cookie").exists()) {
 
-            try {
-                initRpcConnection();
+        try {
+            //URL url = new URL("http://" + this.settingsController.rpcbind + ":" + this.settingsController.rpcport + "/");
+            URL url = new URL("http://127.0.0.1:8554");
 
-                if (conn != null & wr != null) {
-                    wr.write(requestJson);
-                    wr.flush();
-                    wr.close();
+            HttpURLConnection conn;
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout((int) TimeUnit.MINUTES.toMillis(0L));
+            conn.setReadTimeout((int) TimeUnit.MINUTES.toMillis(0L));
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            String basicAuth = "Basic " + new String(Base64.getEncoder().encode((this.settingsController.auth.getBytes())));
 
-                    String jsonText = "";
-
-                    try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                        jsonText = br.readLine();
-
-                    } catch (Exception ex) {
-                        this.settingsController.logger.warning("Exception occured: " + ex.toString());
-                    }
-
-                    Object obj = JSONValue.parse(jsonText);
-
-
-                    return (JSONObject) obj;
-
+            conn.setRequestProperty("Authorization", basicAuth);
+            conn.setRequestProperty("Content-Type", "application/json-rpc");
+            conn.setDoOutput(true);
+            conn.getOutputStream().write(requestJson.getBytes(StandardCharsets.UTF_8));
+            conn.getOutputStream().close();
+            String jsonText = "";
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                    jsonText = br.readLine();
+                } catch (Exception ex) {
+                    this.settingsController.logger.warning("Exception occured: " + ex.toString());
                 }
+                SettingsController.getInstance().debouncer = true;
+                Object obj = JSONValue.parse(jsonText);
+                return (JSONObject) obj;
 
-            } catch (Exception e) {
-                //this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
+
+        } catch (IOException ioException) {
+            SettingsController.getInstance().runTimer = !(ioException.getMessage().equals("Connection refused: connect") & SettingsController.getInstance().debouncer);
         }
+
+
         return new JSONObject();
+
     }
 
     public ObservableList<TransactionModel> getLocalTransactionList() {
@@ -317,8 +360,13 @@ public class TransactionController {
                     String[] transactionSplit = line.split(";");
                     TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], transactionSplit[3], transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], this);
                     transactionList.add(transAction);
-                    if (transAction.getTypeValue().equals("Rewards") | transAction.getTypeValue().equals("Commission"))
+
+                    //if (!(transAction.getTypeValue().equals("UtxosToAccount") | transAction.getTypeValue().equals("AccountToUtxos")))
+                    // addBalanceModel(transAction);
+                    if (transAction.getTypeValue().equals("Rewards") | transAction.getTypeValue().equals("Commission")){
                         addToPortfolioModel(transAction);
+                    }
+
                     line = reader.readLine();
                 }
 
@@ -328,32 +376,32 @@ public class TransactionController {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
         }
-
         return FXCollections.observableArrayList(transactionList);
+    }
+
+    public String getTokenFromID(String id) {
+        JSONObject jsonObject = getRpcResponse("{\"method\": \"gettoken\",\"params\":[" + id + "]}");
+        jsonObject = (JSONObject) jsonObject.get("result");
+        jsonObject = (JSONObject) jsonObject.get(id);
+
+        return jsonObject.get("symbol").toString();
+    }
+
+    public String getBalance() {
+        JSONObject jsonObject = getRpcResponse("{\"method\": \"getbalance\"}");
+        return jsonObject.get("result").toString();
+    }
+
+    public JSONArray getTokenBalances() {
+        JSONObject jsonObject = getRpcResponse("{\"method\": \"gettokenbalances\"}");
+        JSONArray jsonArray = (JSONArray) jsonObject.get("result");
+        return jsonArray;
     }
 
     public void addToPortfolioModel(TransactionModel transactionSplit) {
 
-        String pool = "BTC-DFI";
-        switch (transactionSplit.getPoolIDValue()) {
-            case "4":
-                pool = "ETH-DFI";
-                break;
-            case "5":
-                pool = "BTC-DFI";
-                break;
-            case "6":
-                pool = "USDT-DFI";
-                break;
-            case "8":
-                pool = "DOGE-DFI";
-                break;
-            case "10":
-                pool = "LTC-DFI";
-                break;
-            default:
-                break;
-        }
+        String pool = getPoolPairFromId(transactionSplit.getPoolIDValue());
+
         String[] intervallList = new String[]{"Daily", "Weekly", "Monthly", "Yearly"};
 
         for (String intervall : intervallList) {
@@ -463,9 +511,12 @@ public class TransactionController {
     }
 
     public int getLocalBlockCount() {
+       if(!new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "/transactionData.portfolio").exists()){
+           return 0;
+       }
         if (transactionList.size() > 0) {
 
-            return this.transactionList.get(transactionList.size() - 1).getBlockHeightValue();
+            return transactionList.get(transactionList.size() - 1).getBlockHeightValue();
         } else {
             return 0;
         }
@@ -475,14 +526,32 @@ public class TransactionController {
 
         List<TransactionModel> transactionListNew = getListAccountHistoryRpc(depth);
         List<TransactionModel> updateTransactionList = new ArrayList<>();
-
+        int counter = 0;
         for (int i = transactionListNew.size() - 1; i >= 0; i--) {
             if (transactionListNew.get(i).getBlockHeightValue() > this.localBlockCount) {
                 this.transactionList.add(transactionListNew.get(i));
                 updateTransactionList.add(transactionListNew.get(i));
+                //if (!transactionListNew.get(i).getTypeValue().equals("UtxosToAccount") | !transactionListNew.get(i).getTypeValue().equals("AccountToUtxos"))
+                // addBalanceModel(transactionListNew.get(i));
+                //
                 if (transactionListNew.get(i).getTypeValue().equals("Rewards") | transactionListNew.get(i).getTypeValue().equals("Commission"))
                     addToPortfolioModel(transactionListNew.get(i));
-                jl.setText(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
+
+                if (this.settingsController.getPlatform().equals("mac")) {
+                    try {
+                        if (counter > 1000) {
+                            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+                            myWriter.write(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
+                            myWriter.close();
+                            counter = 0;
+                        }
+                    } catch (IOException e) {
+                        this.settingsController.logger.warning("Could not write to update.portfolio.");
+                    }
+                } else {
+                    jl.setText(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
+                }
+                counter++;
             }
         }
         int i = 1;
@@ -490,8 +559,9 @@ public class TransactionController {
             try {
                 PrintWriter writer = new PrintWriter(new FileWriter(this.strTransactionData, true));
                 String exportSplitter = ";";
-
+                counter = 0;
                 for (TransactionModel transactionModel : updateTransactionList) {
+                    counter++;
                     StringBuilder sb = new StringBuilder();
                     sb.append(transactionModel.getBlockTimeValue()).append(exportSplitter);
                     sb.append(transactionModel.getOwnerValue()).append(exportSplitter);
@@ -506,21 +576,144 @@ public class TransactionController {
                         sb.append(transactionModel.getTxIDValue());
 
                     sb.append("\n");
-                    jl.setText(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
+                    if (this.settingsController.getPlatform().equals("mac")) {
+                        try {
+                            if (counter > 1000) {
+                                FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+                                myWriter.write(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
+                                myWriter.close();
+                                counter = 0;
+                            }
+                        } catch (IOException e) {
+                            this.settingsController.logger.warning("Could not write to update.portfolio.");
+                        }
+                    } else {
+                        jl.setText(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
+                    }
                     i++;
                     writer.write(sb.toString());
                     sb = null;
                 }
                 writer.close();
-                this.frameUpdate.dispose();
+                if (!this.settingsController.getPlatform().equals("mac")) this.frameUpdate.dispose();
                 this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).getBlockHeightValue();
+                stopServer();
                 return true;
             } catch (IOException e) {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
         }
-        this.frameUpdate.dispose();
+        if (!this.settingsController.getPlatform().equals("mac")) this.frameUpdate.dispose();
         return false;
+    }
+
+    public String getPoolPairFromId(String poolID) {
+        String pool;
+        switch (poolID) {
+            case "0":
+                pool = "DFI";
+                break;
+            case "1":
+                pool = "ETH";
+                break;
+            case "2":
+                pool = "BTC";
+                break;
+            case "3":
+                pool = "USDT";
+                break;
+            case "4":
+                pool = "ETH-DFI";
+                break;
+            case "5":
+                pool = "BTC-DFI";
+                break;
+            case "6":
+                pool = "USDT-DFI";
+                break;
+            case "7":
+                pool = "DOGE";
+                break;
+            case "8":
+                pool = "DOGE-DFI";
+                break;
+            case "9":
+                pool = "LTC";
+                break;
+            case "10":
+                pool = "LTC-DFI";
+                break;
+            case "11":
+                pool = "BCH";
+                break;
+            case "12":
+                pool = "BCH-DFI";
+                break;
+            default:
+                pool = "-";
+                break;
+        }
+        return pool;
+    }
+
+    public String getIdFromPoolPair(String poolID) {
+        String pool;
+        switch (poolID) {
+            case "DFI":
+                pool = "0";
+                break;
+            case "ETH":
+                pool = "1";
+                break;
+            case "BTC":
+                pool = "2";
+                break;
+            case "USDT":
+                pool = "3";
+                break;
+            case "ETH-DFI":
+                pool = "4";
+                break;
+            case "BTC-DFI":
+                pool = "5";
+                break;
+            case "USDT-DFI":
+                pool = "6";
+                break;
+            case "DOGE":
+                pool = "7";
+                break;
+            case "DOGE-DFI":
+                pool = "8";
+                break;
+            case "LTC":
+                pool = "9";
+                break;
+            case "LTC-DFI":
+                pool = "10";
+                break;
+            case "BCH":
+                pool = "11";
+                break;
+            case "BCH-DFI":
+                pool = "12";
+                break;
+            default:
+                pool = "-";
+                break;
+        }
+        return pool;
+    }
+
+    private void addBalanceModel(TransactionModel transactionModel) {
+
+        if (!balanceList.containsKey(transactionModel.getCryptoCurrencyValue())) {
+            balanceList.put(transactionModel.getCryptoCurrencyValue(), transactionModel.getCryptoValueValue());
+        } else {
+            double oldValue = balanceList.get(transactionModel.getCryptoCurrencyValue()).doubleValue();
+            balanceList.put(getPoolPairFromId(transactionModel.getPoolIDValue()), transactionModel.getCryptoValueValue() + oldValue);
+        }
+
     }
 
     public List<TransactionModel> getTransactionsInTime(List<TransactionModel> transactions, long startTime, long endTime) {
@@ -571,7 +764,7 @@ public class TransactionController {
 
     public String convertTimeStampWithoutTimeToString(long timeStamp) {
         Date date = new Date(timeStamp * 1000L);
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T23:59:59'");
         return dateFormat.format(date);
     }
 
@@ -580,13 +773,18 @@ public class TransactionController {
         double amountCoin = 0;
 
         for (TransactionModel transaction : transactions) {
-            String[] CoinsAndAmounts = splitCoinsAndAmounts(transaction.getAmountValue());
-            if (coinName.equals(CoinsAndAmounts[1])) {
-                amountCoin += Double.parseDouble(CoinsAndAmounts[0]);
+
+            if (!transaction.getTypeValue().equals("UtxosToAccount") & !transaction.getTypeValue().equals("AccountToUtxos")) {
+                String[] CoinsAndAmounts = splitCoinsAndAmounts(transaction.getAmountValue());
+                if (coinName.equals(CoinsAndAmounts[1])) {
+                    amountCoin += Double.parseDouble(CoinsAndAmounts[0]);
+                }
+
             }
         }
         return amountCoin;
     }
+
 
     public String[] splitCoinsAndAmounts(String amountAndCoin) {
         return amountAndCoin.split("@");
