@@ -20,16 +20,8 @@ $DFI: dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V
 
 # Getting Started
 <b>Setup:</b>
-  1. [Download](https://www.java.com/de/download/) the Java Runtime Environment (64 bit) and install it (important to use the 64 bit version).
-  2. [Download](https://github.com/DeFi-PortfolioManagement/defi-portfoliomanager/releases/latest/download/defi-portfolio-Setup-1.2.1.exe) the defi-portfolio-Setup-vX.X.X.exe 
-  3. Install
-  4. Run the Defi-Portfolio.exe
-  5. Click on update database (left bottom corner)
-  6. Now your big data will imported and you can look on the raw data, export them or analyse your rewards and commissions.
-  7. After closing close the defid.exe. (If not then maybe you need a full resync the next time)
-  
-# Further information:
-The installation manual and the functionality description can be found in the DeFi-Wiki: https://defichain-wiki.com/wiki/DeFiChain-Portfolio
+  1. [Download](https://github.com/DeFi-PortfolioManagement/defi-portfoliomanager/releases/latest/) defi-portfolio-Setup-vX.X.X.exe/defi-portfolio-X.X.X-mac.tar/defi-portfolio-X.X.X-linux.tar 
+  2. The installation manual and the functionality description can be found in the DeFi-Wiki: https://defichain-wiki.com/wiki/DeFiChain-Portfolio
 
 # About Us
 Daniel Klaiber (https://t.me/danielklaiber) & (https://twitter.com/danielkolibri)
