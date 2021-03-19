@@ -29,7 +29,7 @@ $DFI: dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V
   7. Now your big data will imported and you can look on the raw data, export them or analyse your rewards and commissions.
   8. After closing close the defid.exe. (If not then maybe you need a full resync the next time)
   
-# Functionality description:
+# Further information:
 The installation manual and the functionality description can be found in the DeFi-Wiki: https://defichain-wiki.com/wiki/DeFiChain-Portfolio
 
 # About Us
