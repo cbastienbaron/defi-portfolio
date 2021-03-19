@@ -20,7 +20,8 @@ public class DisclaimerView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        String strDisclaimer = "Disclaimer: \nThe content provided is for informational purposes only. \nWe do not guarantee the accuracy of the data";
+        String strDisclaimer = "Disclaimer: \nThe content provided is for informational purposes only. \nWe do not guarantee the accuracy of the data. \n" +
+                "\nNote: To update the data the defi-app/ defi-wallet \nand the defid must be closed.";
         lblDisclaimer.setText(strDisclaimer);
     }
 
