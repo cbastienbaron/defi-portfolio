@@ -24,10 +24,9 @@ $DFI: dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V
   2. [Download](https://github.com/DeFi-PortfolioManagement/defi-portfoliomanager/releases/latest/download/defi-portfolio-Setup-1.2.1.exe) the defi-portfolio-Setup-vX.X.X.exe 
   3. Install
   4. Run the Defi-Portfolio.exe
-  5. The defid.exe will start. If you want to Update your data you will need. (You can also close and start it manually)
-  6. Click on update database (left bottom corner)
-  7. Now your big data will imported and you can look on the raw data, export them or analyse your rewards and commissions.
-  8. After closing close the defid.exe. (If not then maybe you need a full resync the next time)
+  5. Click on update database (left bottom corner)
+  6. Now your big data will imported and you can look on the raw data, export them or analyse your rewards and commissions.
+  7. After closing close the defid.exe. (If not then maybe you need a full resync the next time)
   
 # Further information:
 The installation manual and the functionality description can be found in the DeFi-Wiki: https://defichain-wiki.com/wiki/DeFiChain-Portfolio
