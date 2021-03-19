@@ -59,7 +59,7 @@ public class HelpView implements Initializable {
 
     public void defichainwiki() {
         try {
-            Desktop.getDesktop().browse(new URL("https://defichain-wiki.com/wiki/Main_Page").toURI());
+            Desktop.getDesktop().browse(new URL("https://defichain-wiki.com/wiki/DeFiChain-Portfolio").toURI());
         } catch (IOException | URISyntaxException e) {
             SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
