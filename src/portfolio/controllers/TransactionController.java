@@ -35,20 +35,25 @@ public class TransactionController {
         OBJ = new TransactionController();
     }
 
-    private final SettingsController settingsController = SettingsController.getInstance();
-    private final CoinPriceController coinPriceController = CoinPriceController.getInstance();
-    private final String strTransactionData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strTransactionData;
-    private final ObservableList<TransactionModel> transactionList;
+    private  SettingsController settingsController = SettingsController.getInstance();
+    private  CoinPriceController coinPriceController = CoinPriceController.getInstance();
+    private  String strTransactionData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strTransactionData;
+    private  ObservableList<TransactionModel> transactionList;
     private int localBlockCount;
     private final TreeMap<String, TreeMap<String, PortfolioModel>> portfolioList = new TreeMap<>();
     private final TreeMap<String, Double> balanceList = new TreeMap<>();
     private JFrame frameUpdate;
     public JLabel jl;
     public Process defidProcess;
+    private Boolean classSingleton=true;
+
     public TransactionController() {
-        this.transactionList = getLocalTransactionList();
-        this.localBlockCount = getLocalBlockCount();
-    }
+        if(classSingleton){
+            classSingleton =false;
+            this.transactionList = getLocalTransactionList();
+            this.localBlockCount = getLocalBlockCount();
+        }
+        }
 
     public void clearTransactionList(){
         transactionList.clear();
@@ -643,6 +648,55 @@ public class TransactionController {
                 break;
             case "12":
                 pool = "BCH-DFI";
+                break;
+            default:
+                pool = "-";
+                break;
+        }
+        return pool;
+    }
+
+    public String getIdFromPoolPair(String poolID) {
+        String pool;
+        switch (poolID) {
+            case "DFI":
+                pool = "0";
+                break;
+            case "ETH":
+                pool = "1";
+                break;
+            case "BTC":
+                pool = "2";
+                break;
+            case "USDT":
+                pool = "3";
+                break;
+            case "ETH-DFI":
+                pool = "4";
+                break;
+            case "BTC-DFI":
+                pool = "5";
+                break;
+            case "USDT-DFI":
+                pool = "6";
+                break;
+            case "DOGE":
+                pool = "7";
+                break;
+            case "DOGE-DFI":
+                pool = "8";
+                break;
+            case "LTC":
+                pool = "9";
+                break;
+            case "LTC-DFI":
+                pool = "10";
+                break;
+            case "BCH":
+                pool = "11";
+                break;
+            case "BCH-DFI":
+                pool = "12";
                 break;
             default:
                 pool = "-";

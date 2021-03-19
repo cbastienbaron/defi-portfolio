@@ -242,4 +242,55 @@ public class ExportService {
             return false;
         }
     }
+
+    public static String getIdFromPoolPair(String poolID) {
+        String pool;
+        switch (poolID) {
+            case "DFI":
+                pool = "0";
+                break;
+            case "ETH":
+                pool = "1";
+                break;
+            case "BTC":
+                pool = "2";
+                break;
+            case "USDT":
+                pool = "3";
+                break;
+            case "ETH-DFI":
+                pool = "4";
+                break;
+            case "BTC-DFI":
+                pool = "5";
+                break;
+            case "USDT-DFI":
+                pool = "6";
+                break;
+            case "DOGE":
+                pool = "7";
+                break;
+            case "DOGE-DFI":
+                pool = "8";
+                break;
+            case "LTC":
+                pool = "9";
+                break;
+            case "LTC-DFI":
+                pool = "10";
+                break;
+            case "BCH":
+                pool = "11";
+                break;
+            case "BCH-DFI":
+                pool = "12";
+                break;
+            default:
+                pool = "-";
+                break;
+        }
+        return pool;
+    }
+
+
 }

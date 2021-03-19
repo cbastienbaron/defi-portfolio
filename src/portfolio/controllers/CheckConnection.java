@@ -34,7 +34,6 @@ public class CheckConnection extends TimerTask {
                                 SettingsController.getInstance().runCheckTimer = false;
                                 SettingsController.getInstance().errorBouncer = 0;
                                 this.mainViewController.btnUpdateDatabasePressed();
-                                SettingsController.getInstance().logger.warning("Finish Udate");
                                 this.mainViewController.plotUpdate(this.mainViewController.mainView.tabPane.getSelectionModel().getSelectedItem().getText());
                                 File file = new File(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
                                 if (file.exists()) file.delete();
