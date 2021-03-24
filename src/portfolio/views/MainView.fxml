@@ -417,12 +417,10 @@
                             <TableColumn fx:id="poolPairColumn" prefWidth="75.0" text="Pool Pair" />
                             <TableColumn fx:id="crypto1Column" prefWidth="75.0" text="Rewards" />
                      <TableColumn fx:id="crypto1FiatColumn" prefWidth="75.0" text="Rewards(Fiat)" />
-                     <TableColumn fx:id="Commission1OverviewColumn" prefWidth="75.0" text="Commission1Overview" />
-                     <TableColumn fx:id="Commission1OverviewFiatColumn" prefWidth="75.0" text="Commission1OverviewFiat" />
-                     <TableColumn fx:id="Commission2OverviewColumn" prefWidth="75.0" text="Commission2Overview" />
-                     <TableColumn fx:id="Commission2OverviewFiatColumn" prefWidth="75.0" text="Commission2OverviewFiat" />
                             <TableColumn fx:id="crypto2Column" prefWidth="75.0" text="Commissions" />
                      <TableColumn fx:id="crypto2FiatColumn" prefWidth="75.0" text="Commissions(Fiat)" />
+                     <TableColumn fx:id="Commission2OverviewColumn" prefWidth="75.0" text="Commission2Overview" />
+                     <TableColumn fx:id="Commission2OverviewFiatColumn" prefWidth="75.0" text="Commission2OverviewFiat" />
                             <TableColumn fx:id="fiatColumn" prefWidth="75.0" text="Total in EUR" />
                         </columns>
                         <columnResizePolicy>

@@ -16,7 +16,7 @@ public class PoolPairModel {
     private final DoubleProperty cryptoCommission2OverviewFiatProperty = new SimpleDoubleProperty(0.0);
     private final StringProperty cryptoPoolPair = new SimpleStringProperty("");
 
-    public PoolPairModel(String blockTime, double fiatValue, double cryptoValue1, double cryptoValue2, String poolPair,double cryptoValueFiat1, double cryptoValueFiat2, double cryptoCommission1Overview,double cryptoCommission1FiatOverview,double cryptoCommission2Overview,double cryptoCommission2FiatOverview){
+    public PoolPairModel(String blockTime, double fiatValue, double cryptoValue1, double cryptoValue2, String poolPair,double cryptoValueFiat1, double cryptoValueFiat2,double cryptoCommission2Overview,double cryptoCommission2FiatOverview){
         setBlockTime(blockTime);
         setFiat(fiatValue);
         setCrypto1(cryptoValue1);
@@ -24,8 +24,6 @@ public class PoolPairModel {
         setCryptoFiat1(cryptoValueFiat1);
         setCryptoFiat2(cryptoValueFiat2);
         setPoolPair(poolPair);
-        setcryptoCommission1Overview(cryptoCommission1Overview);
-        setcryptoCommission1FiatOverview(cryptoCommission1FiatOverview);
         setcryptoCommission2Overview(cryptoCommission2Overview);
         setcryptoCommission2FiatOverview(cryptoCommission2FiatOverview);
     }
