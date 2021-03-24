@@ -4,6 +4,7 @@ import javafx.animation.PauseTransition;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.TableColumn;
@@ -11,12 +12,14 @@ import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import portfolio.models.BalanceModel;
 import portfolio.models.PoolPairModel;
 import portfolio.models.PortfolioModel;
 import portfolio.models.TransactionModel;
 import portfolio.services.ExportService;
 import portfolio.views.MainView;
 
+import javax.xml.soap.Text;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -195,12 +198,15 @@ public class MainViewController {
     }
 
     public boolean updateTransactionData() {
-        if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).exists()) {
+
+       transactionController.getCoinAndTokenBalances();
+       return true;
+      /*  if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).exists()) {
             int depth = Integer.parseInt(this.transactionController.getBlockCount()) - this.transactionController.getLocalBlockCount();
             return transactionController.updateTransactionData(depth);
         } else {
             return transactionController.updateTransactionData(Integer.parseInt(transactionController.getBlockCount())); // - this.transactionController.getAccountHistoryCountRpc());
-        }
+        }*/
     }
 
     public void btnUpdateDatabasePressed() {
@@ -258,19 +264,27 @@ public class MainViewController {
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
 
 
-        for (String transaction : this.transactionController.getPortfolioList().keySet()) {
+        for (BalanceModel balanceModel : this.transactionController.getBalanceList()) {
 
-            for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervallInt).entrySet()) {
-                pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value()));
-                // this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue()));
+            //this.poolPairModelList.add(new PoolPairModel(this.transactionController.convertTimeStampToString(System.currentTimeMillis()), balanceModel.getFiat1Value(), balanceModel.getCrypto1Value(),"",balanceModel.getToken1NameValue(),get,"",entry.getValue().getCoinCommissions1Value(),entry.getValue().getFiatCommissions1Value(),entry.getValue().getCoinCommissions2Value(),entry.getValue().getFiatCommissions2Value()));
+
+            if (balanceModel.getToken2NameValue().equals("-")) {
+                pieChartData.add(new PieChart.Data(balanceModel.getToken1NameValue(), balanceModel.getFiat1Value()));
+            } else {
+                pieChartData.add(new PieChart.Data(balanceModel.getToken1NameValue() + "-" + balanceModel.getToken2NameValue(), balanceModel.getFiat1Value() + balanceModel.getFiat2Value()));
             }
-            this.mainView.plotPortfolio2.setData(pieChartData);
-            this.mainView.plotPortfolio2.setTitle("Fiat Portfolio");
+
+        }
+            this.mainView.plotPortfolio1.setData(pieChartData);
+
+        this.mainView.plotPortfolio1.getData().forEach(data -> {
+            Tooltip toolTip = new Tooltip(String.format("%,2f",data.getPieValue())+" " +SettingsController.getInstance().selectedFiatCurrency.getValue());
+            Tooltip.install(data.getNode(), toolTip);
+        });
 
             this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
             this.poolPairList.clear();
             this.poolPairList.addAll(this.poolPairModelList);
-        }
     }
 
 

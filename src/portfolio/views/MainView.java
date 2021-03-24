@@ -712,6 +712,7 @@ public class MainView implements Initializable {
         rawDataTable.itemsProperty().
 
                 set(this.mainViewController.getTransactionTable());
+
         rawDataTable.getSelectionModel().
 
                 setSelectionMode(
@@ -980,7 +981,7 @@ public class MainView implements Initializable {
                     setText(null);
                 } else {
 
-                    String pool =TransactionController.getInstance().getPoolPairFromId(poolID);
+                    String pool = TransactionController.getInstance().getPoolPairFromId(poolID);
                     setText(pool);
                 }
             }
@@ -1205,9 +1206,9 @@ public class MainView implements Initializable {
         //Init context menu of raw data table
         menuItemCopySelected.setOnAction(event -> mainViewController.copySelectedRawDataToClipboard(rawDataTable.selectionModelProperty().get().getSelectedItems(), false));
         menuItemCopyHeaderSelected.setOnAction(event -> mainViewController.copySelectedRawDataToClipboard(rawDataTable.selectionModelProperty().get().getSelectedItems(), true));
-        menuItemExportSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.selectionModelProperty().get().getSelectedItems(),false));
-        menuItemExportAllSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(),false));
-        menuItemExportAllDailySelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(),true));
+        menuItemExportSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.selectionModelProperty().get().getSelectedItems(), false));
+        menuItemExportAllSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(), false));
+        menuItemExportAllDailySelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(), true));
 
         contextMenuRawData.getItems().add(menuItemCopySelected);
         contextMenuRawData.getItems().add(menuItemCopyHeaderSelected);
