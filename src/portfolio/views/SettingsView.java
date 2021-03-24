@@ -36,6 +36,7 @@ public class SettingsView implements Initializable {
     public Label lblLaunchDefid;
     public Label lblDeleteData;
     public AnchorPane anchorPane;
+    public Label labelDataSource;
     @FXML
     public StackPane stack;
     @FXML
@@ -43,7 +44,7 @@ public class SettingsView implements Initializable {
     @FXML
     public Button btnDeleteData;
     @FXML
-    private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle;
+    private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle, dataSourceCmb;
     SettingsController settingsController = SettingsController.getInstance();
 
     public void btnSaveAndApplyPressed() {
@@ -94,6 +95,8 @@ public class SettingsView implements Initializable {
         this.cmbPrefferedStyle.getItems().addAll(this.settingsController.styleModes);
         this.cmbPrefferedStyle.valueProperty().bindBidirectional(this.settingsController.selectedStyleMode);
 
+        this.dataSourceCmb.getItems().addAll(this.settingsController.datasources);
+        this.dataSourceCmb.valueProperty().bindBidirectional(this.settingsController.selectedSource);
 
         this.SwitchButton();
     }
@@ -106,6 +109,7 @@ public class SettingsView implements Initializable {
         this.lblLaunchDefid.setText(this.settingsController.translationList.get().get("LaunchDefid").toString());
         this.lblDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteLabel").toString());
         this.btnDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteButton").toString());
+        this.labelDataSource.setText(this.settingsController.translationList.getValue().get("DataSourceLabel").toString());
     }
 
     private final Rectangle back = new Rectangle(35, 15, Color.RED);

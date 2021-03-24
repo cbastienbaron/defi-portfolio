@@ -631,6 +631,7 @@ public class MainViewController {
             boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), source, this.mainView);
 
             if (success) {
+                this.settingsController.lastExportPath = selectedFile.getPath();
                 this.strProgressbar.setValue("Excel successfully exported!");
                 PauseTransition pause = new PauseTransition(Duration.seconds(10));
                 pause.setOnFinished(e -> this.strProgressbar.setValue(null));
