@@ -190,10 +190,13 @@ public class ExportService {
             }
             switch (mainView.tabPane.getSelectionModel().getSelectedItem().getText()) {
                 case "Overview":
+                case "Übersicht":
+                case "Kommissionen":
                 case "Commissions":
                     sb.append((mainView.plotTable.getColumns().get(0).getText() + "," + mainView.plotTable.getColumns().get(1).getText() + "," + mainView.plotTable.getColumns().get(2).getText() + "," + mainView.plotTable.getColumns().get(3).getText() + "," + mainView.plotTable.getColumns().get(4).getText()).replace(",", this.mainViewController.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 case "Rewards":
+                case "Belohnungen":
                     sb.append((mainView.plotTable.getColumns().get(0).getText() + "," + mainView.plotTable.getColumns().get(1).getText() + "," + mainView.plotTable.getColumns().get(3).getText() + "," + mainView.plotTable.getColumns().get(4).getText()).replace(",", this.mainViewController.settingsController.selectedSeperator.getValue())).append("\n");
                     break;
                 default:

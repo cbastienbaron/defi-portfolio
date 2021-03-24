@@ -296,7 +296,7 @@ public class MainViewController {
 
                             if (poolPair.equals(entry.getValue().getPoolPairValue())) {
                                 overviewSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value()));
-                                this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getFiatRewards1Value(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), poolPair));
+                                this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getFiatRewards1Value(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), poolPair,entry.getValue().getCoinCommissions1Value(),1,entry.getValue().getCoinCommissions1Value(),entry.getValue().getFiatCommissions1Value(),entry.getValue().getCoinCommissions2Value(),entry.getValue().getFiatCommissions2Value()));
                             }
                         }
                     }
@@ -361,7 +361,7 @@ public class MainViewController {
                         } else {
                             rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value()));
                         }
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue()));
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue(),1,1,1.0,1,1,1));
                     }
                 }
 
@@ -399,7 +399,7 @@ public class MainViewController {
                             rewardsCumulated.getData().add(new XYChart.Data(entry.getKey(), cumulatedFiatValue));
                         }
 
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue()));
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue(),1,1,1.0,1,1,1));
                     }
                 }
                 if (this.mainView.plotRewards.getData().size() == 1) {
@@ -460,7 +460,7 @@ public class MainViewController {
                             commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatCommissions1Value()));
                             commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatCommissions2Value()));
                         }
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue()));
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(),entry.getValue().getFiatCommissions1Value() ,entry.getValue().getFiatCommissions2Value(),1.0,1,1,1));
                     }
                 }
 
@@ -510,7 +510,7 @@ public class MainViewController {
                             rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2FiatValue));
                         }
 
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue()));
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(),entry.getValue().getCoinCommissions1Value()*entry.getValue().getFiatCommissions1Value() ,entry.getValue().getCoinCommissions2Value()*entry.getValue().getFiatCommissions2Value(),1.0,1,1,1));
 
                     }
                 }
