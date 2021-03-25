@@ -413,7 +413,7 @@ public class MainView implements Initializable {
 
         this.strCurrentBlockLocally.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockLocally);
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockOnBlockchain);
-        this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.strLastUpdate);
+        this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.settingsController.lastUpdate);
         this.btnUpdateDatabase.setOnAction(e -> {
             this.mainViewController.transactionController.startServer();
             this.mainViewController.settingsController.runCheckTimer = true;

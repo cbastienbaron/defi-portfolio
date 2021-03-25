@@ -47,16 +47,17 @@ public class SettingsController {
     public ObjectProperty<LocalDate> dateTo = new SimpleObjectProperty();
     public ObjectProperty<JSONObject> translationList = new SimpleObjectProperty();
     public String selectedIntervallInt = "Daily";
-    public StringProperty selectedSource = new SimpleStringProperty("Active wallet");
+    public StringProperty selectedSource = new SimpleStringProperty("Active Wallet");
     public boolean showDisclaim = true;
     public boolean selectedLaunchDefid = false;
     public boolean selectedLaunchSync = true;
 
+    public StringProperty lastUpdate = new SimpleStringProperty("-");
     //Combo box filling
     public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "BCH-DFI", "DOGE-DFI"};
     public String[] plotCurrency = new String[]{"Coin", "Fiat"};
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
-    public String[] datasources = new String[]{"Active wallet", "All wallets"};
+    public String[] datasources = new String[]{"Active Wallet", "All Wallets"};
 
     public String USER_HOME_PATH = System.getProperty("user.home");
     public String BINARY_FILE_NAME = getPlatform().equals("win") ? "defid.exe" : "defid";
@@ -74,6 +75,7 @@ public class SettingsController {
     public String PORTFOLIO_CONFIG_FILE_PATH = System.getProperty("user.dir") + "/PortfolioData/defi.conf";
 
     public String SETTING_FILE_PATH = DEFI_PORTFOLIO_HOME + "settings.csv";
+    public String PORTFOLIO_FILE_PATH = DEFI_PORTFOLIO_HOME + "portfolioData.portfolio";
     //All relevant paths and files
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
@@ -177,12 +179,23 @@ public class SettingsController {
                     this.lastExportPath = configProps.getProperty("LastUsedExportPath");
                 this.showDisclaim = configProps.getProperty("ShowDisclaim").equals("true");
                 this.selectedLaunchDefid = configProps.getProperty("SelectedLaunchDefid").equals("true");
-                this.selectedSource.setValue(configProps.getProperty("selectedSource"));
                 if (configProps.getProperty("SelectedLaunchSync") != null) {
                     this.selectedLaunchSync = configProps.getProperty("SelectedLaunchSync").equals("true");
                 } else {
                     this.selectedLaunchSync = false;
                 }
+                if(configProps.getProperty("SelectedSource") !=null){
+                    this.selectedSource.setValue(configProps.getProperty("SelectedSource"));
+                }else{
+                    this.selectedSource.setValue("Active Wallet");
+                }
+                if(configProps.getProperty("LastUpdate") !=null){
+                    this.lastUpdate.setValue(configProps.getProperty("LastUpdate"));
+                }else{
+                    this.lastUpdate.setValue("-");
+                }
+
+
 
             } catch (Exception e) {
                 SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
@@ -208,7 +221,8 @@ public class SettingsController {
             csvWriter.append("ShowDisclaim=" + this.showDisclaim).append("\n");
             csvWriter.append("SelectedLaunchDefid=" + this.selectedLaunchDefid).append("\n");
             csvWriter.append("SelectedLaunchSync=" + this.selectedLaunchSync).append("\n");
-            csvWriter.append("selectedSource=" + this.selectedSource.getValue()).append("\n");
+            csvWriter.append("SelectedSource=" + this.selectedSource.getValue()).append("\n");
+            csvWriter.append("LastUpdate=" + this.lastUpdate.getValue()).append("\n");
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {

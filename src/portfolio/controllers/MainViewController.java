@@ -36,7 +36,6 @@ public class MainViewController {
 
     public StringProperty strCurrentBlockLocally = new SimpleStringProperty("0");
     public StringProperty strCurrentBlockOnBlockchain = new SimpleStringProperty("No connection");
-    public StringProperty strLastUpdate = new SimpleStringProperty("-");
     public StringProperty strProgressbar = new SimpleStringProperty("");
     public BooleanProperty bDataBase = new SimpleBooleanProperty(true);
 
@@ -235,7 +234,8 @@ public class MainViewController {
                 }
                 Date date = new Date(System.currentTimeMillis());
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                this.strLastUpdate.setValue(dateFormat.format(date));
+                this.settingsController.lastUpdate.setValue(dateFormat.format(date));
+                this.settingsController.saveSettings();
             }
             File file = new File(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
             if (file.exists()) file.delete();
