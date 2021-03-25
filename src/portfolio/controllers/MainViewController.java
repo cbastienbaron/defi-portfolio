@@ -146,6 +146,9 @@ public class MainViewController {
 
         if (withHeaders) {
             switch (this.mainView.tabPane.getSelectionModel().getSelectedItem().getText()) {
+                case "Portfolio":
+                    sb.append((this.mainView.plotTable.getColumns().get(0).getText() + "," + this.mainView.plotTable.getColumns().get(2).getText() + "," + this.mainView.plotTable.getColumns().get(9).getText() ).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    break;
                 case "Overview":
                 case "Übersicht":
                     sb.append((this.mainView.plotTable.getColumns().get(0).getText() + "," + this.mainView.plotTable.getColumns().get(1).getText() + "," + this.mainView.plotTable.getColumns().get(2).getText() + "," + this.mainView.plotTable.getColumns().get(3).getText() + "," + this.mainView.plotTable.getColumns().get(4).getText() + "," + this.mainView.plotTable.getColumns().get(5).getText() + "," + this.mainView.plotTable.getColumns().get(6).getText() + "," + this.mainView.plotTable.getColumns().get(7).getText() + "," + this.mainView.plotTable.getColumns().get(8).getText()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
@@ -166,6 +169,12 @@ public class MainViewController {
         for (PoolPairModel poolPair : list
         ) {
             switch (this.mainView.tabPane.getSelectionModel().getSelectedItem().getText()) {
+                case "Portfolio":
+                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(poolPair.getBalanceFiat().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append("\n");
+                    break;
                 case "Overview":
                 case "Übersicht":
                     sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
@@ -312,30 +321,33 @@ public class MainViewController {
 
         Double calculatedPortfolio = 0.0;
         Double calculatedPortfolio2 = 0.0;
-
+        Locale localeDecimal = Locale.GERMAN;
+        if (this.settingsController.selectedDecimal.getValue().equals(".")) {
+            localeDecimal = Locale.US;
+        }
         for (BalanceModel balanceModel : this.transactionController.getBalanceList()) {
             //PoolPairModel(String blockTime, double fiatValue, double cryptoValue1, double cryptoValue2, String poolPair,double cryptoValueFiat1, double cryptoValueFiat2,double cryptoCommission2Overview,double cryptoCommission2FiatOverview,String balanceFiat)
 
 
             if (balanceModel.getToken2NameValue().equals("-")) {
                 pieChartData.add(new PieChart.Data(balanceModel.getToken1NameValue(), balanceModel.getFiat1Value()));
-                this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue(), 0.0, 0.0, 0.0, String.format("%1.8f", balanceModel.getCrypto1Value()), 0.0, 0.0, 0.0, 0.0, String.format("%1.2f", balanceModel.getFiat1Value())));
+                this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue(), 0.0, 0.0, 0.0, String.format(localeDecimal,"%1.8f", balanceModel.getCrypto1Value()), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal,"%1.2f", balanceModel.getFiat1Value())));
                 calculatedPortfolio += balanceModel.getFiat1Value() + balanceModel.getFiat2Value();
 
             } else {
                 pieChartData2.add(new PieChart.Data(balanceModel.getToken1NameValue() + "-" + balanceModel.getToken2NameValue(), balanceModel.getFiat1Value() + balanceModel.getFiat2Value()));
                 this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue() + "-" + balanceModel.getToken2NameValue(), 0.0, 0.0, 0.0,
-                        String.format("%1.8f", balanceModel.getShareValue()) + " (" + String.format("%1.8f", balanceModel.getCrypto1Value()) + " " + balanceModel.getToken1NameValue() + " + " + String.format("%1.8f", balanceModel.getCrypto2Value()) + balanceModel.getToken2NameValue()+")",
-                        0.0, 0.0, 0.0, 0.0, String.format("%1.2f", balanceModel.getFiat1Value() + balanceModel.getFiat1Value()) + " (" + String.format("%1.2f", balanceModel.getFiat1Value()) + " " + balanceModel.getToken1NameValue() + " + " + String.format("%1.2f", balanceModel.getFiat2Value()) + balanceModel.getToken2NameValue()+")"));
+                        String.format(localeDecimal,"%1.8f", balanceModel.getShareValue()) + " (" + String.format(localeDecimal,"%1.8f", balanceModel.getCrypto1Value()) + " " + balanceModel.getToken1NameValue() + " + " + String.format(localeDecimal,"%1.8f", balanceModel.getCrypto2Value()) + balanceModel.getToken2NameValue()+")",
+                        0.0, 0.0, 0.0, 0.0, String.format(localeDecimal,"%1.2f", balanceModel.getFiat1Value() + balanceModel.getFiat1Value()) + " (" + String.format(localeDecimal,"%1.2f", balanceModel.getFiat1Value()) + " " + balanceModel.getToken1NameValue() + " + " + String.format(localeDecimal,"%1.2f", balanceModel.getFiat2Value()) + balanceModel.getToken2NameValue()+")"));
 
                 calculatedPortfolio2 += balanceModel.getFiat1Value() + balanceModel.getFiat2Value();
             }
 
         }
 
-        this.mainView.plotPortfolio1.setTitle("Tokens:\n"+String.format("%1.2f", calculatedPortfolio) + " " + SettingsController.getInstance().selectedFiatCurrency.getValue());
+        this.mainView.plotPortfolio1.setTitle("Tokens:\n"+String.format(localeDecimal,"%1.2f", calculatedPortfolio) + " " + SettingsController.getInstance().selectedFiatCurrency.getValue());
 
-        this.mainView.plotPortfolio11.setTitle("LM Tokens:\n"+String.format("%1.2f", calculatedPortfolio2) + " " + SettingsController.getInstance().selectedFiatCurrency.getValue());
+        this.mainView.plotPortfolio11.setTitle("LM Tokens:\n"+String.format(localeDecimal,"%1.2f", calculatedPortfolio2) + " " + SettingsController.getInstance().selectedFiatCurrency.getValue());
         this.mainView.plotPortfolio1.setData(pieChartData);
         this.mainView.plotPortfolio11.setData(pieChartData2);
 
