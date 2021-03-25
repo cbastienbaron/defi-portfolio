@@ -59,5 +59,9 @@
     "SyncData": "Synchronise Data: ",
     "LaunchSync": "Sync before Update?",
     "DeleteLabel": "Delete local Portfolio data (requires tool restart)",
-    "DeleteButton": "Delete"
+    "DeleteButton": "Delete",
+    "DataSourceLabel": "Data source",
+    "DataSourceActiveWallet": "Active wallets",
+    "DataSourceAllWallets": "All wallets",
+    "Token": "Token"
 }

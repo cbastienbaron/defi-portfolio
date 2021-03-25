@@ -1,11 +1,14 @@
 package portfolio.controllers;
 
+import com.litesoftwares.coingecko.CoinGeckoApiClient;
+import com.litesoftwares.coingecko.impl.CoinGeckoApiClientImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import portfolio.models.AddressModel;
+import portfolio.models.BalanceModel;
 import portfolio.models.PortfolioModel;
 import portfolio.models.TransactionModel;
 
@@ -35,27 +38,28 @@ public class TransactionController {
         OBJ = new TransactionController();
     }
 
-    private  SettingsController settingsController = SettingsController.getInstance();
-    private  CoinPriceController coinPriceController = CoinPriceController.getInstance();
-    private  String strTransactionData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strTransactionData;
-    private  ObservableList<TransactionModel> transactionList;
+    private SettingsController settingsController = SettingsController.getInstance();
+    private CoinPriceController coinPriceController = CoinPriceController.getInstance();
+    private String strTransactionData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strTransactionData;
+    private ObservableList<TransactionModel> transactionList;
     private int localBlockCount;
     private final TreeMap<String, TreeMap<String, PortfolioModel>> portfolioList = new TreeMap<>();
-    private final TreeMap<String, Double> balanceList = new TreeMap<>();
+    private List<BalanceModel> balanceList = new ArrayList<>();
     private JFrame frameUpdate;
     public JLabel jl;
     public Process defidProcess;
-    private Boolean classSingleton=true;
+    private Boolean classSingleton = true;
 
     public TransactionController() {
-        if(classSingleton){
-            classSingleton =false;
+        if (classSingleton) {
+            classSingleton = false;
             this.transactionList = getLocalTransactionList();
             this.localBlockCount = getLocalBlockCount();
+            getLocalBalanceList();
         }
-        }
+    }
 
-    public void clearTransactionList(){
+    public void clearTransactionList() {
         transactionList.clear();
     }
 
@@ -85,10 +89,10 @@ public class TransactionController {
                         defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir") + "/PortfolioData/./" + "defi.sh");
                         break;
                     case "win":
-                        defidProcess =Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH); // + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
+                        defidProcess = Runtime.getRuntime().exec("cmd /c start " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH); // + " -conf=" + this.settingsController.CONFIG_FILE_PATH);
                         break;
                     case "linux":
-                        defidProcess =Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
                         break;
                 }
             }
@@ -100,7 +104,7 @@ public class TransactionController {
     public void stopServer() {
         try {
             getRpcResponse("{\"method\": \"stop\"}");
-            if(defidProcess!=null)defidProcess.destroy();
+            if (defidProcess != null) defidProcess.destroy();
         } catch (Exception e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
@@ -115,11 +119,19 @@ public class TransactionController {
     }
 
     public TreeMap<String, TreeMap<String, PortfolioModel>> getPortfolioList() {
+
         return portfolioList;
+    }
+
+    public List<BalanceModel> getBalanceList() {
+        return balanceList;
     }
 
     public void clearPortfolioList() {
         this.portfolioList.clear();
+    }
+    public void clearBalanceList(){
+        this.balanceList.clear();
     }
 
     public ObservableList<TransactionModel> getTransactionList() {
@@ -140,6 +152,26 @@ public class TransactionController {
                 return obj.get("blockHeight").toString();
             } else {
                 return "No connection";
+            }
+        } catch (IOException e) {
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
+        }
+
+        return "No connection";
+    }
+
+    public String getPoolRatio(String poolID) {
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.defichain.io/v1/listpoolpairs").openConnection();
+            String jsonText = "";
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                jsonText = br.readLine();
+            } catch (Exception ex) {
+                this.settingsController.logger.warning("Exception occured: " + ex.toString());
+            }
+            JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
+            if (obj.get(poolID) != null) {
+                return ((JSONObject) obj.get(poolID)).get("reserveA/reserveB").toString();
             }
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
@@ -198,7 +230,7 @@ public class TransactionController {
     }
 
     public List<TransactionModel> getListAccountHistoryRpc(int depth) {
-
+        JSONObject jsonObject = new JSONObject();
         List<TransactionModel> transactionList = new ArrayList<>();
 
         try {
@@ -217,7 +249,11 @@ public class TransactionController {
                 } else {
                     this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
                 }
-                JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
+                if (SettingsController.getInstance().selectedSource.getValue().equals("All Wallets")) {
+                    jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
+                } else {
+                    jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
+                }
                 JSONArray transactionJson = (JSONArray) jsonObject.get("result");
                 for (Object transaction : transactionJson) {
                     JSONObject transactionJ = (JSONObject) transaction;
@@ -234,7 +270,11 @@ public class TransactionController {
             }
 
             restBlockCount = restBlockCount - blockDepth;
-            JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
+            if (SettingsController.getInstance().selectedSource.getValue().equals("All Wallets")) {
+                jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
+            } else {
+                jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
+            }
             JSONArray transactionJson = (JSONArray) jsonObject.get("result");
             for (Object transaction : transactionJson) {
                 JSONObject transactionJ = (JSONObject) transaction;
@@ -342,6 +382,34 @@ public class TransactionController {
 
     }
 
+    public  void getLocalBalanceList() {
+
+        File strPortfolioData = new File(this.settingsController.PORTFOLIO_FILE_PATH);
+
+
+        if (strPortfolioData.exists()) {
+
+            try {
+                this.balanceList.clear();
+                BufferedReader reader;
+                reader = new BufferedReader(new FileReader(
+                        strPortfolioData));
+                String line = reader.readLine();
+
+                while (line != null) {
+                    String[] transactionSplit = line.split(";");
+                    BalanceModel balanceModel = new BalanceModel(transactionSplit[0], Double.parseDouble(transactionSplit[2]), Double.parseDouble(transactionSplit[1]), transactionSplit[3], Double.parseDouble(transactionSplit[5]), Double.parseDouble(transactionSplit[4]), Double.parseDouble(transactionSplit[6]));
+                    this.balanceList.add(balanceModel);
+                    line = reader.readLine();
+                }
+
+                reader.close();
+            } catch (IOException e) {
+                this.settingsController.logger.warning("Exception occured: " + e.toString());
+            }
+        }
+    }
+
     public ObservableList<TransactionModel> getLocalTransactionList() {
 
         File strPortfolioData = new File(this.strTransactionData);
@@ -363,7 +431,7 @@ public class TransactionController {
 
                     //if (!(transAction.getTypeValue().equals("UtxosToAccount") | transAction.getTypeValue().equals("AccountToUtxos")))
                     // addBalanceModel(transAction);
-                    if (transAction.getTypeValue().equals("Rewards") | transAction.getTypeValue().equals("Commission")){
+                    if (transAction.getTypeValue().equals("Rewards") | transAction.getTypeValue().equals("Commission")) {
                         addToPortfolioModel(transAction);
                     }
 
@@ -375,8 +443,7 @@ public class TransactionController {
             } catch (IOException e) {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
-        }
-        return FXCollections.observableArrayList(transactionList);
+        }        return FXCollections.observableArrayList(transactionList);
     }
 
     public String getTokenFromID(String id) {
@@ -511,9 +578,9 @@ public class TransactionController {
     }
 
     public int getLocalBlockCount() {
-       if(!new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "/transactionData.portfolio").exists()){
-           return 0;
-       }
+        if (!new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "/transactionData.portfolio").exists()) {
+            return 0;
+        }
         if (transactionList.size() > 0) {
 
             return transactionList.get(transactionList.size() - 1).getBlockHeightValue();
@@ -705,15 +772,59 @@ public class TransactionController {
         return pool;
     }
 
-    private void addBalanceModel(TransactionModel transactionModel) {
+    public void getCoinAndTokenBalances() {
+        List<BalanceModel> balanceModelList = new ArrayList<>();
+        JSONArray jsonArray = getTokenBalances();
+        CoinGeckoApiClient client = new CoinGeckoApiClientImpl();
+        Double dfiCoin = Double.parseDouble(getBalance());
+        for (int i = 0; i < jsonArray.size(); i++) {
+            String tokenName = getPoolPairFromId(jsonArray.get(i).toString().split("@")[1]);
+            if (tokenName.equals("-")) {
+                tokenName = getTokenFromID(jsonArray.get(i).toString().split("@")[1]);
+            }
+            if (tokenName.contains("-")) {
+                Double poolRatio = Double.parseDouble(getPoolRatio(jsonArray.get(i).toString().split("@")[1]));
 
-        if (!balanceList.containsKey(transactionModel.getCryptoCurrencyValue())) {
-            balanceList.put(transactionModel.getCryptoCurrencyValue(), transactionModel.getCryptoValueValue());
-        } else {
-            double oldValue = balanceList.get(transactionModel.getCryptoCurrencyValue()).doubleValue();
-            balanceList.put(getPoolPairFromId(transactionModel.getPoolIDValue()), transactionModel.getCryptoValueValue() + oldValue);
+                Double token1 = Math.sqrt(poolRatio * Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) * Double.parseDouble(jsonArray.get(i).toString().split("@")[0]));
+                Double token2 = Math.sqrt(Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) * Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) / poolRatio);
+
+                balanceModelList.add(new BalanceModel(tokenName.split("-")[0], client.getPrice(CoinPriceController.getInstance().getCoinGeckoName(tokenName.split("-")[0]), SettingsController.getInstance().selectedFiatCurrency.getValue()).get(CoinPriceController.getInstance().getCoinGeckoName(tokenName.split("-")[0])).get(SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()) * token1, token1,
+                        tokenName.split("-")[1], coinPriceController.getPriceFromTimeStamp(tokenName.split("-")[1] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2, Double.parseDouble(jsonArray.get(i).toString().split("@")[0])));
+            } else {
+                if (!tokenName.equals("DFI")) dfiCoin = 0.0;
+                if (coinPriceController.getPriceFromTimeStamp(tokenName + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) > 0) {
+
+                    balanceModelList.add(new BalanceModel(tokenName, coinPriceController.getPriceFromTimeStamp(tokenName + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * (Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) + dfiCoin), Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) + dfiCoin,
+                            "-", 0.0, 0.0, 0.0));
+                }
+            }
         }
 
+        if (balanceModelList.size() > 0) {
+            try {
+                PrintWriter writer = new PrintWriter(new FileWriter(this.settingsController.PORTFOLIO_FILE_PATH));
+                String exportSplitter = ";";
+                StringBuilder sb = new StringBuilder();
+
+                for (BalanceModel balanceModel : balanceModelList) {
+                    sb.append(balanceModel.getToken1NameValue()).append(exportSplitter);
+                    sb.append(balanceModel.getCrypto1Value()).append(exportSplitter);
+                    sb.append(balanceModel.getFiat1Value()).append(exportSplitter);
+                    sb.append(balanceModel.getToken2NameValue()).append(exportSplitter);
+                    sb.append(balanceModel.getCrypto2Value()).append(exportSplitter);
+                    sb.append(balanceModel.getFiat2Value()).append(exportSplitter);
+                    sb.append(balanceModel.getShareValue()).append(exportSplitter);
+                    sb.append("\n");
+                }
+
+                writer.write(sb.toString());
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            this.balanceList = balanceModelList;
+        }
     }
 
     public List<TransactionModel> getTransactionsInTime(List<TransactionModel> transactions, long startTime, long endTime) {

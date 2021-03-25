@@ -105,6 +105,42 @@ public class CoinPriceController {
         }
     }
 
+    public String getCoinGeckoName(String tokenName){
+        switch (tokenName) {
+            case "DFI":
+                tokenName = "defichain";
+                break;
+            case "ETH-DFI":
+            case "ETH":
+                tokenName = "ethereum";
+                break;
+            case "BTC":
+            case "BTC-DFI":
+                tokenName = "bitcoin";
+                break;
+            case "USDT":
+            case "USDT-DFI":
+                tokenName = "tether";
+                break;
+            case "DOGE":
+            case "DOGE-DFI":
+                tokenName = "dogecoin";
+                break;
+            case "LTC":
+            case "LTC-DFI":
+                tokenName = "litecoin";
+                break;
+            case "BCH":
+            case "BCH-DFI":
+                tokenName = "bitcoin-cash";
+                break;
+            default:
+                tokenName = "-";
+                break;
+        }
+        return tokenName;
+    }
+
     public String getLastTimeStamp(String strCoinPricePath) {
         return getCoinPriceLocal(strCoinPricePath).lastTimeStamp;
     }
