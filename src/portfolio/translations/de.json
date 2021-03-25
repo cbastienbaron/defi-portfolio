@@ -62,5 +62,6 @@
   "DeleteButton": "L\u00f6schen",
   "DataSourceLabel": "Daten Quelle",
   "DataSourceActiveWallet": "Aktive wallets",
-  "DataSourceAllWallets": "Alle wallets"
+  "DataSourceAllWallets": "Alle wallets",
+  "Token": "Token"
 }

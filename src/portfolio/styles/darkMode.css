@@ -27,6 +27,7 @@
 }
 
 .grid-pane {
+    -fx-accent: #FF00AF;
     -fx-focus-color: #FF00AF;
     -fx-base: #373e43;
     -fx-control-inner-background: derive(#373e43, 35%);
@@ -59,12 +60,10 @@
 .text-field {
     -fx-prompt-text-fill: white;
 }
-
 .titulo{
     -fx-font-weight: bold;
     -fx-font-size: 18px;
 }
-
 
 .tab-pane > .tab-header-area {
   -fx-padding: 0;
@@ -74,14 +73,16 @@
   -fx-background-color: #3C3C3C, derive(#373e43, 35%);
   -fx-background-insets: 0, 0 0 1px 0;
 }
+
 .date-picker > .text-field {
     -fx-background-color:#3C3C3C;
     -fx-text-fill: white;
 }
 
 .menu-bar {
-  -fx-background-color: derive(#373e43, 35%); // your color here
+  -fx-background-color: derive(#373e43, 35%);
 }
+
 .tab-pane > .tab-header-area > .headers-region > .tab {
   -fx-background-color: derive(#373e43, 35%);
   -fx-padding: 1.5em 1em;
@@ -111,8 +112,4 @@
 .button:hover{
     -fx-font-weight: bold;
     -fx-border-color: #FF00AF;
-}
-
-.circle:hover{
-    -fx-fill:blue;
 }

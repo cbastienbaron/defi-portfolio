@@ -15,8 +15,9 @@ public class PoolPairModel {
     private final DoubleProperty cryptoCommission2OverviewProperty = new SimpleDoubleProperty(0.0);
     private final DoubleProperty cryptoCommission2OverviewFiatProperty = new SimpleDoubleProperty(0.0);
     private final StringProperty cryptoPoolPair = new SimpleStringProperty("");
+    private final StringProperty balanceFiatProperty = new SimpleStringProperty("");
 
-    public PoolPairModel(String blockTime, double fiatValue, double cryptoValue1, double cryptoValue2, String poolPair,double cryptoValueFiat1, double cryptoValueFiat2,double cryptoCommission2Overview,double cryptoCommission2FiatOverview){
+    public PoolPairModel(String blockTime, double fiatValue, double cryptoValue1, double cryptoValue2, String poolPair,double cryptoValueFiat1, double cryptoValueFiat2,double cryptoCommission2Overview,double cryptoCommission2FiatOverview,String balanceFiat){
         setBlockTime(blockTime);
         setFiat(fiatValue);
         setCrypto1(cryptoValue1);
@@ -26,6 +27,7 @@ public class PoolPairModel {
         setPoolPair(poolPair);
         setcryptoCommission2Overview(cryptoCommission2Overview);
         setcryptoCommission2FiatOverview(cryptoCommission2FiatOverview);
+        setBalanceFiat(balanceFiat);
     }
 
     public void setBlockTime(String blockTime) {
@@ -38,6 +40,18 @@ public class PoolPairModel {
 
     public String getBlockTimeValue() {
         return blockTimeProperty.getValue();
+    }
+
+    public void setBalanceFiat(String balanceFiat) {
+        this.balanceFiatProperty.set(balanceFiat);
+    }
+
+    public StringProperty getBalanceFiat() {
+        return balanceFiatProperty;
+    }
+
+    public String getBalanceFiatValue() {
+        return balanceFiatProperty.getValue();
     }
 
     public Double getCryptoValueValue1() {

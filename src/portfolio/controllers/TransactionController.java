@@ -1,5 +1,7 @@
 package portfolio.controllers;
 
+import com.litesoftwares.coingecko.CoinGeckoApiClient;
+import com.litesoftwares.coingecko.impl.CoinGeckoApiClientImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.json.simple.JSONArray;
@@ -742,6 +744,7 @@ public class TransactionController {
     public void getCoinAndTokenBalances() {
         List<BalanceModel> balanceModelList = new ArrayList<>();
         JSONArray jsonArray = getTokenBalances();
+        CoinGeckoApiClient client = new CoinGeckoApiClientImpl();
         Double dfiCoin = Double.parseDouble(getBalance());
         for (int i = 0; i < jsonArray.size(); i++) {
             String tokenName = getPoolPairFromId(jsonArray.get(i).toString().split("@")[1]);
@@ -754,7 +757,7 @@ if(tokenName.contains("-")){
     Double token1 = Math.sqrt(poolRatio*Double.parseDouble(jsonArray.get(i).toString().split("@")[0])*Double.parseDouble(jsonArray.get(i).toString().split("@")[0]));
     Double token2 = Math.sqrt(Double.parseDouble(jsonArray.get(i).toString().split("@")[0])*Double.parseDouble(jsonArray.get(i).toString().split("@")[0])/poolRatio);
 
-    balanceModelList.add(new BalanceModel(tokenName.split("-")[0], coinPriceController.getPriceFromTimeStamp(tokenName.split("-")[0] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token1, token1,
+    balanceModelList.add(new BalanceModel(tokenName.split("-")[0], client.getPrice(CoinPriceController.getInstance().getCoinGeckoName(tokenName.split("-")[0]),SettingsController.getInstance().selectedFiatCurrency.getValue()).get(CoinPriceController.getInstance().getCoinGeckoName(tokenName.split("-")[0])).get(SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase())* token1, token1,
             tokenName.split("-")[1], coinPriceController.getPriceFromTimeStamp(tokenName.split("-")[1] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2,Double.parseDouble(jsonArray.get(i).toString().split("@")[0])));
 }else{
     if(!tokenName.equals("DFI"))dfiCoin=0.0;
