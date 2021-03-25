@@ -215,7 +215,10 @@ public class MainView implements Initializable {
         }
         if (tabPane.getSelectionModel().getSelectedItem().getText().equals(this.mainViewController.settingsController.translationList.getValue().get("Commissions"))) {
             crypto1Column.setText(mainViewController.settingsController.selectedCoin.getValue().split("-")[1]);
+            crypto1FiatColumn.setText(mainViewController.settingsController.selectedCoin.getValue().split("-")[1] + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
             crypto2Column.setText(mainViewController.settingsController.selectedCoin.getValue().split("-")[0]);
+            crypto2FiatColumn.setText(mainViewController.settingsController.selectedCoin.getValue().split("-")[1] + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+
             crypto1Column.setVisible(true);
             crypto1FiatColumn.setVisible(true);
             crypto2Column.setVisible(true);
@@ -503,11 +506,11 @@ public class MainView implements Initializable {
         this.cmbCoinsCom.getItems().addAll(this.mainViewController.settingsController.cryptoCurrencies);
         this.cmbCoinsCom.valueProperty().bindBidirectional(this.mainViewController.settingsController.selectedCoin);
 
-        this.fiatColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Total") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
-        this.crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
-        this.crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
-        this.crypto1FiatColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
-        this.crypto2FiatColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+//        this.fiatColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Total") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+//        this.crypto1Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+//        this.crypto2Column.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+//        this.crypto1FiatColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
+//        this.crypto2FiatColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions") + " (" + mainViewController.settingsController.selectedFiatCurrency.getValue() + ")");
 
 
         this.mainViewController.settingsController.selectedFiatCurrency.addListener((ov, oldValue, newValue) ->
@@ -1293,6 +1296,7 @@ public class MainView implements Initializable {
         this.mainViewController.helpController.strCloseText.setValue(this.mainViewController.settingsController.translationList.getValue().get("Close").toString());
         this.mainViewController.settingsController.selectedPlotType.setValue(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
         this.mainViewController.settingsController.selectedIntervall.setValue(this.mainViewController.settingsController.translationList.getValue().get("Daily").toString());
+
 
         if (!this.init)
             this.updateHeader();
