@@ -224,7 +224,7 @@ public class TransactionController {
     }
 
     public List<TransactionModel> getListAccountHistoryRpc(int depth) {
-
+        JSONObject jsonObject = new JSONObject();
         List<TransactionModel> transactionList = new ArrayList<>();
 
         try {
@@ -243,8 +243,12 @@ public class TransactionController {
                 } else {
                     this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
                 }
-                JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
-                JSONArray transactionJson = (JSONArray) jsonObject.get("result");
+                if(SettingsController.getInstance().selectedSource.getValue().equals("All wallets")){
+                    jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
+                }else{
+                    jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
+                }
+                 JSONArray transactionJson = (JSONArray) jsonObject.get("result");
                 for (Object transaction : transactionJson) {
                     JSONObject transactionJ = (JSONObject) transaction;
 
@@ -260,7 +264,11 @@ public class TransactionController {
             }
 
             restBlockCount = restBlockCount - blockDepth;
-            JSONObject jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
+            if(SettingsController.getInstance().selectedSource.getValue().equals("All wallets")) {
+                jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
+            }else{
+                jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
+            }
             JSONArray transactionJson = (JSONArray) jsonObject.get("result");
             for (Object transaction : transactionJson) {
                 JSONObject transactionJ = (JSONObject) transaction;

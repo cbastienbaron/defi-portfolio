@@ -614,6 +614,8 @@ public class MainViewController {
             }
 
             if (success) {
+                this.settingsController.lastExportPath = selectedFile.getParent().toString();
+                this.settingsController.saveSettings();
                 this.strProgressbar.setValue("Excel successfully exported!");
                 PauseTransition pause = new PauseTransition(Duration.seconds(10));
                 pause.setOnFinished(e -> this.strProgressbar.setValue(null));
@@ -645,6 +647,8 @@ public class MainViewController {
             boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), source, this.mainView);
 
             if (success) {
+                this.settingsController.lastExportPath = selectedFile.getParent().toString();
+                this.settingsController.saveSettings();
                 this.strProgressbar.setValue("Excel successfully exported!");
                 PauseTransition pause = new PauseTransition(Duration.seconds(10));
                 pause.setOnFinished(e -> this.strProgressbar.setValue(null));
