@@ -130,6 +130,9 @@ public class TransactionController {
     public void clearPortfolioList() {
         this.portfolioList.clear();
     }
+    public void clearBalanceList(){
+        this.balanceList.clear();
+    }
 
     public ObservableList<TransactionModel> getTransactionList() {
         return transactionList;

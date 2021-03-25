@@ -57,6 +57,8 @@ public class SettingsView implements Initializable {
         boolean result = false;
         try {
             result = Files.deleteIfExists(new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "/transactionData.portfolio").toPath());
+            result = Files.deleteIfExists(new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "/portfolioData.portfolio").toPath());
+
         } catch (IOException e) {
             SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
@@ -66,9 +68,11 @@ public class SettingsView implements Initializable {
             MainViewController.getInstance().poolPairList.clear();
             MainViewController.getInstance().plotUpdate(MainViewController.getInstance().mainView.tabPane.getSelectionModel().getSelectedItem().getText());
             MainViewController.getInstance().strCurrentBlockLocally.set("0");
+            TransactionController.getInstance().clearBalanceList();
         }else{
         }
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
