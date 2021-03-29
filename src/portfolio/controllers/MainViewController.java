@@ -522,8 +522,7 @@ public class MainViewController {
                             cumulatedFiatValue = cumulatedFiatValue + entry.getValue().getFiatRewards1Value();
                             rewardsCumulated.getData().add(new XYChart.Data(entry.getKey(), cumulatedFiatValue));
                         }
-
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), entry.getValue().getFiatRewards1Value(), this.settingsController.selectedCoin.getValue(), 1, 1, 1.0, 1, ""));
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), 1, this.settingsController.selectedCoin.getValue(), entry.getValue().getFiatRewards1Value(), 1, 1.0, 1, ""));
                     }
                 }
                 if (this.mainView.plotRewards.getData().size() == 1) {
@@ -634,8 +633,7 @@ public class MainViewController {
                             rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2FiatValue));
                         }
 
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(), entry.getValue().getCoinCommissions1Value() * entry.getValue().getFiatCommissions1Value(), entry.getValue().getCoinCommissions2Value() * entry.getValue().getFiatCommissions2Value(), 1.0, 1, ""));
-
+                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(), entry.getValue().getFiatCommissions1Value(), entry.getValue().getFiatCommissions2Value(), 1.0, 1, ""));
                     }
                 }
 
