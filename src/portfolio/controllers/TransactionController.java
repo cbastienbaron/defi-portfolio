@@ -2,11 +2,19 @@ package portfolio.controllers;
 
 import com.litesoftwares.coingecko.CoinGeckoApiClient;
 import com.litesoftwares.coingecko.impl.CoinGeckoApiClientImpl;
+import com.sun.javafx.geom.Arc2D;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import portfolio.Main;
 import portfolio.models.AddressModel;
 import portfolio.models.BalanceModel;
 import portfolio.models.PortfolioModel;
@@ -140,7 +148,7 @@ public class TransactionController {
 
     public String getBlockCount() {
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.defichain.io/v1/stats").openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.defichain.io/v1/getblockcount").openConnection();
             String jsonText = "";
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 jsonText = br.readLine();
@@ -148,8 +156,8 @@ public class TransactionController {
                 this.settingsController.logger.warning("Exception occured: " + ex.toString());
             }
             JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
-            if (obj.get("blockHeight") != null) {
-                return obj.get("blockHeight").toString();
+            if (obj.get("data") != null) {
+                return obj.get("data").toString();
             } else {
                 return "No connection";
             }
@@ -669,8 +677,11 @@ public class TransactionController {
             } catch (IOException e) {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
+        }else{
+            this.showNoDataWindow();
         }
         if (!this.settingsController.getPlatform().equals("mac")) this.frameUpdate.dispose();
+        stopServer();
         return false;
     }
 
@@ -900,4 +911,40 @@ public class TransactionController {
     public String[] splitCoinsAndAmounts(String amountAndCoin) {
         return amountAndCoin.split("@");
     }
+
+    public void showNoDataWindow(){
+        Parent root = null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("../views/NoDataView.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Scene scene = new Scene(root);
+        Stage infoView = new Stage();
+        infoView.initStyle(StageStyle.UNDECORATED);
+        final Delta dragDelta = new Delta();
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = infoView.getX() - mouseEvent.getScreenX();
+            dragDelta.y = infoView.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            infoView.setX(mouseEvent.getScreenX() + dragDelta.x);
+            infoView.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        infoView.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
+        infoView.setTitle(SettingsController.getInstance().translationList.getValue().get("Settings").toString());
+        infoView.setScene(scene);
+
+        if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
+            java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+            infoView.getScene().getStylesheets().add(darkMode.toURI().toString());
+        } else {
+            java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+            infoView.getScene().getStylesheets().add(lightMode.toURI().toString());
+        }
+
+        infoView.show();
+    }
+    static class Delta { double x, y; }
 }

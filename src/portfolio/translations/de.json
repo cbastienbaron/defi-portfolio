@@ -63,5 +63,6 @@
   "DataSourceLabel": "Daten Quelle",
   "DataSourceActiveWallet": "Aktive wallets",
   "DataSourceAllWallets": "Alle wallets",
-  "Token": "Token"
+  "Token": "Token",
+  "InfoNoData": "Daten konnten nicht geladen werden. \nWeitere Informationen im Wiki"
 }
