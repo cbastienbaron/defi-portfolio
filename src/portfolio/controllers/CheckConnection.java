@@ -40,15 +40,16 @@ public class CheckConnection extends TimerTask {
                             }else{
                                 int currentBlockCount = Integer.parseInt(this.mainViewController.transactionController.getBlockCountRpc());
                                 int maxBlockCount = Integer.parseInt(this.mainViewController.transactionController.getBlockCount());
+                                double progress = Math.round((double)currentBlockCount*100.0/(double)maxBlockCount);
                                 if(SettingsController.getInstance().getPlatform().equals("mac")){
                                     try {
                                         FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
-                                        myWriter.write(SettingsController.getInstance().translationList.getValue().get("SyncData").toString() +"("+currentBlockCount+"/"+maxBlockCount+")");
+                                        myWriter.write("<html><body>"+SettingsController.getInstance().translationList.getValue().get("SyncData").toString() + progress+ "% <br>("+currentBlockCount+"/"+maxBlockCount+")</body></html>");
                                         myWriter.close();
                                     } catch (IOException e) {
                                         SettingsController.getInstance().logger.warning("Could not write to update.portfolio."); }
                                 }else{
-                                    TransactionController.getInstance().jl.setText(SettingsController.getInstance().translationList.getValue().get("SyncData").toString() +"("+currentBlockCount+"/"+maxBlockCount+")");
+                                    TransactionController.getInstance().jl.setText("<html><body>"+SettingsController.getInstance().translationList.getValue().get("SyncData").toString() + progress+ "% <br>("+currentBlockCount+"/"+maxBlockCount+")</body></html>");
                                 }
                                 this.mainViewController.settingsController.selectedLaunchSync = currentBlockCount<maxBlockCount;
                             }
